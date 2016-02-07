@@ -1,0 +1,10 @@
+# enables/disables messages from the at.justin.matlab packages
+verbose = 0
+
+# if enabled properties will be reloaded after each getProperty* call
+autoReloadProps = false
+
+# background color for the breakpointview as int 0..255
+bpColorR=179
+bpColorG=203
+bpColorB=111
