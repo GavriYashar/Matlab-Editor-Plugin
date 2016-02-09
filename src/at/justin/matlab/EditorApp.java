@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Andreas Justin on 2016 - 02 - 06.
+ * Created by Andreas Justin on 2016 - 02 - 09.
  */
 
 /**
@@ -47,11 +47,9 @@ public class EditorApp {
         @Override
         public void keyReleased(KeyEvent e) {
             if (mCallbacks.size() < 1) return;
-            Object[] objects = new Object[1];
-            objects[0] = e;
             for (String s : mCallbacks) {
                 try {
-                    Matlab.getInstance().proxyHolder.get().feval(s, objects);
+                    Matlab.getInstance().proxyHolder.get().feval(s, e);
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
@@ -63,7 +61,7 @@ public class EditorApp {
          * to prevent creating and adding new keylisteners to editor objects while they still have one.
          *
          * This is a quick and dirty way to prevent it. TODO: fix me
-         * @return
+         * @return class string
          */
         @Override
         public String toString() {
@@ -72,7 +70,7 @@ public class EditorApp {
     };
 
     /**
-     * will automatically call the passed matlab function, with first input argument being the KeyEvent
+     * adds a matlab function call to the matlab call stack
      * @param string valid matlab function which can be called
      */
     public void addMatlabCallback(String string) throws Exception {
