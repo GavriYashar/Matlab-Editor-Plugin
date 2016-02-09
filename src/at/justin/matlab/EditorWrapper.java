@@ -45,7 +45,7 @@ public class EditorWrapper {
         int[] lc = fixLineCol(line, col);
         line = lc[0]-1;// line 1 is actually 0;
         col = lc[1];
-        String[] strings = getTxtArray();
+        String[] strings = getTextArray();
         int p = 0;
         for (int i = 0; i < line; i++) {
             p += getLineLength(i+1);
@@ -55,7 +55,7 @@ public class EditorWrapper {
     }
 
     public int getLineLength(int line) {
-        String[] strings = getTxtArray();
+        String[] strings = getTextArray();
         int[] lc = fixLineCol(line,1);
         return strings[lc[0]-1].length()+1; // for \n
     }
@@ -80,7 +80,7 @@ public class EditorWrapper {
         return "";
     }
 
-    public String[] getTxtArray() {
+    public String[] getTextArray() {
         String s = gae().getText();
         return s.split("\\n");
     }
@@ -136,12 +136,12 @@ public class EditorWrapper {
     }
 
     public String getTextByLine(int line) {
-        String[] strings = getTxtArray();
+        String[] strings = getTextArray();
         return strings[line-1];
     }
 
     public String[] getTextByLines(int[] lines) {
-        String[] strings = getTxtArray();
+        String[] strings = getTextArray();
         String[] retString = new String[lines.length];
 
         int j = 0;
@@ -177,10 +177,10 @@ public class EditorWrapper {
      * returns all line numbers where a section is found including line 1
      * @return line numbers array
      */
-    public ArrayList<Integer> getAllLinesOfSections() {
+    public ArrayList<Integer> getSectionAllLines() {
         ArrayList<Integer> lines = new ArrayList<>(10);
         lines.add(1);
-        String[] strings = getTxtArray();
+        String[] strings = getTextArray();
 
         for (int i = 1; i < strings.length; i++) {
             Matcher m = lineIsSection.matcher(strings[i]);
@@ -193,41 +193,47 @@ public class EditorWrapper {
         return lines;
     }
 
-    public int[] getSectionPosByPos(int pos) {
+    public int[] getSectionPosByPos(int pos) throws Exception {
         if (pos < 1) pos = 1;
-        ArrayList<Integer> sectionLines = getAllLinesOfSections();
+        ArrayList<Integer> sectionLines = getSectionAllLines();
+        ArrayList<Integer> sectionPos = new ArrayList<>(sectionLines.size());
+        for (Integer sectionLine : sectionLines) {
+            sectionPos.add(lc2pos(sectionLine, 1));
+        }
         int start = -1;
         int end = -1;
         for (int i = 0; i < sectionLines.size(); i++) {
-            int sectionPos = lc2pos(sectionLines.get(i),1);
-            if (sectionPos > pos) {
-                start = lc2pos(sectionLines.get(i-1),1);
-                end = sectionPos;
-            } else if (sectionPos == pos) {
-                start = sectionPos;
-                if (i != sectionLines.size())
-                    end = lc2pos(sectionLines.get(i+1),1);
-                else
-                    end = lc2pos(Integer.MAX_VALUE,1);
+            start = sectionPos.get(i);
+            if (i < sectionLines.size()-1)
+                end = sectionPos.get(i+1);
+            else
+                end = lc2pos(Integer.MAX_VALUE,1);
+
+            if (pos >= start && pos < end) {
+                break;
             }
         }
-        return new int[]{start,end};
+        if (start == -1 || end == -1)
+            throw new Exception("no section found - error in plugin code getSectionPosByPos");
+
+        return new int[] {start,end};
     }
 
-    public int[] getSectionPosByLine(int line) {
+    public int[] getSectionPosByLine(int line) throws Exception {
         return getSectionPosByPos(lc2pos(line,1));
     }
 
-    public String getTextOfSectionByPos(int pos) {
+    public String getTextOfSectionByPos(int pos) throws Exception {
         int[] se = getSectionPosByPos(pos);
         return getText(se[0],se[1]);
     }
 
     private int[] fixLineCol(int line, int col) {
+        String[] strings = getTextArray();
         if (line < 1) line = 1;
-        if (line > getTxtArray().length) line = getTxtArray().length;
+        if (line > strings.length) line = strings.length;
         if (col < 1) col = 1;
-        if (col > getLineLength(line)) col = getLineLength(line);
+        if (col > strings[line-1].length()) col = strings[line-1].length()+1;
         return new int[] {line,col};
     }
 
