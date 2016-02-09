@@ -54,6 +54,7 @@ public class EditorApp {
                     e1.printStackTrace();
                 }
             }
+            KeyReleasedHandler.doYourThing(e);
         }
 
         /**
