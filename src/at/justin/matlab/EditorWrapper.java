@@ -193,6 +193,36 @@ public class EditorWrapper {
         return lines;
     }
 
+    public int[] getSectionPosByPos(int pos) {
+        if (pos < 1) pos = 1;
+        ArrayList<Integer> sectionLines = getAllLinesOfSections();
+        int start = -1;
+        int end = -1;
+        for (int i = 0; i < sectionLines.size(); i++) {
+            int sectionPos = lc2pos(sectionLines.get(i),1);
+            if (sectionPos > pos) {
+                start = lc2pos(sectionLines.get(i-1),1);
+                end = sectionPos;
+            } else if (sectionPos == pos) {
+                start = sectionPos;
+                if (i != sectionLines.size())
+                    end = lc2pos(sectionLines.get(i+1),1);
+                else
+                    end = lc2pos(Integer.MAX_VALUE,1);
+            }
+        }
+        return new int[]{start,end};
+    }
+
+    public int[] getSectionPosByLine(int line) {
+        return getSectionPosByPos(lc2pos(line,1));
+    }
+
+    public String getTextOfSectionByPos(int pos) {
+        int[] se = getSectionPosByPos(pos);
+        return getText(se[0],se[1]);
+    }
+
     private int[] fixLineCol(int line, int col) {
         if (line < 1) line = 1;
         if (line > getTxtArray().length) line = getTxtArray().length;
