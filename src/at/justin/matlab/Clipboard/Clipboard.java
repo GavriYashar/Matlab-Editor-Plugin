@@ -1,5 +1,7 @@
 package at.justin.matlab.Clipboard;
 
+import at.justin.matlab.EditorApp;
+import at.justin.matlab.EditorWrapper;
 import at.justin.matlab.util.ScreenSize;
 
 import javax.swing.*;
@@ -13,6 +15,11 @@ public class Clipboard {
     private static Clipboard INSTANCE;
     public final JFrame jFrame = new JFrame();
     public JList jList;
+    private DefaultListModel<String> stringListModel;
+    public JTextArea jTextArea;
+
+    private String[] strings = new String[10];
+
     private Point initialClick;
     private final KeyListener keyListener = new KeyListener() {
         @Override
@@ -29,7 +36,28 @@ public class Clipboard {
 
     private Clipboard() {
         create();
-        jFrame.setVisible(true);
+        jFrame.setVisible(false);
+    }
+
+    public void add(final String string) {
+        // if already added skip adding given string
+        for (String s : strings) {
+            if (s == null) break;
+            if (s.equals(string)) return;
+        }
+
+        // first string is the new one, old ones will be moved one down in the list
+        String[] newStrings = new String[10];
+        newStrings[0] = string;
+        for (int i = 1; i < strings.length; i++) {
+            newStrings[i] = strings[i-1];
+        }
+        strings = newStrings;
+
+        stringListModel.removeAllElements();
+        for (String s: strings) {
+            stringListModel.addElement(s);
+        }
     }
 
     public void setVisible(boolean visible) {
@@ -49,12 +77,22 @@ public class Clipboard {
         jFrame.setUndecorated(true);
         jFrame.setSize(300, 600);
         jFrame.setLocation(width/2 - jFrame.getWidth()/2,height/2 - jFrame.getHeight()/2);
+        jFrame.setBackground(new Color(200,200,200));
 
         jList = new JList();
-        jFrame.add(jList, BorderLayout.NORTH);
+        stringListModel = new DefaultListModel<>();
+        jList.setModel(stringListModel);
+
+        jTextArea = new JTextArea();
+
+        GridLayout layout = new GridLayout(2, 3, 10, 20);
+        jFrame.setLayout(layout);
+        jFrame.add(jList);
+        jFrame.add(jTextArea);
 
         jFrame.addKeyListener(keyListener);
         jList.addKeyListener(keyListener);
+        jTextArea.addKeyListener(keyListener);
         addWindowMover();
     }
 
