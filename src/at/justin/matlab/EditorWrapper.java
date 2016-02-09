@@ -42,7 +42,9 @@ public class EditorWrapper {
     }
 
     public int lc2pos(int line, int col) {
-        line -= 1; // line 1 is actually 0;
+        int[] lc = fixLineCol(line, col);
+        line = lc[0]-1;// line 1 is actually 0;
+        col = lc[1];
         String[] strings = getTxtArray();
         int p = 0;
         for (int i = 0; i < line; i++) {
@@ -54,7 +56,8 @@ public class EditorWrapper {
 
     public int getLineLength(int line) {
         String[] strings = getTxtArray();
-        return strings[line-1].length()+1; // for \n
+        int[] lc = fixLineCol(line,1);
+        return strings[lc[0]-1].length()+1; // for \n
     }
 
     public String getText() {
@@ -63,7 +66,7 @@ public class EditorWrapper {
 
     public String getText(int start, int end) {
         String txt = getText();
-        if (start < 0); start = 0;
+        if (start < 0) start = 0;
         if (end > txt.length() || end < 0) end = txt.length()-1;
         return txt.substring(start,end);
     }
@@ -119,11 +122,8 @@ public class EditorWrapper {
     }
 
     public void goToLineCol(int line, int col) {
-        if (line < 1) line = 1;
-        if (line > getTxtArray().length) line = getTxtArray().length;
-        if (col < 1) col = 1;
-        if (col > getLineLength(line)) col = getLineLength(line);
-        gae().setCaretPosition(lc2pos(line, col));
+        int[] lc = fixLineCol(line,col);
+        gae().setCaretPosition(lc2pos(lc[0], lc[1]));
     }
 
     public void selectLine(int line) {
