@@ -37,10 +37,21 @@ public class EditorWrapper {
         return gae().getLongName();
     }
 
+    /**
+     * converts position in line and column
+     * @param pos
+     * @return [line, column]
+     */
     public int[] pos2lc(int pos) {
         return gae().positionToLineAndColumn(pos);
     }
 
+    /**
+     * converts line an column to position
+     * @param line line number
+     * @param col column
+     * @return position of line and column
+     */
     public int lc2pos(int line, int col) {
         int[] lc = fixLineCol(line, col);
         line = lc[0]-1;// line 1 is actually 0;
@@ -80,6 +91,10 @@ public class EditorWrapper {
         return "";
     }
 
+    /**
+     * Splits getText(). lines, at the end w/o any character except new line will be truncated at not returned
+     * @return string []
+     */
     public String[] getTextArray() {
         String s = gae().getText();
         return s.split("\\n");
@@ -101,6 +116,9 @@ public class EditorWrapper {
         gae().setCaretPosition(i);
     }
 
+    /**
+     * @return [start, end] position
+     */
     public int[] getSelectionPosition() {
         return new int[] {getSelectionPositionStart(), getSelectionPositionEnd()};
     }
@@ -193,6 +211,12 @@ public class EditorWrapper {
         return lines;
     }
 
+    /**
+     *
+     * @param pos position
+     * @return [start, end] position of section surrounding the given position
+     * @throws Exception
+     */
     public int[] getSectionPosByPos(int pos) throws Exception {
         if (pos < 1) pos = 1;
         ArrayList<Integer> sectionLines = getSectionAllLines();
@@ -219,6 +243,12 @@ public class EditorWrapper {
         return new int[] {start,end};
     }
 
+    /**
+     *
+     * @param line line number
+     * @return [start, end] position of section surrounding the given line
+     * @throws Exception
+     */
     public int[] getSectionPosByLine(int line) throws Exception {
         return getSectionPosByPos(lc2pos(line,1));
     }
@@ -228,6 +258,12 @@ public class EditorWrapper {
         return getText(se[0],se[1]);
     }
 
+    /**
+     * fixing line and number to active editor valid values
+     * @param line line number
+     * @param col column
+     * @return fixed [line, column]
+     */
     private int[] fixLineCol(int line, int col) {
         String[] strings = getTextArray();
         if (line < 1) line = 1;
