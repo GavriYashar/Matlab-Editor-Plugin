@@ -193,6 +193,14 @@ public class EditorWrapper {
         return lines;
     }
 
+    private int[] fixLineCol(int line, int col) {
+        if (line < 1) line = 1;
+        if (line > getTxtArray().length) line = getTxtArray().length;
+        if (col < 1) col = 1;
+        if (col > getLineLength(line)) col = getLineLength(line);
+        return new int[] {line,col};
+    }
+
     public Component sandbox() {
         return gae().getComponent();
     }
