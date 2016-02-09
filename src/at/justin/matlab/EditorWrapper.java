@@ -68,7 +68,7 @@ public class EditorWrapper {
         return txt.substring(start,end);
     }
 
-    public String getTextOffsetLenngth(int offset, int length) {
+    public String getTextOffsetLength(int offset, int length) {
         try {
             return gae().getTextComponent().getText(offset,length);
         } catch (BadLocationException e) {
@@ -130,7 +130,7 @@ public class EditorWrapper {
         gae().goToLine(line,true);
     }
 
-    public void isertTextAtPos(String txt, int i) {
+    public void insertTextAtPos(String txt, int i) {
         setCaretPosition(i);
         gae().insertTextAtCaret(txt);
     }
