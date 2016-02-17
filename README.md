@@ -1,9 +1,11 @@
 Welcome to the Matlab-Editor-Plugin wiki!
 
-# What is it?
-For now it justs adds a KeyReleasedListener to the Matlab-Editor which executes custom matlab functions passed in by the user
+## What is it?
+It'll add following features to Matlab, and it's editor
+* KeyPressListener: executes custom matlab functions passed in by the user beforehand
+* ClipboardStack: stores the previous 10 strings copied to clipboard from matlab.
 
-# Setup
+## Setup
 1. you need Matlab, at least 2014a (i only tried 2014a)
 2. you need to download the matlabcontrol package here [https://code.google.com/archive/p/matlabcontrol/](https://code.google.com/archive/p/matlabcontrol/)
 3. create a Matlab function <MyKeyReleaseFunction>
@@ -37,10 +39,9 @@ For now it justs adds a KeyReleasedListener to the Matlab-Editor which executes 
     ea.addMatlabCallback('MyKeyReleaseFunction');
 ```
 
-
-
-
-
+## Predefined Features
+### Clipboard Stack
+Accessible via `CTRL + SHIFT + V`. Can be closed by pressing `ESCAPE`, moved around by dragging the frame. A double click will insert selected text from ClipboardStack to matlab 
 
 
 
