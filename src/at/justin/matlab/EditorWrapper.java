@@ -1,6 +1,7 @@
 package at.justin.matlab;
 
 import com.mathworks.matlab.api.editor.Editor;
+import com.mathworks.widgets.text.mcode.cell.CellUtils;
 
 import javax.swing.text.BadLocationException;
 import java.awt.*;
@@ -13,8 +14,6 @@ import java.util.regex.Pattern;
  */
 public class EditorWrapper {
     private static EditorWrapper INSTANCE;
-    private static Pattern lineIsSection = Pattern.compile("^\\s*%%[\\s\\n\\r]");
-
     public static EditorWrapper getInstance() {
         if (INSTANCE != null) return INSTANCE;
         INSTANCE = new EditorWrapper();
@@ -195,20 +194,8 @@ public class EditorWrapper {
      * returns all line numbers where a section is found including line 1
      * @return line numbers array
      */
-    public ArrayList<Integer> getSectionAllLines() {
-        ArrayList<Integer> lines = new ArrayList<>(10);
-        lines.add(1);
-        String[] strings = getTextArray();
-
-        for (int i = 1; i < strings.length; i++) {
-            Matcher m = lineIsSection.matcher(strings[i]);
-            if (m.find()) {
-                lines.add(i+1);
-            }
-        }
-
-        lines.trimToSize();
-        return lines;
+    public int[] getSectionAllLines() {
+        return CellUtils.getCellLocations(getText());
     }
 
     /**
@@ -219,17 +206,17 @@ public class EditorWrapper {
      */
     public int[] getSectionPosByPos(int pos) throws Exception {
         if (pos < 1) pos = 1;
-        ArrayList<Integer> sectionLines = getSectionAllLines();
-        ArrayList<Integer> sectionPos = new ArrayList<>(sectionLines.size());
-        for (Integer sectionLine : sectionLines) {
-            sectionPos.add(lc2pos(sectionLine, 1));
+        int[] sectionLines = getSectionAllLines();
+        int[] sectionPos = new int[sectionLines.length / 2];
+        for (int i = 0; i < sectionLines.length; i++) {
+            sectionPos[i] = lc2pos(sectionLines[i], 1);
         }
         int start = -1;
         int end = -1;
-        for (int i = 0; i < sectionLines.size(); i++) {
-            start = sectionPos.get(i);
-            if (i < sectionLines.size()-1)
-                end = sectionPos.get(i+1);
+        for (int i = 0; i < sectionLines.length; i++) {
+            start = sectionPos[i];
+            if (i < sectionLines.length-1)
+                end = sectionPos[i+1];
             else
                 end = lc2pos(Integer.MAX_VALUE,1);
 
