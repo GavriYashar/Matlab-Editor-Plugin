@@ -7,7 +7,9 @@ import com.mathworks.matlab.api.editor.EditorEventListener;
 import com.mathworks.mde.editor.MatlabEditorApplication;
 import matlabcontrol.MatlabInvocationException;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -35,6 +37,12 @@ public class EditorApp {
     public static final Color ENABLED = new Color(179, 203, 111);
     public static final Color DISABLED = new Color(240, 240, 240);
     private static List<String> mCallbacks = new ArrayList<>();
+    private static final AbstractAction copyAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("AE: CTRL + C");
+        }
+    };
     private static final KeyListener keyListener = new KeyListener() {
         @Override
         public void keyTyped(KeyEvent e) {
@@ -42,10 +50,6 @@ public class EditorApp {
 
         @Override
         public void keyPressed(KeyEvent e) {
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
             if (mCallbacks.size() < 1) return;
             for (String s : mCallbacks) {
                 try {
@@ -54,6 +58,11 @@ public class EditorApp {
                     e1.printStackTrace();
                 }
             }
+            KeyReleasedHandler.doYourThing(e);
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
         }
 
         /**
@@ -161,6 +170,9 @@ public class EditorApp {
                 }
             }
             component.addKeyListener(keyListener);
+            // JComponent jComponent = (JComponent) component;
+            // jComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK), "copyAction");
+            // jComponent.getActionMap().put("copyAction", copyAction);
         }
         if (Settings.customProps.containsKey("bpColorR")
                 & Settings.customProps.containsKey("bpColorG")
