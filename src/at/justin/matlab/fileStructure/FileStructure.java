@@ -17,7 +17,7 @@ import java.util.List;
 
 public class FileStructure extends UndecoratedFrame
 {
-    private JTree tree;
+    private JTree jTree;
     private static FileStructure INSTANCE;
 
     public FileStructure()
@@ -29,9 +29,9 @@ public class FileStructure extends UndecoratedFrame
         setSize(300, 600);
         setLocation(width/2 - getWidth()/2,height/2 - getHeight()/2);
 
-        //create the tree by passing in the root node
-        tree = new JTree();
-        JScrollPane scrollPane = new JScrollPane(tree);
+        //create the jTree by passing in the root node
+        jTree = new JTree();
+        JScrollPane scrollPane = new JScrollPane(jTree);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
@@ -40,9 +40,9 @@ public class FileStructure extends UndecoratedFrame
     }
 
     private void addListeners() {
-        tree.addKeyListener(closeListener);
-        tree.addMouseListener(mlClick);
-        tree.addMouseMotionListener(mlMove);
+        jTree.addKeyListener(closeListener);
+        jTree.addMouseListener(mlClick);
+        jTree.addMouseMotionListener(mlMove);
     }
 
 
@@ -53,7 +53,8 @@ public class FileStructure extends UndecoratedFrame
         if (classdef != null) {
             root.add(forClass(mTree, classdef.getChild(classdef.getRoot(),0)));
         }
-        tree.setModel(new DefaultTreeModel(root));
+        jTree.setModel(new DefaultTreeModel(root));
+        expandAll();
     }
 
     private DefaultMutableTreeNode forClass(MTree mTree, MTree.Node classdef) {
@@ -79,6 +80,17 @@ public class FileStructure extends UndecoratedFrame
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         setAlwaysOnTop(visible);
+    }
+
+    public void expandAll() {
+        for (int i = 0; i < jTree.getRowCount(); i++) {
+            jTree.expandRow(i);
+        }
+    }
+    public void collapseAll() {
+        for (int i = 0; i < jTree.getRowCount(); i++) {
+            jTree.collapseRow(i);
+        }
     }
 
     public static FileStructure getINSTANCE() {
