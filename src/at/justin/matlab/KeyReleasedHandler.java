@@ -1,14 +1,11 @@
 package at.justin.matlab;
 
-import at.justin.matlab.ClipboardStack.ClipboardStack;
+import at.justin.matlab.clipboardStack.ClipboardStack;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
 import matlabcontrol.MatlabInvocationException;
 
-import java.awt.*;
-import java.awt.datatransfer.*;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 
 /**
  * Created by Andreas Justin on 2016 - 02 - 09.
@@ -29,7 +26,7 @@ public class KeyReleasedHandler {
             ClipboardStack.getInstance().add(EditorWrapper.getInstance().getSelectedTxt());
             // try {
             //     String data = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
-            //     if (data != null) ClipboardStack.getInstance().add(data);
+            //     if (data != null) clipboardStack.getInstance().add(data);
             // } catch (UnsupportedFlavorException | IOException ignored) {
             //     e.printStackTrace();
             // }

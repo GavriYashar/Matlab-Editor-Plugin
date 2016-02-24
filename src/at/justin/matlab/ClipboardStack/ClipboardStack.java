@@ -1,30 +1,29 @@
-package at.justin.matlab.ClipboardStack;
+package at.justin.matlab.clipboardStack;
 
 import at.justin.matlab.EditorWrapper;
 import at.justin.matlab.util.ScreenSize;
+import at.justin.matlab.util.UndecoratedFrame;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Created by Andreas Justin on 2016 - 02 - 09.
  */
 public class ClipboardStack {
     private static ClipboardStack INSTANCE;
-    public final JFrame jFrame = new JFrame();
+    public final UndecoratedFrame undecoratedFrame = new UndecoratedFrame();
     public JList jList;
     private DefaultListModel<String> stringListModel;
     public JTextArea jTextArea;
 
     private String[] strings = new String[10];
-    private Point initialClick;
 
     private ClipboardStack() {
         create();
-        jFrame.setVisible(false);
+        undecoratedFrame.setVisible(false);
     }
 
     public void add(final String string) {
@@ -51,8 +50,8 @@ public class ClipboardStack {
     }
 
     public void setVisible(boolean visible) {
-        jFrame.setVisible(visible);
-        jFrame.setAlwaysOnTop (visible);
+        undecoratedFrame.setVisible(visible);
+        undecoratedFrame.setAlwaysOnTop (visible);
     }
 
     public static ClipboardStack getInstance() {
@@ -65,12 +64,12 @@ public class ClipboardStack {
         int width = ScreenSize.getWidth();
         int height = ScreenSize.getHeight();
 
-        jFrame.setUndecorated(true);
-        jFrame.setSize(300, 600);
-        jFrame.setLocation(width/2 - jFrame.getWidth()/2,height/2 - jFrame.getHeight()/2);
+        undecoratedFrame.setUndecorated(true);
+        undecoratedFrame.setSize(300, 600);
+        undecoratedFrame.setLocation(width/2 - undecoratedFrame.getWidth()/2,height/2 - undecoratedFrame.getHeight()/2);
 
         jList = new JList();
-        jList.setBackground(jFrame.getBackground());
+        jList.setBackground(undecoratedFrame.getBackground());
         stringListModel = new DefaultListModel<>();
         jList.setModel(stringListModel);
         jTextArea = new JTextArea();
@@ -82,37 +81,23 @@ public class ClipboardStack {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         GridLayout layout = new GridLayout(2, 3, 10, 20);
-        jFrame.setLayout(layout);
-        jFrame.add(jList);
-        jFrame.add(scrollPane);
+        undecoratedFrame.setLayout(layout);
+        undecoratedFrame.add(jList);
+        undecoratedFrame.add(scrollPane);
         jList.setBorder(BorderFactory.createLineBorder(new Color(0,0,0,0),10));
 
         addListeners();
     }
 
     private void addListeners() {
-        KeyListener keyListener = new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-            @Override
-            public void keyPressed(KeyEvent e) { }
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    setVisible(false);
-                }
-            }
-        };
+        jList.addKeyListener(undecoratedFrame.closeListener);
+        jTextArea.addKeyListener(undecoratedFrame.closeListener);
 
-        // Text Selection listener
-        jList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int index = jList.getSelectedIndex();
-                if (index < 0) return;
-                jTextArea.setText(strings[index]);
-            }
-        });
+        undecoratedFrame.addMouseListener(undecoratedFrame.mlClick);
+        undecoratedFrame.addMouseMotionListener(undecoratedFrame.mlMove);
+        jList.addMouseListener(undecoratedFrame.mlClick);
+        jList.addMouseMotionListener(undecoratedFrame.mlMove);
+
         MouseAdapter mlClick = new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -123,37 +108,6 @@ public class ClipboardStack {
                 }
             }
         };
-
-        // drag listener
-        MouseAdapter mlMover = new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                initialClick = e.getPoint();
-                jFrame.getComponentAt(initialClick);
-            }
-        };
-        MouseMotionListener mml = new MouseMotionAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                int thisX = jFrame.getLocation().x;
-                int thisY = jFrame.getLocation().y;
-
-                int xMoved = (thisX + e.getX()) - (thisX + initialClick.x);
-                int yMoved = (thisY + e.getY()) - (thisY + initialClick.y);
-
-                int X = thisX + xMoved;
-                int Y = thisY + yMoved;
-                jFrame.setLocation(X, Y);
-            }
-        };
-
-        jFrame.addKeyListener(keyListener);
-        jList.addKeyListener(keyListener);
-        jTextArea.addKeyListener(keyListener);
-
-        jFrame.addMouseListener(mlMover);
-        jFrame.addMouseMotionListener(mml);
-        jList.addMouseListener(mlMover);
         jList.addMouseListener(mlClick);
-        jList.addMouseMotionListener(mml);
     }
 }
