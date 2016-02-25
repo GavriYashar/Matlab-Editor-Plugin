@@ -32,38 +32,45 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
         String nodeL = node.toLowerCase();
         if (false && nodeL.startsWith("methods")) {
             if (node.contains("static")) {
-                JLabel iconLabel = new JLabel();
-                iconLabel.setIcon(ProjectIcon.STATIC_OVERLAY_11x11.getIcon());
-                renderer.add(iconLabel);
+                addJLabelIconToRenderer(renderer,ProjectIcon.STATIC_OVERLAY_11x11.getIcon());
             }
             if (nodeL.contains("public") || !nodeL.contains("private")) {
-                JLabel iconLabel = new JLabel();
-                iconLabel.setIcon(ProjectIcon.PUBLIC_OVERLAY_11x11.getIcon());
-                renderer.add(iconLabel);
+                addJLabelIconToRenderer(renderer,ProjectIcon.PUBLIC_OVERLAY_11x11.getIcon());
             }
             if (nodeL.contains("private")) {
-                JLabel iconLabel = new JLabel();
-                iconLabel.setIcon(ProjectIcon.PRIVATE_OVERLAY_11x11.getIcon());
-                renderer.add(iconLabel);
+                addJLabelIconToRenderer(renderer,ProjectIcon.PRIVATE_OVERLAY_11x11.getIcon());
             }
-            JLabel stringLabel = new JLabel();
-            stringLabel.setText(node);
-            renderer.add(stringLabel);
+            addJLabelStringToRenderer(renderer,node);
+            returnValue = renderer;
+        } else if (nodeL.startsWith("%%")) {
+            addJLabelIconToRenderer(renderer,ProjectIcon.CELL.getIcon());
+            addJLabelStringToRenderer(renderer,node);
+            returnValue = renderer;
+        }
 
+        if (returnValue == null) {
+            returnValue = defaultRenderer.getTreeCellRendererComponent(jTree, value, selected, exp, leaf, row, hasFocus);
+            returnValue.setFont(new Font("Courier New", Font.PLAIN, 11));
+        } else {
             if (selected) {
                 renderer.setBackground(backgroundSelectionColor);
             } else {
                 renderer.setBackground(backgroundNonSelectionColor);
             }
-
-            returnValue = renderer;
             renderer.setEnabled(jTree.isEnabled());
         }
-
-        if (returnValue == null) {
-            returnValue = defaultRenderer.getTreeCellRendererComponent(jTree, value, selected, exp, leaf, row, hasFocus);
-            returnValue.setFont(new Font("Courier New", Font.PLAIN, 10));
-        }
         return returnValue;
+    }
+
+    private void addJLabelStringToRenderer(JPanel renderer, String string) {
+        JLabel stringLabel = new JLabel();
+        stringLabel.setText(string);
+        renderer.add(stringLabel);
+    }
+
+    private void addJLabelIconToRenderer(JPanel renderer, Icon icon) {
+        JLabel iconLabel = new JLabel();
+        iconLabel.setIcon(icon);
+        renderer.add(iconLabel);
     }
 }
