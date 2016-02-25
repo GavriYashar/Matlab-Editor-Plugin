@@ -140,10 +140,6 @@ public final class NodeUtils {
         EditorWrapper ew = EditorWrapper.getInstance();
         int startPos = ew.lc2pos(node.getStartLine(),node.getStartColumn());
         int endPos = ew.lc2pos(node.getEndLine(),node.getEndColumn()+1);
-
-        System.out.println("start: " + startPos);
-        System.out.println("  end: " + endPos);
-
         return ew.getText(startPos,endPos);
     }
 
