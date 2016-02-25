@@ -88,6 +88,15 @@ public class FileStructure extends UndecoratedFrame
         if (classdef.getChildCount(classdef.getRoot()) > 0) {
             root.add(forClass(mTree, classdef.getChild(classdef.getRoot(),0)));
         }
+        Tree<MTree.Node> section = mTree.findAsTree(MTree.NodeType.CELL_TITLE);
+        System.out.println("adding section " + section.getChildCount(section.getRoot()));
+        if (section.getChildCount(section.getRoot()) > 0) {
+            for (int i = 0; i < section.getChildCount(section.getRoot()); i++) {
+                MTree.Node node = section.getChild(section.getRoot(),i);
+                root.add(new DefaultMutableTreeNode(NodeUtils.getCellName(node)));
+                positionNodes.add(node);
+            }
+        }
         jTree.setModel(new DefaultTreeModel(root));
         jTree.setCellRenderer(new TreeRenderer());
         expandAll();
