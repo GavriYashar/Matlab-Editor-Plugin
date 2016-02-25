@@ -129,7 +129,7 @@ public final class NodeUtils {
         }
         String sectionName = node.getText();
         if (sectionName.contains("%%")) {
-            sectionName = sectionName.substring(sectionName.indexOf("%%") + 2);
+            sectionName = sectionName.substring(sectionName.indexOf("%%"));
         }
 
         sectionName = sectionName.trim();
