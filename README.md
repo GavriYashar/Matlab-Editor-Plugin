@@ -42,6 +42,8 @@ It'll add following features to Matlab, and it's editor
 ## Predefined Features
 ### Clipboard Stack
 Accessible via `CTRL + SHIFT + V`. Can be closed by pressing `ESCAPE`, moved around by dragging the frame. A double click will insert selected text from ClipboardStack to matlab 
+### File Structure
+Accessible via `CTRL + F12`. Can be closed by pressing `ESCAPE`, moved around by dragging the frame. Will show class methods and functions, aswell as sections in a tree. Selecting a node will jumpt to selected function/method/section
 
 
 
