@@ -15,7 +15,6 @@ import com.mathworks.mlwidgets.explorer.model.realfs.RealFileSystem;
 import javax.swing.JCheckBox;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.Component;
 import java.io.IOException;
 
 public class AutoDetailViewer {
@@ -44,13 +43,8 @@ public class AutoDetailViewer {
     public static void addCheckbox() {
         if (added) return;
         added = true;
-        for (Component c : detailViewer.getComponent().getComponents()) {
-            if (c.getClass().toString().endsWith("Header")) {
-                jCheckBox.setText("Auto Select");
-                //detailViewer.getComponent().add(jCheckBox,new SpringLayout.Constraints());
-                detailViewer.getButton().getParent().add(jCheckBox);
-            }
-        }
+        jCheckBox.setText("Auto Select");
+        detailViewer.getButton().getParent().add(jCheckBox);
     }
 
     public static void doYourThing() {
