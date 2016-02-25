@@ -1,18 +1,12 @@
 package at.justin.matlab;
 
+import at.justin.matlab.util.AutoDetailViewer;
+import at.justin.matlab.util.Settings;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.matlab.api.editor.EditorApplicationListener;
 import com.mathworks.matlab.api.editor.EditorEvent;
 import com.mathworks.matlab.api.editor.EditorEventListener;
-import com.mathworks.matlab.api.explorer.FileLocation;
-import com.mathworks.matlab.api.explorer.FileSystem;
-import com.mathworks.matlab.api.explorer.FileSystemEntry;
-import com.mathworks.matlab.api.explorer.FileSystemEntryFactory;
 import com.mathworks.mde.editor.MatlabEditorApplication;
-import com.mathworks.mde.explorer.Explorer;
-import com.mathworks.mlwidgets.explorer.DetailViewer;
-import com.mathworks.mlwidgets.explorer.model.realfs.RealFileSystem;
-import com.mathworks.mlwidgets.explorer.widgets.table.FileTable;
 import matlabcontrol.MatlabInvocationException;
 
 import javax.swing.*;
@@ -20,7 +14,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,14 +121,12 @@ public class EditorApp {
                 }
                 setCallbacks();
             }
-
             @Override
             public void editorClosed(Editor editor) {
                 if (Settings.getPropertyBoolean("verbose")) {
                     System.out.println(editor.getLongName() + " has been closed");
                 }
             }
-
             @Override
             public String toString() {
                 return this.getClass().toString();
@@ -148,18 +139,7 @@ public class EditorApp {
                 @Override public void eventOccurred(EditorEvent editorEvent) {
                     // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
                     if (editorEvent == EditorEvent.ACTIVATED && Settings.getPropertyBoolean("autoDetailViewer")) {
-                        Explorer explorer = Explorer.getInstance();
-                        DetailViewer detailViewer = explorer.getDetailViewer();
-
-                        FileLocation fileLocation = new FileLocation(EditorWrapper.getInstance().getLongName());
-                        FileSystemEntry fileSystemEntry = null;
-                        try {
-                            System.out.println(fileLocation);
-                            fileSystemEntry = RealFileSystem.getInstance().getEntry(fileLocation);
-                            detailViewer.setFile(fileSystemEntry);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        AutoDetailViewer.doYourThing();
                     }
                     setCallbacks();
                 }
