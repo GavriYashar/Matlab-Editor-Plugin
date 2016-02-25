@@ -32,7 +32,7 @@ It'll add following features to Matlab, and it's editor
     clear classes,     clc
     javaaddpath('<path>\matlabcontrol-4.1.0.jar')
     javaaddpath('<path>\matlab-editor-plugin_01.jar')
-    at.justin.matlab.Settings.loadSettings(<path>/CustomProps.props',...
+    at.justin.matlab.util.Settings.loadSettings(<path>/CustomProps.props',...
                                           <path>/DefaultProps.props')
     ea = at.justin.matlab.EditorApp.getInstance();
     ea.setCallbacks();

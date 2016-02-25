@@ -1,0 +1,5 @@
+.idea/
+META-INF/
+out/
+test/
+matlab-editor-plugin.iml
