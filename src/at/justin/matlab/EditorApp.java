@@ -1,6 +1,6 @@
 package at.justin.matlab;
 
-import at.justin.matlab.util.AutoDetailViewer;
+import at.justin.matlab.autoDetailViewer.AutoDetailViewer;
 import at.justin.matlab.util.Settings;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.matlab.api.editor.EditorApplicationListener;
