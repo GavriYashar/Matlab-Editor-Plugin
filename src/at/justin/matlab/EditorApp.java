@@ -68,7 +68,7 @@ public class EditorApp {
 
         /**
          * In matlab clear classes will remove all instances of EditorApp but not the keyListener
-         * to prevent creating and adding new keylisteners to editor objects while they still have one.
+         * to prevent creating and adding new keyListeners to editor objects while they still have one.
          *
          * This is a quick and dirty way to prevent it. TODO: fix me
          * @return class string

@@ -10,17 +10,25 @@ import com.mathworks.mlwidgets.explorer.model.realfs.RealFileSystem;
 import javax.swing.JCheckBox;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.Component;
+import java.awt.Container;
 import java.io.IOException;
 
 public class AutoDetailViewer {
     public static DetailViewer detailViewer = Explorer.getInstance().getDetailViewer();
-    public static final JCheckBox jCheckBox = new JCheckBox();
+    private static JCheckBox jCheckBox = new JCheckBox();
 
     private static boolean added = false;
 
-    static {
-        System.out.println("static stuff");
-        addCheckbox();
+    static { addCheckbox(); }
+
+    public static void addCheckbox() {
+        if (added) return;
+        added = true;
+        setJCheckBox();
+        jCheckBox.setText("Auto Select");
+        jCheckBox.setSelected(Settings.getPropertyBoolean("autoDetailViewer"));
+
         jCheckBox.addChangeListener(new ChangeListener() {
             @Override public void stateChanged(ChangeEvent e) {
                 String val = "false";
@@ -35,17 +43,10 @@ public class AutoDetailViewer {
         });
     }
 
-    public static void addCheckbox() {
-        if (added) return;
-        added = true;
-        jCheckBox.setText("Auto Select");
-        detailViewer.getButton().getParent().add(jCheckBox);
-    }
-
     public static void doYourThing() {
         addCheckbox();
         FileLocation fileLocation = new FileLocation(EditorWrapper.getInstance().getLongName());
-        FileSystemEntry fileSystemEntry = null;
+        FileSystemEntry fileSystemEntry;
         try {
             System.out.println(fileLocation);
             fileSystemEntry = RealFileSystem.getInstance().getEntry(fileLocation);
@@ -53,5 +54,25 @@ public class AutoDetailViewer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public static JCheckBox getJCheckBox() {
+        return jCheckBox;
+    }
+    /**
+     * to prevent creating a new checkbox on "clear classes" in matlab, and starting the plugin again.
+     * Instead using already created one
+     * @return
+     */
+    public static void setJCheckBox() {
+        Container container = detailViewer.getButton().getParent();
+        for (Component c : container.getComponents()) {
+            if (c instanceof JCheckBox) {
+                jCheckBox = (JCheckBox) c;
+                return;
+            }
+        }
+        detailViewer.getButton().getParent().add(jCheckBox);
     }
 }
