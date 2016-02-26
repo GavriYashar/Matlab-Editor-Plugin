@@ -1,8 +1,3 @@
-/*
- *             Author: z0032f1t (Andreas Justin), Tomo-Tec
- *           Copyright (C) Siemens AG, 2016 All Rights Reserved
- *      Creation date: 2016-02-25
- */
 package at.justin.matlab.util;
 
 import at.justin.matlab.EditorWrapper;
