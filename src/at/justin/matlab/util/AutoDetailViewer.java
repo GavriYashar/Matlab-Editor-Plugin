@@ -65,7 +65,7 @@ public class AutoDetailViewer {
      * Instead using already created one
      * @return
      */
-    public static void setJCheckBox() {
+    private static void setJCheckBox() {
         Container container = detailViewer.getButton().getParent();
         for (Component c : container.getComponents()) {
             if (c instanceof JCheckBox) {
