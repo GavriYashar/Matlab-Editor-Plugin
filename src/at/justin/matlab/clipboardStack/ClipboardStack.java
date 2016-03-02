@@ -5,6 +5,8 @@ import at.justin.matlab.util.ScreenSize;
 import at.justin.matlab.util.UndecoratedFrame;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -108,6 +110,17 @@ public class ClipboardStack {
                 }
             }
         };
+
+        // Text Selection listener
+        jList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int index = jList.getSelectedIndex();
+                if (index < 0) return;
+                jTextArea.setText(strings[index]);
+            }
+        });
+
         jList.addMouseListener(mlClick);
     }
 }
