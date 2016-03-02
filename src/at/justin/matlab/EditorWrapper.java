@@ -134,8 +134,8 @@ public class EditorWrapper {
         return gae().getTextComponent().getSelectionStart();
     }
 
-    public void goToLine(int line) {
-        gae().goToLine(line,false);
+    public void goToLine(int line,boolean select) {
+        gae().goToLine(line,select);
     }
 
     public void goToLineCol(int line, int col) {
@@ -264,4 +264,11 @@ public class EditorWrapper {
         return gae().getComponent();
     }
 
+    public int getCurrentLine() {
+        int[] lc = pos2lc(getCaretPosition());
+        return lc[0];
+    }
+    public String getCurrentLineText() {
+        return getTextByLine(getCurrentLine());
+    }
 }
