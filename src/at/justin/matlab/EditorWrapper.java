@@ -130,17 +130,30 @@ public class EditorWrapper {
         return gae().getTextComponent().getSelectionEnd();
     }
 
+    public void setSelectionPositionStart(int s) {
+        gae().getTextComponent().setSelectionStart(s);
+    }
+    public void setSelectionPositionEnd(int e) {
+        gae().getTextComponent().setSelectionStart(e);
+    }
+
     public int getSelectionPositionStart() {
         return gae().getTextComponent().getSelectionStart();
     }
 
+    /**
+     *
+     * @param line   line number
+     * @param select boolean
+     */
     public void goToLine(int line,boolean select) {
         gae().goToLine(line,select);
     }
 
     public void goToLineCol(int line, int col) {
         int[] lc = fixLineCol(line,col);
-        gae().setCaretPosition(lc2pos(lc[0], lc[1]));
+        int pos = lc2pos(lc[0], lc[1]);
+        gae().goToPositionAndHighlight(pos,pos);
     }
 
     public void selectLine(int line) {

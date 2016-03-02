@@ -75,7 +75,7 @@ public class FileStructure extends UndecoratedFrame
                 }
                 System.out.println(positionNodes.get(index));
                 System.out.println("going to line: " + positionNodes.get(index).getStartLine() + " index = " + index);
-                EditorWrapper.getInstance().goToLine(positionNodes.get(index).getStartLine());
+                EditorWrapper.getInstance().goToLine(positionNodes.get(index).getStartLine(),false);
             }
         });
     }

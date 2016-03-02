@@ -28,7 +28,6 @@ public class AutoDetailViewer {
         FileLocation fileLocation = new FileLocation(EditorWrapper.getInstance().getLongName());
         FileSystemEntry fileSystemEntry;
         try {
-            System.out.println(fileLocation);
             fileSystemEntry = RealFileSystem.getInstance().getEntry(fileLocation);
             detailViewer.setFile(fileSystemEntry);
         } catch (IOException e) {
