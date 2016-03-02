@@ -124,9 +124,6 @@ public class FileStructure extends UndecoratedFrame
         return classdefNode;
     }
 
-    class DefaultMutableTreeNodeCustom extends DefaultMutableTreeNode {
-}
-
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
