@@ -64,7 +64,9 @@ public class EditorApp {
 
         @Override
         public void keyReleased(KeyEvent e) {
-            KeyReleasedHandler.doOperatorThing(e);
+            if (Settings.getPropertyBoolean("enableDupleOperator")) {
+                KeyReleasedHandler.doOperatorThing(e);
+            }
         }
 
         /**
