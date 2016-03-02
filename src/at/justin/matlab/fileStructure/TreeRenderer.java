@@ -25,6 +25,7 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
     @Override
     public Component getTreeCellRendererComponent(
             JTree jTree, Object value,boolean sel, boolean exp, boolean leaf, int row, boolean hasFocus) {
+        // TODO: row is not the correct index to select from FileStructure PositionNodes, once sth. is collapsed the index is sth other than the row
         Component c = super.getTreeCellRendererComponent(jTree, value, sel, exp, leaf, row, hasFocus);
 
         String node = (String) ((DefaultMutableTreeNode) value).getUserObject();
