@@ -28,6 +28,7 @@ public class Settings {
         // it's internally used, and default should be false;
         defaultProps.put("verbose","false");
         defaultProps.put("autoReloadProps","false");
+        defaultProps.put("enableDoubleOperator","true");
 
         autoReload = getPropertyBoolean("autoReloadProps");
     }
@@ -43,7 +44,7 @@ public class Settings {
         writer.append("# if enabled properties will be reloaded before each getProperty* call\n");
         writer.append("autoReloadProps = ").append(customProps.getProperty("autoReloadProps")).append("\n\n");
         writer.append("# if enabled operators such as ++ will be replaced accordingly. e.g.: \"i++\" -> \"i = i + \"").append("\n");
-        writer.append("enableDoubleOperator = ").append(customProps.getProperty("enableDoubleOperator")).append("\n");
+        writer.append("enableDoubleOperator = ").append(customProps.getProperty("enableDoubleOperator")).append("\n\n");
         writer.append("# background color for the breakpointview as int 0..255\n");
         writer.append("bpColorR = ").append(customProps.getProperty("bpColorR")).append("\n");
         writer.append("bpColorG = ").append(customProps.getProperty("bpColorG")).append("\n");

@@ -26,7 +26,7 @@ public class FileStructure extends UndecoratedFrame
 {
     private static FileStructure INSTANCE;
     private JTree jTree;
-    private ArrayList<MTree.Node> positionNodes = new ArrayList<>(10);
+    private ArrayList<MTree.Node> positionNodes;
 
     public FileStructure()
     {
@@ -82,6 +82,7 @@ public class FileStructure extends UndecoratedFrame
 
 
     public void populate(final EditorWrapper ew) {
+        positionNodes = new ArrayList<>(10);
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(ew.getShortName());
         MTree mTree = MTree.parse(EditorWrapper.getInstance().gae().getText());
         Tree<MTree.Node> classdef = mTree.findAsTree(MTree.NodeType.CLASSDEF);
@@ -89,7 +90,6 @@ public class FileStructure extends UndecoratedFrame
             root.add(forClass(mTree, classdef.getChild(classdef.getRoot(),0)));
         }
         Tree<MTree.Node> section = mTree.findAsTree(MTree.NodeType.CELL_TITLE);
-        System.out.println("adding section " + section.getChildCount(section.getRoot()));
         if (section.getChildCount(section.getRoot()) > 0) {
             for (int i = 0; i < section.getChildCount(section.getRoot()); i++) {
                 MTree.Node node = section.getChild(section.getRoot(),i);
@@ -106,7 +106,6 @@ public class FileStructure extends UndecoratedFrame
         DefaultMutableTreeNode classdefNode = new DefaultMutableTreeNode(NodeUtils.getClassdef(classdef));
         Tree<MTree.Node> methodsTree = mTree.findAsTree(MTree.NodeType.METHODS);
 
-        EditorWrapper ew = EditorWrapper.getInstance();
         positionNodes.add(classdef);
         for (int i = 0; i < methodsTree.getChildCount(methodsTree.getRoot()); i++) {
             MTree.Node method = methodsTree.getChild(methodsTree.getRoot(), i);
@@ -124,6 +123,9 @@ public class FileStructure extends UndecoratedFrame
         }
         return classdefNode;
     }
+
+    class DefaultMutableTreeNodeCustom extends DefaultMutableTreeNode {
+}
 
     @Override
     public void setVisible(boolean visible) {
@@ -146,6 +148,10 @@ public class FileStructure extends UndecoratedFrame
         if (INSTANCE != null) return INSTANCE;
         INSTANCE = new FileStructure();
         return INSTANCE;
+    }
+
+    public ArrayList<MTree.Node> getPositionNodes() {
+        return positionNodes;
     }
 
     void dummy() {
