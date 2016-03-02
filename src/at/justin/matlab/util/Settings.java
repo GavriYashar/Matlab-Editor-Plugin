@@ -43,7 +43,7 @@ public class Settings {
         writer.append("# if enabled properties will be reloaded before each getProperty* call\n");
         writer.append("autoReloadProps = ").append(customProps.getProperty("autoReloadProps")).append("\n\n");
         writer.append("# if enabled operators such as ++ will be replaced accordingly. e.g.: \"i++\" -> \"i = i + \"").append("\n");
-        writer.append("enableDupleOperator = ").append(customProps.getProperty("enableDupleOperator")).append("\n");
+        writer.append("enableDoubleOperator = ").append(customProps.getProperty("enableDoubleOperator")).append("\n");
         writer.append("# background color for the breakpointview as int 0..255\n");
         writer.append("bpColorR = ").append(customProps.getProperty("bpColorR")).append("\n");
         writer.append("bpColorG = ").append(customProps.getProperty("bpColorG")).append("\n");
