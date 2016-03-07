@@ -65,15 +65,4 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
         return c;
     }
 
-    private void addJLabelStringToRenderer(JPanel renderer, String string) {
-        JLabel stringLabel = new JLabel();
-        stringLabel.setText(string);
-        renderer.add(stringLabel);
-    }
-
-    private void addJLabelIconToRenderer(JPanel renderer, Icon icon) {
-        JLabel iconLabel = new JLabel();
-        iconLabel.setIcon(icon);
-        renderer.add(iconLabel);
-    }
 }
