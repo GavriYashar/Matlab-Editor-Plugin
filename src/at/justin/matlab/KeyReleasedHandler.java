@@ -79,7 +79,10 @@ public class KeyReleasedHandler {
         int currentLine = ew.getCurrentLine();
         ew.goToLine(currentLine,true);
         ew.setSelectedTxt(newLine);
-        System.out.println("inserted: " + newLine + " now select [l: " + currentLine + " c: " + (newLine.length() + matcher.group(1).length()) + "]" );
+        if (Settings.getPropertyBoolean("verbose")) {
+            System.out.println(
+                    "inserted: " + newLine + " now select [l: " + currentLine + " c: " + (newLine.length() + matcher.group(1).length()) + "]");
+        }
         ew.goToLineCol(currentLine,newLine.length() + matcher.group(1).length()+2);
     }
 
