@@ -7,7 +7,7 @@ It'll add following features to Matlab, and it's editor
 
 ## Setup
 1. you need Matlab, at least 2014a (i only tried 2014a, 2015a, 2015b)
-2. you need to download the matlabcontrol package here [https://code.google.com/archive/p/matlabcontrol/](https://code.google.com/archive/p/matlabcontrol/)
+2. you need to download the matconsolectl package here [https://github.com/diffplug/matconsolectl](https://github.com/diffplug/matconsolectl)
 3. create a Matlab function <MyKeyReleaseFunction>
     ```Matlab
     function out = MyKeyReleaseFunction(keyEvent)
@@ -30,8 +30,8 @@ It'll add following features to Matlab, and it's editor
 4. start Matlab and run following
     ```Matlab
     clear classes,     clc
-    javaaddpath('<path>\matlabcontrol-4.1.0.jar')
-    javaaddpath('<path>\matlab-editor-plugin_01.jar')
+    javaaddpath('<path>\matconsolectl-4.4.1.jar')
+    javaaddpath('<path>\MEP_1622a.jar')
     at.justin.matlab.util.Settings.loadSettings(<path>/CustomProps.props',...
                                           <path>/DefaultProps.props')
     ea = at.justin.matlab.EditorApp.getInstance();
