@@ -31,6 +31,7 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
         String node = (String) ((DefaultMutableTreeNode) value).getUserObject();
         String nodeL = node.toLowerCase();
 
+
         if (row == 0 && nodeL.startsWith("Script")) {
             setIcon(FileTypeIcon.M.getIcon());
         } else if (row > 0 && row - 1 < FileStructure.getINSTANCE().getPositionNodes().size()) {

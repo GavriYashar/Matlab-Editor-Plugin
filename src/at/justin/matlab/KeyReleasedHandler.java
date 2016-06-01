@@ -2,6 +2,7 @@ package at.justin.matlab;
 
 import at.justin.matlab.clipboardStack.ClipboardStack;
 import at.justin.matlab.fileStructure.FileStructure;
+import at.justin.matlab.util.Settings;
 import com.mathworks.matlab.api.editor.EditorEvent;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
