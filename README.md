@@ -6,7 +6,7 @@ It'll add following features to Matlab, and it's editor
 * ClipboardStack: stores the previous 10 strings copied to clipboard from matlab.
 
 ## Setup
-1. you need Matlab, at least 2014a (i only tried 2014a, 2015a, 2015b)
+1. you need Matlab, at least 2014a (i only tried 2014a, 2015a, 2015b, 2016a)
 2. you need to download the matconsolectl package here [https://github.com/diffplug/matconsolectl](https://github.com/diffplug/matconsolectl)
 3. create a Matlab function <MyKeyReleaseFunction>
     ```Matlab
