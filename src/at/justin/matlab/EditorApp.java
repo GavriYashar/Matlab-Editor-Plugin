@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -38,6 +39,7 @@ public class EditorApp {
     private static EditorApp INSTANCE;
     public static final Color ENABLED = new Color(179, 203, 111);
     public static final Color DISABLED = new Color(240, 240, 240);
+    private static List<Editor> editors = new ArrayList<>();
     private static List<String> mCallbacks = new ArrayList<>();
     private static final AbstractAction copyAction = new AbstractAction() {
         @Override
@@ -128,6 +130,7 @@ public class EditorApp {
             public void editorClosed(Editor editor) {
                 if (Settings.getPropertyBoolean("verbose")) {
                     System.out.println(editor.getLongName() + " has been closed");
+                    editors.remove(editor);
                 }
             }
             @Override
@@ -135,19 +138,6 @@ public class EditorApp {
                 return this.getClass().toString();
             }
         });
-
-        List<Editor> list = getMatlabEditorApplication().getOpenEditors();
-        for (Editor editor : list) {
-            editor.addEventListener(new EditorEventListener() {
-                @Override public void eventOccurred(EditorEvent editorEvent) {
-                    // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
-                    if (editorEvent == EditorEvent.ACTIVATED && Settings.getPropertyBoolean("autoDetailViewer")) {
-                        AutoDetailViewer.doYourThing();
-                    }
-                    setCallbacks();
-                }
-            });
-        }
     }
 
     public Editor getActiveEditor() {
@@ -159,18 +149,36 @@ public class EditorApp {
     }
 
     public void setCallbacks() {
+        List<Editor> openEditors = getMatlabEditorApplication().getOpenEditors();
+        for (final Editor editor : openEditors) {
+            if (editors.contains(editor)) {
+                continue;
+            }
+            editors.add(editor);
+            editor.addEventListener(new EditorEventListener() {
+                @Override public void eventOccurred(EditorEvent editorEvent) {
+                    // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
+                    if (editorEvent == EditorEvent.ACTIVATED && Settings.getPropertyBoolean("autoDetailViewer")) {
+                        AutoDetailViewer.doYourThing();
+                    }
+                }
+            });
+        }
+
         List<Component> list = Matlab.getInstance().getComponents("EditorSyntaxTextPane");
         for (Component component : list) {
             KeyListener[] keyListeners = component.getKeyListeners();
-            if (Settings.getPropertyBoolean("verbose"))
-                System.out.println(keyListeners.length + " keylisteners");
+            if (Settings.getPropertyBoolean("verbose")) {
+                System.out.println("\n" + keyListeners.length + " keylisteners");
+                for (KeyListener keyListener : keyListeners) {
+                    System.out.println(keyListener.toString());
+                }
+            }
 
             for (KeyListener keyListener1 : keyListeners) {
                 if (keyListener1.toString().equals(keyListener.toString())) {
                     component.removeKeyListener(keyListener1);  // this will assure that the new keylistener is added and the previous one is removed
                                                                 // while matlab is still running and the .jar is replaced
-                    if (Settings.getPropertyBoolean("verbose"))
-                        System.out.println("Keylistener akready set for " + component.getClass().toString());
                 }
             }
             component.addKeyListener(keyListener);
