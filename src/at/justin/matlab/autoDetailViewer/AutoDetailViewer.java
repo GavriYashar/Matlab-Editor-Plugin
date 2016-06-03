@@ -25,7 +25,8 @@ public class AutoDetailViewer {
 
     public static void doYourThing() {
         addCheckbox();
-        if (EditorWrapper.getInstance().getLongName().contains("Untitled")) {
+        if (!EditorWrapper.getInstance().getFile().exists()) {
+            // check for "Untitled" as name is not good, since a "Untitled.m" can exist
             return;
         }
         FileLocation fileLocation = new FileLocation(EditorWrapper.getInstance().getLongName());
