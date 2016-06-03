@@ -5,6 +5,7 @@ import com.mathworks.widgets.text.mcode.cell.CellUtils;
 
 import javax.swing.text.BadLocationException;
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,6 +35,10 @@ public class EditorWrapper {
 
     public String getLongName() {
         return gae().getLongName();
+    }
+
+    public File getFile() {
+        return new File(getLongName());
     }
 
     /**
