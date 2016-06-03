@@ -25,6 +25,9 @@ public class AutoDetailViewer {
 
     public static void doYourThing() {
         addCheckbox();
+        if (EditorWrapper.getInstance().getLongName().contains("Untitled")) {
+            return;
+        }
         FileLocation fileLocation = new FileLocation(EditorWrapper.getInstance().getLongName());
         FileSystemEntry fileSystemEntry;
         try {
