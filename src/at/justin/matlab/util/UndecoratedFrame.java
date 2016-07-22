@@ -10,16 +10,13 @@ import java.awt.event.*;
 public class UndecoratedFrame extends JFrame {
     private Point initialClick;
 
-    public final KeyListener closeListener = new KeyListener() {
+    private static final String CLOSE_ACTION = "closeAction";
+    private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
+
+    public final AbstractAction closeAction = new AbstractAction(CLOSE_ACTION) {
         @Override
-        public void keyTyped(KeyEvent e) { }
-        @Override
-        public void keyPressed(KeyEvent e) { }
-        @Override
-        public void keyReleased(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                setVisible(false);
-            }
+        public void actionPerformed(ActionEvent e) {
+            setVisible(false);
         }
     };
 
@@ -48,10 +45,15 @@ public class UndecoratedFrame extends JFrame {
 
     public UndecoratedFrame() {
         setUndecorated(true);
-        addKeyListener(closeListener);
+
+        // escape hiding window
+        String ksStr = KeyStrokeUtil.getKeyText(KeyEvent.VK_ESCAPE,false,false,true);
+        getRootPane().getInputMap(IFW).put(KeyStroke.getKeyStroke(ksStr), CLOSE_ACTION);
+        getRootPane().getActionMap().put(CLOSE_ACTION, closeAction);
+
+        // mouse listeners
         addMouseListener(mlClick);
         addMouseMotionListener(mlMove);
     }
-
 
 }
