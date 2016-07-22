@@ -9,16 +9,18 @@ import at.justin.matlab.util.ScreenSize;
 import at.justin.matlab.util.UndecoratedFrame;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
+import javafx.scene.control.RadioButton;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,9 @@ public class FileStructure extends UndecoratedFrame
     private static FileStructure INSTANCE;
     private JTree jTree;
     private ArrayList<MTree.Node> positionNodes;
+    private EditorWrapper ew;
+    private JRadioButton functions = new JRadioButton("Functions", true);
+    private JRadioButton cells = new JRadioButton("Cells", false);
 
     public FileStructure()
     {
@@ -37,16 +42,55 @@ public class FileStructure extends UndecoratedFrame
         setSize(500, 600);
         setLocation(width/2 - getWidth()/2,height/2 - getHeight()/2);
 
+        getRootPane().setLayout(new BoxLayout(getRootPane(),BoxLayout.PAGE_AXIS));
+        //getRootPane().setBorder(new LineBorder(new Color(255,0, 255),3));
+
+        //creating radio buttons for selecting category
+        JPanel panelRadioButton = createPanelRadioButton();
+        getRootPane().add(panelRadioButton);
+
+        // spacer between radio buttons and tree, and other layout stuff
+        getRootPane().add(Box.createRigidArea(new Dimension(0,5)));
+        getRootPane().add(Box.createVerticalGlue());
+        Dimension minSize = new Dimension(5, 5);
+        Dimension prefSize = getRootPane().getSize();
+        Dimension maxSize = new Dimension(5, Short.MAX_VALUE);
+        getRootPane().add(new Box.Filler(minSize, prefSize, maxSize));
+
         //create the jTree by passing in the root node
         jTree = new JTree();
         jTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        JScrollPane scrollPane = new JScrollPane(jTree);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane scrollPaneTree = new JScrollPane(jTree);
+        scrollPaneTree.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPaneTree.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        // scrollPaneTree.setBorder(new LineBorder(new Color(255,255,0),3));
+        getRootPane().add(scrollPaneTree);
+        scrollPaneTree.setPreferredSize(new Dimension(getWidth(),getHeight()-panelRadioButton.getHeight()));
 
-        add(scrollPane);
-        setResizable(true);
         addListeners();
+    }
+
+    private JPanel createPanelRadioButton() {
+        ButtonGroup bg = new ButtonGroup();
+        bg.add(cells);
+        bg.add(functions);
+        JPanel panelRadioButton = new JPanel();
+        panelRadioButton.setBorder(BorderFactory.createTitledBorder("Type"));
+        panelRadioButton.setLayout(new FlowLayout());
+        panelRadioButton.add(cells);
+        panelRadioButton.add(functions);
+
+        ActionListener actionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (ew != null) populate();
+                // System.out.println("active: " + ((AbstractButton) e.getSource()).getText());
+            }
+        };
+        cells.addActionListener(actionListener);
+        functions.addActionListener(actionListener);
+
+        return panelRadioButton;
     }
 
     private void addListeners() {
@@ -80,8 +124,10 @@ public class FileStructure extends UndecoratedFrame
         });
     }
 
-
-    public void populate(final EditorWrapper ew) {
+    /**
+     * for radio buttons
+     */
+    private void populate() {
         positionNodes = new ArrayList<>(10);
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(ew.getShortName());
         MTree mTree = MTree.parse(EditorWrapper.getInstance().gae().getText());
@@ -89,17 +135,37 @@ public class FileStructure extends UndecoratedFrame
         if (classdef.getChildCount(classdef.getRoot()) > 0) {
             root.add(forClass(mTree, classdef.getChild(classdef.getRoot(),0)));
         }
-        Tree<MTree.Node> section = mTree.findAsTree(MTree.NodeType.CELL_TITLE);
+
+        MTree.NodeType nodeType;
+        if (cells.isSelected()) {
+            nodeType = MTree.NodeType.CELL_TITLE;
+        } else if (functions.isSelected()) {
+            nodeType = MTree.NodeType.FUNCTION;
+        } else {
+            nodeType = MTree.NodeType.CELL_TITLE;
+            cells.setSelected(true);
+        }
+
+        Tree<MTree.Node> section = mTree.findAsTree(nodeType);
         if (section.getChildCount(section.getRoot()) > 0) {
             for (int i = 0; i < section.getChildCount(section.getRoot()); i++) {
                 MTree.Node node = section.getChild(section.getRoot(),i);
-                root.add(new DefaultMutableTreeNode(NodeUtils.getCellName(node)));
+                if (nodeType.equals(MTree.NodeType.CELL_TITLE)) {
+                    root.add(new DefaultMutableTreeNode(NodeUtils.getCellName(node)));
+                } else if (nodeType.equals(MTree.NodeType.FUNCTION)) {
+                    root.add(new DefaultMutableTreeNode(NodeUtils.getFunctionHeader(node,true)));
+                }
                 positionNodes.add(node);
             }
         }
         jTree.setModel(new DefaultTreeModel(root));
         jTree.setCellRenderer(new TreeRenderer());
         expandAll();
+    }
+
+    public void populate(final EditorWrapper ew) {
+        this.ew = ew;
+        populate();
     }
 
     private DefaultMutableTreeNode forClass(MTree mTree, MTree.Node classdef) {
