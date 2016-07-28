@@ -92,9 +92,6 @@ public class ClipboardStack {
     }
 
     private void addListeners() {
-        jList.addKeyListener(undecoratedFrame.closeListener);
-        jTextArea.addKeyListener(undecoratedFrame.closeListener);
-
         undecoratedFrame.addMouseListener(undecoratedFrame.mlClick);
         undecoratedFrame.addMouseMotionListener(undecoratedFrame.mlMove);
         jList.addMouseListener(undecoratedFrame.mlClick);

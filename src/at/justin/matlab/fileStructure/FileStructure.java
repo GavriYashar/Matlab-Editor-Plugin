@@ -94,7 +94,6 @@ public class FileStructure extends UndecoratedFrame
     }
 
     private void addListeners() {
-        jTree.addKeyListener(closeListener);
         jTree.addMouseListener(mlClick);
         jTree.addMouseMotionListener(mlMove);
 
