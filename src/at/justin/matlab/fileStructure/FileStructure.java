@@ -42,20 +42,15 @@ public class FileStructure extends UndecoratedFrame
         setSize(500, 600);
         setLocation(width/2 - getWidth()/2,height/2 - getHeight()/2);
 
-        getRootPane().setLayout(new BoxLayout(getRootPane(),BoxLayout.PAGE_AXIS));
-        //getRootPane().setBorder(new LineBorder(new Color(255,0, 255),3));
+        getRootPane().setLayout(new GridBagLayout());
+        // getRootPane().setBorder(new LineBorder(new Color(255,0, 255),3));
 
         //creating radio buttons for selecting category
         JPanel panelRadioButton = createPanelRadioButton();
-        getRootPane().add(panelRadioButton);
-
-        // spacer between radio buttons and tree, and other layout stuff
-        getRootPane().add(Box.createRigidArea(new Dimension(0,5)));
-        getRootPane().add(Box.createVerticalGlue());
-        Dimension minSize = new Dimension(5, 5);
-        Dimension prefSize = getRootPane().getSize();
-        Dimension maxSize = new Dimension(5, Short.MAX_VALUE);
-        getRootPane().add(new Box.Filler(minSize, prefSize, maxSize));
+        GridBagConstraints cRB = new GridBagConstraints();
+        cRB.gridy = 0; cRB.gridx = 0; cRB.weightx = 1;
+        cRB.fill = GridBagConstraints.BOTH;
+        getRootPane().add(panelRadioButton,cRB);
 
         //create the jTree by passing in the root node
         jTree = new JTree();
@@ -64,8 +59,12 @@ public class FileStructure extends UndecoratedFrame
         scrollPaneTree.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPaneTree.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         // scrollPaneTree.setBorder(new LineBorder(new Color(255,255,0),3));
-        getRootPane().add(scrollPaneTree);
-        scrollPaneTree.setPreferredSize(new Dimension(getWidth(),getHeight()-panelRadioButton.getHeight()));
+
+        GridBagConstraints cSP = new GridBagConstraints();
+        cSP.gridy = 1; cSP.gridx = 0;
+        cSP.weighty = 1-cRB.weighty; cSP.weightx = cRB.weightx;
+        cSP.fill = GridBagConstraints.BOTH;
+        getRootPane().add(scrollPaneTree,cSP);
 
         addListeners();
     }
