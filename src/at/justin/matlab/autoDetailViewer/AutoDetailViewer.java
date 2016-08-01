@@ -15,6 +15,9 @@ import java.awt.Component;
 import java.awt.Container;
 import java.io.IOException;
 
+/**
+ * creates a checkbox on the DetailsViewer Bar in matlab
+ */
 public class AutoDetailViewer {
     public static DetailViewer detailViewer = Explorer.getInstance().getDetailViewer();
     private static JCheckBox jCheckBox = new JCheckBox();
