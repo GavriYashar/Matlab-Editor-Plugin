@@ -49,8 +49,8 @@ public class UndecoratedFrame extends JFrame {
         setUndecorated(true);
 
         // escape hiding window
-        String ksStr = KeyStrokeUtil.getKeyText(KeyEvent.VK_ESCAPE,false,false,true);
-        getRootPane().getInputMap(IFW).put(KeyStroke.getKeyStroke(ksStr), CLOSE_ACTION);
+        KeyStroke ks = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ESCAPE,false,false,true);
+        getRootPane().getInputMap(IFW).put(ks, CLOSE_ACTION);
         getRootPane().getActionMap().put(CLOSE_ACTION, closeAction);
 
         // mouse listeners
