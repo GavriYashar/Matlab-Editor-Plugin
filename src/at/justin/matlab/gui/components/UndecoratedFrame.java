@@ -1,4 +1,6 @@
-package at.justin.matlab.util;
+package at.justin.matlab.gui.components;
+
+import at.justin.matlab.util.KeyStrokeUtil;
 
 import javax.swing.*;
 import java.awt.*;
