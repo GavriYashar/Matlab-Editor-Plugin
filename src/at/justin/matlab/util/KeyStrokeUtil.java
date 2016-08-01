@@ -55,6 +55,14 @@ public class KeyStrokeUtil {
         return s.toString();
     }
 
+    public static KeyStroke getKeyStroke(int keyCode) {
+        return KeyStroke.getKeyStroke(getKeyText(keyCode));
+    }
+
+    public static KeyStroke getKeyStroke(int keyCode, boolean control, boolean shift, boolean released) {
+        return KeyStroke.getKeyStroke(getKeyText(keyCode,control,shift,released));
+    }
+
     public static String getKeyText(int keyCode, boolean control, boolean shift, boolean released) {
         String keyText = getKeyText(keyCode);
 
