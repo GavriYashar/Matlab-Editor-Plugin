@@ -3,16 +3,18 @@ package at.justin.matlab.fileStructure;
 /**
  * Created by Andreas Justin on 2016 - 02 - 24.
  */
+
 import at.justin.matlab.EditorWrapper;
+import at.justin.matlab.gui.components.JTextFieldSearch;
 import at.justin.matlab.util.NodeUtils;
 import at.justin.matlab.util.ScreenSize;
-import at.justin.matlab.util.UndecoratedFrame;
+import at.justin.matlab.gui.components.UndecoratedFrame;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
-import javafx.scene.control.RadioButton;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -23,61 +25,119 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
-public class FileStructure extends UndecoratedFrame
-{
+public class FileStructure extends UndecoratedFrame {
     private static FileStructure INSTANCE;
+
+    private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
+
     private JTree jTree;
     private ArrayList<MTree.Node> positionNodes;
+
+    private String searchExpr = "";
+    private List<String> populatedStrings = new ArrayList<>(30);
+
     private EditorWrapper ew;
+
+    private JTextFieldSearch jtfs;
     private JRadioButton functions = new JRadioButton("Functions", true);
     private JRadioButton cells = new JRadioButton("Cells", false);
+    private JCheckBox regex = new JCheckBox("<html>regex <font color=#8F8F8F>(CTRL + F12)</font></html>");
 
-    public FileStructure()
-    {
+    public FileStructure() {
         int width = ScreenSize.getWidth();
         int height = ScreenSize.getHeight();
 
         setUndecorated(true);
         setSize(500, 600);
-        setLocation(width/2 - getWidth()/2,height/2 - getHeight()/2);
+        setLocation(width / 2 - getWidth() / 2, height / 2 - getHeight() / 2);
 
         getRootPane().setLayout(new GridBagLayout());
-        // getRootPane().setBorder(new LineBorder(new Color(255,0, 255),3));
+
+        // creating search box
+        createSearchField();
+        GridBagConstraints cjtfs = new GridBagConstraints();
+        cjtfs.gridy = 0;
+        cjtfs.gridx = 0;
+        cjtfs.weightx = 1;
+        cjtfs.fill = GridBagConstraints.BOTH;
+        getRootPane().add(jtfs, cjtfs);
 
         //creating radio buttons for selecting category
-        JPanel panelRadioButton = createPanelRadioButton();
-        GridBagConstraints cRB = new GridBagConstraints();
-        cRB.gridy = 0; cRB.gridx = 0; cRB.weightx = 1;
-        cRB.fill = GridBagConstraints.BOTH;
-        getRootPane().add(panelRadioButton,cRB);
+        JPanel panelSettings = createSettingsPanel();
+        GridBagConstraints cSet = new GridBagConstraints();
+        cSet.gridy = 1;
+        cSet.gridx = 0;
+        cSet.weightx = 1;
+        cSet.fill = GridBagConstraints.BOTH;
+        getRootPane().add(panelSettings, cSet);
 
         //create the jTree by passing in the root node
-        jTree = new JTree();
-        jTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        JScrollPane scrollPaneTree = new JScrollPane(jTree);
-        scrollPaneTree.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPaneTree.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        // scrollPaneTree.setBorder(new LineBorder(new Color(255,255,0),3));
-
+        JScrollPane scrollPaneTree = createTree();
         GridBagConstraints cSP = new GridBagConstraints();
-        cSP.gridy = 1; cSP.gridx = 0;
-        cSP.weighty = 1-cRB.weighty; cSP.weightx = cRB.weightx;
+        cSP.gridy = 2;
+        cSP.gridx = 0;
+        cSP.weighty = 1;
+        cSP.weightx = cSet.weightx;
         cSP.fill = GridBagConstraints.BOTH;
-        getRootPane().add(scrollPaneTree,cSP);
-
-        addListeners();
+        getRootPane().add(scrollPaneTree, cSP);
     }
 
-    private JPanel createPanelRadioButton() {
+    private void createSearchField() {
+        jtfs = new JTextFieldSearch(60);
+        jtfs.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                findPattern(jtfs.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                findPattern(jtfs.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+        });
+    }
+
+    private void findPattern(String pattern) {
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(ew.getShortName());
+        Pattern p = Pattern.compile(".*");
+        if (regex.isSelected()) {
+            try {
+                p = Pattern.compile(pattern,Pattern.CASE_INSENSITIVE);
+                jtfs.setForeground(null);
+            } catch (PatternSyntaxException e) {
+                jtfs.setForeground(Color.RED);
+                return;
+            }
+        }
+        for (String str : populatedStrings) {
+            if (!regex.isSelected() && str.toLowerCase().contains(pattern.toLowerCase())) {
+                root.add(new DefaultMutableTreeNode(str));
+            } else if (regex.isSelected() && p.matcher(str).find()) {
+                root.add(new DefaultMutableTreeNode(str));
+            }
+        }
+        jTree.setModel(new DefaultTreeModel(root));
+        jTree.setCellRenderer(new TreeRenderer());
+        expandAll();
+    }
+
+    private JPanel createSettingsPanel() {
         ButtonGroup bg = new ButtonGroup();
         bg.add(cells);
         bg.add(functions);
-        JPanel panelRadioButton = new JPanel();
-        panelRadioButton.setBorder(BorderFactory.createTitledBorder("Type"));
-        panelRadioButton.setLayout(new FlowLayout());
-        panelRadioButton.add(cells);
-        panelRadioButton.add(functions);
+        JPanel panelSettings = new JPanel();
+        panelSettings.setBorder(BorderFactory.createTitledBorder("Type"));
+        panelSettings.setLayout(new FlowLayout());
+        panelSettings.add(cells);
+        panelSettings.add(functions);
+        panelSettings.add(regex);
 
         ActionListener actionListener = new ActionListener() {
             @Override
@@ -89,10 +149,25 @@ public class FileStructure extends UndecoratedFrame
         cells.addActionListener(actionListener);
         functions.addActionListener(actionListener);
 
-        return panelRadioButton;
+        KeyStroke ks = KeyStroke.getKeyStroke("control released F12");
+        getRootPane().getInputMap(IFW).put(ks, "CTRL + F12");
+        getRootPane().getActionMap().put("CTRL + F12", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                regex.setSelected(!regex.isSelected());
+            }
+        });
+
+        return panelSettings;
     }
 
-    private void addListeners() {
+    private JScrollPane createTree() {
+        jTree = new JTree();
+        jTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        JScrollPane scrollPaneTree = new JScrollPane(jTree);
+        scrollPaneTree.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPaneTree.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
         jTree.addMouseListener(mlClick);
         jTree.addMouseMotionListener(mlMove);
 
@@ -108,18 +183,19 @@ public class FileStructure extends UndecoratedFrame
         jTree.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
-                int index = jTree.getMaxSelectionRow()-1;
+                int index = jTree.getMaxSelectionRow() - 1;
                 System.out.println("index = " + index);
                 if (index < 0) index = 0;
-                if (index > positionNodes.size()-1) {
-                    System.out.println("Selected Index " + index+1 + " is greater than size of positions " + positionNodes.size());
+                if (index > positionNodes.size() - 1) {
+                    System.out.println("Selected Index " + index + 1 + " is greater than size of positions " + positionNodes.size());
                     return;
                 }
                 System.out.println(positionNodes.get(index));
                 System.out.println("going to line: " + positionNodes.get(index).getStartLine() + " index = " + index);
-                EditorWrapper.getInstance().goToLine(positionNodes.get(index).getStartLine(),false);
+                EditorWrapper.getInstance().goToLine(positionNodes.get(index).getStartLine(), false);
             }
         });
+        return scrollPaneTree;
     }
 
     /**
@@ -131,7 +207,7 @@ public class FileStructure extends UndecoratedFrame
         MTree mTree = MTree.parse(EditorWrapper.getInstance().gae().getText());
         Tree<MTree.Node> classdef = mTree.findAsTree(MTree.NodeType.CLASSDEF);
         if (classdef.getChildCount(classdef.getRoot()) > 0) {
-            root.add(forClass(mTree, classdef.getChild(classdef.getRoot(),0)));
+            root.add(forClass(mTree, classdef.getChild(classdef.getRoot(), 0)));
         }
 
         MTree.NodeType nodeType;
@@ -147,12 +223,13 @@ public class FileStructure extends UndecoratedFrame
         Tree<MTree.Node> section = mTree.findAsTree(nodeType);
         if (section.getChildCount(section.getRoot()) > 0) {
             for (int i = 0; i < section.getChildCount(section.getRoot()); i++) {
-                MTree.Node node = section.getChild(section.getRoot(),i);
+                MTree.Node node = section.getChild(section.getRoot(), i);
                 if (nodeType.equals(MTree.NodeType.CELL_TITLE)) {
-                    root.add(new DefaultMutableTreeNode(NodeUtils.getCellName(node)));
+                    populatedStrings.add(i, NodeUtils.getCellName(node));
                 } else if (nodeType.equals(MTree.NodeType.FUNCTION)) {
-                    root.add(new DefaultMutableTreeNode(NodeUtils.getFunctionHeader(node,true)));
+                    populatedStrings.add(i, NodeUtils.getFunctionHeader(node, true));
                 }
+                root.add(new DefaultMutableTreeNode(populatedStrings.get(i)));
                 positionNodes.add(node);
             }
         }
@@ -199,6 +276,7 @@ public class FileStructure extends UndecoratedFrame
             jTree.expandRow(i);
         }
     }
+
     public void collapseAll() {
         for (int i = 0; i < jTree.getRowCount(); i++) {
             jTree.collapseRow(i);
