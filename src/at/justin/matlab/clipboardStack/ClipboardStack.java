@@ -2,7 +2,7 @@ package at.justin.matlab.clipboardStack;
 
 import at.justin.matlab.EditorWrapper;
 import at.justin.matlab.util.ScreenSize;
-import at.justin.matlab.util.UndecoratedFrame;
+import at.justin.matlab.gui.components.UndecoratedFrame;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
