@@ -43,6 +43,6 @@ It'll add following features to Matlab, and it's editor
 ### Clipboard Stack
 Accessible via `CTRL + SHIFT + V`. Can be closed by pressing `ESCAPE`, moved around by dragging the frame. A double click will insert selected text from ClipboardStack to matlab 
 ### File Structure
-Accessible via `CTRL + F12`. Can be closed by pressing `ESCAPE`, moved around by dragging the frame. Will show class methods and functions, as well as sections in a tree. Selecting a node will jump to selected function/method/section
+Accessible via `CTRL + F12`. Can be closed by pressing `ESCAPE`, moved around by dragging the frame. Will show class methods and functions, as well as sections in a tree. Selecting a node will jump to selected function/method/section. Searching Sections, and Functions using simple contains or regular expressions (toggleable in focused window via `CTRL + F12`).
 ### Details View
 If active editor is changed, details view will now be automatically synched. This behaviour can be changed if `autoDetailViewer` is set to `false` in `CustomProps.properties`.
