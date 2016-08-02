@@ -3,7 +3,6 @@ package at.justin.matlab;
 import at.justin.matlab.clipboardStack.ClipboardStack;
 import at.justin.matlab.fileStructure.FileStructure;
 import at.justin.matlab.util.Settings;
-import com.mathworks.matlab.api.editor.EditorEvent;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
 import matlabcontrol.MatlabInvocationException;
@@ -21,17 +20,18 @@ public class KeyReleasedHandler {
     private static Pattern opEqPattern = Pattern.compile("[\\+\\-\\*/]");
     private static Pattern opEqLeftArgPattern = Pattern.compile("(\\s*)(.*?)(?=\\s*[\\+\\-\\*/]{2})");
 
-    private KeyReleasedHandler() {}
+    private KeyReleasedHandler() {
+    }
 
 
     public static void doYourThing(KeyEvent e) {
         boolean ctrlFlag = e.isControlDown() | e.getKeyCode() == KeyEvent.VK_CONTROL;
         boolean shiftFlag = e.isShiftDown();
         boolean altFlag = e.isAltDown();
-        boolean ctrlShiftFlag    =  ctrlFlag &&  shiftFlag && !altFlag;
-        boolean ctrlShiftAltFlag =  ctrlFlag &&  shiftFlag &&  altFlag;
-        boolean ctrlOnlyFlag     =  ctrlFlag && !shiftFlag && !altFlag;
-        boolean altOnlyFlag      = !ctrlFlag && !shiftFlag &&  altFlag;
+        boolean ctrlShiftFlag = ctrlFlag && shiftFlag && !altFlag;
+        boolean ctrlShiftAltFlag = ctrlFlag && shiftFlag && altFlag;
+        boolean ctrlOnlyFlag = ctrlFlag && !shiftFlag && !altFlag;
+        boolean altOnlyFlag = !ctrlFlag && !shiftFlag && altFlag;
 
         if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C) {
             ClipboardStack.getInstance().add(EditorWrapper.getInstance().getSelectedTxt());
@@ -63,7 +63,8 @@ public class KeyReleasedHandler {
                 Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "commentTree", commentTree);
                 Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "functionTree", functionTree);
                 Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "methodsTree", methodsTree);
-            } catch (MatlabInvocationException ignored) { }
+            } catch (MatlabInvocationException ignored) {
+            }
         }
     }
 
@@ -78,13 +79,13 @@ public class KeyReleasedHandler {
 
         newLine = matcher.group(2) + " = " + matcher.group(2) + " " + keyStr + "  ";
         int currentLine = ew.getCurrentLine();
-        ew.goToLine(currentLine,true);
+        ew.goToLine(currentLine, true);
         ew.setSelectedTxt(newLine);
         if (Settings.getPropertyBoolean("verbose")) {
             System.out.println(
                     "inserted: " + newLine + " now select [l: " + currentLine + " c: " + (newLine.length() + matcher.group(1).length()) + "]");
         }
-        ew.goToLineCol(currentLine,newLine.length() + matcher.group(1).length()+2);
+        ew.goToLineCol(currentLine, newLine.length() + matcher.group(1).length() + 2);
     }
 
     public static void doOperatorThing(KeyEvent e) {

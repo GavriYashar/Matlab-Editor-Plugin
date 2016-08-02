@@ -35,17 +35,17 @@ import java.util.List;
 
 
 public class EditorApp {
-    private static EditorApp INSTANCE;
     public static final Color ENABLED = new Color(179, 203, 111);
     public static final Color DISABLED = new Color(240, 240, 240);
-    private static List<Editor> editors = new ArrayList<>();
-    private static List<String> mCallbacks = new ArrayList<>();
     private static final AbstractAction copyAction = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("AE: CTRL + C");
         }
     };
+    private static EditorApp INSTANCE;
+    private static List<Editor> editors = new ArrayList<>();
+    private static List<String> mCallbacks = new ArrayList<>();
     private static final KeyListener keyListener = new KeyListener() {
         @Override
         public void keyTyped(KeyEvent e) {
@@ -83,8 +83,16 @@ public class EditorApp {
         }
     };
 
+    public static EditorApp getInstance() {
+        if (INSTANCE != null) return INSTANCE;
+        INSTANCE = new EditorApp();
+        INSTANCE.addListener();
+        return INSTANCE;
+    }
+
     /**
      * adds a matlab function call to the matlab call stack
+     *
      * @param string valid matlab function which can be called
      */
     public void addMatlabCallback(String string) throws Exception {
@@ -99,6 +107,7 @@ public class EditorApp {
     /**
      * user can test if the passed string will actually be called as intended. will call the function w/o passing any
      * input arguments
+     *
      * @param string valid matlab function which can be called
      * @return returns a boolean value true if succeeded
      */
@@ -125,6 +134,7 @@ public class EditorApp {
                 }
                 setCallbacks();
             }
+
             @Override
             public void editorClosed(Editor editor) {
                 if (Settings.getPropertyBoolean("verbose")) {
@@ -132,6 +142,7 @@ public class EditorApp {
                     editors.remove(editor);
                 }
             }
+
             @Override
             public String toString() {
                 return this.getClass().toString();
@@ -155,7 +166,8 @@ public class EditorApp {
             }
             editors.add(editor);
             editor.addEventListener(new EditorEventListener() {
-                @Override public void eventOccurred(EditorEvent editorEvent) {
+                @Override
+                public void eventOccurred(EditorEvent editorEvent) {
                     // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
                     if (editorEvent == EditorEvent.ACTIVATED && Settings.getPropertyBoolean("autoDetailViewer")) {
                         AutoDetailViewer.doYourThing();
@@ -177,7 +189,7 @@ public class EditorApp {
             for (KeyListener keyListener1 : keyListeners) {
                 if (keyListener1.toString().equals(keyListener.toString())) {
                     component.removeKeyListener(keyListener1);  // this will assure that the new keylistener is added and the previous one is removed
-                                                                // while matlab is still running and the .jar is replaced
+                    // while matlab is still running and the .jar is replaced
                 }
             }
             component.addKeyListener(keyListener);
@@ -191,7 +203,7 @@ public class EditorApp {
             int r = Settings.getPropertyInt("bpColorR");
             int g = Settings.getPropertyInt("bpColorG");
             int b = Settings.getPropertyInt("bpColorB");
-            colorizeBreakpointView(new Color(r,g,b));
+            colorizeBreakpointView(new Color(r, g, b));
         } else {
             colorizeBreakpointView(ENABLED);
         }
@@ -210,12 +222,5 @@ public class EditorApp {
             component.removeKeyListener(keyListener);
         }
         colorizeBreakpointView(DISABLED);
-    }
-
-    public static EditorApp getInstance() {
-        if (INSTANCE != null) return INSTANCE;
-        INSTANCE = new EditorApp();
-        INSTANCE.addListener();
-        return INSTANCE;
     }
 }

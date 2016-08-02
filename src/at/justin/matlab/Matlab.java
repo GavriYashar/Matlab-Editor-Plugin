@@ -31,6 +31,7 @@ public class Matlab {
         //Create proxy factory
         MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
                 .setUsePreviouslyControlledSession(true)
+//                .setJavaDebugger(4444)
                 .build();
         MatlabProxyFactory factory = new MatlabProxyFactory(options);
 
@@ -40,12 +41,12 @@ public class Matlab {
                 @Override
                 public void proxyCreated(final MatlabProxy proxy) {
                     proxyHolder.set(proxy);
-                    Matlab.getInstance().setStatusMessage("Connected!");
+                    Matlab.getInstance().setStatusMessage("MEP Connected!");
 
                     proxy.addDisconnectionListener(new MatlabProxy.DisconnectionListener() {
                         @Override
                         public void proxyDisconnected(MatlabProxy proxy) {
-                            Matlab.getInstance().setStatusMessage("Disconnected!");
+                            Matlab.getInstance().setStatusMessage("MEP Disconnected!");
                             proxyHolder.set(null);
                         }
                     });
