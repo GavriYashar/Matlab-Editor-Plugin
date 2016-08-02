@@ -41,7 +41,6 @@ public class JTreeFilter extends JTree {
     }
 
     private Node filter() {
-        System.out.println("filtered text: '" + filterText + "', " + " pattern: '" + pattern + "'");
         Node copiedNode = deepCopyNode(originalRoot);
         Enumeration<Node> e = copiedNode.depthFirstEnumeration();
         List<Node> list = Collections.list(e);
@@ -55,10 +54,8 @@ public class JTreeFilter extends JTree {
             }
             if (!useRegex && !str.toLowerCase().contains(filterText.toLowerCase())) {
                 n.removeFromParent();
-                System.out.println("contains");
             } else if (useRegex && !pattern.matcher(str).find()) {
                 n.removeFromParent();
-                System.out.println("regex");
             }
         }
         return copiedNode;
