@@ -6,6 +6,7 @@ package at.justin.matlab.util;
 
 import at.justin.matlab.EditorWrapper;
 import com.mathworks.widgets.text.mcode.MTree;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public final class NodeUtils {
     private static String concatenateArgs(Iterator iterator) {
         StringBuilder stringBuilder = new StringBuilder();
         while (iterator.hasNext()) {
-            MTree.Node varID = (MTree.Node)iterator.next();
+            MTree.Node varID = (MTree.Node) iterator.next();
             if (stringBuilder.length() > 0) {
                 stringBuilder.append(", ");
             }
@@ -46,6 +47,23 @@ public final class NodeUtils {
                 stringBuilder.append("~");
             } else {
                 stringBuilder.append(varID.getText());
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    public static String getPropertiesHeader(final MTree.Node node) {
+        if (node.getType() != MTree.NodeType.PROPERTIES) {
+            throw new IllegalArgumentException("node has to be a MTree.NodeType.PROPERTIES");
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("properties ");
+
+        List<MTree.Node> propertyNodes = node.getSubtree();
+        // find ATTRIBUTES node
+        for (MTree.Node propertyNextNode : propertyNodes) {
+            if (propertyNextNode.getType() == MTree.NodeType.ATTRIBUTES) {
+                stringBuilder.append(NodeUtils.getTextForNode(propertyNextNode));
             }
         }
         return stringBuilder.toString();
@@ -138,9 +156,24 @@ public final class NodeUtils {
 
     public static String getTextForNode(final MTree.Node node) {
         EditorWrapper ew = EditorWrapper.getInstance();
-        int startPos = ew.lc2pos(node.getStartLine(),node.getStartColumn());
-        int endPos = ew.lc2pos(node.getEndLine(),node.getEndColumn()+1);
-        return ew.getText(startPos,endPos);
+        int startPos = ew.lc2pos(node.getStartLine(), node.getStartColumn());
+        int endPos = ew.lc2pos(node.getEndLine(), node.getEndColumn() + 1);
+        return ew.getText(startPos, endPos);
+    }
+
+    public static String getTextFormattedForNode(final MTree.Node node) {
+        switch (node.getType()) {
+            case CLASSDEF:
+                return NodeUtils.getClassdef(node);
+            case METHODS:
+                return NodeUtils.getMethodHeader(node);
+            case FUNCTION:
+                return NodeUtils.getFunctionHeader(node, true);
+            case CELL_TITLE:
+                return NodeUtils.getCellName(node);
+            default:
+                return node.getText();
+        }
     }
 
 }
