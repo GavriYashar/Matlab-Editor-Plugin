@@ -6,9 +6,10 @@ package at.justin.matlab.fileStructure;
 
 import at.justin.matlab.EditorWrapper;
 import at.justin.matlab.gui.components.JTextFieldSearch;
-import at.justin.matlab.util.NodeUtils;
-import at.justin.matlab.util.ScreenSize;
+import at.justin.matlab.gui.components.JTreeFilter;
 import at.justin.matlab.gui.components.UndecoratedFrame;
+import at.justin.matlab.util.KeyStrokeUtil;
+import at.justin.matlab.util.ScreenSize;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
 
@@ -17,36 +18,38 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 public class FileStructure extends UndecoratedFrame {
-    private static FileStructure INSTANCE;
-
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
-
-    private JTree jTree;
-    private ArrayList<MTree.Node> positionNodes;
-
-    private String searchExpr = "";
-    private List<String> populatedStrings = new ArrayList<>(30);
+    private static FileStructure INSTANCE;
+    private JTreeFilter jTree;
 
     private EditorWrapper ew;
 
-    private JTextFieldSearch jtfs;
+    private JTextFieldSearch jTFS;
     private JRadioButton functions = new JRadioButton("Functions", true);
     private JRadioButton cells = new JRadioButton("Cells", false);
+    private JRadioButton classes = new JRadioButton("Class", false);
     private JCheckBox regex = new JCheckBox("<html>regex <font color=#8F8F8F>(CTRL + F12)</font></html>");
 
     public FileStructure() {
+        setLayout();
+    }
+
+    public static FileStructure getINSTANCE() {
+        if (INSTANCE != null) return INSTANCE;
+        INSTANCE = new FileStructure();
+        return INSTANCE;
+    }
+
+    private void setLayout() {
         int width = ScreenSize.getWidth();
         int height = ScreenSize.getHeight();
 
@@ -63,7 +66,7 @@ public class FileStructure extends UndecoratedFrame {
         cjtfs.gridx = 0;
         cjtfs.weightx = 1;
         cjtfs.fill = GridBagConstraints.BOTH;
-        getRootPane().add(jtfs, cjtfs);
+        getRootPane().add(jTFS, cjtfs);
 
         //creating radio buttons for selecting category
         JPanel panelSettings = createSettingsPanel();
@@ -86,68 +89,73 @@ public class FileStructure extends UndecoratedFrame {
     }
 
     private void createSearchField() {
-        jtfs = new JTextFieldSearch(60);
-        jtfs.getDocument().addDocumentListener(new DocumentListener() {
+        jTFS = new JTextFieldSearch(30);
+        jTFS.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                findPattern(jtfs.getText());
+                findPattern(jTFS.getText());
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                findPattern(jtfs.getText());
+                findPattern(jTFS.getText());
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
             }
         });
-    }
+        KeyStroke ksU = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_UP);
+        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksU, "UP");
+        jTFS.getActionMap().put("UP", new AbstractAction("UP") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = jTree.getMaxSelectionRow(); // single selection
+                if (row < 0) {
+                    jTree.setSelectionRow(0);
+                }
+                jTree.setSelectionRow(row - 1); // zero is top, so up means -1
+            }
+        });
 
-    private void findPattern(String pattern) {
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(ew.getShortName());
-        Pattern p = Pattern.compile(".*");
-        if (regex.isSelected()) {
-            try {
-                p = Pattern.compile(pattern,Pattern.CASE_INSENSITIVE);
-                jtfs.setForeground(null);
-            } catch (PatternSyntaxException e) {
-                jtfs.setForeground(Color.RED);
-                return;
+        KeyStroke ksD = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_DOWN);
+        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksD, "DOWN");
+        jTFS.getActionMap().put("DOWN", new AbstractAction("DOWN") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = jTree.getMaxSelectionRow(); // single selection
+                if (row < 0) {
+                    jTree.setSelectionRow(0);
+                }
+                if (jTree.getRowCount() - 1 > row) {
+                    jTree.setSelectionRow(row + 1); // zero is top, so down means +1
+                }
             }
-        }
-        for (String str : populatedStrings) {
-            if (!regex.isSelected() && str.toLowerCase().contains(pattern.toLowerCase())) {
-                root.add(new DefaultMutableTreeNode(str));
-            } else if (regex.isSelected() && p.matcher(str).find()) {
-                root.add(new DefaultMutableTreeNode(str));
-            }
-        }
-        jTree.setModel(new DefaultTreeModel(root));
-        jTree.setCellRenderer(new TreeRenderer());
-        expandAll();
+        });
     }
 
     private JPanel createSettingsPanel() {
         ButtonGroup bg = new ButtonGroup();
         bg.add(cells);
         bg.add(functions);
+        bg.add(classes);
         JPanel panelSettings = new JPanel();
         panelSettings.setBorder(BorderFactory.createTitledBorder("Type"));
         panelSettings.setLayout(new FlowLayout());
         panelSettings.add(cells);
         panelSettings.add(functions);
+        panelSettings.add(classes);
         panelSettings.add(regex);
 
         ActionListener actionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (ew != null) populate();
-                // System.out.println("active: " + ((AbstractButton) e.getSource()).getText());
             }
         };
         cells.addActionListener(actionListener);
         functions.addActionListener(actionListener);
+        classes.addActionListener(actionListener);
 
         KeyStroke ks = KeyStroke.getKeyStroke("control released F12");
         getRootPane().getInputMap(IFW).put(ks, "CTRL + F12");
@@ -162,7 +170,7 @@ public class FileStructure extends UndecoratedFrame {
     }
 
     private JScrollPane createTree() {
-        jTree = new JTree();
+        jTree = new JTreeFilter();
         jTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         JScrollPane scrollPaneTree = new JScrollPane(jTree);
         scrollPaneTree.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -170,7 +178,6 @@ public class FileStructure extends UndecoratedFrame {
 
         jTree.addMouseListener(mlClick);
         jTree.addMouseMotionListener(mlMove);
-
         jTree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -183,86 +190,117 @@ public class FileStructure extends UndecoratedFrame {
         jTree.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
-                int index = jTree.getMaxSelectionRow() - 1;
-                System.out.println("index = " + index);
-                if (index < 0) index = 0;
-                if (index > positionNodes.size() - 1) {
-                    System.out.println("Selected Index " + index + 1 + " is greater than size of positions " + positionNodes.size());
-                    return;
+                if (jTree.getMaxSelectionRow() < 0) return;
+                Node node = (Node) jTree.getSelectionPath().getLastPathComponent();
+                if (node.hasNode()) {
+                    EditorWrapper.getInstance().goToLine(node.node().getStartLine(), false);
                 }
-                System.out.println(positionNodes.get(index));
-                System.out.println("going to line: " + positionNodes.get(index).getStartLine() + " index = " + index);
-                EditorWrapper.getInstance().goToLine(positionNodes.get(index).getStartLine(), false);
             }
         });
         return scrollPaneTree;
     }
 
-    /**
-     * for radio buttons
-     */
-    private void populate() {
-        positionNodes = new ArrayList<>(10);
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(ew.getShortName());
-        MTree mTree = MTree.parse(EditorWrapper.getInstance().gae().getText());
-        Tree<MTree.Node> classdef = mTree.findAsTree(MTree.NodeType.CLASSDEF);
-        if (classdef.getChildCount(classdef.getRoot()) > 0) {
-            root.add(forClass(mTree, classdef.getChild(classdef.getRoot(), 0)));
+    private void findPattern(String pattern) {
+        if (regex.isSelected()) {
+            try {
+                Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+                jTFS.setForeground(null);
+                setTreeRoot(jTree.filter(p),true);
+            } catch (PatternSyntaxException e) {
+                jTFS.setForeground(Color.RED);
+                return;
+            }
+        } else {
+            setTreeRoot(jTree.filter(pattern),true);
         }
+    }
 
+    /** for radio buttons */
+    private void populate() {
         MTree.NodeType nodeType;
         if (cells.isSelected()) {
             nodeType = MTree.NodeType.CELL_TITLE;
         } else if (functions.isSelected()) {
             nodeType = MTree.NodeType.FUNCTION;
+        } else if (classes.isSelected()) {
+            nodeType = MTree.NodeType.CLASSDEF;
         } else {
             nodeType = MTree.NodeType.CELL_TITLE;
             cells.setSelected(true);
         }
 
-        Tree<MTree.Node> section = mTree.findAsTree(nodeType);
-        if (section.getChildCount(section.getRoot()) > 0) {
-            for (int i = 0; i < section.getChildCount(section.getRoot()); i++) {
-                MTree.Node node = section.getChild(section.getRoot(), i);
-                if (nodeType.equals(MTree.NodeType.CELL_TITLE)) {
-                    populatedStrings.add(i, NodeUtils.getCellName(node));
-                } else if (nodeType.equals(MTree.NodeType.FUNCTION)) {
-                    populatedStrings.add(i, NodeUtils.getFunctionHeader(node, true));
-                }
-                root.add(new DefaultMutableTreeNode(populatedStrings.get(i)));
-                positionNodes.add(node);
+        Node root = new Node(ew.getShortName());
+        MTree mTree = MTree.parse(EditorWrapper.getInstance().gae().getText());
+
+        Tree<MTree.Node> nodeTree = mTree.findAsTree(nodeType);
+        if (nodeType.equals(MTree.NodeType.CLASSDEF) & nodeTree.getChildCount(nodeTree.getRoot()) < 1) {
+            // class was selected, but file is no class
+            nodeType = MTree.NodeType.FUNCTION;
+            nodeTree = mTree.findAsTree(nodeType);
+        } else if (nodeType.equals(MTree.NodeType.CLASSDEF) & nodeTree.getChildCount(nodeTree.getRoot()) > 0) {
+            root.add(forClass(mTree, nodeTree.getChild(nodeTree.getRoot(), 0)));
+            setTreeRoot(root,false);
+            return;
+        }
+        if (nodeTree.getChildCount(nodeTree.getRoot()) > 0) {
+            for (int i = 0; i < nodeTree.getChildCount(nodeTree.getRoot()); i++) {
+                MTree.Node node = nodeTree.getChild(nodeTree.getRoot(), i);
+                root.add(new Node(node));
             }
+            setTreeRoot(root,false);
+        }
+    }
+
+    public void populate(final EditorWrapper ew) {
+        this.ew = ew;
+
+        // (disable/enable) class RadioButton if the current file (is no/is) class
+        MTree mTree = MTree.parse(EditorWrapper.getInstance().gae().getText());
+
+        Tree<MTree.Node> nodeTree = mTree.findAsTree(MTree.NodeType.CLASSDEF);
+        classes.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
+
+        nodeTree = mTree.findAsTree(MTree.NodeType.FUNCTION);
+        functions.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
+
+        nodeTree = mTree.findAsTree(MTree.NodeType.CELL_TITLE);
+        cells.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
+
+        // preferred classes, if only functions or cells are available, radioButtons will be set accordingly
+        classes.setSelected(classes.isEnabled());
+        functions.setSelected(!classes.isEnabled() & !cells.isEnabled() & functions.isEnabled());
+        cells.setSelected(!classes.isEnabled() & cells.isEnabled() & !functions.isEnabled());
+
+        populate();
+    }
+
+    private void setTreeRoot(Node root,boolean filtered) {
+        if (!filtered) {
+            jTree.setOriginalRoot(root);
         }
         jTree.setModel(new DefaultTreeModel(root));
         jTree.setCellRenderer(new TreeRenderer());
         expandAll();
     }
 
-    public void populate(final EditorWrapper ew) {
-        this.ew = ew;
-        populate();
-    }
+    private Node forClass(MTree mTree, MTree.Node classDef) {
+        Node classDefNode = new Node(classDef);
 
-    private DefaultMutableTreeNode forClass(MTree mTree, MTree.Node classdef) {
-        DefaultMutableTreeNode classdefNode = new DefaultMutableTreeNode(NodeUtils.getClassdef(classdef));
+        Tree<MTree.Node> propertyTree = mTree.findAsTree(MTree.NodeType.PROPERTIES);
         Tree<MTree.Node> methodsTree = mTree.findAsTree(MTree.NodeType.METHODS);
-
-        positionNodes.add(classdef);
         for (int i = 0; i < methodsTree.getChildCount(methodsTree.getRoot()); i++) {
             MTree.Node method = methodsTree.getChild(methodsTree.getRoot(), i);
-            DefaultMutableTreeNode methodNode = new DefaultMutableTreeNode(NodeUtils.getMethodHeader(method));
+            Node methodNode = new Node(method);
 
-            positionNodes.add(method);
             List<MTree.Node> methodsSub = method.getSubtree();
             for (MTree.Node methodSub : methodsSub) {
                 if (methodSub.getType() == MTree.NodeType.FUNCTION) {
-                    methodNode.add(new DefaultMutableTreeNode(NodeUtils.getFunctionHeader(methodSub, true)));
-                    positionNodes.add(methodSub);
+                    methodNode.add(new Node(methodSub));
                 }
             }
-            classdefNode.add(methodNode);
+            classDefNode.add(methodNode);
         }
-        return classdefNode;
+        return classDefNode;
     }
 
     @Override
@@ -281,32 +319,5 @@ public class FileStructure extends UndecoratedFrame {
         for (int i = 0; i < jTree.getRowCount(); i++) {
             jTree.collapseRow(i);
         }
-    }
-
-    public static FileStructure getINSTANCE() {
-        if (INSTANCE != null) return INSTANCE;
-        INSTANCE = new FileStructure();
-        return INSTANCE;
-    }
-
-    public ArrayList<MTree.Node> getPositionNodes() {
-        return positionNodes;
-    }
-
-    void dummy() {
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("classdef TEST");
-        DefaultMutableTreeNode sub1 = new DefaultMutableTreeNode("methods (static = true)");
-        DefaultMutableTreeNode sub2 = new DefaultMutableTreeNode("methods (Static = true, private)");
-
-        DefaultMutableTreeNode subsub1 = new DefaultMutableTreeNode("[asdf] = test(obj)");
-
-        sub1.add(subsub1);
-        sub2.add((MutableTreeNode) subsub1.clone());
-        sub2.add((MutableTreeNode) subsub1.clone());
-
-        root.add(sub1);
-        root.add(sub2);
-        jTree.setModel(new DefaultTreeModel(root));
-        jTree.setCellRenderer(new TreeRenderer());
     }
 }
