@@ -7,7 +7,8 @@ It'll add following features to Matlab, and it's editor
 
 ## Setup
 1. you need Matlab, at least 2014a (i only tried from 2014a to 2016b_pre)
-2. you need to download the matconsolectl package here [https://github.com/diffplug/matconsolectl](https://github.com/diffplug/matconsolectl)
+2. you need to download the matconsolectl package here [https://github.com/diffplug/matconsolectl](https://github.com/diffplug/matconsolectl) (is included in download page: All code up to tags/original:
+Copyright (c) 2013, Joshua Kaplan)
 3. create a Matlab function <MyKeyReleaseFunction>
     ```Matlab
     function out = MyKeyReleaseFunction(keyEvent)
