@@ -190,6 +190,7 @@ public class FileStructure extends UndecoratedFrame {
         jTree.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
+                jTFS.requestFocus();
                 if (jTree.getMaxSelectionRow() < 0) return;
                 Node node = (Node) jTree.getSelectionPath().getLastPathComponent();
                 if (node.hasNode()) {
