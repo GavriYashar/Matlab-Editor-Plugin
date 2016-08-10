@@ -258,7 +258,8 @@ public class FileStructure extends UndecoratedFrame {
         MTree mTree = MTree.parse(EditorWrapper.getInstance().gae().getText());
 
         Tree<MTree.Node> nodeTree = mTree.findAsTree(MTree.NodeType.CLASSDEF);
-        classes.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
+        //classes.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
+        classes.setEnabled(false); // performance issue
 
         nodeTree = mTree.findAsTree(MTree.NodeType.FUNCTION);
         functions.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
