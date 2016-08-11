@@ -27,9 +27,9 @@ Copyright (c) 2013, Joshua Kaplan)
     if altOnlyFlag && evnt.getKeyCode == evnt.VK_INSERT
         fprintf('ALT + INSERT\n')
     end
-```
-4. create `DefaultProps.properties` and `CustomProps.properties` in desired folder. Currently available settings
     ```
+4. create `DefaultProps.properties` and `CustomProps.properties` in desired folder. Currently available settings
+    ```Properties
     # enables/disables messages from the at.justin.matlab packages
     verbose = 0
 
