@@ -4,6 +4,7 @@ Welcome to the Matlab-Editor-Plugin wiki!
 It'll add following features to Matlab, and it's editor
 * KeyPressListener: executes custom matlab functions passed in by the user beforehand
 * ClipboardStack: stores the previous 10 strings copied to clipboard from matlab.
+* FileStructure: searching through functions and sections
 
 ## Setup
 1. you need Matlab, at least 2014a (i only tried from 2014a to 2016b_pre)
