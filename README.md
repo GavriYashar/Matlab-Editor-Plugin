@@ -28,14 +28,14 @@ Copyright (c) 2013, Joshua Kaplan)
         fprintf('ALT + INSERT\n')
     end
 ```
-
-4. start Matlab and run following
+4. create `DefaultProps.properties` and `CustomProps.properties` in desired folder.
+5. start Matlab and run following
     ```Matlab
     clear classes,     clc
     javaaddpath('<path>\matconsolectl-4.4.1.jar')
-    javaaddpath('<path>\MEP_1622a.jar')
-    at.justin.matlab.util.Settings.loadSettings(<path>/CustomProps.props',...
-                                          <path>/DefaultProps.props')
+    javaaddpath('<path>\MEP_1632a.jar')
+    at.justin.matlab.util.Settings.loadSettings(<path>/CustomProps.properties',...
+                                          <path>/DefaultProps.properties')
     ea = at.justin.matlab.EditorApp.getInstance();
     ea.setCallbacks();
     ea.addMatlabCallback('MyKeyReleaseFunction');
