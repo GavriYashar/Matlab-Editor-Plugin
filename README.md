@@ -28,7 +28,25 @@ Copyright (c) 2013, Joshua Kaplan)
         fprintf('ALT + INSERT\n')
     end
 ```
-4. create `DefaultProps.properties` and `CustomProps.properties` in desired folder.
+4. create `DefaultProps.properties` and `CustomProps.properties` in desired folder. Currently available settings
+    ```
+    # enables/disables messages from the at.justin.matlab packages
+    verbose = 0
+
+    # if enabled properties will be reloaded before each getProperty* call
+    autoReloadProps = true
+
+    # if enabled operators such as ++ will be replaced accordingly. e.g.: "i++" -> "i = i + "
+    enableDoubleOperator = true
+
+    # background color for the breakpointview as int 0..255
+    bpColorR = 179
+    bpColorG = 203
+    bpColorB = 111
+
+    # Automatically switches file for detailviewer (matlabs internal filestructure
+    autoDetailViewer = true
+    ```
 5. start Matlab and run following
 ```Matlab
     javaaddpath('<path>\matconsolectl-4.4.1.jar')
