@@ -30,8 +30,7 @@ Copyright (c) 2013, Joshua Kaplan)
 ```
 4. create `DefaultProps.properties` and `CustomProps.properties` in desired folder.
 5. start Matlab and run following
-    ```Matlab
-    clear classes,     clc
+```Matlab
     javaaddpath('<path>\matconsolectl-4.4.1.jar')
     javaaddpath('<path>\MEP_1632a.jar')
     at.justin.matlab.util.Settings.loadSettings(<path>/CustomProps.properties',...
