@@ -1,6 +1,8 @@
 package at.justin.matlab;
 
 import com.mathworks.mde.desk.MLDesktop;
+import com.mathworks.mlwidgets.prefs.PrefsChanger;
+import com.mathworks.mlwidgets.prefs.PrefsDialog;
 import com.mathworks.widgets.desk.DTRootPane;
 import matlabcontrol.MatlabConnectionException;
 import matlabcontrol.MatlabProxy;
@@ -8,6 +10,7 @@ import matlabcontrol.MatlabProxyFactory;
 import matlabcontrol.MatlabProxyFactoryOptions;
 
 import java.awt.*;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -25,6 +28,10 @@ public class Matlab {
         INSTANCE = new Matlab();
         INSTANCE.connectToMatlab();
         return INSTANCE;
+    }
+
+    public static void addPrefs() throws ClassNotFoundException {
+        PrefsChanger.addPrefs();
     }
 
     private void connectToMatlab() {
@@ -52,8 +59,8 @@ public class Matlab {
                     });
                 }
             });
+        } catch (MatlabConnectionException ignored) {
         }
-        catch(MatlabConnectionException ignored) { }
     }
 
     public List<Component> getAllComponents() {
@@ -64,7 +71,7 @@ public class Matlab {
         return (DTRootPane) getMlDesktop().getMainFrame().getComponent(0);
     }
 
-    public MLDesktop getMlDesktop(){
+    public MLDesktop getMlDesktop() {
         return MLDesktop.getInstance();
     }
 
@@ -83,7 +90,7 @@ public class Matlab {
     }
 
     public void showClientTitles() {
-        for (String str : getInstance().getMlDesktop().getClientTitles()){
+        for (String str : getInstance().getMlDesktop().getClientTitles()) {
             System.out.println("+----------------------------------------------------------------+");
             System.out.println(str);
             try {
@@ -99,7 +106,7 @@ public class Matlab {
         List<Component> compList = new ArrayList<>();
         for (Component comp : comps) {
             compList.add(comp);
-            if (comp instanceof Container){
+            if (comp instanceof Container) {
                 compList.addAll(getAllComponents((Container) comp));
             }
         }
