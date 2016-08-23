@@ -1,18 +1,17 @@
 package at.justin.matlab.autoDetailViewer;
 
 import at.justin.matlab.EditorWrapper;
-import at.justin.matlab.util.Settings;
+import at.justin.matlab.prefs.Settings;
 import com.mathworks.matlab.api.explorer.FileLocation;
 import com.mathworks.matlab.api.explorer.FileSystemEntry;
 import com.mathworks.mde.explorer.Explorer;
 import com.mathworks.mlwidgets.explorer.DetailViewer;
 import com.mathworks.mlwidgets.explorer.model.realfs.RealFileSystem;
 
-import javax.swing.JCheckBox;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.Component;
-import java.awt.Container;
+import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -24,7 +23,9 @@ public class AutoDetailViewer {
 
     private static boolean added = false;
 
-    static { addCheckbox(); }
+    static {
+        addCheckbox();
+    }
 
     public static void doYourThing() {
         addCheckbox();
@@ -50,10 +51,11 @@ public class AutoDetailViewer {
         jCheckBox.setSelected(Settings.getPropertyBoolean("autoDetailViewer"));
 
         jCheckBox.addChangeListener(new ChangeListener() {
-            @Override public void stateChanged(ChangeEvent e) {
+            @Override
+            public void stateChanged(ChangeEvent e) {
                 String val = "false";
                 if (jCheckBox.isSelected()) val = "true";
-                Settings.customProps.setProperty("autoDetailViewer",val);
+                Settings.customProps.setProperty("autoDetailViewer", val);
                 try {
                     Settings.store();
                 } catch (IOException e1) {
@@ -66,9 +68,11 @@ public class AutoDetailViewer {
     public static JCheckBox getJCheckBox() {
         return jCheckBox;
     }
+
     /**
      * to prevent creating a new checkbox on "clear classes" in matlab, and starting the plugin again.
      * Instead using already created one
+     *
      * @return
      */
     private static void setJCheckBox() {
