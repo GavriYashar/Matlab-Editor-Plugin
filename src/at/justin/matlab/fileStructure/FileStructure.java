@@ -206,13 +206,13 @@ public class FileStructure extends UndecoratedFrame {
             try {
                 Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
                 jTFS.setForeground(null);
-                setTreeRoot(jTree.filter(p),true);
+                setTreeRoot(jTree.filter(p), true);
             } catch (PatternSyntaxException e) {
                 jTFS.setForeground(Color.RED);
                 return;
             }
         } else {
-            setTreeRoot(jTree.filter(pattern),true);
+            setTreeRoot(jTree.filter(pattern), true);
         }
     }
 
@@ -240,7 +240,7 @@ public class FileStructure extends UndecoratedFrame {
             nodeTree = mTree.findAsTree(nodeType);
         } else if (nodeType.equals(MTree.NodeType.CLASSDEF) & nodeTree.getChildCount(nodeTree.getRoot()) > 0) {
             root.add(forClass(mTree, nodeTree.getChild(nodeTree.getRoot(), 0)));
-            setTreeRoot(root,false);
+            setTreeRoot(root, false);
             return;
         }
         if (nodeTree.getChildCount(nodeTree.getRoot()) > 0) {
@@ -248,7 +248,7 @@ public class FileStructure extends UndecoratedFrame {
                 MTree.Node node = nodeTree.getChild(nodeTree.getRoot(), i);
                 root.add(new Node(node));
             }
-            setTreeRoot(root,false);
+            setTreeRoot(root, false);
         }
     }
 
@@ -276,7 +276,7 @@ public class FileStructure extends UndecoratedFrame {
         populate();
     }
 
-    private void setTreeRoot(Node root,boolean filtered) {
+    private void setTreeRoot(Node root, boolean filtered) {
         if (!filtered) {
             jTree.setOriginalRoot(root);
         }
