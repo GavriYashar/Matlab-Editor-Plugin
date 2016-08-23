@@ -24,9 +24,9 @@ public class JPanelInstall extends JPanel {
     private File jarMEPID = null;
     private File jarMCTLID = null;
 
-    private JTextArea jtJAR = null;
-    private JTextArea jtJCP = null;
-    private JTextArea jtID = null;
+    private JTextField jtJAR = null;
+    private JTextField jtJCP = null;
+    private JTextField jtID = null;
 
     public JPanelInstall() {
         setLayout();
@@ -62,7 +62,8 @@ public class JPanelInstall extends JPanel {
             cJARPath.weightx = 1;
             cJARPath.insets = new Insets(0, 10, 0, 10);
             cJARPath.fill = GridBagConstraints.HORIZONTAL;
-            jtJAR = new JTextArea(file.getParent(), 1, 50);
+            jtJAR = new JTextField(file.getParent());
+            jtJAR.setEditable(false);
             add(jtJAR, cJARPath);
             searchJars(file.getParentFile());
 
@@ -101,11 +102,12 @@ public class JPanelInstall extends JPanel {
             File file2 = null;
             try {
                 file2 = Install.getJavaClassPathTxt();
-                jtJCP = new JTextArea(file2.toString());
+                jtJCP = new JTextField(file2.toString());
                 txtJCP = file2;
             } catch (IOException ignored) {
-                jtJCP = new JTextArea();
+                jtJCP = new JTextField();
             }
+            jtJCP.setEditable(false);
             GridBagConstraints cJCPPath = new GridBagConstraints();
             cJCPPath.gridy = 3;
             cJCPPath.gridx = 0;
@@ -131,6 +133,8 @@ public class JPanelInstall extends JPanel {
                         File file = fc.getSelectedFile();
                         if (file.getName().startsWith("javaclasspath")) {
                             txtJCP = file;
+                        } else {
+                            txtJCP = null;
                         }
                         jtJCP.setText(file.toString());
                         checkJCPPath();
@@ -155,7 +159,8 @@ public class JPanelInstall extends JPanel {
             cID.weightx = 1;
             cID.insets = new Insets(0, 10, 0, 10);
             cID.fill = GridBagConstraints.HORIZONTAL;
-            jtID = new JTextArea("", 1, 50);
+            jtID = new JTextField("", 50);
+            jtID.setEditable(false);
             add(jtID, cID);
 
             // jcp browser button
