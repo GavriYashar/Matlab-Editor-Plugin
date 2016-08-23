@@ -61,6 +61,11 @@ public class Matlab {
             });
         } catch (MatlabConnectionException ignored) {
         }
+        try {
+            addPrefs();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<Component> getAllComponents() {
