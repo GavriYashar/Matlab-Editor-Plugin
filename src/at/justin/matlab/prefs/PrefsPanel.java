@@ -22,10 +22,7 @@ public class PrefsPanel extends MJPanel {
     }
 
     public PrefsPanel() {
-        this.setName("MatlabEditorPluginSettings");
-        this.setSize(new Dimension(100, 200));
-
-        this.add(new JLabel("YAY!"));
+        this(new Dimension(100, 200));
     }
 
     public static MJPanel createPrefsPanel() {
@@ -34,6 +31,9 @@ public class PrefsPanel extends MJPanel {
 
     public static void commitPrefsChanges(boolean save) {
         if (save) {
+            System.out.println("saving prefs");
+        } else {
+            System.out.println("cancel prefs");
         }
     }
 }
