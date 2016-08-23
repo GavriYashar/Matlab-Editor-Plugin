@@ -17,7 +17,6 @@ public class JTreeFilter extends JTree {
     private Pattern pattern;
     private boolean useRegex;
     private Node originalRoot;
-    private Node filteredRoot;
 
     public JTreeFilter() {
     }
