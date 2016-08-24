@@ -197,13 +197,8 @@ public class EditorApp {
             // jComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK), "copyAction");
             // jComponent.getActionMap().put("copyAction", copyAction);
         }
-        if (Settings.customProps.containsKey("bpColorR")
-                & Settings.customProps.containsKey("bpColorG")
-                & Settings.customProps.containsKey("bpColorB")) {
-            int r = Settings.getPropertyInt("bpColorR");
-            int g = Settings.getPropertyInt("bpColorG");
-            int b = Settings.getPropertyInt("bpColorB");
-            colorizeBreakpointView(new Color(r, g, b));
+        if (Settings.containsKey("bpColor")) {
+            colorizeBreakpointView(Settings.getPropertyColor("bpColor"));
         } else {
             colorizeBreakpointView(ENABLED);
         }
