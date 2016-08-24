@@ -1,5 +1,6 @@
 package at.justin.matlab.prefs;
 
+import java.awt.*;
 import java.io.*;
 import java.util.Properties;
 
@@ -7,24 +8,25 @@ import java.util.Properties;
  * Created by Andreas Justin on 2016 - 02 - 07.
  */
 public class Settings {
-    public static Properties customProps;
-    public static Properties defaultProps;
-
-    public static String customSettingsName;
-    public static String defaultSettingsName;
-
+    public static boolean DEBUG = false;
+    private static Properties customProps = new Properties();
+    private static Properties defaultProps = new Properties();
+    private static String customSettingsName;
+    private static String defaultSettingsName;
     private static boolean autoReload = false;
+
+    static {
+        defaultProps = load(Settings.class.getResourceAsStream("/properties/DefaultProps.properties"));
+        if (Settings.DEBUG) {
+            defaultProps = load(Settings.class.getResourceAsStream("/properties/DEBUG.properties"));
+        }
+    }
 
     public static void loadSettings(String customSettings, String defaultSettings) {
         customProps = load(customSettings);
         defaultProps = load(defaultSettings);
         customSettingsName = customSettings;
         defaultSettingsName = defaultSettings;
-
-        // it's internally used, and default should be false;
-        defaultProps.put("verbose", "false");
-        defaultProps.put("autoReloadProps", "false");
-        defaultProps.put("enableDoubleOperator", "true");
 
         autoReload = getPropertyBoolean("autoReloadProps");
     }
@@ -65,6 +67,14 @@ public class Settings {
         return "";
     }
 
+    public static void setProperty(String key, String val) {
+        customProps.setProperty(key, val);
+    }
+
+    public static boolean containsKey(String key) {
+        return customProps.containsKey(key) || defaultProps.containsKey(key);
+    }
+
     public static boolean getPropertyBoolean(String key) {
         String value = getProperty(key);
         value = value.toLowerCase();
@@ -81,14 +91,44 @@ public class Settings {
         throw new IllegalArgumentException("Key " + key + " is not found or not boolean");
     }
 
+    public static void setPropertyBoolean(String key, boolean val) {
+        setProperty(key, val ? "true" : "false");
+    }
+
     public static int getPropertyInt(String key) {
         return Integer.parseInt(getProperty(key));
     }
 
+    public static Color getPropertyColor(String key) {
+        String value = getProperty(key);
+        value = value.toUpperCase();
+        if (!value.matches("#[0-9A-F]{6}")) {
+            throw new IllegalArgumentException("Property " + key + " is not a valid hex code #FFFFFF, instead " + value);
+        }
+        return new Color(
+                Integer.parseInt(value.substring(1, 3), 16),
+                Integer.parseInt(value.substring(3, 5), 16),
+                Integer.parseInt(value.substring(5, 7), 16));
+    }
+
+    public static void setPropertyColor(String key, Color color) {
+        String val = "#" + Integer.toHexString(color.getRGB()).substring(2);
+        customProps.setProperty(key, val);
+    }
+
     private static Properties load(String name) {
-        Properties props = new Properties();
         try {
             InputStream in = new FileInputStream(name);
+            return load(in);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new Properties();
+    }
+
+    private static Properties load(InputStream in) {
+        Properties props = new Properties();
+        try {
             props.load(in);
             in.close();
         } catch (Exception e) {
