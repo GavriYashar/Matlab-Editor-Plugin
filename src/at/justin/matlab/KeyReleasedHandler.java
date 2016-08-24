@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class KeyReleasedHandler {
     private static String opEqString;
 
-    private static Pattern opEqPattern = Pattern.compile("[\\+\\-\\*/]");
+    private static Pattern opEqPattern = Pattern.compile("[\\+]"); // "[\\+\\-\\*/]"
     private static Pattern opEqLeftArgPattern = Pattern.compile("(\\s*)(.*?)(?=\\s*[\\+\\-\\*/]{2})");
 
     private KeyReleasedHandler() {
