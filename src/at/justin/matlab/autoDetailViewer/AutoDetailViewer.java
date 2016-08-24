@@ -55,7 +55,7 @@ public class AutoDetailViewer {
             public void stateChanged(ChangeEvent e) {
                 String val = "false";
                 if (jCheckBox.isSelected()) val = "true";
-                Settings.customProps.setProperty("autoDetailViewer", val);
+                Settings.setProperty("autoDetailViewer", val);
                 try {
                     Settings.store();
                 } catch (IOException e1) {
