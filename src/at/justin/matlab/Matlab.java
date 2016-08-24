@@ -2,7 +2,6 @@ package at.justin.matlab;
 
 import com.mathworks.mde.desk.MLDesktop;
 import com.mathworks.mlwidgets.prefs.PrefsChanger;
-import com.mathworks.mlwidgets.prefs.PrefsDialog;
 import com.mathworks.widgets.desk.DTRootPane;
 import matlabcontrol.MatlabConnectionException;
 import matlabcontrol.MatlabProxy;
@@ -10,7 +9,6 @@ import matlabcontrol.MatlabProxyFactory;
 import matlabcontrol.MatlabProxyFactoryOptions;
 
 import java.awt.*;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
