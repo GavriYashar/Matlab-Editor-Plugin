@@ -1,6 +1,6 @@
 package at.justin.matlab.gui.components;
 
-import at.justin.matlab.fileStructure.Node;
+import at.justin.matlab.gui.fileStructure.Node;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import javax.swing.*;

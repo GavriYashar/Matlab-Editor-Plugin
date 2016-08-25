@@ -1,6 +1,7 @@
 package at.justin.matlab.gui.components;
 
 import at.justin.matlab.util.KeyStrokeUtil;
+import at.justin.matlab.util.ScreenSize;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,26 +11,25 @@ import java.awt.event.*;
  * Created by Andreas Justin on 2016 - 02 - 24.
  */
 public class UndecoratedFrame extends JFrame {
-    private Point initialClick;
-
     private static final String CLOSE_ACTION = "closeAction";
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
-
     public final AbstractAction closeAction = new AbstractAction(CLOSE_ACTION) {
         @Override
         public void actionPerformed(ActionEvent e) {
             setVisible(false);
         }
     };
-
+    private Point initialClick;
+    private Dimension initialDimension;
     // drag listener
     public final MouseAdapter mlClick = new MouseAdapter() {
         public void mousePressed(MouseEvent e) {
             initialClick = e.getPoint();
+            initialDimension = getSize();
             getComponentAt(initialClick);
         }
     };
-
+    private boolean resizing = false;
     public final MouseMotionListener mlMove = new MouseMotionAdapter() {
         @Override
         public void mouseDragged(MouseEvent e) {
@@ -39,9 +39,36 @@ public class UndecoratedFrame extends JFrame {
             int xMoved = (thisX + e.getX()) - (thisX + initialClick.x);
             int yMoved = (thisY + e.getY()) - (thisY + initialClick.y);
 
-            int X = thisX + xMoved;
-            int Y = thisY + yMoved;
-            setLocation(X, Y);
+            if (!resizing) {
+                int X = thisX + xMoved;
+                int Y = thisY + yMoved;
+                setLocation(X, Y);
+            } else if (isResizable()) {
+                int newWidth = (int) initialDimension.getWidth() + xMoved;
+                int newHeight = (int) initialDimension.getHeight() + yMoved;
+                Dimension minSize = getMinimumSize();
+                Dimension maxSize = getMaximumSize();
+
+                if (newWidth < minSize.getWidth()) newWidth = (int) minSize.getWidth();
+                if (newWidth > maxSize.getWidth()) newWidth = (int) maxSize.getWidth();
+                if (newHeight < minSize.getHeight()) newHeight = (int) minSize.getHeight();
+                if (newHeight > maxSize.getHeight()) newHeight = (int) maxSize.getHeight();
+
+                setSize(newWidth, newHeight);
+            }
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            if (isResizable()) {
+                if (e.getX() > getWidth() - 10 && e.getY() > getHeight() - 10) {
+                    setCursor(new Cursor(Cursor.SE_RESIZE_CURSOR));
+                    resizing = true;
+                } else {
+                    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    resizing = false;
+                }
+            }
         }
     };
 
@@ -49,13 +76,32 @@ public class UndecoratedFrame extends JFrame {
         setUndecorated(true);
 
         // escape hiding window
-        KeyStroke ks = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ESCAPE,false,false,true);
+        KeyStroke ks = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ESCAPE, false, false, true);
         getRootPane().getInputMap(IFW).put(ks, CLOSE_ACTION);
         getRootPane().getActionMap().put(CLOSE_ACTION, closeAction);
 
         // mouse listeners
         addMouseListener(mlClick);
         addMouseMotionListener(mlMove);
+
+        setMinimumSize(new Dimension(282,200));
+        setMaximumSize(ScreenSize.getSize());
     }
 
+    @Override
+    public void setResizable(boolean resizable) {
+        super.setResizable(resizable);
+        repaint();
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        if (isResizable()) {
+            int[] x = {getWidth() - 10, getWidth(), getWidth(), getWidth() - 10};
+            int[] y = {getHeight(), getHeight() - 10, getHeight(), getHeight()};
+            g.setColor(getBackground().darker());
+            g.fillPolygon(x, y, x.length);
+        }
+    }
 }
