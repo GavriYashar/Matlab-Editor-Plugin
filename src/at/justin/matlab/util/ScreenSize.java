@@ -15,4 +15,8 @@ public class ScreenSize {
     public static int getHeight() {
         return gd.getDisplayMode().getHeight();
     }
+
+    public static Dimension getSize() {
+        return new Dimension(getWidth(), getHeight());
+    }
 }
