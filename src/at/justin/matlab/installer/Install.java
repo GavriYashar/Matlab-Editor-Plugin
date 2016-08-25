@@ -48,6 +48,24 @@ public class Install {
         }
     }
 
+    public static File getDefaultPropertyFile() throws IOException {
+        try {
+            String folder = new File(Install.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent();
+            return new File(folder + "/DefaultProps.properties");
+        } catch (URISyntaxException e) {
+            throw new IOException(e.toString());
+        }
+    }
+
+    public static File getCustomPropertyFile() throws IOException {
+        try {
+            String folder = new File(Install.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent();
+            return new File(folder + "/CustomProps.properties");
+        } catch (URISyntaxException e) {
+            throw new IOException(e.toString());
+        }
+    }
+
     public static File getJavaClassPathTxt() throws IOException {
         File file = new File(System.getProperty("user.home") + "\\Documents\\MATLAB\\javaclasspath.txt");
         if (!file.exists()) {

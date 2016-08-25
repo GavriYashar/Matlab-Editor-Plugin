@@ -312,22 +312,12 @@ public class JPanelInstall extends JPanel {
             return;
         }
         for (String s : lines) {
-            if (!s.startsWith("#") && s.contains("MEP_")) {
-                addMEP = false;
-            }
-            if (!s.startsWith("#") && s.contains("matconsolectl")) {
-                addMCTL = false;
-            }
-            if (!addMCTL && !addMEP) {
-                break;
-            }
+            if (!s.startsWith("#") && s.contains("MEP_")) addMEP = false;
+            if (!s.startsWith("#") && s.contains("matconsolectl")) addMCTL = false;
+            if (!addMCTL && !addMEP) break;
         }
-        if (addMEP) {
-            appendJCPT(jarMEPID);
-        }
-        if (addMCTL) {
-            appendJCPT(jarMCTLID);
-        }
+        if (addMEP) appendJCPT(jarMEPID);
+        if (addMCTL) appendJCPT(jarMCTLID);
         if (!addMCTL && !addMEP) {
             JOptionPane.showMessageDialog(
                     new JFrame(""),
