@@ -19,4 +19,10 @@ public class ScreenSize {
     public static Dimension getSize() {
         return new Dimension(getWidth(), getHeight());
     }
+
+    public static Point getCenter(Dimension size) {
+        int x = getWidth() / 2 - (int) size.getWidth() / 2;
+        int y = getHeight() / 2 - (int) size.getHeight() / 2;
+        return new Point(x, y);
+    }
 }
