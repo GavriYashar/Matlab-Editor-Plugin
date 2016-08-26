@@ -3,6 +3,7 @@ package at.justin.debug;
 import at.justin.matlab.EditorApp;
 import at.justin.matlab.EditorWrapper;
 import at.justin.matlab.Matlab;
+import at.justin.matlab.gui.bookmarks.Bookmarks;
 import com.mathworks.matlab.api.debug.BreakpointMargin;
 import com.mathworks.mde.editor.ExecutionArrowDisplay;
 import com.mathworks.util.tree.Tree;
@@ -28,6 +29,7 @@ public class Debug {
         ExecutionArrowDisplay ead = (ExecutionArrowDisplay) ea.getActiveEditor().getExecutionArrowMargin();
 
         try {
+            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorWrapper", EditorWrapper.getInstance());
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "mTree", mTree);
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "commentTree", commentTree);
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "functionTree", functionTree);
@@ -35,6 +37,7 @@ public class Debug {
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorApp", ea);
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "breakpointMargin", bpm);
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "executionArrowDisplay", ead);
+            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "bookmarks", Bookmarks.getInstance());
         } catch (MatlabInvocationException ignored) {
         }
     }
