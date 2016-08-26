@@ -28,10 +28,6 @@ public class Matlab {
         return INSTANCE;
     }
 
-    public static void addPrefs() throws ClassNotFoundException {
-        PrefsChanger.addPrefs();
-    }
-
     private void connectToMatlab() {
         //Create proxy factory
         MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
@@ -58,11 +54,6 @@ public class Matlab {
                 }
             });
         } catch (MatlabConnectionException ignored) {
-        }
-        try {
-            addPrefs();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 
