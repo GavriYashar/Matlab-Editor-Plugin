@@ -11,3 +11,6 @@ It'll add following features to Matlab, and it's editor
 
 ## Features
 [Follow this link](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features)
+
+## contact
+gavriyashargithub@gmail.com
