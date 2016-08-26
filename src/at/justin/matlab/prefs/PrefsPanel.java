@@ -160,21 +160,31 @@ public class PrefsPanel extends MJPanel {
     private void addMEPProps() {
         JPanel ps = new JPanel();
         ps.setLayout(new GridBagLayout());
-        ps.setBorder(BorderFactory.createTitledBorder("Extend Matlab Editor Functionality"));
+        ps.setBorder(BorderFactory.createTitledBorder("Extend Matlab Editor Functionality 5"));
 
-        String[] properties = {"ExtendedEditor", "EnableAutoBrackets", "EnableOperator", "enableAlphaPhase",
-                "verbose", "autoReloadProps", "enableDoubleOperator", "autoDetailViewer", "bpColor"};
-        PropertyType[] types = {PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.COLOR};
-        String[] helptxt = {Settings.getProperty("ExtendedEditorHELP"),
-                Settings.getProperty("EnableAutoBracketsHELP"),
-                Settings.getProperty("EnableOperatorHELP"),
-                Settings.getProperty("enableAlphaPhaseHELP"),
-                Settings.getProperty("verboseHELP"),
-                Settings.getProperty("autoReloadPropsHELP"),
-                Settings.getProperty("enableDoubleOperatorHELP"),
-                Settings.getProperty("autoDetailViewerHELP"),
-                Settings.getProperty("bpColorHELP")};
+        if (Settings.getPropertyBoolean("isPublicUser")) {
+            String[] properties = {"verbose", "autoReloadProps", "enableDoubleOperator", "autoDetailViewer", "bpColor"};
+            PropertyType[] types = {PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.COLOR};
+            String[] helptxt = { Settings.getProperty("verboseHELP"),
+                    Settings.getProperty("autoReloadPropsHELP"),
+                    Settings.getProperty("enableDoubleOperatorHELP"),
+                    Settings.getProperty("autoDetailViewerHELP"),
+                    Settings.getProperty("bpColorHELP")};
+        } else {
+            String[] properties = {"ExtendedEditor", "EnableAutoBrackets", "EnableOperator", "enableAlphaPhase",
+                    "verbose", "autoReloadProps", "enableDoubleOperator", "autoDetailViewer", "bpColor"};
+            PropertyType[] types = {PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN,
+                    PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.COLOR};
+            String[] helptxt = {Settings.getProperty("ExtendedEditorHELP"),
+                    Settings.getProperty("EnableAutoBracketsHELP"),
+                    Settings.getProperty("EnableOperatorHELP"),
+                    Settings.getProperty("enableAlphaPhaseHELP"),
+                    Settings.getProperty("verboseHELP"),
+                    Settings.getProperty("autoReloadPropsHELP"),
+                    Settings.getProperty("enableDoubleOperatorHELP"),
+                    Settings.getProperty("autoDetailViewerHELP"),
+                    Settings.getProperty("bpColorHELP")};
+        }
 
         addPropsToPanel(ps, properties, types, helptxt);
 
