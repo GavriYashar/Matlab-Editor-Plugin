@@ -27,11 +27,12 @@ public class PrefsPanel extends MJPanel {
     public PrefsPanel(Dimension dim) {
         this.setName("MatlabEditorPluginSettings");
         this.setSize(dim);
+        this.setPreferredSize(dim);
         setLayout();
     }
 
     public PrefsPanel() {
-        this(new Dimension(100, 200));
+        this(new Dimension(800, 600));
     }
 
     public static MJPanel createPrefsPanel() {
