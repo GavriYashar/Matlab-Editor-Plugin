@@ -68,6 +68,7 @@ public class EditorApp {
             if (Settings.getPropertyBoolean("enableDoubleOperator")) {
                 KeyReleasedHandler.doOperatorThing(e);
             }
+            KeyReleasedHandler.doBookmarkThing(e);
         }
 
         /**
