@@ -1,10 +1,14 @@
 package at.justin.matlab;
 
 import at.justin.debug.Debug;
+import at.justin.matlab.gui.bookmarks.Bookmark;
+import at.justin.matlab.gui.bookmarks.Bookmarks;
 import at.justin.matlab.gui.clipboardStack.ClipboardStack;
 import at.justin.matlab.gui.fileStructure.FileStructure;
 import at.justin.matlab.prefs.Settings;
+import at.justin.matlab.util.KeyStrokeUtil;
 
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,7 +24,6 @@ public class KeyReleasedHandler {
 
     private KeyReleasedHandler() {
     }
-
 
     public static void doYourThing(KeyEvent e) {
         boolean ctrlFlag = e.isControlDown() | e.getKeyCode() == KeyEvent.VK_CONTROL;
@@ -79,6 +82,19 @@ public class KeyReleasedHandler {
             opEqString = "";
         }
         operatorEqualsThing(e);
+    }
+
+    public static void doBookmarkThing(KeyEvent e) {
+        boolean ctrlFlag = e.isControlDown() | e.getKeyCode() == KeyEvent.VK_CONTROL;
+        boolean shiftFlag = e.isShiftDown();
+
+        KeyStroke ksC = KeyStrokeUtil.getMatlabKeyStroke(MatlabKeyStrokesCommands.CTRL_PRESSED_F2);
+        KeyStroke ksD = KeyStrokeUtil.getKeyStroke(e.getKeyCode(), ctrlFlag, shiftFlag, false);
+
+        if (ksC.toString().equals(ksD.toString())) {
+            System.out.println("ctrl f2");
+            Bookmarks.getInstance().toggleBookmark(new Bookmark(EditorWrapper.getInstance()));
+        }
     }
 
 }
