@@ -162,20 +162,23 @@ public class PrefsPanel extends MJPanel {
         ps.setLayout(new GridBagLayout());
         ps.setBorder(BorderFactory.createTitledBorder("Extend Matlab Editor Functionality 5"));
 
+        String[] properties;
+        PropertyType[] types;
+        String[] helptxt;
         if (Settings.getPropertyBoolean("isPublicUser")) {
-            String[] properties = {"verbose", "autoReloadProps", "enableDoubleOperator", "autoDetailViewer", "bpColor"};
-            PropertyType[] types = {PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.COLOR};
-            String[] helptxt = { Settings.getProperty("verboseHELP"),
+            properties = new String[]{"verbose", "autoReloadProps", "enableDoubleOperator", "autoDetailViewer", "bpColor"};
+            types = new PropertyType[]{PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.COLOR};
+            helptxt = new String[]{Settings.getProperty("verboseHELP"),
                     Settings.getProperty("autoReloadPropsHELP"),
                     Settings.getProperty("enableDoubleOperatorHELP"),
                     Settings.getProperty("autoDetailViewerHELP"),
                     Settings.getProperty("bpColorHELP")};
         } else {
-            String[] properties = {"ExtendedEditor", "EnableAutoBrackets", "EnableOperator", "enableAlphaPhase",
+            properties = new String[]{"ExtendedEditor", "EnableAutoBrackets", "EnableOperator", "enableAlphaPhase",
                     "verbose", "autoReloadProps", "enableDoubleOperator", "autoDetailViewer", "bpColor"};
-            PropertyType[] types = {PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN,
+            types = new PropertyType[]{PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN,
                     PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.COLOR};
-            String[] helptxt = {Settings.getProperty("ExtendedEditorHELP"),
+            helptxt = new String[]{Settings.getProperty("ExtendedEditorHELP"),
                     Settings.getProperty("EnableAutoBracketsHELP"),
                     Settings.getProperty("EnableOperatorHELP"),
                     Settings.getProperty("enableAlphaPhaseHELP"),
