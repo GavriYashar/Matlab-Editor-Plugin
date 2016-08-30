@@ -1,10 +1,14 @@
 package at.justin.matlab;
 
 import at.justin.debug.Debug;
+import at.justin.matlab.gui.bookmarks.Bookmarks;
+import at.justin.matlab.gui.bookmarks.BookmarksViewer;
 import at.justin.matlab.gui.clipboardStack.ClipboardStack;
 import at.justin.matlab.gui.fileStructure.FileStructure;
 import at.justin.matlab.prefs.Settings;
+import at.justin.matlab.util.KeyStrokeUtil;
 
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,13 +18,12 @@ import java.util.regex.Pattern;
  */
 public class KeyReleasedHandler {
     private static String opEqString;
-
     private static Pattern opEqPattern = Pattern.compile("[\\+]"); // "[\\+\\-\\*/]"
     private static Pattern opEqLeftArgPattern = Pattern.compile("(\\s*)(.*?)(?=\\s*[\\+\\-\\*/]{2})");
+    private static boolean ctrlf2 = false; // if ctrl is released before F2. there may be a better way to fix the keyevent issue
 
     private KeyReleasedHandler() {
     }
-
 
     public static void doYourThing(KeyEvent e) {
         boolean ctrlFlag = e.isControlDown() | e.getKeyCode() == KeyEvent.VK_CONTROL;
@@ -52,6 +55,16 @@ public class KeyReleasedHandler {
         if (Settings.DEBUG && ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_E) {
             Debug.assignObjectsToMatlab();
         }
+
+        KeyStroke ksC = KeyStrokeUtil.getMatlabKeyStroke(MatlabKeyStrokesCommands.CTRL_PRESSED_F2);
+        KeyStroke ksD = KeyStrokeUtil.getKeyStroke(e.getKeyCode(), ctrlFlag, shiftFlag, false);
+        KeyStroke ksDN = KeyStrokeUtil.getKeyStroke(e.getKeyCode(), ctrlFlag, !shiftFlag, false);
+
+        if (ksC.toString().equals(ksD.toString())) {
+            ctrlf2 = true;
+        } else if (ksC.toString().equals(ksDN.toString())) {
+            BookmarksViewer.getInstance().showDialog();
+        }
     }
 
     private static void operatorEqualsThing(KeyEvent e) {
@@ -79,6 +92,23 @@ public class KeyReleasedHandler {
             opEqString = "";
         }
         operatorEqualsThing(e);
+    }
+
+    public static void doBookmarkThing(KeyEvent e) {
+        boolean ctrlFlag = e.isControlDown() | e.getKeyCode() == KeyEvent.VK_CONTROL;
+        boolean shiftFlag = e.isShiftDown();
+
+        KeyStroke ksC = KeyStrokeUtil.getMatlabKeyStroke(MatlabKeyStrokesCommands.CTRL_PRESSED_F2);
+        KeyStroke ksD = KeyStrokeUtil.getKeyStroke(e.getKeyCode(), ctrlFlag, shiftFlag, false);
+
+        if (ksC.toString().equals(ksD.toString()) || ctrlf2) {
+            ctrlf2 = false;
+            Bookmarks.getInstance().setBookmarks(EditorWrapper.getInstance());
+            if (BookmarksViewer.getInstance().isVisible()) {
+                BookmarksViewer.getInstance().updateList();
+            }
+            Bookmarks.getInstance().save();
+        }
     }
 
 }

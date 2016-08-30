@@ -1,5 +1,6 @@
 package at.justin.matlab;
 
+import at.justin.matlab.gui.bookmarks.Bookmarks;
 import at.justin.matlab.installer.Install;
 import at.justin.matlab.prefs.Settings;
 import com.mathworks.mlwidgets.prefs.PrefsChanger;
@@ -18,6 +19,7 @@ public class Start {
         setEditorCallbacks();
         addPrefs();
         MatlabKeyStrokesCommands.setCustomKeyStrokes();
+        Bookmarks.getInstance().load();
     }
 
     public static void start() {
@@ -33,7 +35,7 @@ public class Start {
     }
 
 
-    private static void loadSettings(String defaultFile, String customFile) {
+    private static void loadSettings(String customFile, String defaultFile) {
         Settings.loadSettings(customFile, defaultFile);
     }
 
