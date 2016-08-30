@@ -1,5 +1,7 @@
 package at.justin.matlab.prefs;
 
+import at.justin.matlab.util.ColorUtils;
+
 import java.awt.*;
 import java.io.*;
 import java.util.Properties;
@@ -8,7 +10,7 @@ import java.util.Properties;
  * Created by Andreas Justin on 2016 - 02 - 07.
  */
 public class Settings {
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
     private static Properties customProps = new Properties();
     private static Properties defaultProps = new Properties();
     private static String customSettingsName;
@@ -112,8 +114,7 @@ public class Settings {
     }
 
     public static void setPropertyColor(String key, Color color) {
-        String val = "#" + Integer.toHexString(color.getRGB()).substring(2);
-        customProps.setProperty(key, val);
+        customProps.setProperty(key, ColorUtils.colorToHex(color));
     }
 
     private static Properties load(String name) {
