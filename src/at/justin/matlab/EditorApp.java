@@ -1,6 +1,7 @@
 package at.justin.matlab;
 
 import at.justin.matlab.gui.autoDetailViewer.AutoDetailViewer;
+import at.justin.matlab.gui.bookmarks.Bookmarks;
 import at.justin.matlab.prefs.Settings;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.matlab.api.editor.EditorApplicationListener;
@@ -14,6 +15,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +70,7 @@ public class EditorApp {
             if (Settings.getPropertyBoolean("enableDoubleOperator")) {
                 KeyReleasedHandler.doOperatorThing(e);
             }
+            KeyReleasedHandler.doBookmarkThing(e);
         }
 
         /**
@@ -133,6 +136,7 @@ public class EditorApp {
                     System.out.println(editor.getLongName() + " has been opened");
                 }
                 setCallbacks();
+                Bookmarks.getInstance().setEditorBookmarks(editor);
             }
 
             @Override
@@ -156,6 +160,10 @@ public class EditorApp {
 
     public MatlabEditorApplication getMatlabEditorApplication() {
         return MatlabEditorApplication.getInstance();
+    }
+
+    public Editor openEditor(File file) {
+        return getMatlabEditorApplication().openEditor(file);
     }
 
     public void setCallbacks() {
