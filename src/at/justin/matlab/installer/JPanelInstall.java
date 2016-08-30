@@ -329,7 +329,7 @@ public class JPanelInstall extends JPanel {
 
     private void appendJCPT(File file) {
         try {
-            FileUtils.appendFileText(txtJCP, file.toString());
+            Install.appendJCPT(txtJCP,file.toString());
         } catch (IOException e) {
             JOptionPane.showMessageDialog(
                     new JFrame(""),

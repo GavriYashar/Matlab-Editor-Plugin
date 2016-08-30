@@ -1,5 +1,8 @@
 package at.justin.matlab.installer;
 
+import at.justin.matlab.util.FileUtils;
+import com.mathworks.services.Prefs;
+
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
@@ -67,9 +70,17 @@ public class Install {
     }
 
     public static File getJavaClassPathTxt() throws IOException {
-        File file = new File(System.getProperty("user.home") + "\\Documents\\MATLAB\\javaclasspath.txt");
-        if (!file.exists()) {
-            throw new IOException("no file on " + file);
+        File file = null;
+        for (int i = 0; i < 2; i++) {
+            if (i == 0) {
+                file = new File(System.getProperty("user.home") + "\\Documents\\MATLAB\\javaclasspath.txt");
+            } else if (i == 1) {
+                file = new File(Prefs.getPropertyDirectory() + "\\javaclasspath.txt");
+            }
+            if (file.exists()) break;
+        }
+        if (file == null) {
+            throw new IOException("no javaclasspath.txt found");
         }
         return file;
     }
@@ -81,5 +92,9 @@ public class Install {
         } catch (URISyntaxException e) {
             throw new IOException(e.toString());
         }
+    }
+
+    public static void appendJCPT(File javaClassPathText, String s) throws IOException {
+        FileUtils.appendFileText(javaClassPathText, s);
     }
 }
