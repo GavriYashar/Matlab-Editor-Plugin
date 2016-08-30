@@ -171,6 +171,7 @@ public class Bookmarks {
             in.close();
         } catch (IOException e) {
             e.printStackTrace();
+            return;
         }
 
         // reading props
