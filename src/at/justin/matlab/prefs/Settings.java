@@ -11,6 +11,7 @@ import java.util.Properties;
  */
 public class Settings {
     public static boolean DEBUG = true;
+    private static Properties internalProps = new Properties();
     private static Properties customProps = new Properties();
     private static Properties defaultProps = new Properties();
     private static String customSettingsName;
@@ -18,6 +19,7 @@ public class Settings {
     private static boolean autoReload = false;
 
     static {
+        internalProps = load(Settings.class.getResourceAsStream("/properties/Internal.properties"));
         defaultProps = load(Settings.class.getResourceAsStream("/properties/DefaultProps.properties"));
         if (Settings.DEBUG) {
             defaultProps = load(Settings.class.getResourceAsStream("/properties/DEBUG.properties"));
@@ -40,26 +42,11 @@ public class Settings {
     public static void store() throws IOException {
         Writer writer = new FileWriter(customSettingsName, false);
         customProps.store(writer, "Custom Settings Documentation in DefaultProps.properties");
-        /*
-         *   Writer writer = new FileWriter(customSettingsName,false);
-         *   writer.append("# enables/disables messages from the at.justin.matlab packages\n");
-         *   writer.append("verbose = ").append(customProps.getProperty("verbose")).append("\n\n");
-         *   writer.append("# if enabled properties will be reloaded before each getProperty* call\n");
-         *   writer.append("autoReloadProps = ").append(customProps.getProperty("autoReloadProps")).append("\n\n");
-         *   writer.append("# if enabled operators such as ++ will be replaced accordingly. e.g.: \"i++\" -> \"i = i + \"").append("\n");
-         *   writer.append("enableDoubleOperator = ").append(customProps.getProperty("enableDoubleOperator")).append("\n\n");
-         *   writer.append("# background color for the breakpointview as int 0..255\n");
-         *   writer.append("bpColorR = ").append(customProps.getProperty("bpColorR")).append("\n");
-         *   writer.append("bpColorG = ").append(customProps.getProperty("bpColorG")).append("\n");
-         *   writer.append("bpColorB = ").append(customProps.getProperty("bpColorB")).append("\n\n");
-         *   writer.append("# Automatically switches file for detailviewer (matlabs internal filestructure\n");
-         *   writer.append("autoDetailViewer = ").append(customProps.getProperty("autoDetailViewer")).append("\n");
-         *   writer.flush();
-         *   writer.close();
-         */
     }
 
     public static String getProperty(String key) {
+        if (internalProps.containsKey(key)) return internalProps.getProperty(key);
+
         if (autoReload) {
             autoReload = false;
             loadSettings(customSettingsName, defaultSettingsName);
@@ -70,6 +57,10 @@ public class Settings {
     }
 
     public static void setProperty(String key, String val) {
+        if (internalProps.containsKey(key)) {
+            internalProps.setProperty(key, val);
+            return;
+        }
         customProps.setProperty(key, val);
     }
 
@@ -138,3 +129,23 @@ public class Settings {
         return props;
     }
 }
+
+// Code i don't want to delete for some reason *rolling eyes*
+
+/*
+ *   Writer writer = new FileWriter(customSettingsName,false);
+ *   writer.append("# enables/disables messages from the at.justin.matlab packages\n");
+ *   writer.append("verbose = ").append(customProps.getProperty("verbose")).append("\n\n");
+ *   writer.append("# if enabled properties will be reloaded before each getProperty* call\n");
+ *   writer.append("autoReloadProps = ").append(customProps.getProperty("autoReloadProps")).append("\n\n");
+ *   writer.append("# if enabled operators such as ++ will be replaced accordingly. e.g.: \"i++\" -> \"i = i + \"").append("\n");
+ *   writer.append("enableDoubleOperator = ").append(customProps.getProperty("enableDoubleOperator")).append("\n\n");
+ *   writer.append("# background color for the breakpointview as int 0..255\n");
+ *   writer.append("bpColorR = ").append(customProps.getProperty("bpColorR")).append("\n");
+ *   writer.append("bpColorG = ").append(customProps.getProperty("bpColorG")).append("\n");
+ *   writer.append("bpColorB = ").append(customProps.getProperty("bpColorB")).append("\n\n");
+ *   writer.append("# Automatically switches file for detailviewer (matlabs internal filestructure\n");
+ *   writer.append("autoDetailViewer = ").append(customProps.getProperty("autoDetailViewer")).append("\n");
+ *   writer.flush();
+ *   writer.close();
+ */
