@@ -73,4 +73,13 @@ public class Install {
         }
         return file;
     }
+
+    public static File getBookmarks() throws IOException {
+        try {
+            String folder = new File(Install.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent();
+            return new File(folder + "/Bookmarks.properties");
+        } catch (URISyntaxException e) {
+            throw new IOException(e.toString());
+        }
+    }
 }
