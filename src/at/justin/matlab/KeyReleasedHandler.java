@@ -56,13 +56,16 @@ public class KeyReleasedHandler {
             Debug.assignObjectsToMatlab();
         }
 
+        // bookmark thing
         KeyStroke ksC = KeyStrokeUtil.getMatlabKeyStroke(MatlabKeyStrokesCommands.CTRL_PRESSED_F2);
         KeyStroke ksD = KeyStrokeUtil.getKeyStroke(e.getKeyCode(), ctrlFlag, shiftFlag, false);
         KeyStroke ksDN = KeyStrokeUtil.getKeyStroke(e.getKeyCode(), ctrlFlag, !shiftFlag, false);
 
-        if (ksC.toString().equals(ksD.toString())) {
+        if (ksC != null && ksD != null && ksC.toString().equals(ksD.toString())) {
             ctrlf2 = true;
-        } else if (ksC.toString().equals(ksDN.toString())) {
+            // Doing the bookmarks here is error prone and won't work correctly.
+            // this function ist called every time (afaik) before Matlab's keyRelease
+        } else if (ksC != null && ksDN != null && ksC.toString().equals(ksDN.toString())) {
             BookmarksViewer.getInstance().showDialog();
         }
     }
@@ -95,13 +98,7 @@ public class KeyReleasedHandler {
     }
 
     public static void doBookmarkThing(KeyEvent e) {
-        boolean ctrlFlag = e.isControlDown() | e.getKeyCode() == KeyEvent.VK_CONTROL;
-        boolean shiftFlag = e.isShiftDown();
-
-        KeyStroke ksC = KeyStrokeUtil.getMatlabKeyStroke(MatlabKeyStrokesCommands.CTRL_PRESSED_F2);
-        KeyStroke ksD = KeyStrokeUtil.getKeyStroke(e.getKeyCode(), ctrlFlag, shiftFlag, false);
-
-        if (ksC.toString().equals(ksD.toString()) || ctrlf2) {
+        if (ctrlf2) {
             ctrlf2 = false;
             Bookmarks.getInstance().setBookmarks(EditorWrapper.getInstance());
             if (BookmarksViewer.getInstance().isVisible()) {
