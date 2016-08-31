@@ -132,9 +132,6 @@ public class EditorApp {
         getMatlabEditorApplication().addEditorApplicationListener(new EditorApplicationListener() {
             @Override
             public void editorOpened(Editor editor) {
-                if (Settings.getPropertyBoolean("verbose")) {
-                    System.out.println(editor.getLongName() + " has been opened");
-                }
                 setCallbacks();
                 Bookmarks.getInstance().setEditorBookmarks(editor);
             }
