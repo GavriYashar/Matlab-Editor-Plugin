@@ -21,14 +21,16 @@ public class Settings {
     static {
         internalProps = load(Settings.class.getResourceAsStream("/properties/Internal.properties"));
         defaultProps = load(Settings.class.getResourceAsStream("/properties/DefaultProps.properties"));
-        if (Settings.DEBUG) {
-            defaultProps = load(Settings.class.getResourceAsStream("/properties/DEBUG.properties"));
-        }
     }
 
     public static void loadSettings(String customSettings, String defaultSettings) {
+        if (Settings.DEBUG) {
+            Properties debugProps = load(Settings.class.getResourceAsStream("/properties/DEBUG.properties"));
+            defaultProps = mergeProps(defaultProps, debugProps);
+        }
+
         customProps = load(customSettings);
-        defaultProps = load(defaultSettings);
+        defaultProps = mergeProps(defaultProps, load(defaultSettings));
         customSettingsName = customSettings;
         defaultSettingsName = defaultSettings;
 
@@ -42,6 +44,10 @@ public class Settings {
     public static void store() throws IOException {
         Writer writer = new FileWriter(customSettingsName, false);
         customProps.store(writer, "Custom Settings Documentation in DefaultProps.properties");
+    }
+
+    public static String getCustomSettingsName() {
+        return customSettingsName;
     }
 
     public static String getProperty(String key) {
@@ -127,6 +133,27 @@ public class Settings {
             e.printStackTrace();
         }
         return props;
+    }
+
+    /**
+     * will merge two Properties into a new single Properties.
+     * The second one overwrites properties of the first one if both have the same property key
+     */
+    private static Properties mergeProps(Properties p1, Properties p2) {
+        Properties p = new Properties();
+        Object[] keys1 = p1.keySet().toArray();
+        Object[] keys2 = p2.keySet().toArray();
+        Object[] vals1 = p1.values().toArray();
+        Object[] vals2 = p2.values().toArray();
+
+        for (int i = 0; i < keys1.length; i++) {
+            p.setProperty((String) keys1[i], (String) vals1[i]);
+        }
+        for (int i = 0; i < keys2.length; i++) {
+            p.setProperty((String) keys2[i], (String) vals2[i]);
+        }
+
+        return p;
     }
 }
 
