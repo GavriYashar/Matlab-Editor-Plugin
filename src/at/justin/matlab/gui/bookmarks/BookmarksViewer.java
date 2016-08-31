@@ -2,19 +2,29 @@ package at.justin.matlab.gui.bookmarks;
 
 import at.justin.matlab.gui.components.JTextFieldSearch;
 import at.justin.matlab.gui.components.UndecoratedFrame;
+import at.justin.matlab.util.KeyStrokeUtil;
 import at.justin.matlab.util.ScreenSize;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
 /**
  * Created by Andreas Justin on 2016-08-25.
  */
 public class BookmarksViewer extends UndecoratedFrame {
+
+    private static final String ENTER_ACTION = "enterAction";
+    private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
+    public final AbstractAction enterAction = new AbstractAction(ENTER_ACTION) {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Bookmark bookmark = (Bookmark) jList.getSelectedValue();
+            if (bookmark == null) return;
+            bookmark.goTo();
+        }
+    };
+
     private static BookmarksViewer INSTANCE;
     private static Dimension dimension = new Dimension(600, 400);
     private static Bookmarks bookmarks = Bookmarks.getInstance();
@@ -142,6 +152,10 @@ public class BookmarksViewer extends UndecoratedFrame {
 
             }
         });
+
+        KeyStroke ks = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ENTER);
+        getRootPane().getInputMap(IFW).put(ks, ENTER_ACTION);
+        getRootPane().getActionMap().put(ENTER_ACTION, enterAction);
 
         JScrollPane jsp = new JScrollPane(jList);
         jsp.getVerticalScrollBar().setUnitIncrement(20);

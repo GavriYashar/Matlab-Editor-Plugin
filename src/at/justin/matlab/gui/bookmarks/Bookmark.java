@@ -77,6 +77,14 @@ public class Bookmark {
         return editor;
     }
 
+    public Editor reopen() {
+        // if (editor == null || !editor.isOpen()) {
+        // doesn't jump for some reason if editor isn't opaened again.
+        editor = EditorApp.getInstance().openEditor(new File(longName));
+        // }
+        return editor;
+    }
+
     /**
      * returns true if editor and line of both objects are the same
      *
@@ -97,9 +105,6 @@ public class Bookmark {
     }
 
     public void goTo() {
-        if (editor == null || !editor.isOpen()) {
-            editor = EditorApp.getInstance().openEditor(new File(longName));
-        }
-        editor.goToLine(line, false);
+        reopen().goToLine(line, false);
     }
 }

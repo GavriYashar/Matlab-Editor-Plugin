@@ -129,12 +129,12 @@ public class Bookmarks {
      * @param editor
      */
     public void setEditorBookmarks(Editor editor) {
-        if (!editor.isOpen()) return;
+        if (editor == null || !editor.isOpen()) return;
         List<Integer> lines = new ArrayList<>(10);
         for (Bookmark bookmark : bookmarkList) {
             if (bookmark.equalLongName(editor.getLongName())) lines.add(bookmark.getLineIndex());
         }
-
+        if (lines.size() < 1) return;
         ((ExecutionArrowDisplay) editor.getExecutionArrowMargin()).setBookmarks(lines);
     }
 
@@ -169,6 +169,8 @@ public class Bookmarks {
             InputStream in = new FileInputStream(Install.getBookmarks());
             bookmarks.load(in);
             in.close();
+        } catch (FileNotFoundException ignored) {
+            return;
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -180,7 +182,7 @@ public class Bookmarks {
             String prop = "bookmark_" + i;
             try {
                 bookmarkList.add(new Bookmark(
-                        Integer.parseInt(bookmarks.getProperty(prop + ".Line")),
+                        Integer.parseInt(bookmarks.getProperty(prop + ".Line")) - 1,
                         bookmarks.getProperty(prop + ".Name"),
                         bookmarks.getProperty(prop + ".ShortName"),
                         bookmarks.getProperty(prop + ".LongName")

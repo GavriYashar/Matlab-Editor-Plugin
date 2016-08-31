@@ -9,10 +9,12 @@ import java.awt.*;
  * Created by Andreas Justin on 2016-08-29.
  */
 public class BookmarkCellRenderer extends DefaultListCellRenderer {
-    Color fg;
-    Color bg;
-    Color fgLine;
-    Color fgLink;
+    static Color fg;
+    static Color bg;
+    static Color fgLineNS;
+    static Color fgLinkNS;
+    static Color fgLineS;
+    static Color fgLinkS;
 
     public BookmarkCellRenderer() {
         fg = getForeground();
@@ -20,24 +22,42 @@ public class BookmarkCellRenderer extends DefaultListCellRenderer {
         float[] hsb = Color.RGBtoHSB(bg.getRed(), bg.getGreen(), bg.getBlue(), null);
 
         if (hsb[2] > 0.5) {
-            fgLine = bg.darker().darker();
-            fgLink = bg.darker();
+            fgLineNS = bg.darker().darker();
+            fgLinkNS = bg.darker();
         } else {
-            fgLine = bg.brighter().brighter();
-            fgLink = bg.brighter();
+            fgLineNS = bg.brighter().brighter();
+            fgLinkNS = bg.brighter();
         }
     }
 
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        if (fgLineS == null && isSelected) setSelectionColors(getBackground());
         Bookmark bookmark = (Bookmark) value;
-        setText("<HTML>"
-                + "<font color=" + ColorUtils.colorToHex(fg) + "><b>" + bookmark.getName() + "</b></font> "
-                + "<font color=" + ColorUtils.colorToHex(fg) + ">" + bookmark.getShortName() + "</font>:"
-                + "<font color=" + ColorUtils.colorToHex(fgLine) + ">" + bookmark.getLine() + "</font>"
-                + "<font color=" + ColorUtils.colorToHex(fgLink) + "> (" + bookmark.getLongName() + ")</font>"
-                + "</HTML>");
+        String s = "";
+        s += "<HTML>";
+        s += "<b>" + bookmark.getName() + "</b></font> ";
+        s += bookmark.getShortName() + ":";
+        s += "<font color=" + (isSelected ? ColorUtils.colorToHex(fgLineS) : ColorUtils.colorToHex(fgLineNS)) + ">"
+                + bookmark.getLine() + "</font>";
+        s += "<font color=" + (isSelected ? ColorUtils.colorToHex(fgLinkS) : ColorUtils.colorToHex(fgLinkNS)) + ">"
+                + " (" + bookmark.getLongName() + ") </font > ";
+        s += "</HTML>";
+
+        setText(s);
         return c;
+    }
+
+    private void setSelectionColors(Color bg) {
+        float[] hsb = Color.RGBtoHSB(bg.getRed(), bg.getGreen(), bg.getBlue(), null);
+
+        if (hsb[2] > 0.5) {
+            fgLineS = bg.darker().darker();
+            fgLinkS = bg.darker();
+        } else {
+            fgLineS = bg.brighter().brighter();
+            fgLinkS = bg.brighter();
+        }
     }
 }
