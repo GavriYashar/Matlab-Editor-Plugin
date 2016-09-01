@@ -1,7 +1,7 @@
 package at.justin.matlab.prefs;
 
 import at.justin.matlab.util.ColorUtils;
-import com.mathworks.mlwidgets.prefs.GeneralPrefsPanel;
+import com.mathworks.services.Prefs;
 import com.mathworks.services.settings.Setting;
 import com.mathworks.services.settings.SettingNotFoundException;
 import com.mathworks.services.settings.SettingPath;
@@ -166,6 +166,28 @@ public class Settings {
         SettingPath settingPath = new SettingPath("matlab", "workingfolder");
         Setting setting = new Setting(settingPath, String.class, "CustomFolderPath");
         return (String) setting.get();
+    }
+
+    public static File getJavaClassPathText() throws IOException {
+        File file = null;
+        for (int i = 0; i < 1; i++) {
+            if (i == 0) {
+                file = new File(System.getProperty("user.home") + "\\Documents\\MATLAB\\javaclasspath.txt");
+            } else if (i == 1) {
+                file = new File(Prefs.getPropertyDirectory() + "\\javaclasspath.txt");
+            } else if (i == 2) {
+                try {
+                    file = new File(Settings.getMatlabCustomFolderPath());
+                } catch (SettingNotFoundException | SettingTypeException ignored) {
+                    file = null;
+                }
+                if (file != null && file.exists()) break;
+            }
+            if (file == null) {
+                throw new IOException("no javaclasspath.txt found");
+            }
+        }
+        return file;
     }
 }
 
