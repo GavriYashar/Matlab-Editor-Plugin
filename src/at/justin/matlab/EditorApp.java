@@ -8,12 +8,9 @@ import com.mathworks.matlab.api.editor.EditorApplicationListener;
 import com.mathworks.matlab.api.editor.EditorEvent;
 import com.mathworks.matlab.api.editor.EditorEventListener;
 import com.mathworks.mde.editor.MatlabEditorApplication;
-import matlabcontrol.MatlabInvocationException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.ArrayList;
@@ -39,52 +36,10 @@ import java.util.List;
 public class EditorApp {
     public static final Color ENABLED = new Color(179, 203, 111);
     public static final Color DISABLED = new Color(240, 240, 240);
-    private static final AbstractAction copyAction = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("AE: CTRL + C");
-        }
-    };
+    private static final int WF = JComponent.WHEN_FOCUSED;
     private static EditorApp INSTANCE;
     private static List<Editor> editors = new ArrayList<>();
-    private static List<String> mCallbacks = new ArrayList<>();
-    private static final KeyListener keyListener = new KeyListener() {
-        @Override
-        public void keyTyped(KeyEvent e) {
-        }
 
-        @Override
-        public void keyPressed(KeyEvent e) {
-            for (String s : mCallbacks) {
-                try {
-                    Matlab.getInstance().proxyHolder.get().feval(s, e);
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-            }
-            KeyReleasedHandler.doYourThing(e);
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            if (Settings.getPropertyBoolean("enableDoubleOperator")) {
-                KeyReleasedHandler.doOperatorThing(e);
-            }
-            KeyReleasedHandler.doBookmarkThing(e);
-        }
-
-        /**
-         * In matlab clear classes will remove all instances of EditorApp but not the keyListener
-         * to prevent creating and adding new keyListeners to editor objects while they still have one.
-         *
-         * This is a quick and dirty way to prevent it. TODO: fix me
-         * @return class string
-         */
-        @Override
-        public String toString() {
-            return this.getClass().toString();
-        }
-    };
 
     public static EditorApp getInstance() {
         if (INSTANCE != null) return INSTANCE;
@@ -93,35 +48,8 @@ public class EditorApp {
         return INSTANCE;
     }
 
-    /**
-     * adds a matlab function call to the matlab call stack
-     *
-     * @param string valid matlab function which can be called
-     */
     public void addMatlabCallback(String string) throws Exception {
-        if (!testMatlabCallback(string)) {
-            throw new Exception("'" + string + "' is not a valid function");
-        }
-        if (!mCallbacks.contains(string))
-            mCallbacks.add(string);
-        else System.out.println("'" + string + "' already added");
-    }
-
-    /**
-     * user can test if the passed string will actually be called as intended. will call the function w/o passing any
-     * input arguments
-     *
-     * @param string valid matlab function which can be called
-     * @return returns a boolean value true if succeeded
-     */
-    public boolean testMatlabCallback(String string) {
-        try {
-            Matlab.getInstance().proxyHolder.get().feval(string);
-            return true;
-        } catch (MatlabInvocationException e) {
-            e.printStackTrace();
-        }
-        return false;
+        KeyReleasedHandler.addMatlabCallback(string);
     }
 
     /**
@@ -192,15 +120,12 @@ public class EditorApp {
             }
 
             for (KeyListener keyListener1 : keyListeners) {
-                if (keyListener1.toString().equals(keyListener.toString())) {
+                if (keyListener1.toString().equals(KeyReleasedHandler.getKeyListener().toString())) {
                     component.removeKeyListener(keyListener1);  // this will assure that the new keylistener is added and the previous one is removed
                     // while matlab is still running and the .jar is replaced
                 }
             }
-            component.addKeyListener(keyListener);
-            // JComponent jComponent = (JComponent) component;
-            // jComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK), "copyAction");
-            // jComponent.getActionMap().put("copyAction", copyAction);
+            component.addKeyListener(KeyReleasedHandler.getKeyListener());
         }
         if (Settings.containsKey("bpColor")) {
             colorizeBreakpointView(Settings.getPropertyColor("bpColor"));
@@ -209,18 +134,88 @@ public class EditorApp {
         }
     }
 
+    public void removeCallbacks() {
+        List<Component> list = Matlab.getInstance().getComponents("EditorSyntaxTextPane");
+        for (Component component : list) {
+            component.removeKeyListener(KeyReleasedHandler.getKeyListener());
+        }
+        colorizeBreakpointView(DISABLED);
+    }
+
     public void colorizeBreakpointView(Color color) {
         List<Component> list = Matlab.getInstance().getComponents("BreakpointView$2");
         for (Component component : list) {
             component.setBackground(color);
         }
     }
-
-    public void removeCallbacks() {
-        List<Component> list = Matlab.getInstance().getComponents("EditorSyntaxTextPane");
-        for (Component component : list) {
-            component.removeKeyListener(keyListener);
-        }
-        colorizeBreakpointView(DISABLED);
-    }
 }
+
+//////////////////////////////////////////
+// UNUSED CODE
+
+// private static KeyStroke KS_FILESTRUCTURE = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_F12, true, false, false);
+// private static KeyStroke KS_COPYCLIPBOARD = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_C, true, false, false);
+// private static KeyStroke KS_SHOWCLIPBOARD = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_V, true, true, false);
+// private static KeyStroke KS_DEBUG = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_E, true, true, false);
+// private static KeyStroke KS_BOOKMARK = KeyStrokeUtil.getMatlabKeyStroke(MatlabKeyStrokesCommands.CTRL_PRESSED_F2);
+// private static KeyStroke KS_SHOWBOOKMARK = KeyStrokeUtil.getKeyStroke(
+//         KS_BOOKMARK.getKeyCode(),
+//         (KS_BOOKMARK.getModifiers() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK,
+//         (KS_BOOKMARK.getModifiers() & KeyEvent.SHIFT_DOWN_MASK) != KeyEvent.SHIFT_DOWN_MASK,
+//         false);
+
+// JComponent jComponent = (JComponent) component;
+// jComponent.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK), "copyAction");
+// jComponent.getActionMap().put("copyAction", copyAction);
+
+// addKeyStrokes((EditorSyntaxTextPane) component);
+// private void addKeyStrokes(EditorSyntaxTextPane editorSyntaxTextPane) {
+//     editorSyntaxTextPane.getInputMap(WF).put(KS_COPYCLIPBOARD, "MEP_CopyClipBoard");
+//     editorSyntaxTextPane.getActionMap().put("MEP_CopyClipBoard", new AbstractAction("MEP_CopyClipBoard") {
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+//             KeyReleasedHandler.doCopyAction(e);
+//             System.out.println("MEP_CopyClipBoard");
+//         }
+//     });
+//     editorSyntaxTextPane.getInputMap(WF).put(KS_SHOWCLIPBOARD, "MEP_ShowCopyClipBoard");
+//     editorSyntaxTextPane.getActionMap().put("MEP_ShowCopyClipBoard", new AbstractAction("MEP_ShowCopyClipBoard") {
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+//             KeyReleasedHandler.showClipboardStack(e);
+//             System.out.println("MEP_ShowCopyClipBoard");
+//         }
+//     });
+//     editorSyntaxTextPane.getInputMap(WF).put(KS_FILESTRUCTURE, "MEP_ShowFileStructure");
+//     editorSyntaxTextPane.getActionMap().put("MEP_ShowFileStructure", new AbstractAction("MEP_ShowFileStructure") {
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+//             KeyReleasedHandler.showFileStructure(e);
+//             System.out.println("MEP_ShowFileStructure");
+//         }
+//     });
+//     editorSyntaxTextPane.getInputMap(WF).put(KS_DEBUG, "MEP_DEBUG");
+//     editorSyntaxTextPane.getActionMap().put("MEP_DEBUG", new AbstractAction("MEP_DEBUG") {
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+//             System.out.println("MEP_DEBUG");
+//             KeyReleasedHandler.DEBUG(e);
+//         }
+//     });
+// for some reason bookmakrs don't work if editor is opened, while the others do
+// editorSyntaxTextPane.getInputMap(WF).put(KS_BOOKMARK, "MEP_BOOKMARK");
+// editorSyntaxTextPane.getActionMap().put("MEP_BOOKMARK", new AbstractAction("MEP_BOOKMARK") {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+//         System.out.println("MEP_BOOKMARK");
+//     }
+// });
+// editorSyntaxTextPane.getInputMap(WF).put(KS_SHOWBOOKMARK, "MEP_SHOWBOOKMARKS");
+// editorSyntaxTextPane.getActionMap().put("MEP_SHOWBOOKMARKS", new AbstractAction("MEP_SHOWBOOKMARKS") {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+//         System.out.println("MEP_SHOWBOOKMARKS");
+//         KeyReleasedHandler.showBookmarksViewer(e);
+//     }
+// });
+// }
