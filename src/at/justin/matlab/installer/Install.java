@@ -1,8 +1,6 @@
 package at.justin.matlab.installer;
 
 import at.justin.matlab.util.FileUtils;
-import at.justin.matlab.prefs.Settings;
-import com.mathworks.services.Prefs;
 
 import javax.swing.*;
 import java.io.File;
