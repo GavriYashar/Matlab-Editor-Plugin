@@ -3,8 +3,6 @@ package at.justin.matlab.installer;
 import at.justin.matlab.util.FileUtils;
 import at.justin.matlab.prefs.Settings;
 import com.mathworks.services.Prefs;
-import com.mathworks.services.settings.SettingNotFoundException;
-import com.mathworks.services.settings.SettingTypeException;
 
 import javax.swing.*;
 import java.io.File;
@@ -74,17 +72,9 @@ public class Install {
 
     public static File getJavaClassPathTxt() throws IOException {
         File file = null;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 1; i++) {
             if (i == 0) {
                 file = new File(System.getProperty("user.home") + "\\Documents\\MATLAB\\javaclasspath.txt");
-            } else if (i == 1) {
-                file = new File(Prefs.getPropertyDirectory() + "\\javaclasspath.txt");
-            } else if (i == 2) {
-                try {
-                    file = new File(Settings.getMatlabCustomFolderPath());
-                } catch (SettingNotFoundException | SettingTypeException ignored) {
-                    file = null;
-                }
             }
             if (file != null && file.exists()) break;
         }
