@@ -13,13 +13,9 @@ import java.io.File;
  * Single bookmark with link to editor and line
  */
 public class Bookmark {
-    /**
-     * lineIndex (0...X-1) lineIndex + 1;
-     */
+    /** lineIndex (0...X-1) lineIndex + 1; */
     private int line;
-    /**
-     * line (1...X) - 1;
-     */
+    /** line (1...X) - 1; */
     private int lineIndex;
     private transient Editor editor;
     private String name;
@@ -80,13 +76,17 @@ public class Bookmark {
     }
 
     public Editor reopen() {
-        // if (editor == null || !editor.isOpen()) {
-        // doesn't jump for some reason if editor isn't opaened again.
-        editor = EditorApp.getInstance().openEditor(new File(longName));
-        EditorViewClient editorViewClient = (EditorViewClient) editor.getComponent();
-        editorViewClient.getEditorView().getActionManager().getAction(EditorAction.NEXT_BOOKMARK).setEnabled(true);
-        editorViewClient.getEditorView().getActionManager().getAction(EditorAction.PREVIOUS_BOOKMARK).setEnabled(true);
-        // }
+        if (editor == null || !editor.isOpen()) {
+            editor = EditorApp.getInstance().openEditor(new File(longName));
+            EditorViewClient editorViewClient = (EditorViewClient) editor.getComponent();
+
+            // otherwise "F2" wouldn't jump to bookmark after reopening, unless a bookmark has been toggled
+            editorViewClient.getEditorView().getActionManager().getAction(EditorAction.NEXT_BOOKMARK).setEnabled(true);
+            editorViewClient.getEditorView().getActionManager().getAction(EditorAction.PREVIOUS_BOOKMARK).setEnabled(true);
+        } else {
+            // just bring to front if already open
+            editor.bringToFront();
+        }
         return editor;
     }
 
