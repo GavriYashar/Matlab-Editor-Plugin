@@ -1,7 +1,7 @@
 package at.justin.matlab.util;
 
-import at.justin.matlab.MatlabKeyStrokesCommands;
 import at.justin.matlab.EditorWrapper;
+import at.justin.matlab.MatlabKeyStrokesCommands;
 
 import javax.swing.*;
 import java.awt.event.InputEvent;
@@ -37,25 +37,25 @@ public class KeyStrokeUtil {
         if (key == null) return "";
         StringBuilder s = new StringBuilder(30);
         int m = key.getModifiers();
-        if ( (m & (InputEvent.CTRL_DOWN_MASK | InputEvent.CTRL_MASK)) != 0 ) {
+        if ((m & (InputEvent.CTRL_DOWN_MASK | InputEvent.CTRL_MASK)) != 0) {
             s.append("Ctrl + ");
         }
-        if ( (m & (InputEvent.META_DOWN_MASK | InputEvent.META_MASK)) != 0 ) {
+        if ((m & (InputEvent.META_DOWN_MASK | InputEvent.META_MASK)) != 0) {
             s.append("Meta + ");
         }
-        if ( (m & (InputEvent.ALT_DOWN_MASK | InputEvent.ALT_MASK)) != 0 ) {
+        if ((m & (InputEvent.ALT_DOWN_MASK | InputEvent.ALT_MASK)) != 0) {
             s.append("Alt + ");
         }
-        if ( (m & (InputEvent.SHIFT_DOWN_MASK | InputEvent.SHIFT_MASK)) != 0 ) {
+        if ((m & (InputEvent.SHIFT_DOWN_MASK | InputEvent.SHIFT_MASK)) != 0) {
             s.append("Shift + ");
         }
-        if ( (m & (InputEvent.BUTTON1_DOWN_MASK | InputEvent.BUTTON1_MASK)) != 0 ) {
+        if ((m & (InputEvent.BUTTON1_DOWN_MASK | InputEvent.BUTTON1_MASK)) != 0) {
             s.append("LeftMouse + ");
         }
-        if ( (m & (InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON2_MASK)) != 0 ) {
+        if ((m & (InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON2_MASK)) != 0) {
             s.append("RightMouse + ");
         }
-        if ( (m & (InputEvent.BUTTON3_DOWN_MASK | InputEvent.BUTTON3_MASK)) != 0 ) {
+        if ((m & (InputEvent.BUTTON3_DOWN_MASK | InputEvent.BUTTON3_MASK)) != 0) {
             s.append("MiddleMouse + ");
         }
         switch (key.getKeyEventType()) {
@@ -94,7 +94,7 @@ public class KeyStrokeUtil {
     }
 
     public static KeyStroke getKeyStroke(int keyCode, boolean control, boolean shift, boolean released) {
-        return KeyStroke.getKeyStroke(getKeyText(keyCode,control,shift,released));
+        return KeyStroke.getKeyStroke(getKeyText(keyCode, control, shift, released));
     }
 
     public static String getKeyText(int keyCode, boolean control, boolean shift, boolean released) {
@@ -110,5 +110,28 @@ public class KeyStrokeUtil {
 
     public static String getKeyText(int keyCode) {
         return KeyStrokeE.getKeyStrokeE(keyCode).getCommand();
+    }
+
+    public static int keyEventModifiersToKeyStrokeModifiers(int modifiers) {
+        int shift = InputEvent.SHIFT_DOWN_MASK | InputEvent.SHIFT_MASK;
+        int ctrl = InputEvent.CTRL_DOWN_MASK | InputEvent.CTRL_MASK;
+        int alt = InputEvent.ALT_DOWN_MASK | InputEvent.ALT_MASK;
+        switch (modifiers) {
+            case 1:
+                return shift;
+            case 2:
+                return ctrl;
+            case 3:
+                return shift | ctrl;
+            case 8:
+                return alt;
+            case 9:
+                return shift | alt;
+            case 10:
+                return ctrl | alt;
+            case 11:
+                return ctrl | shift | alt;
+        }
+        return 0;
     }
 }
