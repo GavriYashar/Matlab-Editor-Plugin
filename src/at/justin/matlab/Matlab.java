@@ -1,7 +1,7 @@
 package at.justin.matlab;
 
+import at.justin.matlab.util.ComponentUtil;
 import com.mathworks.mde.desk.MLDesktop;
-import com.mathworks.mlwidgets.prefs.PrefsChanger;
 import com.mathworks.widgets.desk.DTRootPane;
 import matlabcontrol.MatlabConnectionException;
 import matlabcontrol.MatlabProxy;
@@ -57,10 +57,6 @@ public class Matlab {
         }
     }
 
-    public List<Component> getAllComponents() {
-        return getAllComponents(getRootPane());
-    }
-
     public DTRootPane getRootPane() {
         return (DTRootPane) getMlDesktop().getMainFrame().getComponent(0);
     }
@@ -74,13 +70,7 @@ public class Matlab {
     }
 
     public List<Component> getComponents(String classString) {
-        List<Component> list = new ArrayList<>();
-        for (Component component : getAllComponents()) {
-            if (component.getClass().toString().endsWith(classString)) {
-                list.add(component);
-            }
-        }
-        return list;
+        return ComponentUtil.getComponents(getRootPane(), classString);
     }
 
     public void showClientTitles() {
@@ -95,15 +85,4 @@ public class Matlab {
         }
     }
 
-    private List<Component> getAllComponents(final Container container) {
-        Component[] comps = container.getComponents();
-        List<Component> compList = new ArrayList<>();
-        for (Component comp : comps) {
-            compList.add(comp);
-            if (comp instanceof Container) {
-                compList.addAll(getAllComponents((Container) comp));
-            }
-        }
-        return compList;
-    }
 }
