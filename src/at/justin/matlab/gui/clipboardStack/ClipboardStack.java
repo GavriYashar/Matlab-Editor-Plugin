@@ -2,6 +2,7 @@ package at.justin.matlab.gui.clipboardStack;
 
 import at.justin.matlab.EditorWrapper;
 import at.justin.matlab.gui.components.UndecoratedFrame;
+import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.KeyStrokeUtil;
 import at.justin.matlab.util.ScreenSize;
 
@@ -25,7 +26,7 @@ public class ClipboardStack {
     private JList jList;
     private JTextArea jTextArea;
     private DefaultListModel<String> stringListModel;
-    private String[] strings = new String[10];
+    private String[] strings = new String[Settings.getPropertyInt("clipboardStack.size")];
 
     private ClipboardStack() {
         create();
@@ -46,7 +47,7 @@ public class ClipboardStack {
         }
 
         // first string is the new one, old ones will be moved one down in the list
-        String[] newStrings = new String[10];
+        String[] newStrings = new String[Settings.getPropertyInt("clipboardStack.size")];
         newStrings[0] = string;
         for (int i = 1; i < strings.length; i++) {
             newStrings[i] = strings[i - 1];
@@ -67,29 +68,45 @@ public class ClipboardStack {
     }
 
     private void create() {
-        int width = ScreenSize.getWidth();
-        int height = ScreenSize.getHeight();
-
-        undecoratedFrame.setUndecorated(true);
         undecoratedFrame.setSize(300, 600);
-        undecoratedFrame.setLocation(width / 2 - undecoratedFrame.getWidth() / 2, height / 2 - undecoratedFrame.getHeight() / 2);
+        undecoratedFrame.setResizable(true);
+        undecoratedFrame.setLocation(ScreenSize.getCenter(undecoratedFrame.getSize()));
+        undecoratedFrame.setLayout(new GridBagLayout());
 
-        jList = new JList();
-        jList.setBackground(undecoratedFrame.getBackground());
-        stringListModel = new DefaultListModel<>();
-        jList.setModel(stringListModel);
-        jTextArea = new JTextArea();
-        jTextArea.setEditable(false);
-        jTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        {
+            jList = new JList();
+            jList.setBackground(undecoratedFrame.getBackground());
+            stringListModel = new DefaultListModel<>();
+            jList.setModel(stringListModel);
 
-        JScrollPane scrollPane = new JScrollPane(jTextArea);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            JScrollPane jsp = new JScrollPane(jList);
 
-        GridLayout layout = new GridLayout(2, 3, 10, 20);
-        undecoratedFrame.setLayout(layout);
-        undecoratedFrame.add(jList);
-        undecoratedFrame.add(scrollPane);
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridy = 0;
+            gbc.gridx = 0;
+            gbc.weightx = 1;
+            gbc.weighty = 0.5;
+            gbc.fill = GridBagConstraints.BOTH;
+            undecoratedFrame.add(jsp, gbc);
+        }
+
+        {
+            jTextArea = new JTextArea();
+            jTextArea.setEditable(false);
+            jTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+
+            JScrollPane scrollPane = new JScrollPane(jTextArea);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridy = 1;
+            gbc.gridx = 0;
+            gbc.weightx = 1;
+            gbc.weighty = 0.5;
+            gbc.fill = GridBagConstraints.BOTH;
+            undecoratedFrame.add(scrollPane,gbc);
+        }
         jList.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0, 0), 10));
 
         addListeners();
@@ -133,8 +150,17 @@ public class ClipboardStack {
         });
     }
 
+    public void moveTextToPosition(int sourceIdx, int targetIdx) {
+        String target = strings[targetIdx];
+        strings[targetIdx] = strings[sourceIdx];
+        strings[sourceIdx] = target;
+        jList.setListData(strings);
+        jList.repaint();
+    }
+
     private void insertSelectedText() {
         EditorWrapper.getInstance().setSelectedTxt(strings[jList.getSelectedIndex()]);
         ClipboardStack.getInstance().setVisible(false);
+        moveTextToPosition(jList.getSelectedIndex(), 0);
     }
 }
