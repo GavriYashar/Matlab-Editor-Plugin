@@ -1,6 +1,11 @@
 package at.justin.matlab.prefs;
 
 import at.justin.matlab.util.ColorUtils;
+import com.mathworks.mlwidgets.prefs.GeneralPrefsPanel;
+import com.mathworks.services.settings.Setting;
+import com.mathworks.services.settings.SettingNotFoundException;
+import com.mathworks.services.settings.SettingPath;
+import com.mathworks.services.settings.SettingTypeException;
 
 import java.awt.*;
 import java.io.*;
@@ -154,6 +159,13 @@ public class Settings {
         }
 
         return p;
+    }
+
+    public static String getMatlabCustomFolderPath() throws SettingNotFoundException, SettingTypeException {
+        // com.mathworks.mlwidgets.prefs.GeneralPrefsPanel
+        SettingPath settingPath = new SettingPath("matlab", "workingfolder");
+        Setting setting = new Setting(settingPath, String.class, "CustomFolderPath");
+        return (String) setting.get();
     }
 }
 
