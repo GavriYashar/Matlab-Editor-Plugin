@@ -134,7 +134,6 @@ public class Bookmarks {
         for (Bookmark bookmark : bookmarkList) {
             if (bookmark.equalLongName(editor.getLongName())) lines.add(bookmark.getLineIndex());
         }
-        if (lines.size() < 1) return;
         ((ExecutionArrowDisplay) editor.getExecutionArrowMargin()).setBookmarks(lines);
     }
 
