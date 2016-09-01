@@ -315,6 +315,11 @@ public class FileStructure extends UndecoratedFrame {
         return classDefNode;
     }
 
+    public void showDialog() {
+        setVisible(true);
+        findPattern(jTFS.getText());
+    }
+
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
