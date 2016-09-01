@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by Andreas Justin on 2016-08-23.
@@ -44,6 +45,40 @@ public class FileUtils {
         Writer writer = new BufferedWriter(new FileWriter(source, true));
         writer.append(System.lineSeparator());
         writer.append(s);
+        writer.close();
+    }
+
+    /**
+     * replaces all lines where patternRegex is found with s
+     */
+    public static void replaceFileLine(File source, String patternRegex, String s) throws IOException {
+        if (!source.exists() || !source.canRead() || !source.canWrite()) {
+            throw new IOException("File does not exists or can't read nor write file \"" + source + "\"");
+        }
+        Pattern p = Pattern.compile(patternRegex, Pattern.CASE_INSENSITIVE);
+
+        List<String> strings = new ArrayList<>(10);
+        BufferedReader reader = new BufferedReader(new FileReader(source));
+        String currentLine;
+        while ((currentLine = reader.readLine()) != null) {
+            // trim newline when comparing with lineToRemove
+            strings.add(currentLine);
+        }
+        reader.close();
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(source));
+        for (int i = 0; i < strings.size(); i++) {
+            String line = strings.get(i);
+            if (i > 0 && i < strings.size()) {
+                writer.append(System.lineSeparator());
+            }
+
+            if (p.matcher(line).find()) {
+                writer.append(s);
+                continue;
+            }
+            writer.append(line);
+        }
         writer.close();
     }
 
