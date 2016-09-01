@@ -188,7 +188,7 @@ class KeyReleasedHandler {
 
     static void showFileStructure(ActionEvent event) {
         FileStructure.getINSTANCE().populate(EditorWrapper.getInstance());
-        FileStructure.getINSTANCE().setVisible(true);
+        FileStructure.getINSTANCE().showDialog();
     }
 
     static void DEBUG(ActionEvent event) {
