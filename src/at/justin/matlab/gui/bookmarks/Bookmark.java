@@ -3,6 +3,8 @@ package at.justin.matlab.gui.bookmarks;
 import at.justin.matlab.EditorApp;
 import at.justin.matlab.EditorWrapper;
 import com.mathworks.matlab.api.editor.Editor;
+import com.mathworks.mde.editor.EditorAction;
+import com.mathworks.mde.editor.EditorViewClient;
 
 import java.io.File;
 
@@ -81,6 +83,9 @@ public class Bookmark {
         // if (editor == null || !editor.isOpen()) {
         // doesn't jump for some reason if editor isn't opaened again.
         editor = EditorApp.getInstance().openEditor(new File(longName));
+        EditorViewClient editorViewClient = (EditorViewClient) editor.getComponent();
+        editorViewClient.getEditorView().getActionManager().getAction(EditorAction.NEXT_BOOKMARK).setEnabled(true);
+        editorViewClient.getEditorView().getActionManager().getAction(EditorAction.PREVIOUS_BOOKMARK).setEnabled(true);
         // }
         return editor;
     }

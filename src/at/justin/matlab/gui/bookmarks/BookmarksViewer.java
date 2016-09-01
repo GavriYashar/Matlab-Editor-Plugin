@@ -19,9 +19,7 @@ public class BookmarksViewer extends UndecoratedFrame {
     public final AbstractAction enterAction = new AbstractAction(ENTER_ACTION) {
         @Override
         public void actionPerformed(ActionEvent e) {
-            Bookmark bookmark = (Bookmark) jList.getSelectedValue();
-            if (bookmark == null) return;
-            bookmark.goTo();
+            selectBookmark();
         }
     };
 
@@ -126,10 +124,7 @@ public class BookmarksViewer extends UndecoratedFrame {
         jList.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() < 2) return;
-                Bookmark bookmark = (Bookmark) jList.getSelectedValue();
-                if (bookmark == null) return;
-                bookmark.goTo();
+                if (e.getClickCount() > 1) selectBookmark();
         }
 
         @Override
@@ -172,5 +167,12 @@ public class BookmarksViewer extends UndecoratedFrame {
         gbc.insets = new Insets(5, 10, 10, 10);
 
         rootPane.add(jsp, gbc);
+    }
+
+    private void selectBookmark() {
+        Bookmark bookmark = (Bookmark) jList.getSelectedValue();
+        if (bookmark == null) return;
+        bookmark.goTo();
+        setVisible(false);
     }
 }
