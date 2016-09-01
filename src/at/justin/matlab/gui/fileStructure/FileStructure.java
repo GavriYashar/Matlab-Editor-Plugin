@@ -198,6 +198,16 @@ public class FileStructure extends UndecoratedFrame {
                 }
             }
         });
+
+        KeyStroke ksE = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ENTER);
+        jTree.getInputMap(IFW).put(ksE, "ENTER");
+        jTree.getActionMap().put("ENTER", new AbstractAction("ENTER") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+            }
+        });
+
         return scrollPaneTree;
     }
 
