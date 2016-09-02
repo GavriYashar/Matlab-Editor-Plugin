@@ -68,18 +68,8 @@ public class Install {
         }
     }
 
-    public static File getJavaClassPathTxt() throws IOException {
-        File file = null;
-        for (int i = 0; i < 1; i++) {
-            if (i == 0) {
-                file = new File(System.getProperty("user.home") + "\\Documents\\MATLAB\\javaclasspath.txt");
-            }
-            if (file != null && file.exists()) break;
-        }
-        if (file == null) {
-            throw new IOException("no javaclasspath.txt found");
-        }
-        return file;
+    static File getJavaClassPathTxt() throws IOException {
+        return new File(System.getProperty("user.home") + "\\Documents\\MATLAB\\javaclasspath.txt");
     }
 
     public static File getBookmarks() throws IOException {
