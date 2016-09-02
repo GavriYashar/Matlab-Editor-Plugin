@@ -7,9 +7,12 @@ import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.matlab.api.editor.EditorApplicationListener;
 import com.mathworks.matlab.api.editor.EditorEvent;
 import com.mathworks.matlab.api.editor.EditorEventListener;
+import com.mathworks.mde.editor.EditorSyntaxTextPane;
 import com.mathworks.mde.editor.MatlabEditorApplication;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -62,6 +65,7 @@ public class EditorApp {
             public void editorOpened(Editor editor) {
                 setCallbacks();
                 Bookmarks.getInstance().setEditorBookmarks(editor);
+                Bookmarks.getInstance().enableBookmarksForMatlab(editor);
             }
 
             @Override
@@ -126,6 +130,23 @@ public class EditorApp {
                 }
             }
             component.addKeyListener(KeyReleasedHandler.getKeyListener());
+            EditorSyntaxTextPane editorSyntaxTextPane = (EditorSyntaxTextPane) component;
+            editorSyntaxTextPane.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    Bookmarks.getInstance().adjustBookmarks(e, true);
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    Bookmarks.getInstance().adjustBookmarks(e, false);
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+
+                }
+            });
         }
         if (Settings.containsKey("bpColor")) {
             colorizeBreakpointView(Settings.getPropertyColor("bpColor"));
