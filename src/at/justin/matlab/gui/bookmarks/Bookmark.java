@@ -3,8 +3,6 @@ package at.justin.matlab.gui.bookmarks;
 import at.justin.matlab.EditorApp;
 import at.justin.matlab.EditorWrapper;
 import com.mathworks.matlab.api.editor.Editor;
-import com.mathworks.mde.editor.EditorAction;
-import com.mathworks.mde.editor.EditorViewClient;
 
 import java.io.File;
 
@@ -75,14 +73,14 @@ public class Bookmark {
         return editor;
     }
 
+    public void setLine(int line) {
+        this.line = line;
+        this.lineIndex = line - 1;
+    }
+
     public Editor reopen() {
         if (editor == null || !editor.isOpen()) {
             editor = EditorApp.getInstance().openEditor(new File(longName));
-            EditorViewClient editorViewClient = (EditorViewClient) editor.getComponent();
-
-            // otherwise "F2" wouldn't jump to bookmark after reopening, unless a bookmark has been toggled
-            editorViewClient.getEditorView().getActionManager().getAction(EditorAction.NEXT_BOOKMARK).setEnabled(true);
-            editorViewClient.getEditorView().getActionManager().getAction(EditorAction.PREVIOUS_BOOKMARK).setEnabled(true);
         } else {
             // just bring to front if already open
             editor.bringToFront();

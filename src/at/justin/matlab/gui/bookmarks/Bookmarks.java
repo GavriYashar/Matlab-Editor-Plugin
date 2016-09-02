@@ -4,8 +4,12 @@ import at.justin.matlab.EditorApp;
 import at.justin.matlab.EditorWrapper;
 import at.justin.matlab.installer.Install;
 import com.mathworks.matlab.api.editor.Editor;
+import com.mathworks.mde.editor.EditorAction;
+import com.mathworks.mde.editor.EditorViewClient;
 import com.mathworks.mde.editor.ExecutionArrowDisplay;
+import org.netbeans.editor.BaseDocumentEvent;
 
+import javax.swing.event.DocumentEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +50,16 @@ public class Bookmarks {
         for (int line : lines) {
             toggleBookmark(new Bookmark(editor, line));
         }
+    }
+
+    public List<Bookmark> getBookmarksForEditor(Editor editor) {
+        List<Bookmark> list = new ArrayList<>(10);
+        for (Bookmark bm : bookmarkList) {
+            if (bm.equalLongName(editor.getLongName())) {
+                list.add(bm);
+            }
+        }
+        return list;
     }
 
     public void toggleBookmark(Bookmark bookmark) {
@@ -196,6 +210,77 @@ public class Bookmarks {
         for (Editor editor : editors) {
             setEditorBookmarks(editor);
         }
+    }
+
+    public void enableBookmarksForMatlab(Editor editor) {
+        EditorViewClient editorViewClient = (EditorViewClient) editor.getComponent();
+
+        // otherwise "F2" wouldn't jump to bookmark after reopening, unless a bookmark has been toggled
+        editorViewClient.getEditorView().getActionManager().getAction(EditorAction.NEXT_BOOKMARK).setEnabled(true);
+        editorViewClient.getEditorView().getActionManager().getAction(EditorAction.PREVIOUS_BOOKMARK).setEnabled(true);
+    }
+
+    /**
+     * @param insertUpdate true add line, false remline
+     */
+    public void adjustBookmarks(DocumentEvent event, boolean insertUpdate) {
+        List<Bookmark> bookmarks = getBookmarksForEditor(EditorWrapper.getInstance().gae());
+
+        if (!bookmarks.isEmpty()) {
+            int minLine = ((BaseDocumentEvent) event).getLine();
+            int maxLine = minLine + ((BaseDocumentEvent) event).getLFCount();
+            int rangeLine = maxLine - minLine;
+            if (rangeLine == 0) return;
+
+            Bookmark bm;
+            if (insertUpdate) {
+                for (int bmRunner = bookmarks.size() - 1; bmRunner >= 0; --bmRunner) {
+                    bm = bookmarks.get(bmRunner);
+                    if (bm.getLine() < minLine) {
+                        break;
+                    }
+                    // char enter1 = 0;
+                    // char enter2 = 0;
+                    // if (event.getLength() == 1) {
+                    //     int p1 = event.getOffset();
+                        // int p2 = p1 + event.getLength();
+                        // enter1 = EditorWrapper.getInstance().getText(p1, p1 + 1).charAt(0);
+                        // enter2 = EditorWrapper.getInstance().getText(p2, p2 + 1).charAt(0);
+                    // }
+
+                    if (maxLine < bm.getLine()) {
+                        bm.setLine(bm.getLine() + rangeLine);
+                        // } else if (enter1 != 10 || enter2 != 10 || maxLine == bm.getLine()) {
+                        //     bm.setLine(bm.getLine() + rangeLine);
+                    }
+                }
+            } else {
+                rangeLine = -rangeLine;
+                minLine += 1;
+                for (int bmRunner = 0; bmRunner < bookmarks.size(); ++bmRunner) {
+                    bm = bookmarks.get(bmRunner);
+                    if (bm.getLine() > minLine) {
+                        if (bm.getLine() > minLine && bm.getLine() < maxLine && rangeLine != -1) {
+                            bookmarkList.remove(bookmarks.get(bmRunner));
+                            --bmRunner;
+                        } else if (rangeLine != -1 || bm.getLine() != minLine) {
+                            int var8 = -999;
+                            if (bmRunner > 0) {
+                                var8 = bookmarks.get(bmRunner - 1).getLine();
+                            }
+
+                            if (var8 == bm.getLine() + rangeLine) {
+                                bookmarkList.remove(bookmarks.get(bmRunner));
+                                --bmRunner;
+                            } else {
+                                bm.setLine(bm.getLine() + rangeLine);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        BookmarksViewer.getInstance().updateList();
     }
 
 }
