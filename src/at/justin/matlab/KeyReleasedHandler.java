@@ -5,6 +5,7 @@ import at.justin.matlab.gui.bookmarks.Bookmarks;
 import at.justin.matlab.gui.bookmarks.BookmarksViewer;
 import at.justin.matlab.gui.clipboardStack.ClipboardStack;
 import at.justin.matlab.gui.fileStructure.FileStructure;
+import at.justin.matlab.mesr.MESR;
 import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.KeyStrokeUtil;
 import matlabcontrol.MatlabInvocationException;
@@ -122,6 +123,7 @@ class KeyReleasedHandler {
         if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C) doCopyAction(null);
         if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_V) showClipboardStack(null);
         if (ctrlOnlyFlag && e.getKeyCode() == KeyEvent.VK_F12) showFileStructure(null);
+        if (e.getKeyChar() == '%') MESR.doYourThing();
         if (Settings.DEBUG && ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_E) DEBUG(null);
 
         // bookmark thing
