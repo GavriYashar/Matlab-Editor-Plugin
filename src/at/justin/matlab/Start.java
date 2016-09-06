@@ -4,6 +4,7 @@ import at.justin.matlab.gui.bookmarks.Bookmarks;
 import at.justin.matlab.installer.Install;
 import at.justin.matlab.prefs.Settings;
 import com.mathworks.mlwidgets.prefs.PrefsChanger;
+import com.mathworks.mlwidgets.shortcuts.ShortcutUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class Start {
         addPrefs();
         MatlabKeyStrokesCommands.setCustomKeyStrokes();
         Bookmarks.getInstance().load();
+        addShortcut();
     }
 
     public static void start() {
@@ -49,5 +51,14 @@ public class Start {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void addShortcut() {
+        String label = "MEP Help";
+        String callback = "fprintf('MEP HELP')";
+        String icon = "";
+        String category = "";
+        String isEditable = "false";
+        // ShortcutUtils.addShortcutToBottom(label, callback, icon, category, isEditable);
     }
 }
