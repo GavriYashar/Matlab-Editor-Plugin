@@ -10,6 +10,7 @@ import at.justin.matlab.gui.components.JTreeFilter;
 import at.justin.matlab.gui.components.UndecoratedFrame;
 import at.justin.matlab.util.KeyStrokeUtil;
 import at.justin.matlab.util.ScreenSize;
+import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
 
@@ -32,6 +33,7 @@ public class FileStructure extends UndecoratedFrame {
     private JTreeFilter jTree;
 
     private EditorWrapper ew;
+    private Editor editor;
 
     private JTextFieldSearch jTFS;
     private JRadioButton functions = new JRadioButton("Functions", true);
@@ -241,7 +243,7 @@ public class FileStructure extends UndecoratedFrame {
         }
 
         Node root = new Node(ew.getShortName());
-        MTree mTree = MTree.parse(EditorWrapper.getInstance().gae().getText());
+        MTree mTree = MTree.parse(this.editor.getText());
 
         Tree<MTree.Node> nodeTree = mTree.findAsTree(nodeType);
         if (nodeType.equals(MTree.NodeType.CLASSDEF) & nodeTree.getChildCount(nodeTree.getRoot()) < 1) {
@@ -263,10 +265,12 @@ public class FileStructure extends UndecoratedFrame {
     }
 
     public void populate(final EditorWrapper ew) {
+        if (this.editor != ew.gae()) jTFS.setText(""); // resetting search if editor has been changed
         this.ew = ew;
+        this.editor = ew.gae();
 
         // (disable/enable) class RadioButton if the current file (is no/is) class
-        MTree mTree = MTree.parse(EditorWrapper.getInstance().gae().getText());
+        MTree mTree = MTree.parse(this.editor.getText());
 
         Tree<MTree.Node> nodeTree = mTree.findAsTree(MTree.NodeType.CLASSDEF);
         //classes.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
@@ -317,7 +321,7 @@ public class FileStructure extends UndecoratedFrame {
 
     public void showDialog() {
         setVisible(true);
-        findPattern(jTFS.getText());
+        findPattern(jTFS.getText()); // show last search (if editor has not been changed @populate)
     }
 
     @Override
