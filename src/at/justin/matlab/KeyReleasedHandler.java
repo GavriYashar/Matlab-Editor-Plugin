@@ -123,7 +123,6 @@ class KeyReleasedHandler {
         if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C) doCopyAction(null);
         if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_V) showClipboardStack(null);
         if (ctrlOnlyFlag && e.getKeyCode() == KeyEvent.VK_F12) showFileStructure(null);
-        if (e.getKeyChar() == '%') MESR.doYourThing();
         if (Settings.DEBUG && ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_E) DEBUG(null);
 
         // bookmark thing

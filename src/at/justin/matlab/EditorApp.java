@@ -2,6 +2,7 @@ package at.justin.matlab;
 
 import at.justin.matlab.gui.autoDetailViewer.AutoDetailViewer;
 import at.justin.matlab.gui.bookmarks.Bookmarks;
+import at.justin.matlab.mesr.MESR;
 import at.justin.matlab.prefs.Settings;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.matlab.api.editor.EditorApplicationListener;
@@ -13,6 +14,7 @@ import com.mathworks.mde.editor.MatlabEditorApplication;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -135,6 +137,12 @@ public class EditorApp {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
                     Bookmarks.getInstance().adjustBookmarks(e, true);
+                    try {
+                        String insertString = e.getDocument().getText(e.getOffset(), e.getLength());
+                        if (insertString.equals("%")) MESR.doYourThing();
+                    } catch (BadLocationException ignored) {
+                        ignored.printStackTrace();
+                    }
                 }
 
                 @Override
