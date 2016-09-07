@@ -55,7 +55,6 @@ public class FileStructure extends UndecoratedFrame {
         int width = ScreenSize.getWidth();
         int height = ScreenSize.getHeight();
 
-        setUndecorated(true);
         setSize(500, 600);
         setLocation(width / 2 - getWidth() / 2, height / 2 - getHeight() / 2);
 
@@ -164,7 +163,7 @@ public class FileStructure extends UndecoratedFrame {
         getRootPane().getActionMap().put("CTRL + F12", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                regex.setSelected(!regex.isSelected());
+                if (hasFocus()) regex.setSelected(!regex.isSelected());
             }
         });
 
@@ -327,7 +326,7 @@ public class FileStructure extends UndecoratedFrame {
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        setAlwaysOnTop(visible);
+        // setAlwaysOnTop(visible);
     }
 
     public void expandAll() {
