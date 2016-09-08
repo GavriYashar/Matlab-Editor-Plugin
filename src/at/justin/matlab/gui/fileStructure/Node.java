@@ -8,6 +8,8 @@ import java.util.List;
 
 /**
  * Created by z0032f1t on 02.08.2016.
+ *
+ * Represents a Node in JTree and also an Matlab MTree.Node class.
  */
 public class Node extends DefaultMutableTreeNode {
     private MTree.Node node; // might not always be set, e.g.: First node is just the string of the filename
