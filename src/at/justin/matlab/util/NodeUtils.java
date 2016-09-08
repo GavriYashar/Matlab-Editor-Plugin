@@ -7,6 +7,7 @@ package at.justin.matlab.util;
 import at.justin.matlab.EditorWrapper;
 import com.mathworks.widgets.text.mcode.MTree;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -158,6 +159,9 @@ public final class NodeUtils {
         EditorWrapper ew = EditorWrapper.getInstance();
         int startPos = ew.lc2pos(node.getStartLine(), node.getStartColumn());
         int endPos = ew.lc2pos(node.getEndLine(), node.getEndColumn() + 1);
+        if (endPos < startPos) {
+            return ew.getTextByLine(node.getStartLine());
+        }
         return ew.getText(startPos, endPos);
     }
 
@@ -174,6 +178,24 @@ public final class NodeUtils {
             default:
                 return node.getText();
         }
+    }
+
+    public static List<MTree.Node> getDocumentationNodesForNode(final MTree.Node node) {
+        if ( !(node.getType() == MTree.NodeType.FUNCTION || node.getType() == MTree.NodeType.CLASSDEF) ) {
+            throw new IllegalArgumentException("node has to be a MTree.NodeType.<FUNCTION|CLASSDEF>");
+        }
+        int commentLine = node.getStartLine() + 1;
+        List<MTree.Node> subtree = node.getSubtree();
+        List<MTree.Node> docuTree = new ArrayList<>(5);
+        for (MTree.Node subNode : subtree) {
+            if (subNode.getType() == MTree.NodeType.COMMENT
+                    && commentLine == subNode.getStartLine()) {
+                docuTree.add(subNode);
+                commentLine = subNode.getStartLine() + 1;
+                if (subNode.getNext().getType() != MTree.NodeType.COMMENT) break;
+            }
+        }
+        return docuTree;
     }
 
 }
