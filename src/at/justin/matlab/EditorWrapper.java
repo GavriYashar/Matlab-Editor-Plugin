@@ -89,6 +89,7 @@ public class EditorWrapper {
         String txt = getText();
         if (start < 0) start = 0;
         if (end > txt.length() || end < 0) end = txt.length()-1;
+        if (end < start) return "";
         return txt.substring(start,end);
     }
 
