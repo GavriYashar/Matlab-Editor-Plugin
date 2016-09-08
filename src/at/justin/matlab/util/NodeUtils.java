@@ -180,6 +180,10 @@ public final class NodeUtils {
         }
     }
 
+    /**
+     * returns comment nodes directly below functions or classdef.
+     * these are matlabs documentation comments.
+     */
     public static List<MTree.Node> getDocumentationNodesForNode(final MTree.Node node) {
         if ( !(node.getType() == MTree.NodeType.FUNCTION || node.getType() == MTree.NodeType.CLASSDEF) ) {
             throw new IllegalArgumentException("node has to be a MTree.NodeType.<FUNCTION|CLASSDEF>");
