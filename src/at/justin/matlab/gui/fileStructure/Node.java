@@ -4,6 +4,7 @@ import at.justin.matlab.util.NodeUtils;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.util.List;
 
 /**
  * Created by z0032f1t on 02.08.2016.
@@ -32,6 +33,18 @@ public class Node extends DefaultMutableTreeNode {
 
     public String nodeText() {
         return nodeText;
+    }
+
+    public String nodeDocumentation() {
+        List<MTree.Node> nodeList = NodeUtils.getDocumentationNodesForNode(node);
+        String s = "";
+        for (MTree.Node node : nodeList) {
+            s += NodeUtils.getTextForNode(node) + "\n";
+        }
+        if (s.length() > 0) {
+            s = s.substring(0,s.length()-1);
+        }
+        return s;
     }
 
     public MTree.NodeType getType() {

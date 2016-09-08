@@ -6,7 +6,6 @@ package at.justin.matlab.gui.fileStructure;
 
 import at.justin.matlab.EditorWrapper;
 import at.justin.matlab.gui.components.JTextFieldSearch;
-import at.justin.matlab.gui.components.JTreeFilter;
 import at.justin.matlab.gui.components.UndecoratedFrame;
 import at.justin.matlab.util.KeyStrokeUtil;
 import at.justin.matlab.util.ScreenSize;
@@ -36,10 +35,23 @@ public class FileStructure extends UndecoratedFrame {
     private Editor editor;
 
     private JTextFieldSearch jTFS;
+    private JTextArea jTextArea;
+    private JScrollPane docuScrollPane;
     private JRadioButton functions = new JRadioButton("Functions", true);
     private JRadioButton cells = new JRadioButton("Cells", false);
     private JRadioButton classes = new JRadioButton("Class", false);
     private JCheckBox regex = new JCheckBox("<html>regex <font color=#8F8F8F>(CTRL + F12)</font></html>");
+    private AbstractAction enterAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setVisible(false);
+            if (jTree.getMaxSelectionRow() < 0) return;
+            Node node = (Node) jTree.getSelectionPath().getLastPathComponent();
+            if (node.hasNode()) {
+                EditorWrapper.getInstance().goToLine(node.node().getStartLine(), false);
+            }
+        }
+    };
 
     public FileStructure() {
         setLayout();
@@ -87,6 +99,18 @@ public class FileStructure extends UndecoratedFrame {
         cSP.weightx = cSet.weightx;
         cSP.fill = GridBagConstraints.BOTH;
         getRootPane().add(scrollPaneTree, cSP);
+
+        //create the documentation viewer
+        jTextArea = new JTextArea();
+        docuScrollPane = new JScrollPane(jTextArea);
+        GridBagConstraints cDSP = new GridBagConstraints();
+        cDSP.gridy = 3;
+        cDSP.gridx = 0;
+        cDSP.weighty = 0.3;
+        cDSP.weightx = cSet.weightx;
+        cDSP.fill = GridBagConstraints.BOTH;
+        cDSP.insets = new Insets(5, 0, 0, 0);
+        getRootPane().add(docuScrollPane, cDSP);
     }
 
     private void createSearchField() {
@@ -140,7 +164,7 @@ public class FileStructure extends UndecoratedFrame {
         bg.add(cells);
         bg.add(functions);
         bg.add(classes);
-        JPanel panelSettings = new JPanel();
+        final JPanel panelSettings = new JPanel();
         panelSettings.setBorder(BorderFactory.createTitledBorder("Type"));
         panelSettings.setLayout(new FlowLayout());
         panelSettings.add(cells);
@@ -163,7 +187,7 @@ public class FileStructure extends UndecoratedFrame {
         getRootPane().getActionMap().put("CTRL + F12", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (hasFocus()) regex.setSelected(!regex.isSelected());
+                regex.setSelected(!regex.isSelected());
             }
         });
 
@@ -184,7 +208,7 @@ public class FileStructure extends UndecoratedFrame {
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
                 if (e.getClickCount() > 1) {
-                    setVisible(false);
+                    enterAction.actionPerformed(new ActionEvent(e, 0, null));
                 }
             }
         });
@@ -195,7 +219,7 @@ public class FileStructure extends UndecoratedFrame {
                 if (jTree.getMaxSelectionRow() < 0) return;
                 Node node = (Node) jTree.getSelectionPath().getLastPathComponent();
                 if (node.hasNode()) {
-                    EditorWrapper.getInstance().goToLine(node.node().getStartLine(), false);
+                    jTextArea.setText(node.nodeDocumentation());
                 }
             }
         });
@@ -205,7 +229,7 @@ public class FileStructure extends UndecoratedFrame {
         jTree.getActionMap().put("ENTER", new AbstractAction("ENTER") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setVisible(false);
+                enterAction.actionPerformed(new ActionEvent(e, 0, null));
             }
         });
 
