@@ -36,13 +36,16 @@ public class Node extends DefaultMutableTreeNode {
     }
 
     public String nodeDocumentation() {
+        if (!(getType() == MTree.NodeType.FUNCTION || getType() == MTree.NodeType.CLASSDEF)) {
+            return "";
+        }
         List<MTree.Node> nodeList = NodeUtils.getDocumentationNodesForNode(node);
         String s = "";
         for (MTree.Node node : nodeList) {
             s += NodeUtils.getTextForNode(node) + "\n";
         }
         if (s.length() > 0) {
-            s = s.substring(0,s.length()-1);
+            s = s.substring(0, s.length() - 1);
         }
         return s;
     }
