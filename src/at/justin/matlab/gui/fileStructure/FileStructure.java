@@ -63,6 +63,23 @@ public class FileStructure extends UndecoratedFrame {
         return INSTANCE;
     }
 
+    private static Node fillClassNode(Node classDefNode, Tree<MTree.Node> tree, MTree.NodeType type) {
+        for (int i = 0; i < tree.getChildCount(tree.getRoot()); i++) {
+            MTree.Node typeNodes = tree.getChild(tree.getRoot(), i);
+            List<MTree.Node> subs = typeNodes.getSubtree();
+            for (MTree.Node sub : subs) {
+                if (sub.getType() == type) {
+                    if (type == MTree.NodeType.ID
+                            && (sub.getText().matches("(Constant|Static|true|false|GetAccess|SetAccess|Access|private|public)"))) {
+                        continue;
+                    }
+                    classDefNode.add(new Node(sub));
+                }
+            }
+        }
+        return classDefNode;
+    }
+
     private void setLayout() {
         int width = ScreenSize.getWidth();
         int height = ScreenSize.getHeight();
@@ -219,7 +236,7 @@ public class FileStructure extends UndecoratedFrame {
                 if (jTree.getMaxSelectionRow() < 0) return;
                 Node node = (Node) jTree.getSelectionPath().getLastPathComponent();
                 if (node.hasNode()) {
-                    jTextArea.setText(node.nodeDocumentation());
+                    jTextArea.setText(node.getDocumentationText());
                 }
             }
         });
@@ -274,6 +291,7 @@ public class FileStructure extends UndecoratedFrame {
             nodeType = MTree.NodeType.FUNCTION;
             nodeTree = mTree.findAsTree(nodeType);
         } else if (nodeType.equals(MTree.NodeType.CLASSDEF) & nodeTree.getChildCount(nodeTree.getRoot()) > 0) {
+            root = new Node(ew.getFullQualiefiedClass() + ".m");
             root.add(forClass(mTree, nodeTree.getChild(nodeTree.getRoot(), 0)));
             setTreeRoot(root, false);
             return;
@@ -297,7 +315,7 @@ public class FileStructure extends UndecoratedFrame {
 
         Tree<MTree.Node> nodeTree = mTree.findAsTree(MTree.NodeType.CLASSDEF);
         //classes.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
-        classes.setEnabled(false); // TODO: performance issue
+        classes.setEnabled(true); // TODO: performance issue
 
         nodeTree = mTree.findAsTree(MTree.NodeType.FUNCTION);
         functions.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
@@ -323,6 +341,34 @@ public class FileStructure extends UndecoratedFrame {
     }
 
     private Node forClass(MTree mTree, MTree.Node classDef) {
+        Node classDefNode = new Node(classDef);
+
+        // TODO: properties
+        // current problem is identifying properties in a way that always works.
+        // properties have "ID" as type, but so does Property Attributes like
+        // <Constant, GetAccess..., private..., true ...>
+        // see "doc property attributes"
+        /*
+            0 = {MTree$Node@13044} "PROPERTIES [5, 5] to [9, 7]"
+            1 = {MTree$Node@13058} "ATTRIBUTES [5, 16] to [6, 31]"
+            2 = {MTree$Node@13059} "ATTR [5, 26] to [0, 0]"
+            3 = {MTree$Node@13046} "ID (Constant) [5, 17] to [0, 0]"
+            4 = {MTree$Node@13060} "ID (true) [5, 28] to [0, 0]"
+            5 = {MTree$Node@13061} "ATTR [6, 23] to [0, 0]"
+            6 = {MTree$Node@13062} "ID (GetAccess) [6, 13] to [0, 0]"
+            7 = {MTree$Node@13063} "ID (public) [6, 25] to [0, 0]"
+            8 = {MTree$Node@13064} "EQUALS [7, 15] to [0, 0]"
+            9 = {MTree$Node@13065} "ID (prop1) [7, 9] to [0, 0]"
+         */
+        // Tree<MTree.Node> propertyTree = mTree.findAsTree(MTree.NodeType.PROPERTIES);
+        // classDefNode = fillClassNode(classDefNode, propertyTree, MTree.NodeType.ID);
+
+        Tree<MTree.Node> methodsTree = mTree.findAsTree(MTree.NodeType.METHODS);
+        classDefNode = fillClassNode(classDefNode, methodsTree, MTree.NodeType.FUNCTION);
+        return classDefNode;
+    }
+
+    private Node forClassGetTree(MTree mTree, MTree.Node classDef) {
         Node classDefNode = new Node(classDef);
 
         Tree<MTree.Node> propertyTree = mTree.findAsTree(MTree.NodeType.PROPERTIES);
