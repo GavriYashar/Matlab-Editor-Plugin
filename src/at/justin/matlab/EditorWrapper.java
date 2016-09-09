@@ -43,6 +43,16 @@ public class EditorWrapper {
         return gae().getLongName();
     }
 
+    public String getFullQualiefiedClass() {
+        String lName = EditorWrapper.getInstance().getLongName();
+        lName = lName.replace("\\",".");
+        lName = lName.replace("/",".");
+        int start = lName.indexOf("+");
+        lName = lName.substring(start);
+        lName = lName.replace("+","");
+        return lName.substring(0,lName.length()-2);
+    }
+
     public File getFile() {
         return new File(getLongName());
     }
