@@ -15,7 +15,7 @@ import java.util.Properties;
  * Created by Andreas Justin on 2016 - 02 - 07.
  */
 public class Settings {
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
     private static Properties internalProps = new Properties();
     private static Properties customProps = new Properties();
     private static Properties defaultProps = new Properties();
@@ -65,6 +65,12 @@ public class Settings {
         if (customProps.containsKey(key)) return customProps.getProperty(key);
         if (defaultProps.containsKey(key)) return defaultProps.getProperty(key);
         return "";
+    }
+
+    public static String[] getPropertyStringArray(String key) {
+        String val = getProperty(key);
+        if (val.length() == 0) return new String[]{};
+        return val.split(",\\s*");
     }
 
     public static void setProperty(String key, String val) {
