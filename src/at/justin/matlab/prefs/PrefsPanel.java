@@ -2,6 +2,7 @@ package at.justin.matlab.prefs;
 
 import at.justin.matlab.EditorApp;
 import com.mathworks.mwswing.MJPanel;
+import com.mathworks.services.settings.Setting;
 
 import javax.swing.*;
 import java.awt.*;
@@ -52,6 +53,10 @@ public class PrefsPanel extends MJPanel {
                 case INTEGER:
                     break;
                 case STRING:
+                    break;
+                case STRING_DROPDOWN:
+                    JComboBox jComboBox = (JComboBox) c;
+                    Settings.setProperty(key, (String) jComboBox.getSelectedItem());
                     break;
                 case ONOFF:
                     JCheckBox jcb2 = (JCheckBox) c;
@@ -146,18 +151,30 @@ public class PrefsPanel extends MJPanel {
         ps.setLayout(new GridBagLayout());
         ps.setBorder(BorderFactory.createTitledBorder("Other"));
 
-        String[] properties = {"ExtendedCommand", "AutoLoadShortcuts", "EnableStartup", "EnableMethodsView", "UseLDS",
-                "showQuotes", "FreeCommander", "DefaultFigureGraphicsSmoothing"};
-        PropertyType[] types = {PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN, PropertyType.PATH, PropertyType.ONOFF};
-        String[] helptxt = {Settings.getProperty("ExtendedCommandHELP"),
-                Settings.getProperty("AutoLoadShortcutsHELP"),
-                Settings.getProperty("EnableStartupHELP"),
-                Settings.getProperty("EnableMethodsViewHELP"),
-                Settings.getProperty("UseLDSHELP"),
-                Settings.getProperty("showQuotesHELP"),
-                Settings.getProperty("FreeCommanderHELP"),
-                Settings.getProperty("DefaultFigureGraphicsSmoothingHELP"),
+        String[] properties = {"ExtendedCommand",
+                "AutoLoadShortcuts",
+                "EnableStartup",
+                "EnableMethodsView",
+                "UseLDS",
+                "showQuotes",
+                "FreeCommander",
+                "DefaultFigureGraphicsSmoothing"};
+        PropertyType[] types = {PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN,
+                PropertyType.PATH,
+                PropertyType.ONOFF};
+        String[] helptxt = {Settings.getProperty("help.ExtendedCommand"),
+                Settings.getProperty("help.AutoLoadShortcuts"),
+                Settings.getProperty("help.EnableStartup"),
+                Settings.getProperty("help.EnableMethodsView"),
+                Settings.getProperty("help.UseLDS"),
+                Settings.getProperty("help.showQuotes"),
+                Settings.getProperty("help.FreeCommander"),
+                Settings.getProperty("help.DefaultFigureGraphicsSmoothing"),
         };
 
         addPropsToPanel(ps, properties, types, helptxt);
@@ -167,33 +184,61 @@ public class PrefsPanel extends MJPanel {
     private void addMEPProps() {
         JPanel ps = new JPanel();
         ps.setLayout(new GridBagLayout());
-        ps.setBorder(BorderFactory.createTitledBorder("Extend Matlab Editor Functionality 5"));
+        ps.setBorder(BorderFactory.createTitledBorder("Extend Matlab Editor Functionality"));
 
         String[] properties;
         PropertyType[] types;
         String[] helptxt;
         if (Settings.getPropertyBoolean("isPublicUser")) {
-            properties = new String[]{"verbose", "autoReloadProps", "enableDoubleOperator", "autoDetailViewer", "bpColor"};
-            types = new PropertyType[]{PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.COLOR};
-            helptxt = new String[]{Settings.getProperty("verboseHELP"),
-                    Settings.getProperty("autoReloadPropsHELP"),
-                    Settings.getProperty("enableDoubleOperatorHELP"),
-                    Settings.getProperty("autoDetailViewerHELP"),
-                    Settings.getProperty("bpColorHELP")};
+            properties = new String[]{"verbose",
+                    "autoReloadProps",
+                    "enableDoubleOperator",
+                    "autoDetailViewer",
+                    "bpColor",
+                    "fs.iconSet"};
+            types = new PropertyType[]{PropertyType.BOOLEAN,
+                    PropertyType.BOOLEAN,
+                    PropertyType.BOOLEAN,
+                    PropertyType.BOOLEAN,
+                    PropertyType.COLOR,
+                    PropertyType.STRING_DROPDOWN};
+            helptxt = new String[]{Settings.getProperty("help.verbose"),
+                    Settings.getProperty("help.autoReloadProps"),
+                    Settings.getProperty("help.enableDoubleOperator"),
+                    Settings.getProperty("help.autoDetailViewer"),
+                    Settings.getProperty("help.bpColor"),
+                    Settings.getProperty("fs.iconSetHELP")};
         } else {
-            properties = new String[]{"ExtendedEditor", "EnableAutoBrackets", "EnableOperator", "enableAlphaPhase",
-                    "verbose", "autoReloadProps", "enableDoubleOperator", "autoDetailViewer", "bpColor"};
-            types = new PropertyType[]{PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN,
-                    PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.COLOR};
-            helptxt = new String[]{Settings.getProperty("ExtendedEditorHELP"),
-                    Settings.getProperty("EnableAutoBracketsHELP"),
-                    Settings.getProperty("EnableOperatorHELP"),
-                    Settings.getProperty("enableAlphaPhaseHELP"),
-                    Settings.getProperty("verboseHELP"),
-                    Settings.getProperty("autoReloadPropsHELP"),
-                    Settings.getProperty("enableDoubleOperatorHELP"),
-                    Settings.getProperty("autoDetailViewerHELP"),
-                    Settings.getProperty("bpColorHELP")};
+            properties = new String[]{"ExtendedEditor",
+                    "EnableAutoBrackets",
+                    "EnableOperator",
+                    "enableAlphaPhase",
+                    "verbose",
+                    "autoReloadProps",
+                    "enableDoubleOperator",
+                    "autoDetailViewer",
+                    "bpColor",
+                    "fs.iconSet"};
+            types = new PropertyType[]{PropertyType.BOOLEAN,
+                    PropertyType.BOOLEAN,
+                    PropertyType.BOOLEAN,
+                    PropertyType.BOOLEAN,
+                    PropertyType.BOOLEAN,
+                    PropertyType.BOOLEAN,
+                    PropertyType.BOOLEAN,
+                    PropertyType.BOOLEAN,
+                    PropertyType.COLOR,
+                    PropertyType.STRING_DROPDOWN};
+            helptxt = new String[]{Settings.getProperty("help.ExtendedEditor"),
+                    Settings.getProperty("help.EnableAutoBrackets"),
+                    Settings.getProperty("help.EnableOperator"),
+                    Settings.getProperty("help.enableAlphaPhase"),
+                    Settings.getProperty("help.verbose"),
+                    Settings.getProperty("help.autoReloadProps"),
+                    Settings.getProperty("help.enableDoubleOperator"),
+                    Settings.getProperty("help.autoDetailViewer"),
+                    Settings.getProperty("help.bpColor"),
+                    Settings.getProperty("help.fs.iconSet")};
         }
 
         addPropsToPanel(ps, properties, types, helptxt);
@@ -206,11 +251,15 @@ public class PrefsPanel extends MJPanel {
         ps.setLayout(new GridBagLayout());
         ps.setBorder(BorderFactory.createTitledBorder("LoadMessDaten"));
 
-        String[] properties = {"LoadMessDaten_Shortener", "LoadMessDaten_NoExprManipulate", "LoadMessDaten_EnableSimpleView"};
-        PropertyType[] types = {PropertyType.BOOLEAN, PropertyType.BOOLEAN, PropertyType.BOOLEAN};
-        String[] helptxt = {Settings.getProperty("LoadMessDaten_ShortenerHELP"),
-                Settings.getProperty("LoadMessDaten_NoExprManipulateHELP"),
-                Settings.getProperty("LoadMessDaten_EnableSimpleViewHELP")};
+        String[] properties = {"LoadMessDaten_Shortener",
+                "LoadMessDaten_NoExprManipulate",
+                "LoadMessDaten_EnableSimpleView"};
+        PropertyType[] types = {PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN};
+        String[] helptxt = {Settings.getProperty("help.LoadMessDaten_Shortener"),
+                Settings.getProperty("help.LoadMessDaten_NoExprManipulate"),
+                Settings.getProperty("help.LoadMessDaten_EnableSimpleView")};
 
         addPropsToPanel(ps, properties, types, helptxt);
 

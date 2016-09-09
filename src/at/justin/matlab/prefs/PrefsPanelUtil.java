@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Created by Andreas Justin on 2016-08-23.
@@ -28,6 +30,9 @@ public class PrefsPanelUtil {
                 break;
             case STRING:
                 break;
+            case STRING_DROPDOWN:
+                components[0] = getDropDownString(property);
+                break;
             case ONOFF:
                 components[0] = getCheckBoxOnOff(property);
                 break;
@@ -41,6 +46,18 @@ public class PrefsPanelUtil {
 
         components[1] = new JLabel(help);
         return components;
+    }
+
+    private static JComboBox getDropDownString(String property) {
+        String currentValue = Settings.getProperty(property);
+        String[] strings = Settings.getPropertyStringArray(property + "Values");
+        if (strings.length == 0) return null;
+
+        int index = Arrays.asList(strings).indexOf(currentValue);
+        if (index < 0) index = 0;
+        JComboBox jComboBox = new JComboBox(strings);
+        jComboBox.setSelectedIndex(index);
+        return jComboBox;
     }
 
     private static JTextField getPathChooser(final String property) {
