@@ -1,5 +1,8 @@
 package at.justin.matlab.gui.fileStructure;
 
+import at.justin.matlab.meta.MetaClass;
+import at.justin.matlab.meta.MetaMethod;
+import at.justin.matlab.meta.MetaProperty;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import javax.swing.*;
@@ -9,9 +12,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Pattern;
 
-/**
- * Created by Andreas Justin on 2016-08-02.
- */
+/** Created by Andreas Justin on 2016-08-02. */
 class JTreeFilter extends JTree {
     private String filterText;
     private Pattern pattern;
@@ -48,7 +49,8 @@ class JTreeFilter extends JTree {
             String str = n.nodeText();
             if (str.endsWith(".m")
                     || n.getType().equals(MTree.NodeType.CLASSDEF)
-                    || n.getType().equals(MTree.NodeType.METHODS)) {
+                    || n.getType().equals(MTree.NodeType.METHODS)
+                    || n.getMetaNodeType() == MetaNodeType.META_CLASS) {
                 continue;
             }
             if (!useRegex && !str.toLowerCase().contains(filterText.toLowerCase())) {
@@ -62,10 +64,18 @@ class JTreeFilter extends JTree {
 
     private Node deepCopyNode(Node node) {
         Node copiedNode;
-        if (node.hasNode()) {
+        if (node.getMetaNodeType() == MetaNodeType.MATLAB && node.hasNode()) {
             copiedNode = new Node(node.node());
-        } else {
+        } else if (node.getMetaNodeType() == MetaNodeType.STRING) {
             copiedNode = new Node(node.nodeText());
+        } else if (node.getMetaNodeType() == MetaNodeType.META_CLASS) {
+            copiedNode = new Node((MetaClass) node.getMeta(), node.node());
+        } else if (node.getMetaNodeType() == MetaNodeType.META_PROPERTY) {
+            copiedNode = new Node((MetaProperty) node.getMeta(), node.node());
+        } else if (node.getMetaNodeType() == MetaNodeType.META_METHOD) {
+            copiedNode = new Node((MetaMethod) node.getMeta(), node.node());
+        } else {
+            throw new IllegalArgumentException("unknown Node");
         }
 
         // System.out.println(" ");

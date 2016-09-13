@@ -6,14 +6,13 @@ import at.justin.matlab.util.IconDecoratorE;
 import at.justin.matlab.util.IconUtil;
 import com.mathworks.common.icons.FileTypeIcon;
 import com.mathworks.common.icons.ProjectIcon;
+import com.mathworks.widgets.text.mcode.MTree;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 
-/**
- * Created by Andreas Justin on 2016 - 02 - 25.
- */
+/** Created by Andreas Justin on 2016 - 02 - 25. */
 public class TreeRenderer extends DefaultTreeCellRenderer {
     DefaultTreeCellRenderer defaultRenderer = new DefaultTreeCellRenderer();
 
@@ -23,6 +22,71 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
     public TreeRenderer() {
         backgroundSelectionColor = defaultRenderer.getBackgroundSelectionColor();
         backgroundNonSelectionColor = defaultRenderer.getBackgroundNonSelectionColor();
+    }
+
+    private static Icon decoratePublicPrivate(Node node, Icon icon, String setting) {
+        Color hiddenColor = new Color(180, 99, 115);
+        switch (setting) {
+            case "intellij":
+                if (node.isPrivate()) {
+                    Icon decorator = Icons.DECORATOR_PRIVATE_INTELLIJ.getIcon();
+                    icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
+                } else {
+                    Icon decorator = Icons.DECORATOR_PUBLIC_INTELLIJ.getIcon();
+                    if (node.isHidden()) {
+                        decorator = IconUtil.color(decorator, hiddenColor);
+                    }
+                    icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
+                }
+                break;
+            case "matlab":
+                if (node.isPrivate()) {
+                    Icon decorator = ProjectIcon.PRIVATE_OVERLAY_11x11.getIcon();
+                    icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
+                } else {
+                    Icon decorator = ProjectIcon.PUBLIC_OVERLAY_11x11.getIcon();
+                    if (node.isHidden()) {
+                        decorator = IconUtil.color(decorator, hiddenColor);
+                    }
+                    icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
+                }
+                break;
+            case "eclipse":
+                if (!node.isPrivate()) {
+                    icon = Icons.METHOD_PRIVATE_ECLIPSE.getIcon();
+                } else {
+                    icon = Icons.METHOD_ECLIPSE.getIcon();
+                    if (node.isHidden()) {
+                        icon = IconUtil.color(icon, hiddenColor);
+                    }
+                }
+        }
+        return icon;
+    }
+
+    private static Icon decorateStatic(Node node, Icon icon, String setting) {
+        switch (setting) {
+            case "intellij":
+                if (node.isStatic()) {
+                    Icon decorator = Icons.DECORATOR_STATIC_INTELLIJ.getIcon();
+                    // decorator = IconUtil.color(decorator, new Color(180, 180, 180));
+                    icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.SOUTH_WEST_INSIDE);
+                }
+                break;
+            case "matlab":
+                if (node.isStatic()) {
+                    Icon decorator = ProjectIcon.STATIC_OVERLAY_11x11.getIcon();
+                    icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.SOUTH_WEST_INSIDE);
+                }
+                break;
+            case "eclipse":
+                if (node.isStatic()) {
+                    Icon decorator = Icons.DECORATOR_STATIC_ECLIPSE.getIcon();
+                    icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.SOUTH_WEST_INSIDE);
+                }
+            default:
+        }
+        return icon;
     }
 
     @Override
@@ -35,35 +99,19 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
 
         if (row == 0 && nodeStringL.endsWith(".m")) {
             setIcon(FileTypeIcon.M.getIcon());
-        } else if (row > 0) {
-            switch (node.getType()) {
-                case FUNCTION:
-                    setFunctionIcon(node);
-                    break;
-                case CLASSDEF:
-                    setClassDefIcon(node);
-                    break;
-                case PROPERTIES:
-                    setIcon(ProjectIcon.PROPERTY.getIcon());
-                    break;
-                case ID:
-                    if (node.isProperty()) setPropertyIcon(node);
-            break;
-                case METHODS:
-                    if (nodeStringL.contains("static")) {
-                        setIcon(ProjectIcon.STATIC_OVERLAY_11x11.getIcon());
-                    }
-                    if (nodeStringL.contains("public") || !nodeStringL.contains("private")) {
-                        setIcon(ProjectIcon.PUBLIC_OVERLAY_11x11.getIcon());
-                    }
-                    if (nodeStringL.contains("private")) {
-                        setIcon(ProjectIcon.PRIVATE_OVERLAY_11x11.getIcon());
-                    }
-                    break;
-                case CELL_TITLE:
-                    setIcon(ProjectIcon.CELL.getIcon());
-                    break;
-            }
+        } else if (node.getMetaNodeType() == MetaNodeType.META_CLASS) {
+            // CLASS
+            setClassDefIcon(node);
+        } else if (node.getMetaNodeType() == MetaNodeType.MATLAB && node.getType() == MTree.NodeType.FUNCTION
+                || node.getMetaNodeType() == MetaNodeType.META_METHOD) {
+            // METHOD
+            setFunctionIcon(node);
+        } else if (node.getMetaNodeType() == MetaNodeType.META_PROPERTY) {
+            // PROPERTY
+            setPropertyIcon(node);
+        } else if (node.getMetaNodeType() == MetaNodeType.MATLAB && node.getType() == MTree.NodeType.CELL_TITLE) {
+            // SECTION
+            setIcon(ProjectIcon.CELL.getIcon());
         }
         setText(nodeStringU);
         setFont(new Font("Courier New", Font.PLAIN, 11));
@@ -92,27 +140,18 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
             case "intellij":
                 Icon iconIJ = Icons.METHOD_INTELLIJ.getIcon();
                 iconIJ = decoratePublicPrivate(node, iconIJ, setting);
-                if (node.isStatic()) {
-                    Icon decorator = Icons.DECORATOR_STATIC_INTELLIJ.getIcon();
-                    // decorator = IconUtil.color(decorator, new Color(180, 180, 180));
-                    iconIJ = IconUtil.decorateIcon(iconIJ, decorator, IconDecoratorE.SOUTH_WEST_INSIDE);
-                }
+                iconIJ = decorateStatic(node, iconIJ, setting);
                 setIcon(iconIJ);
                 break;
             case "matlab":
-                setIcon(ProjectIcon.FUNCTION.getIcon());
+                Icon iconM = ProjectIcon.FUNCTION.getIcon();
+                iconM = decoratePublicPrivate(node, iconM, setting);
+                iconM = decorateStatic(node, iconM, setting);
+                setIcon(iconM);
                 break;
             case "eclipse":
-                Icon iconE;
-                if (!node.isAccessPrivate()) {
-                    iconE = Icons.METHOD_PRIVATE_ECLIPSE.getIcon();
-                } else {
-                    iconE = Icons.METHOD_ECLIPSE.getIcon();
-                }
-                if (node.isStatic()) {
-                    Icon decorator = Icons.DECORATOR_STATIC_ECLIPSE.getIcon();
-                    iconE = IconUtil.decorateIcon(iconE, decorator, IconDecoratorE.SOUTH_WEST_INSIDE);
-                }
+                Icon iconE = decoratePublicPrivate(node, null, setting);
+                iconE = decorateStatic(node, iconE, setting);
                 setIcon(iconE);
                 break;
             default:
@@ -125,8 +164,8 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
         switch (setting) {
             case "intellij":
                 Icon iconIJ = Icons.PROPERTY_INTELLIJ.getIcon();
-                decoratePublicPrivate(node, iconIJ, setting);
-                decorateStatic(node, iconIJ, setting);
+                iconIJ = decoratePublicPrivate(node, iconIJ, setting);
+                iconIJ = decorateStatic(node, iconIJ, setting);
                 setIcon(iconIJ);
                 break;
             case "matlab":
@@ -134,56 +173,11 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
                 break;
             case "eclipse":
                 Icon iconE = decoratePublicPrivate(node, null, setting);
-                decorateStatic(node, iconE, setting);
+                iconE = decorateStatic(node, iconE, setting);
                 setIcon(iconE);
                 break;
             default:
                 setIcon(ProjectIcon.PROPERTY.getIcon());
         }
-    }
-
-    private static Icon decoratePublicPrivate(Node node, Icon icon, String setting) {
-        switch (setting) {
-            case "intellij":
-                if (node.isAccessPrivate()) {
-                    Icon decorator = Icons.DECORATOR_PRIVATE_INTELLIJ.getIcon();
-                    icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
-                } else {
-                    Icon decorator = Icons.DECORATOR_PUBLIC_INTELLIJ.getIcon();
-                    icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
-                }
-                break;
-            case "matlab":
-                break;
-            case "eclipse":
-                if (!node.isAccessPrivate()) {
-                    return Icons.METHOD_PRIVATE_ECLIPSE.getIcon();
-                } else {
-                    return Icons.METHOD_ECLIPSE.getIcon();
-                }
-            default:
-        }
-        return icon;
-    }
-
-    private static Icon decorateStatic(Node node, Icon icon, String setting) {
-        switch (setting) {
-            case "intellij":
-                if (node.isStatic()) {
-                    Icon decorator = Icons.DECORATOR_STATIC_INTELLIJ.getIcon();
-                    // decorator = IconUtil.color(decorator, new Color(180, 180, 180));
-                    icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.SOUTH_WEST_INSIDE);
-                }
-                break;
-            case "matlab":
-                break;
-            case "eclipse":
-                if (node.isStatic()) {
-                    Icon decorator = Icons.DECORATOR_STATIC_ECLIPSE.getIcon();
-                    icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.SOUTH_WEST_INSIDE);
-                }
-            default:
-        }
-        return icon;
     }
 }
