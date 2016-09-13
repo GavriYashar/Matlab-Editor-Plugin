@@ -11,11 +11,12 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by Andreas Justin on 2016 - 02 - 07.
- */
+/** Created by Andreas Justin on 2016 - 02 - 07. */
 public class EditorWrapper {
     private static EditorWrapper INSTANCE;
+    private static String[] textArray;
+    /** if true textArray needs to be updated, fixing a huge performance issue */
+    private static boolean isDirty = true;
 
     public static EditorWrapper getInstance() {
         if (INSTANCE != null) return INSTANCE;
@@ -48,6 +49,9 @@ public class EditorWrapper {
         lName = lName.replace("\\",".");
         lName = lName.replace("/",".");
         int start = lName.indexOf("+");
+        if (start < 0) {
+            start = lName.indexOf(EditorWrapper.getInstance().getShortName());
+        }
         lName = lName.substring(start);
         lName = lName.replace("+","");
         return lName.substring(0,lName.length()-2);
@@ -117,8 +121,15 @@ public class EditorWrapper {
      * @return string []
      */
     public String[] getTextArray() {
-        String s = gae().getText();
-        return s.split("\\n");
+        if (isDirty) {
+            updateTextArray();
+            setIsDirty(false);
+        }
+        return textArray;
+    }
+
+    public void updateTextArray() {
+        textArray = gae().getText().split("\\n");
     }
 
     public String getSelectedTxt() {
@@ -305,5 +316,13 @@ public class EditorWrapper {
     }
     public String getCurrentLineText() {
         return getTextByLine(getCurrentLine());
+    }
+
+    public static boolean isDirty() {
+        return isDirty;
+    }
+
+    public static void setIsDirty(boolean isDirty) {
+        EditorWrapper.isDirty = isDirty;
     }
 }
