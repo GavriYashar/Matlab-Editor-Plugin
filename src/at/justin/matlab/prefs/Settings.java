@@ -16,12 +16,14 @@ import java.util.Properties;
  */
 public class Settings {
     public static boolean DEBUG = false;
+    private static long RELOAD_TIME = 5000;
     private static Properties internalProps = new Properties();
     private static Properties customProps = new Properties();
     private static Properties defaultProps = new Properties();
     private static String customSettingsName;
     private static String defaultSettingsName;
     private static boolean autoReload = false;
+    private static long lastReload = System.currentTimeMillis();
 
     static {
         internalProps = load(Settings.class.getResourceAsStream("/properties/Internal.properties"));
@@ -58,7 +60,8 @@ public class Settings {
     public static String getProperty(String key) {
         if (internalProps.containsKey(key)) return internalProps.getProperty(key);
 
-        if (autoReload) {
+        if (autoReload && (System.currentTimeMillis() - lastReload) > RELOAD_TIME) {
+            lastReload = System.currentTimeMillis();
             autoReload = false;
             loadSettings(customSettingsName, defaultSettingsName);
         }
