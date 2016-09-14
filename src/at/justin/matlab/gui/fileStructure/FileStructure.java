@@ -9,10 +9,10 @@ import at.justin.matlab.gui.components.JTextFieldSearch;
 import at.justin.matlab.gui.components.UndecoratedFrame;
 import at.justin.matlab.meta.MetaClass;
 import at.justin.matlab.meta.MetaMethod;
+import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.KeyStrokeUtil;
 import at.justin.matlab.util.NodeUtils;
 import at.justin.matlab.util.ScreenSize;
-import at.justin.matlab.prefs.Settings;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
@@ -75,8 +75,6 @@ public class FileStructure extends UndecoratedFrame {
             return null;
         }
 
-        // /////////////////////////////////////////
-
         Tree<MTree.Node> methodsTree = mTree.findAsTree(MTree.NodeType.METHODS);
         java.util.List<MTree.Node> methodNodes = new ArrayList<>(10);
         for (int i = 0; i < methodsTree.getChildCount(methodsTree.getRoot()); i++) {
@@ -90,23 +88,11 @@ public class FileStructure extends UndecoratedFrame {
                 }
             }
         }
-
-        // /////////////////////////////////////////
-
         Node classDefNode = new Node(metaClass, mTree.getNode(0));
-        // for (MetaProperty p : metaClass.getProperties()) {
-        //     Node property = new Node(p);
-        //     if (inherited.isSelected()) {
-        //         classDefNode.add(property);
-        //     } else if (((MetaProperty) property.getMeta()).getDefiningClass().equals(fullQualifiedName)){
-        //         classDefNode.add(property);
-        //     }
-        // }
-
 
         int counter = 0;
         for (int i = 0; i < methodNodes.size(); i++) {
-            String nodeString = NodeUtils.getTextForNode(methodNodes.get(i));
+            String nodeString = NodeUtils.getFunctionHeader(methodNodes.get(i), false);
             for (MetaMethod m : metaClass.getMethods()) {
                 if (!inherited.isSelected()) {
                     if (!m.getDefiningClass().equals(fullQualifiedName)) {
@@ -115,8 +101,7 @@ public class FileStructure extends UndecoratedFrame {
                 }
 
                 Node method = null;
-                Pattern pattern = Pattern.compile("^[^%]*function.*\\s=?\\s*" + m.getName() + "\\W");
-                if (pattern.matcher(nodeString).find()) {
+                if (nodeString != null && nodeString.equals(m.getName())) {
                     method = new Node(m, methodNodes.get(i));
                 }
                 if (method == null) continue;
