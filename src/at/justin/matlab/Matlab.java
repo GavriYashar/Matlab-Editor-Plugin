@@ -9,7 +9,6 @@ import matlabcontrol.MatlabProxyFactory;
 import matlabcontrol.MatlabProxyFactoryOptions;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -32,7 +31,7 @@ public class Matlab {
         //Create proxy factory
         MatlabProxyFactoryOptions options = new MatlabProxyFactoryOptions.Builder()
                 .setUsePreviouslyControlledSession(true)
-//                .setJavaDebugger(4444)
+                // .setJavaDebugger(4444)
                 .build();
         MatlabProxyFactory factory = new MatlabProxyFactory(options);
 
