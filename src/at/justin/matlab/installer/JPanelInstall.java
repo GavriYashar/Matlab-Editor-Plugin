@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 /**
  * Created by Andreas Justin on 2016-08-22.
@@ -329,7 +328,7 @@ public class JPanelInstall extends JPanel {
 
     private void appendJCPT(File file) {
         try {
-            Install.appendJCPT(txtJCP,file.toString());
+            Install.appendJCPT(txtJCP, file.toString());
         } catch (IOException e) {
             JOptionPane.showMessageDialog(
                     new JFrame(""),
@@ -354,8 +353,6 @@ public class JPanelInstall extends JPanel {
         }
         {
             // copy props
-            URL url = JPanelInstall.class.getResource("/properties/" + "DefaultProps.properties");
-            File fs = new File(url.getFile());
             File ft1 = new File(id.getPath() + "\\" + "DefaultProps.properties");
             File ft2 = new File(id.getPath() + "\\" + "CustomProps.properties");
 
