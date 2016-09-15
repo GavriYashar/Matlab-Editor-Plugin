@@ -1,6 +1,8 @@
 package at.justin.matlab;
 
+import at.justin.matlab.util.ComponentUtil;
 import com.mathworks.matlab.api.editor.Editor;
+import com.mathworks.mde.editor.EditorSyntaxTextPane;
 import com.mathworks.widgets.text.mcode.cell.CellUtils;
 
 import javax.swing.*;
@@ -174,8 +176,11 @@ public class EditorWrapper {
         return gae().getTextComponent().getSelectionStart();
     }
 
+    public EditorSyntaxTextPane getEditorSyntaxTextPane() {
+        return ComponentUtil.getEditorSyntaxTextPaneForEditor(gae());
+    }
+
     /**
-     *
      * @param line   line number
      * @param select boolean
      */

@@ -4,12 +4,14 @@ import at.justin.matlab.gui.autoDetailViewer.AutoDetailViewer;
 import at.justin.matlab.gui.bookmarks.Bookmarks;
 import at.justin.matlab.mesr.MESR;
 import at.justin.matlab.prefs.Settings;
+import at.justin.matlab.util.ComponentUtil;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.matlab.api.editor.EditorApplicationListener;
 import com.mathworks.matlab.api.editor.EditorEvent;
 import com.mathworks.matlab.api.editor.EditorEventListener;
 import com.mathworks.mde.editor.EditorSyntaxTextPane;
 import com.mathworks.mde.editor.MatlabEditorApplication;
+import com.mathworks.widgets.editor.breakpoints.BreakpointView;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -100,9 +102,7 @@ public class EditorApp {
     public void setCallbacks() {
         List<Editor> openEditors = getMatlabEditorApplication().getOpenEditors();
         for (final Editor editor : openEditors) {
-            if (editors.contains(editor)) {
-                continue;
-            }
+            if (editors.contains(editor)) continue;
             editors.add(editor);
             editor.addEventListener(new EditorEventListener() {
                 @Override
@@ -113,26 +113,19 @@ public class EditorApp {
                     }
                 }
             });
-        }
 
-        List<Component> list = Matlab.getInstance().getComponents("EditorSyntaxTextPane");
-        for (Component component : list) {
-            KeyListener[] keyListeners = component.getKeyListeners();
-            if (Settings.getPropertyBoolean("verbose")) {
-                System.out.println("\n" + keyListeners.length + " keylisteners");
-                for (KeyListener keyListener : keyListeners) {
-                    System.out.println(keyListener.toString());
-                }
-            }
-
+            EditorSyntaxTextPane editorSyntaxTextPane = ComponentUtil.getEditorSyntaxTextPaneForEditor(editor);
+            if (editorSyntaxTextPane == null) continue;
+            KeyListener[] keyListeners = editorSyntaxTextPane.getKeyListeners();
             for (KeyListener keyListener1 : keyListeners) {
                 if (keyListener1.toString().equals(KeyReleasedHandler.getKeyListener().toString())) {
-                    component.removeKeyListener(keyListener1);  // this will assure that the new keylistener is added and the previous one is removed
+                    editorSyntaxTextPane.removeKeyListener(keyListener1);
+                    // this will assure that the new keylistener is added and the previous one is removed
                     // while matlab is still running and the .jar is replaced
                 }
             }
-            component.addKeyListener(KeyReleasedHandler.getKeyListener());
-            EditorSyntaxTextPane editorSyntaxTextPane = (EditorSyntaxTextPane) component;
+
+            editorSyntaxTextPane.addKeyListener(KeyReleasedHandler.getKeyListener());
             editorSyntaxTextPane.getDocument().addDocumentListener(new DocumentListener() {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
@@ -156,6 +149,7 @@ public class EditorApp {
                 }
             });
         }
+
         if (Settings.containsKey("bpColor")) {
             colorizeBreakpointView(Settings.getPropertyColor("bpColor"));
         } else {
@@ -164,17 +158,19 @@ public class EditorApp {
     }
 
     public void removeCallbacks() {
-        List<Component> list = Matlab.getInstance().getComponents("EditorSyntaxTextPane");
-        for (Component component : list) {
-            component.removeKeyListener(KeyReleasedHandler.getKeyListener());
+        List<Editor> openEditors = getMatlabEditorApplication().getOpenEditors();
+        for (Editor editor : openEditors) {
+            EditorSyntaxTextPane editorSyntaxTextPane = ComponentUtil.getEditorSyntaxTextPaneForEditor(editor);
+            editorSyntaxTextPane.removeKeyListener(KeyReleasedHandler.getKeyListener());
         }
         colorizeBreakpointView(DISABLED);
     }
 
     public void colorizeBreakpointView(Color color) {
-        List<Component> list = Matlab.getInstance().getComponents("BreakpointView$2");
-        for (Component component : list) {
-            component.setBackground(color);
+        List<Editor> openEditors = getMatlabEditorApplication().getOpenEditors();
+        for (Editor editor : openEditors) {
+            BreakpointView.Background breakpointView = ComponentUtil.getBreakPointViewForEditor(editor);
+            if (breakpointView != null) breakpointView.setBackground(color);
         }
     }
 }
@@ -247,4 +243,55 @@ public class EditorApp {
 //         KeyReleasedHandler.showBookmarksViewer(e);
 //     }
 // });
+// }
+
+//
+// add callbacks the old way
+// List<Component> list = Matlab.getInstance().getComponents("EditorSyntaxTextPane");
+//         for (Component component : list) {
+//                 KeyListener[] keyListeners = component.getKeyListeners();
+//                 if (Settings.getPropertyBoolean("verbose")) {
+//                 System.out.println("\n" + keyListeners.length + " keylisteners");
+//                 for (KeyListener keyListener : keyListeners) {
+//                 System.out.println(keyListener.toString());
+//                 }
+//                 }
+//
+//                 for (KeyListener keyListener1 : keyListeners) {
+//                 if (keyListener1.toString().equals(KeyReleasedHandler.getKeyListener().toString())) {
+//                 component.removeKeyListener(keyListener1);
+//              // this will assure that the new keylistener is added and the previous one is removed
+//                // while matlab is still running and the .jar is replaced
+//                 }
+//                 }
+//                 component.addKeyListener(KeyReleasedHandler.getKeyListener());
+//                 EditorSyntaxTextPane editorSyntaxTextPane = (EditorSyntaxTextPane) component;
+//                 editorSyntaxTextPane.getDocument().addDocumentListener(new DocumentListener() {
+// @Override
+// public void insertUpdate(DocumentEvent e) {
+//         Bookmarks.getInstance().adjustBookmarks(e, true);
+//         try {
+//         String insertString = e.getDocument().getText(e.getOffset(), e.getLength());
+//         if (insertString.equals("%")) MESR.doYourThing();
+//         } catch (BadLocationException ignored) {
+//         ignored.printStackTrace();
+//         }
+//         }
+//
+// @Override
+// public void removeUpdate(DocumentEvent e) {
+//         Bookmarks.getInstance().adjustBookmarks(e, false);
+//         }
+//
+// @Override
+// public void changedUpdate(DocumentEvent e) {
+//         EditorWrapper.setIsDirty(true);
+//         }
+//         });
+//         }
+
+// old  breakpointview color
+// List<Component> list = Matlab.getInstance().getComponents("BreakpointView$2");
+// for (Component component : list) {
+//     component.setBackground(color);
 // }
