@@ -13,15 +13,12 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 
 /** Created by Andreas Justin on 2016 - 02 - 25. */
-public class TreeRenderer extends DefaultTreeCellRenderer {
-    DefaultTreeCellRenderer defaultRenderer = new DefaultTreeCellRenderer();
+class TreeRenderer extends DefaultTreeCellRenderer {
+    // private DefaultTreeCellRenderer defaultRenderer = new DefaultTreeCellRenderer();
 
-    Color backgroundSelectionColor;
-    Color backgroundNonSelectionColor;
-
-    public TreeRenderer() {
-        backgroundSelectionColor = defaultRenderer.getBackgroundSelectionColor();
-        backgroundNonSelectionColor = defaultRenderer.getBackgroundNonSelectionColor();
+    TreeRenderer() {
+        // Color backgroundSelectionColor = defaultRenderer.getBackgroundSelectionColor();
+        // Color backgroundNonSelectionColor = defaultRenderer.getBackgroundNonSelectionColor();
     }
 
     private static Icon decoratePublicPrivate(Node node, Icon icon, String setting) {
@@ -30,36 +27,32 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
             case "intellij":
                 if (node.isPrivate()) {
                     Icon decorator = Icons.DECORATOR_PRIVATE_INTELLIJ.getIcon();
+                    if (node.isHidden()) decorator = IconUtil.color(decorator, hiddenColor);
                     icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
                 } else {
                     Icon decorator = Icons.DECORATOR_PUBLIC_INTELLIJ.getIcon();
-                    if (node.isHidden()) {
-                        decorator = IconUtil.color(decorator, hiddenColor);
-                    }
+                    if (node.isHidden()) decorator = IconUtil.color(decorator, hiddenColor);
                     icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
                 }
                 break;
             case "matlab":
                 if (node.isPrivate()) {
                     Icon decorator = ProjectIcon.PRIVATE_OVERLAY_11x11.getIcon();
+                    if (node.isHidden()) decorator = IconUtil.color(decorator, hiddenColor);
                     icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
                 } else {
                     Icon decorator = ProjectIcon.PUBLIC_OVERLAY_11x11.getIcon();
-                    if (node.isHidden()) {
-                        decorator = IconUtil.color(decorator, hiddenColor);
-                    }
+                    if (node.isHidden()) decorator = IconUtil.color(decorator, hiddenColor);
                     icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
                 }
                 break;
             case "eclipse":
-                if (!node.isPrivate()) {
+                if (node.isPrivate()) {
                     icon = Icons.METHOD_PRIVATE_ECLIPSE.getIcon();
                 } else {
                     icon = Icons.METHOD_ECLIPSE.getIcon();
-                    if (node.isHidden()) {
-                        icon = IconUtil.color(icon, hiddenColor);
-                    }
                 }
+                if (node.isHidden()) icon = IconUtil.color(icon, hiddenColor);
         }
         return icon;
     }
@@ -69,7 +62,6 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
             case "intellij":
                 if (node.isStatic()) {
                     Icon decorator = Icons.DECORATOR_STATIC_INTELLIJ.getIcon();
-                    // decorator = IconUtil.color(decorator, new Color(180, 180, 180));
                     icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.SOUTH_WEST_INSIDE);
                 }
                 break;
