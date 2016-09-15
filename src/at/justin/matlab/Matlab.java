@@ -1,6 +1,7 @@
 package at.justin.matlab;
 
 import at.justin.matlab.util.ComponentUtil;
+import com.mathworks.mde.cmdwin.XCmdWndView;
 import com.mathworks.mde.desk.MLDesktop;
 import com.mathworks.widgets.desk.DTRootPane;
 import matlabcontrol.MatlabConnectionException;
@@ -62,6 +63,10 @@ public class Matlab {
 
     public MLDesktop getMlDesktop() {
         return MLDesktop.getInstance();
+    }
+
+    public XCmdWndView getXCmdWndView() {
+        return CommandWindow.getXCmdWndView();
     }
 
     public void setStatusMessage(String string) {

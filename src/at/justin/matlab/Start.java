@@ -4,20 +4,18 @@ import at.justin.matlab.gui.bookmarks.Bookmarks;
 import at.justin.matlab.installer.Install;
 import at.justin.matlab.prefs.Settings;
 import com.mathworks.mlwidgets.prefs.PrefsChanger;
-import com.mathworks.mlwidgets.shortcuts.ShortcutUtils;
 
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by Andreas Justin on 2016-08-25.
- */
+/** Created by Andreas Justin on 2016-08-25. */
 public class Start {
     public static void start(String customSettings, String defaultSettings) {
         if (customSettings != null && defaultSettings != null) {
             loadSettings(customSettings, defaultSettings);
         }
         setEditorCallbacks();
+        setCmdWinCallbacks();
         addPrefs();
         MatlabKeyStrokesCommands.setCustomKeyStrokes();
         Bookmarks.getInstance().load();
@@ -42,7 +40,11 @@ public class Start {
     }
 
     private static void setEditorCallbacks() {
-        at.justin.matlab.EditorApp.getInstance().setCallbacks();
+        EditorApp.getInstance().setCallbacks();
+    }
+
+    private static void setCmdWinCallbacks() {
+        CommandWindow.setCallbacks();
     }
 
     private static void addPrefs() {
