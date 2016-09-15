@@ -9,9 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-/**
- * Created by Andreas Justin on 2016-08-23.
- */
+/** Created by Andreas Justin on 2016-08-23. */
 public class FileUtils {
 
     public static void copyFile(File source, File target) {
@@ -40,6 +38,25 @@ public class FileUtils {
         }
         br.close();
         return lines;
+    }
+
+    public static String readFileToString(File file) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String s = readBufferedReaderToString(br, true);
+        br.close();
+        return s;
+    }
+
+    public static String readBufferedReaderToString(BufferedReader br, boolean trim) throws IOException {
+        String line;
+        String s = "";
+        while ((line = br.readLine()) != null) {
+            if (trim) {
+                line = line.trim();
+            }
+            s += line + "\n";
+        }
+        return s;
     }
 
     public static void appendFileText(File source, String s) throws IOException {
