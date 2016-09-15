@@ -35,6 +35,7 @@ public class Debug {
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "methodsTree", methodsTree);
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "breakpointMargin", bpm);
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "executionArrowDisplay", ead);
+            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "mlDesktop", Matlab.getInstance().getMlDesktop());
 
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorApp", ea);
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorWrapper", EditorWrapper.getInstance());
