@@ -7,6 +7,8 @@ import at.justin.matlab.gui.clipboardStack.ClipboardStack;
 import at.justin.matlab.gui.fileStructure.FileStructure;
 import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.KeyStrokeUtil;
+import com.mathworks.mde.cmdwin.XCmdWndView;
+import com.mathworks.mde.editor.EditorSyntaxTextPane;
 import matlabcontrol.MatlabInvocationException;
 
 import javax.swing.*;
@@ -119,19 +121,27 @@ class KeyReleasedHandler {
         boolean altOnlyFlag = !ctrlFlag && !shiftFlag && altFlag;
         int mod = KeyStrokeUtil.keyEventModifiersToKeyStrokeModifiers(e.getModifiers());
 
-        if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C) doCopyAction(null);
-        if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_V) showClipboardStack(null);
-        if (ctrlOnlyFlag && e.getKeyCode() == KeyEvent.VK_F12) showFileStructure(null);
-        if (Settings.DEBUG && ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_E) DEBUG(null);
+        boolean isCmdWin = e.getSource() instanceof XCmdWndView;
+        boolean isEditor = e.getSource() instanceof EditorSyntaxTextPane;
 
-        // bookmark thing
-        if (KS_BOOKMARK.getModifiers() == mod && KS_BOOKMARK.getKeyCode() == e.getKeyCode()) {
-            ctrlf2 = true;
-            // Doing the bookmarks here is error prone and won't work correctly.
-            // this function ist called every time (afaik) before Matlab's keyRelease
-        } else if (KS_SHOWBOOKARKS.getModifiers() == mod && KS_SHOWBOOKARKS.getKeyCode() == e.getKeyCode()) {
-            BookmarksViewer.getInstance().showDialog();
+        if (isEditor && !isCmdWin) {
+            // do only editor
+            if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C) doCopyAction(null);
+            // bookmark thing
+            if (KS_BOOKMARK.getModifiers() == mod && KS_BOOKMARK.getKeyCode() == e.getKeyCode()) {
+                ctrlf2 = true;
+                // Doing the bookmarks here is error prone and won't work correctly.
+                // this function ist called every time (afaik) before Matlab's keyRelease
+            } else if (KS_SHOWBOOKARKS.getModifiers() == mod && KS_SHOWBOOKARKS.getKeyCode() == e.getKeyCode()) {
+                BookmarksViewer.getInstance().showDialog();
+            }
+        } else if (!isEditor && isCmdWin) {
+            if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C) doCopyActionCmdView(null);
         }
+        // do editor and cmdWin
+        if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_V) showClipboardStack(null);
+        if (Settings.DEBUG && ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_E) DEBUG(null);
+        if (ctrlOnlyFlag && e.getKeyCode() == KeyEvent.VK_F12) showFileStructure(null);
     }
 
     private static void operatorEqualsThing(KeyEvent e) {
@@ -180,6 +190,10 @@ class KeyReleasedHandler {
         // } catch (UnsupportedFlavorException | IOException ignored) {
         //     e.printStackTrace();
         // }
+    }
+
+    static void doCopyActionCmdView(ActionEvent event) {
+        ClipboardStack.getInstance().add(CommandWindow.getSelectedTxt());
     }
 
     static void showClipboardStack(ActionEvent event) {
