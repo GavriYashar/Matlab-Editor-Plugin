@@ -2,16 +2,13 @@ package at.justin.matlab.prefs;
 
 import at.justin.matlab.EditorApp;
 import com.mathworks.mwswing.MJPanel;
-import com.mathworks.services.settings.Setting;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Created by Andreas Justin on 2016-08-12.
- */
+/** Created by Andreas Justin on 2016-08-12. */
 
 // import com.mathworks.mlwidgets.prefs.MATLABProductNodePrefsPanel;
 
@@ -190,7 +187,8 @@ public class PrefsPanel extends MJPanel {
         PropertyType[] types;
         String[] helptxt;
         if (Settings.getPropertyBoolean("isPublicUser")) {
-            properties = new String[]{"verbose",
+            properties = new String[]{"isPublicUser",
+                    "verbose",
                     "autoReloadProps",
                     "enableDoubleOperator",
                     "autoDetailViewer",
@@ -200,16 +198,19 @@ public class PrefsPanel extends MJPanel {
                     PropertyType.BOOLEAN,
                     PropertyType.BOOLEAN,
                     PropertyType.BOOLEAN,
+                    PropertyType.BOOLEAN,
                     PropertyType.COLOR,
                     PropertyType.STRING_DROPDOWN};
-            helptxt = new String[]{Settings.getProperty("help.verbose"),
+            helptxt = new String[]{Settings.getProperty("help.isPublicUser"),
+                    Settings.getProperty("help.verbose"),
                     Settings.getProperty("help.autoReloadProps"),
                     Settings.getProperty("help.enableDoubleOperator"),
                     Settings.getProperty("help.autoDetailViewer"),
                     Settings.getProperty("help.bpColor"),
                     Settings.getProperty("fs.iconSetHELP")};
         } else {
-            properties = new String[]{"ExtendedEditor",
+            properties = new String[]{"isPublicUser",
+                    "ExtendedEditor",
                     "EnableAutoBrackets",
                     "EnableOperator",
                     "enableAlphaPhase",
@@ -227,9 +228,11 @@ public class PrefsPanel extends MJPanel {
                     PropertyType.BOOLEAN,
                     PropertyType.BOOLEAN,
                     PropertyType.BOOLEAN,
+                    PropertyType.BOOLEAN,
                     PropertyType.COLOR,
                     PropertyType.STRING_DROPDOWN};
-            helptxt = new String[]{Settings.getProperty("help.ExtendedEditor"),
+            helptxt = new String[]{Settings.getProperty("help.isPublicUser"),
+                    Settings.getProperty("help.ExtendedEditor"),
                     Settings.getProperty("help.EnableAutoBrackets"),
                     Settings.getProperty("help.EnableOperator"),
                     Settings.getProperty("help.enableAlphaPhase"),
@@ -240,7 +243,6 @@ public class PrefsPanel extends MJPanel {
                     Settings.getProperty("help.bpColor"),
                     Settings.getProperty("help.fs.iconSet")};
         }
-
         addPropsToPanel(ps, properties, types, helptxt);
 
         jp.add(ps);

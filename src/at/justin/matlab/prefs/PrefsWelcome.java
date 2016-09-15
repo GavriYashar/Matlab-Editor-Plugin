@@ -99,15 +99,7 @@ public class PrefsWelcome extends MJPanel {
     }
 
     private void addVersion() throws IOException {
-        String versionString = Install.getFileOfClass().toString();
-        Pattern pattern = Pattern.compile("\\d{4}[a-z]");
-        Matcher matcher = pattern.matcher(versionString);
-        if (matcher.find()) {
-            int s = matcher.start();
-            versionString = versionString.substring(s, s + 5);
-        } else {
-            versionString = "To do a great right do a little wrong. <William Shakespeare>";
-        }
+        String versionString = Install.getVersion();
 
         JPanel jp = new JPanel();
         jp.setLayout(new FlowLayout());
