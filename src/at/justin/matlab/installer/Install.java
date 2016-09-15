@@ -9,6 +9,8 @@ import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** Created by Andreas Justin on 2016-08-22. */
 public class Install {
@@ -81,5 +83,18 @@ public class Install {
 
     public static void appendJCPT(File javaClassPathText, String s) throws IOException {
         FileUtils.appendFileText(javaClassPathText, s);
+    }
+
+    public static String getVersion() throws IOException {
+        String versionString = Install.getFileOfClass().toString();
+        Pattern pattern = Pattern.compile("\\d{4}[a-z]");
+        Matcher matcher = pattern.matcher(versionString);
+        if (matcher.find()) {
+            int s = matcher.start();
+            versionString = versionString.substring(s, s + 5);
+        } else {
+            versionString = "To do a great right do a little wrong. <William Shakespeare>";
+        }
+        return versionString;
     }
 }
