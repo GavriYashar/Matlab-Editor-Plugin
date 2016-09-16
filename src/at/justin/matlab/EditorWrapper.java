@@ -26,8 +26,17 @@ public class EditorWrapper {
         return INSTANCE;
     }
 
+    public static boolean isDirty() {
+        return isDirty;
+    }
+
+    public static void setIsDirty(boolean isDirty) {
+        EditorWrapper.isDirty = isDirty;
+    }
+
     /**
      * i'm lazy and i know it
+     *
      * @return returns the active Editor Object
      */
     public Editor gae() {
@@ -48,15 +57,15 @@ public class EditorWrapper {
 
     public String getFullQualiefiedClass() {
         String lName = EditorWrapper.getInstance().getLongName();
-        lName = lName.replace("\\",".");
-        lName = lName.replace("/",".");
+        lName = lName.replace("\\", ".");
+        lName = lName.replace("/", ".");
         int start = lName.indexOf("+");
         if (start < 0) {
             start = lName.indexOf(EditorWrapper.getInstance().getShortName());
         }
         lName = lName.substring(start);
-        lName = lName.replace("+","");
-        return lName.substring(0,lName.length()-2);
+        lName = lName.replace("+", "");
+        return lName.substring(0, lName.length() - 2);
     }
 
     public File getFile() {
@@ -65,6 +74,7 @@ public class EditorWrapper {
 
     /**
      * converts position in line and column
+     *
      * @param pos
      * @return [line, column]
      */
@@ -74,18 +84,19 @@ public class EditorWrapper {
 
     /**
      * converts line an column to position
+     *
      * @param line line number
-     * @param col column
+     * @param col  column
      * @return position of line and column
      */
     public int lc2pos(int line, int col) {
         int[] lc = fixLineCol(line, col);
-        line = lc[0]-1;// line 1 is actually 0;
+        line = lc[0] - 1;// line 1 is actually 0;
         col = lc[1];
         String[] strings = getTextArray();
         int p = 0;
         for (int i = 0; i < line; i++) {
-            p += getLineLength(i+1);
+            p += getLineLength(i + 1);
         }
         col = col > strings[line].length() ? strings[line].length() : col;
         return p + col - 1;
@@ -93,8 +104,8 @@ public class EditorWrapper {
 
     public int getLineLength(int line) {
         String[] strings = getTextArray();
-        int[] lc = fixLineCol(line,1);
-        return strings[lc[0]-1].length()+1; // for \n
+        int[] lc = fixLineCol(line, 1);
+        return strings[lc[0] - 1].length() + 1; // for \n
     }
 
     public String getText() {
@@ -104,14 +115,14 @@ public class EditorWrapper {
     public String getText(int start, int end) {
         String txt = getText();
         if (start < 0) start = 0;
-        if (end > txt.length() || end < 0) end = txt.length()-1;
+        if (end > txt.length() || end < 0) end = txt.length() - 1;
         if (end < start) return "";
-        return txt.substring(start,end);
+        return txt.substring(start, end);
     }
 
     public String getTextOffsetLength(int offset, int length) {
         try {
-            return gae().getTextComponent().getText(offset,length);
+            return gae().getTextComponent().getText(offset, length);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
@@ -120,6 +131,7 @@ public class EditorWrapper {
 
     /**
      * Splits getText(). lines, at the end w/o any character except new line will be truncated at not returned
+     *
      * @return string []
      */
     public String[] getTextArray() {
@@ -132,6 +144,9 @@ public class EditorWrapper {
 
     public void updateTextArray() {
         textArray = gae().getText().split("\\n");
+        for (int i = 0; i < textArray.length; i++) {
+            textArray[i] += "\n";
+        }
     }
 
     public String getSelectedTxt() {
@@ -139,7 +154,7 @@ public class EditorWrapper {
     }
 
     public void setSelectedTxt(String s) {
-        gae().replaceText(s,getSelectionPositionStart(),getSelectionPositionEnd());
+        gae().replaceText(s, getSelectionPositionStart(), getSelectionPositionEnd());
     }
 
     public int getCaretPosition() {
@@ -154,26 +169,27 @@ public class EditorWrapper {
      * @return [start, end] position
      */
     public int[] getSelectionPosition() {
-        return new int[] {getSelectionPositionStart(), getSelectionPositionEnd()};
+        return new int[]{getSelectionPositionStart(), getSelectionPositionEnd()};
     }
 
     public void setSelectionPosition(int s, int e) {
-        gae().setSelection(s,e);
+        gae().setSelection(s, e);
     }
 
     public int getSelectionPositionEnd() {
         return gae().getTextComponent().getSelectionEnd();
     }
 
-    public void setSelectionPositionStart(int s) {
-        gae().getTextComponent().setSelectionStart(s);
-    }
     public void setSelectionPositionEnd(int e) {
         gae().getTextComponent().setSelectionStart(e);
     }
 
     public int getSelectionPositionStart() {
         return gae().getTextComponent().getSelectionStart();
+    }
+
+    public void setSelectionPositionStart(int s) {
+        gae().getTextComponent().setSelectionStart(s);
     }
 
     public EditorSyntaxTextPane getEditorSyntaxTextPane() {
@@ -184,18 +200,18 @@ public class EditorWrapper {
      * @param line   line number
      * @param select boolean
      */
-    public void goToLine(int line,boolean select) {
-        gae().goToLine(line,select);
+    public void goToLine(int line, boolean select) {
+        gae().goToLine(line, select);
     }
 
     public void goToLineCol(int line, int col) {
-        int[] lc = fixLineCol(line,col);
+        int[] lc = fixLineCol(line, col);
         int pos = lc2pos(lc[0], lc[1]);
-        gae().goToPositionAndHighlight(pos,pos);
+        gae().goToPositionAndHighlight(pos, pos);
     }
 
     public void selectLine(int line) {
-        gae().goToLine(line,true);
+        gae().goToLine(line, true);
     }
 
     public void insertTextAtPos(String txt, int i) {
@@ -205,7 +221,8 @@ public class EditorWrapper {
 
     public String getTextByLine(int line) {
         String[] strings = getTextArray();
-        return strings[line-1];
+        if (line - 1 >= strings.length) return "";
+        return strings[line - 1];
     }
 
     public String[] getTextByLines(int[] lines) {
@@ -213,8 +230,8 @@ public class EditorWrapper {
         String[] retString = new String[lines.length];
 
         int j = 0;
-        for (int i: lines) {
-            retString[j] = strings[i-1];
+        for (int i : lines) {
+            retString[j] = strings[i - 1];
             j++;
         }
         return retString;
@@ -222,13 +239,14 @@ public class EditorWrapper {
 
     /**
      * will return all < <start, stop>, <start, stop> ...> positions of text found by expr
-     * @param expr  valid regular expression
+     *
+     * @param expr        valid regular expression
      * @param startSearch index where to begin
-     * @param stopSearch index where to end
+     * @param stopSearch  index where to end
      * @return
      */
     public ArrayList<Integer> getTextPosByExpr(String expr, int startSearch, int stopSearch) {
-        String text = getText(startSearch,stopSearch);
+        String text = getText(startSearch, stopSearch);
         Pattern p = Pattern.compile(expr);
         Matcher m = p.matcher(text);
 
@@ -243,6 +261,7 @@ public class EditorWrapper {
 
     /**
      * returns all line numbers where a section is found including line 1
+     *
      * @return line numbers array
      */
     public int[] getSectionAllLines() {
@@ -250,7 +269,6 @@ public class EditorWrapper {
     }
 
     /**
-     *
      * @param pos position
      * @return [start, end] position of section surrounding the given position
      * @throws Exception
@@ -266,10 +284,10 @@ public class EditorWrapper {
         int end = -1;
         for (int i = 0; i < sectionLines.length; i++) {
             start = sectionPos[i];
-            if (i < sectionLines.length-1)
-                end = sectionPos[i+1];
+            if (i < sectionLines.length - 1)
+                end = sectionPos[i + 1];
             else
-                end = lc2pos(Integer.MAX_VALUE,1);
+                end = lc2pos(Integer.MAX_VALUE, 1);
 
             if (pos >= start && pos < end) {
                 break;
@@ -278,28 +296,28 @@ public class EditorWrapper {
         if (start == -1 || end == -1)
             throw new Exception("no section found - error in plugin code getSectionPosByPos");
 
-        return new int[] {start,end};
+        return new int[]{start, end};
     }
 
     /**
-     *
      * @param line line number
      * @return [start, end] position of section surrounding the given line
      * @throws Exception
      */
     public int[] getSectionPosByLine(int line) throws Exception {
-        return getSectionPosByPos(lc2pos(line,1));
+        return getSectionPosByPos(lc2pos(line, 1));
     }
 
     public String getTextOfSectionByPos(int pos) throws Exception {
         int[] se = getSectionPosByPos(pos);
-        return getText(se[0],se[1]);
+        return getText(se[0], se[1]);
     }
 
     /**
      * fixing line and number to active editor valid values
+     *
      * @param line line number
-     * @param col column
+     * @param col  column
      * @return fixed [line, column]
      */
     private int[] fixLineCol(int line, int col) {
@@ -307,8 +325,8 @@ public class EditorWrapper {
         if (line < 1) line = 1;
         if (line > strings.length) line = strings.length;
         if (col < 1) col = 1;
-        if (col > strings[line-1].length()) col = strings[line-1].length()+1;
-        return new int[] {line,col};
+        if (col > strings[line - 1].length()) col = strings[line - 1].length() + 1;
+        return new int[]{line, col};
     }
 
     public Component sandbox() {
@@ -319,15 +337,23 @@ public class EditorWrapper {
         int[] lc = pos2lc(getCaretPosition());
         return lc[0];
     }
+
     public String getCurrentLineText() {
         return getTextByLine(getCurrentLine());
     }
 
-    public static boolean isDirty() {
-        return isDirty;
-    }
-
-    public static void setIsDirty(boolean isDirty) {
-        EditorWrapper.isDirty = isDirty;
+    public void deleteCurrentLine() {
+        int line = getCurrentLine();
+        selectLine(line);
+        int[] se = getSelectionPosition();
+        if (line <= 1) {
+            setSelectionPosition(se[0], se[1] + 1);
+            setSelectedTxt("");
+            goToLine(line, false);
+        } else {
+            setSelectionPosition(se[0] -1, se[1]);
+            setSelectedTxt("");
+            goToLine(line - 1, false);
+        }
     }
 }

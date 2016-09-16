@@ -127,6 +127,7 @@ class KeyReleasedHandler {
         if (isEditor && !isCmdWin) {
             // do only editor
             if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C) doCopyAction(null);
+            if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_Y) doDeleteLineAction();
             // bookmark thing
             if (KS_BOOKMARK.getModifiers() == mod && KS_BOOKMARK.getKeyCode() == e.getKeyCode()) {
                 ctrlf2 = true;
@@ -136,12 +137,17 @@ class KeyReleasedHandler {
                 BookmarksViewer.getInstance().showDialog();
             }
         } else if (!isEditor && isCmdWin) {
+            // do only cmdWin
             if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C) doCopyActionCmdView(null);
         }
         // do editor and cmdWin
         if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_V) showClipboardStack(null);
         if (Settings.DEBUG && ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_E) DEBUG(null);
         if (ctrlOnlyFlag && e.getKeyCode() == KeyEvent.VK_F12) showFileStructure(null);
+    }
+
+    private static void doDeleteLineAction() {
+        EditorWrapper.getInstance().deleteCurrentLine();
     }
 
     private static void operatorEqualsThing(KeyEvent e) {
