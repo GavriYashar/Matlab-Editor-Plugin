@@ -106,7 +106,7 @@ public class EditorWrapper {
     public int getLineLength(int line) {
         String[] strings = getTextArray();
         int[] lc = fixLineCol(line, 1);
-        return strings[lc[0] - 1].length() + 1; // for \n
+        return strings[lc[0] - 1].length(); // + 1 for \n (now \n is added at end)
     }
 
     public String getText() {
@@ -345,17 +345,14 @@ public class EditorWrapper {
 
     public void deleteCurrentLine() {
         int line = getCurrentLine();
-        selectLine(line);
-        int[] se = getSelectionPosition();
-        if (line <= 1) {
-            setSelectionPosition(se[0], se[1] + 1);
-            setSelectedTxt("");
-            goToLine(line, false);
-        } else {
-            setSelectionPosition(se[0] - 1, se[1]);
-            setSelectedTxt("");
-            goToLine(line - 1, false);
-        }
+        int[] se = new int[2];
+        se[0] = lc2pos(line, 0);
+        se[1] = lc2pos(line + 1, 0) + 1;
+
+        System.out.println(se[0] + " " + se[1]);
+        setSelectionPosition(se[0], se[1] - 1);
+        setSelectedTxt("");
+        goToLine(line - 1, false);
     }
 
     public void duplicateCurrentLine() {
