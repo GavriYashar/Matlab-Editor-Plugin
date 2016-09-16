@@ -107,6 +107,7 @@ public class PrefsPanel extends MJPanel {
 
         add(jsp, gbc);
 
+        addFeatureSelector();
         addMEPProps();
         if (Settings.getPropertyBoolean("isPublicUser")) {
             return;
@@ -114,6 +115,32 @@ public class PrefsPanel extends MJPanel {
         addOtherProps();
         addLMProps();
         // addTTHListProps();
+    }
+
+    private void addFeatureSelector() {
+        JPanel ps = new JPanel();
+        ps.setLayout(new GridBagLayout());
+        ps.setBorder(BorderFactory.createTitledBorder("Features"));
+
+        String[] properties = {"feature.enableClipboardStack",
+                "feature.enableFileStructure",
+                "feature.enableBookmarksViewer",
+                "feature.enableDuplicateLine",
+                "feature.enableDeleteCurrentLine"};
+        PropertyType[] types = {PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN};
+        String[] helptxt = {Settings.getProperty("help.feature.enableClipboardStack"),
+                Settings.getProperty("help.feature.enableFileStructure"),
+                Settings.getProperty("help.feature.enableBookmarksViewer"),
+                Settings.getProperty("help.feature.enableDuplicateLine"),
+                Settings.getProperty("help.feature.enableDeleteCurrentLine"),
+        };
+
+        addPropsToPanel(ps, properties, types, helptxt);
+        jp.add(ps);
     }
 
     private void addPropsToPanel(JPanel ps, String[] properties, PropertyType[] types, String[] helptxt) {

@@ -126,24 +126,38 @@ class KeyReleasedHandler {
 
         if (isEditor && !isCmdWin) {
             // do only editor
-            if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C) doCopyAction(null);
-            if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_Y) doDeleteLineAction();
-            if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_D) doDuplicateLineAction();
-            if (KS_BOOKMARK.getModifiers() == mod && KS_BOOKMARK.getKeyCode() == e.getKeyCode()) {
+            if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C
+                    && Settings.getPropertyBoolean("feature.enableClipboardStack"))
+                doCopyAction(null);
+            if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_Y
+                    && Settings.getPropertyBoolean("feature.enableDeleteCurrentLine"))
+                doDeleteLineAction();
+            if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_D
+                    && Settings.getPropertyBoolean("feature.enableDuplicateLine"))
+                doDuplicateLineAction();
+            if (KS_BOOKMARK.getModifiers() == mod && KS_BOOKMARK.getKeyCode() == e.getKeyCode()
+                    && Settings.getPropertyBoolean("feature.enableBookmarksViewer"))
                 ctrlf2 = true;
                 // Doing the bookmarks here is error prone and won't work correctly.
                 // this function ist called every time (afaik) before Matlab's keyRelease
-            } else if (KS_SHOWBOOKARKS.getModifiers() == mod && KS_SHOWBOOKARKS.getKeyCode() == e.getKeyCode()) {
+            else if (KS_SHOWBOOKARKS.getModifiers() == mod && KS_SHOWBOOKARKS.getKeyCode() == e.getKeyCode()
+                    && Settings.getPropertyBoolean("feature.enableBookmarksViewer"))
                 BookmarksViewer.getInstance().showDialog();
-            }
         } else if (!isEditor && isCmdWin) {
             // do only cmdWin
-            if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C) doCopyActionCmdView(null);
+            if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C
+                    && Settings.getPropertyBoolean("feature.enableClipboardStack"))
+                doCopyActionCmdView(null);
         }
         // do editor and cmdWin
-        if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_V) showClipboardStack(null);
-        if (Settings.DEBUG && ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_E) DEBUG(null);
-        if (ctrlOnlyFlag && e.getKeyCode() == KeyEvent.VK_F12) showFileStructure(null);
+        if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_V
+                && Settings.getPropertyBoolean("feature.enableClipboardStack"))
+            showClipboardStack(null);
+        if (Settings.DEBUG && ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_E)
+            DEBUG(null);
+        if (ctrlOnlyFlag && e.getKeyCode() == KeyEvent.VK_F12
+                && Settings.getPropertyBoolean("feature.enableFileStructure"))
+            showFileStructure(null);
     }
 
     private static void doDeleteLineAction() {
