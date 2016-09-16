@@ -349,7 +349,6 @@ public class EditorWrapper {
         se[0] = lc2pos(line, 0);
         se[1] = lc2pos(line + 1, 0) + 1;
 
-        System.out.println(se[0] + " " + se[1]);
         setSelectionPosition(se[0], se[1] - 1);
         setSelectedTxt("");
         goToLine(line - 1, false);
