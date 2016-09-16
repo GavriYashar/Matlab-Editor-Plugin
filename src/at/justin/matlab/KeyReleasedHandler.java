@@ -128,7 +128,7 @@ class KeyReleasedHandler {
             // do only editor
             if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C) doCopyAction(null);
             if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_Y) doDeleteLineAction();
-            // bookmark thing
+            if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_D) doDuplicateLineAction();
             if (KS_BOOKMARK.getModifiers() == mod && KS_BOOKMARK.getKeyCode() == e.getKeyCode()) {
                 ctrlf2 = true;
                 // Doing the bookmarks here is error prone and won't work correctly.
@@ -148,6 +148,10 @@ class KeyReleasedHandler {
 
     private static void doDeleteLineAction() {
         EditorWrapper.getInstance().deleteCurrentLine();
+    }
+
+    private static void doDuplicateLineAction() {
+        EditorWrapper.getInstance().duplicateCurrentLine();
     }
 
     private static void operatorEqualsThing(KeyEvent e) {

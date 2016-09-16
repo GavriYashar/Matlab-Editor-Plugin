@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 /** Created by Andreas Justin on 2016 - 02 - 07. */
 public class EditorWrapper {
+    private static final Pattern spaceStart = Pattern.compile("^\\s*");
     private static EditorWrapper INSTANCE;
     private static String[] textArray;
     /** if true textArray needs to be updated, fixing a huge performance issue */
@@ -351,9 +352,22 @@ public class EditorWrapper {
             setSelectedTxt("");
             goToLine(line, false);
         } else {
-            setSelectionPosition(se[0] -1, se[1]);
+            setSelectionPosition(se[0] - 1, se[1]);
             setSelectedTxt("");
             goToLine(line - 1, false);
         }
+    }
+
+    public void duplicateCurrentLine() {
+        int line = getCurrentLine();
+        String lineStr = getTextByLine(line);
+        Matcher matcher = spaceStart.matcher(lineStr);
+        if (matcher.find()) {
+            int e = matcher.end();
+            lineStr = lineStr.substring(e) + lineStr.substring(0, e);
+        }
+        goToLine(line, false);
+        setSelectedTxt(lineStr);
+        goToLine(line + 1, false);
     }
 }
