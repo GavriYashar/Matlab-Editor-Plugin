@@ -262,6 +262,7 @@ public class Bookmarks {
                     if (bm.getLine() > minLine) {
                         if (bm.getLine() > minLine && bm.getLine() < maxLine && rangeLine != -1) {
                             bookmarkList.remove(bookmarks.get(bmRunner));
+                            bookmarks.remove(bmRunner);
                             --bmRunner;
                         } else if (rangeLine != -1 || bm.getLine() != minLine) {
                             int var8 = -999;
@@ -271,6 +272,7 @@ public class Bookmarks {
 
                             if (var8 == bm.getLine() + rangeLine) {
                                 bookmarkList.remove(bookmarks.get(bmRunner));
+                                bookmarks.remove(bmRunner);
                                 --bmRunner;
                             } else {
                                 bm.setLine(bm.getLine() + rangeLine);

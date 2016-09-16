@@ -6,27 +6,27 @@ import at.justin.matlab.util.KeyStrokeUtil;
 import at.justin.matlab.util.ScreenSize;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- * Created by Andreas Justin on 2016-08-25.
- */
+/** Created by Andreas Justin on 2016-08-25. */
 public class BookmarksViewer extends UndecoratedFrame {
 
     private static final String ENTER_ACTION = "enterAction";
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
-    public final AbstractAction enterAction = new AbstractAction(ENTER_ACTION) {
+    private static BookmarksViewer INSTANCE;
+    private static Dimension dimension = new Dimension(600, 400);
+    private static Bookmarks bookmarks = Bookmarks.getInstance();
+    private static JList<Object> jList;
+    private static JButton jbRename;
+    private final AbstractAction enterAction = new AbstractAction(ENTER_ACTION) {
         @Override
         public void actionPerformed(ActionEvent e) {
             selectBookmark();
         }
     };
-
-    private static BookmarksViewer INSTANCE;
-    private static Dimension dimension = new Dimension(600, 400);
-    private static Bookmarks bookmarks = Bookmarks.getInstance();
-    private static JList<Object> jList;
 
     private BookmarksViewer() {
         setLayout();
@@ -75,8 +75,8 @@ public class BookmarksViewer extends UndecoratedFrame {
         JPanel jp = new JPanel();
         jp.setLayout(new BoxLayout(jp, BoxLayout.X_AXIS));
 
-        JButton jbName = new JButton("Rename");
-        jbName.addActionListener(new ActionListener() {
+        jbRename = new JButton("Rename");
+        jbRename.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Bookmark bookmark = (Bookmark) jList.getSelectedValue();
@@ -84,23 +84,25 @@ public class BookmarksViewer extends UndecoratedFrame {
                 String name = JOptionPane.showInputDialog(
                         new JFrame(),
                         "Enter Short bookmark description",
-                        "Bookmark Descirption",
+                        "Bookmark description",
                         JOptionPane.QUESTION_MESSAGE);
                 if (name == null) return;
                 bookmark.setName(name);
                 updateList();
             }
         });
-        jp.add(jbName);
+        jp.add(jbRename);
 
         JButton jbDelete = new JButton("Remove");
         jbDelete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Bookmark bookmark = (Bookmark) jList.getSelectedValue();
-                if (bookmark == null) return;
-                Bookmarks.getInstance().removeBookmark(bookmark);
-                Bookmarks.getInstance().setEditorBookmarks(bookmark.getEditor());
+                java.util.List<Object> bookmarkList = jList.getSelectedValuesList();
+                for (Object o : bookmarkList) {
+                    Bookmark bookmark = (Bookmark) o;
+                    Bookmarks.getInstance().removeBookmark(bookmark);
+                    Bookmarks.getInstance().setEditorBookmarks(bookmark.getEditor());
+                }
                 updateList();
             }
         });
@@ -117,7 +119,7 @@ public class BookmarksViewer extends UndecoratedFrame {
 
     private void addViewPanel() {
         jList = new JList<>(bookmarks.getBookmarkList().toArray());
-        jList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        jList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jList.setLayoutOrientation(JList.VERTICAL);
         jList.setVisibleRowCount(-1);
         jList.setCellRenderer(new BookmarkCellRenderer());
@@ -125,26 +127,29 @@ public class BookmarksViewer extends UndecoratedFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() > 1) selectBookmark();
-        }
+            }
 
-        @Override
+            @Override
             public void mousePressed(MouseEvent e) {
-
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-
+            }
+        });
+        jList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int[] indices = jList.getSelectedIndices();
+                jbRename.setEnabled(indices.length == 1);
             }
         });
 
