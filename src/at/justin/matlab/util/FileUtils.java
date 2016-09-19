@@ -1,17 +1,21 @@
 package at.justin.matlab.util;
 
+import at.justin.matlab.installer.Install;
+
 import javax.swing.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by Andreas Justin on 2016-08-23.
- */
+/** Created by Andreas Justin on 2016-08-23. */
 public class FileUtils {
 
     public static void copyFile(File source, File target) {
@@ -40,6 +44,25 @@ public class FileUtils {
         }
         br.close();
         return lines;
+    }
+
+    public static String readFileToString(File file) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String s = readBufferedReaderToString(br, true);
+        br.close();
+        return s;
+    }
+
+    public static String readBufferedReaderToString(BufferedReader br, boolean trim) throws IOException {
+        String line;
+        String s = "";
+        while ((line = br.readLine()) != null) {
+            if (trim) {
+                line = line.trim();
+            }
+            s += line + "\n";
+        }
+        return s;
     }
 
     public static void appendFileText(File source, String s) throws IOException {
@@ -86,7 +109,6 @@ public class FileUtils {
     public static void exportResource(String resourceName, File target) throws Exception {
         InputStream stream = null;
         OutputStream resStreamOut = null;
-        String jarFolder;
         try {
             stream = FileUtils.class.getResourceAsStream(resourceName);
             if (stream == null) {
@@ -105,5 +127,69 @@ public class FileUtils {
             stream.close();
             resStreamOut.close();
         }
+    }
+
+    public static void exportNames(String destDir, String[] names) throws IOException {
+        JarFile jar = new JarFile(Install.getJarFile());
+        Enumeration enumEntries = jar.entries();
+        while (enumEntries.hasMoreElements()) {
+            JarEntry file = (JarEntry) enumEntries.nextElement();
+
+            if (!jarEntryEqNames(file.getName(), names)) continue;
+
+            File f = new File(destDir + File.separator + file.getName());
+            if (file.isDirectory()) {
+                f.mkdir();
+                continue;
+            }
+            if (!f.getParentFile().exists()) {
+                f.getParentFile().mkdirs();
+            }
+            InputStream is = jar.getInputStream(file);
+            FileOutputStream fos = new FileOutputStream(f);
+            while (is.available() > 0) {
+                fos.write(is.read());
+            }
+            fos.close();
+            is.close();
+        }
+    }
+
+    public static void exportRegex(String destDir, String regex) throws IOException {
+        JarFile jar = new JarFile(Install.getJarFile());
+        Enumeration enumEntries = jar.entries();
+
+        Pattern p = Pattern.compile(regex);
+        while (enumEntries.hasMoreElements()) {
+            JarEntry file = (JarEntry) enumEntries.nextElement();
+
+            Matcher m = p.matcher(file.getName());
+            if (!m.find()) continue;
+
+            File f = new File(destDir + File.separator + file.getName());
+            if (file.isDirectory()) {
+                f.mkdir();
+                continue;
+            }
+            if (!f.getParentFile().exists()) {
+                f.getParentFile().mkdirs();
+            }
+            InputStream is = jar.getInputStream(file);
+            FileOutputStream fos = new FileOutputStream(f);
+            while (is.available() > 0) {
+                fos.write(is.read());
+            }
+            fos.close();
+            is.close();
+        }
+    }
+
+    private static boolean jarEntryEqNames(String name, String[] names) {
+        for (String n : names) {
+            if (n.equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
