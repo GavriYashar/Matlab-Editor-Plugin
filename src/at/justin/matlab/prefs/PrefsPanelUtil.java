@@ -9,18 +9,13 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 
-/**
- * Created by Andreas Justin on 2016-08-23.
- */
+/** Created by Andreas Justin on 2016-08-23. */
 public class PrefsPanelUtil {
     private static final JFileChooser fc = new JFileChooser();
     /**
-     * @param property
-     * @param type
-     * @param help
      * @return [0] the property changer(e.g.: checkbox) [1] label
      */
-    public static Component[] getComponentsForSetting(String property, PropertyType type, String help) {
+    public static Component[] getComponentsForSetting(String property, PropertyType type) {
         Component[] components = new Component[2];
         switch (type) {
             case BOOLEAN:
@@ -44,6 +39,7 @@ public class PrefsPanelUtil {
                 break;
         }
 
+        String help = Settings.getProperty("help." + property);
         components[1] = new JLabel(help);
         return components;
     }

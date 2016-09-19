@@ -132,20 +132,14 @@ public class PrefsPanel extends MJPanel {
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN};
-        String[] helptxt = {Settings.getProperty("help.feature.enableClipboardStack"),
-                Settings.getProperty("help.feature.enableFileStructure"),
-                Settings.getProperty("help.feature.enableBookmarksViewer"),
-                Settings.getProperty("help.feature.enableDuplicateLine"),
-                Settings.getProperty("help.feature.enableDeleteCurrentLine"),
-        };
 
-        addPropsToPanel(ps, properties, types, helptxt);
+        addPropsToPanel(ps, properties, types);
         jp.add(ps);
     }
 
-    private void addPropsToPanel(JPanel ps, String[] properties, PropertyType[] types, String[] helptxt) {
+    private void addPropsToPanel(JPanel ps, String[] properties, PropertyType[] types) {
         for (int i = 0; i < properties.length; i++) {
-            Component[] components = PrefsPanelUtil.getComponentsForSetting(properties[i], types[i], helptxt[i]);
+            Component[] components = PrefsPanelUtil.getComponentsForSetting(properties[i], types[i]);
 
             GridBagConstraints gbc1 = new GridBagConstraints();
             gbc1.gridy = i;
@@ -191,17 +185,8 @@ public class PrefsPanel extends MJPanel {
                 PropertyType.BOOLEAN,
                 PropertyType.PATH,
                 PropertyType.ONOFF};
-        String[] helptxt = {Settings.getProperty("help.ExtendedCommand"),
-                Settings.getProperty("help.AutoLoadShortcuts"),
-                Settings.getProperty("help.EnableStartup"),
-                Settings.getProperty("help.EnableMethodsView"),
-                Settings.getProperty("help.UseLDS"),
-                Settings.getProperty("help.showQuotes"),
-                Settings.getProperty("help.FreeCommander"),
-                Settings.getProperty("help.DefaultFigureGraphicsSmoothing"),
-        };
 
-        addPropsToPanel(ps, properties, types, helptxt);
+        addPropsToPanel(ps, properties, types);
         jp.add(ps);
     }
 
@@ -228,13 +213,6 @@ public class PrefsPanel extends MJPanel {
                     PropertyType.BOOLEAN,
                     PropertyType.COLOR,
                     PropertyType.STRING_DROPDOWN};
-            helptxt = new String[]{Settings.getProperty("help.isPublicUser"),
-                    Settings.getProperty("help.verbose"),
-                    Settings.getProperty("help.autoReloadProps"),
-                    Settings.getProperty("help.enableDoubleOperator"),
-                    Settings.getProperty("help.autoDetailViewer"),
-                    Settings.getProperty("help.bpColor"),
-                    Settings.getProperty("fs.iconSetHELP")};
         } else {
             properties = new String[]{"isPublicUser",
                     "ExtendedEditor",
@@ -258,19 +236,8 @@ public class PrefsPanel extends MJPanel {
                     PropertyType.BOOLEAN,
                     PropertyType.COLOR,
                     PropertyType.STRING_DROPDOWN};
-            helptxt = new String[]{Settings.getProperty("help.isPublicUser"),
-                    Settings.getProperty("help.ExtendedEditor"),
-                    Settings.getProperty("help.EnableAutoBrackets"),
-                    Settings.getProperty("help.EnableOperator"),
-                    Settings.getProperty("help.enableAlphaPhase"),
-                    Settings.getProperty("help.verbose"),
-                    Settings.getProperty("help.autoReloadProps"),
-                    Settings.getProperty("help.enableDoubleOperator"),
-                    Settings.getProperty("help.autoDetailViewer"),
-                    Settings.getProperty("help.bpColor"),
-                    Settings.getProperty("help.fs.iconSet")};
         }
-        addPropsToPanel(ps, properties, types, helptxt);
+        addPropsToPanel(ps, properties, types);
 
         jp.add(ps);
     }
@@ -286,11 +253,7 @@ public class PrefsPanel extends MJPanel {
         PropertyType[] types = {PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN};
-        String[] helptxt = {Settings.getProperty("help.LoadMessDaten_Shortener"),
-                Settings.getProperty("help.LoadMessDaten_NoExprManipulate"),
-                Settings.getProperty("help.LoadMessDaten_EnableSimpleView")};
-
-        addPropsToPanel(ps, properties, types, helptxt);
+        addPropsToPanel(ps, properties, types);
 
         jp.add(ps);
     }
