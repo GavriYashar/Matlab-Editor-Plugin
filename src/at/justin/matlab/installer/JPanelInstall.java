@@ -8,11 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
-/**
- * Created by Andreas Justin on 2016-08-22.
- */
+/** Created by Andreas Justin on 2016-08-22. */
 public class JPanelInstall extends JPanel {
     private final static Color INVALID = new Color(224, 125, 112);
     private final static Color VALID = new Color(139, 255, 109);
@@ -41,7 +38,7 @@ public class JPanelInstall extends JPanel {
     private void addPathSelectionPanel() {
         File file = null;
         try {
-            file = Install.getFileOfClass();
+            file = Install.getJarFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -329,7 +326,7 @@ public class JPanelInstall extends JPanel {
 
     private void appendJCPT(File file) {
         try {
-            Install.appendJCPT(txtJCP,file.toString());
+            Install.appendJCPT(txtJCP, file.toString());
         } catch (IOException e) {
             JOptionPane.showMessageDialog(
                     new JFrame(""),
@@ -354,8 +351,6 @@ public class JPanelInstall extends JPanel {
         }
         {
             // copy props
-            URL url = JPanelInstall.class.getResource("/properties/" + "DefaultProps.properties");
-            File fs = new File(url.getFile());
             File ft1 = new File(id.getPath() + "\\" + "DefaultProps.properties");
             File ft2 = new File(id.getPath() + "\\" + "CustomProps.properties");
 
@@ -370,6 +365,17 @@ public class JPanelInstall extends JPanel {
                         JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();
             }
+        }
+        // copy MEP[RV]
+        try {
+            FileUtils.exportRegex(id.getPath(), "^Replacements");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(
+                    new JFrame(""),
+                    e.getMessage(),
+                    "something went wrong, very very wrong",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
 
