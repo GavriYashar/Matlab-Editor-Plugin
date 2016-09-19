@@ -6,9 +6,12 @@ package at.justin.matlab.gui.fileStructure;
 
 import at.justin.matlab.EditorWrapper;
 import at.justin.matlab.gui.components.JTextFieldSearch;
-import at.justin.matlab.gui.components.JTreeFilter;
 import at.justin.matlab.gui.components.UndecoratedFrame;
+import at.justin.matlab.meta.MetaClass;
+import at.justin.matlab.meta.MetaMethod;
+import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.KeyStrokeUtil;
+import at.justin.matlab.util.NodeUtils;
 import at.justin.matlab.util.ScreenSize;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.util.tree.Tree;
@@ -23,23 +26,35 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 public class FileStructure extends UndecoratedFrame {
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
     private static FileStructure INSTANCE;
+    private static EditorWrapper ew;
+    private static Editor editor;
+    private static JTextFieldSearch jTFS;
+    private static JTextArea jTextArea;
+    private static JScrollPane docuScrollPane;
+    private static JRadioButton functions = new JRadioButton("Functions", true);
+    private static JRadioButton cells = new JRadioButton("Sections", false);
+    private static JRadioButton classes = new JRadioButton("Class", false);
+    private static JCheckBox regex = new JCheckBox("<html>regex <font color=#8F8F8F>(CTRL + R)</font></html>");
+    private static JCheckBox inherited = new JCheckBox("<html>inherited <font color=#8F8F8F>(CTRL + F12)</font></html>");
     private JTreeFilter jTree;
-
-    private EditorWrapper ew;
-    private Editor editor;
-
-    private JTextFieldSearch jTFS;
-    private JRadioButton functions = new JRadioButton("Functions", true);
-    private JRadioButton cells = new JRadioButton("Cells", false);
-    private JRadioButton classes = new JRadioButton("Class", false);
-    private JCheckBox regex = new JCheckBox("<html>regex <font color=#8F8F8F>(CTRL + F12)</font></html>");
+    private AbstractAction enterAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setVisible(false);
+            if (jTree.getMaxSelectionRow() < 0) return;
+            Node node = (Node) jTree.getSelectionPath().getLastPathComponent();
+            if (node.hasNode()) {
+                EditorWrapper.getInstance().goToLine(node.node().getStartLine(), false);
+            }
+        }
+    };
 
     public FileStructure() {
         setLayout();
@@ -51,11 +66,57 @@ public class FileStructure extends UndecoratedFrame {
         return INSTANCE;
     }
 
+    private static Node forClassMeta(String fullQualifiedName, MTree mTree) {
+        MetaClass metaClass;
+        try {
+            metaClass = MetaClass.getMatlabClass(fullQualifiedName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        Tree<MTree.Node> methodsTree = mTree.findAsTree(MTree.NodeType.METHODS);
+        java.util.List<MTree.Node> methodNodes = new ArrayList<>(10);
+        for (int i = 0; i < methodsTree.getChildCount(methodsTree.getRoot()); i++) {
+            MTree.Node method = methodsTree.getChild(methodsTree.getRoot(), i);
+            Node methodNode = new Node(method);
+
+            java.util.List<MTree.Node> methodsSub = method.getSubtree();
+            for (MTree.Node methodSub : methodsSub) {
+                if (methodSub.getType() == MTree.NodeType.FUNCTION) {
+                    methodNodes.add(methodSub);
+                }
+            }
+        }
+        Node classDefNode = new Node(metaClass, mTree.getNode(0));
+
+        int counter = 0;
+        for (int i = 0; i < methodNodes.size(); i++) {
+            String nodeString = NodeUtils.getFunctionHeader(methodNodes.get(i), false);
+            for (MetaMethod m : metaClass.getMethods()) {
+                if (!inherited.isSelected()) {
+                    if (!m.getDefiningClass().equals(fullQualifiedName)) {
+                        continue;
+                    }
+                }
+
+                Node method = null;
+                if (nodeString != null && nodeString.equals(m.getName())) {
+                    method = new Node(m, methodNodes.get(i));
+                }
+                if (method == null) continue;
+                classDefNode.add(method);
+                counter++;
+                if (counter == methodNodes.size()) break;
+            }
+        }
+        return classDefNode;
+    }
+
     private void setLayout() {
         int width = ScreenSize.getWidth();
         int height = ScreenSize.getHeight();
 
-        setUndecorated(true);
         setSize(500, 600);
         setLocation(width / 2 - getWidth() / 2, height / 2 - getHeight() / 2);
 
@@ -88,6 +149,19 @@ public class FileStructure extends UndecoratedFrame {
         cSP.weightx = cSet.weightx;
         cSP.fill = GridBagConstraints.BOTH;
         getRootPane().add(scrollPaneTree, cSP);
+
+        //create the documentation viewer
+        jTextArea = new JTextArea();
+        jTextArea.setForeground(new Color(11, 134, 0));
+        docuScrollPane = new JScrollPane(jTextArea);
+        GridBagConstraints cDSP = new GridBagConstraints();
+        cDSP.gridy = 3;
+        cDSP.gridx = 0;
+        cDSP.weighty = 0.3;
+        cDSP.weightx = cSet.weightx;
+        cDSP.fill = GridBagConstraints.BOTH;
+        cDSP.insets = new Insets(5, 0, 0, 0);
+        getRootPane().add(docuScrollPane, cDSP);
     }
 
     private void createSearchField() {
@@ -141,12 +215,13 @@ public class FileStructure extends UndecoratedFrame {
         bg.add(cells);
         bg.add(functions);
         bg.add(classes);
-        JPanel panelSettings = new JPanel();
+        final JPanel panelSettings = new JPanel();
         panelSettings.setBorder(BorderFactory.createTitledBorder("Type"));
         panelSettings.setLayout(new FlowLayout());
         panelSettings.add(cells);
         panelSettings.add(functions);
         panelSettings.add(classes);
+        panelSettings.add(inherited);
         panelSettings.add(regex);
 
         ActionListener actionListener = new ActionListener() {
@@ -159,12 +234,23 @@ public class FileStructure extends UndecoratedFrame {
         functions.addActionListener(actionListener);
         classes.addActionListener(actionListener);
 
-        KeyStroke ks = KeyStroke.getKeyStroke("control released F12");
-        getRootPane().getInputMap(IFW).put(ks, "CTRL + F12");
-        getRootPane().getActionMap().put("CTRL + F12", new AbstractAction() {
+        KeyStroke ksR = KeyStroke.getKeyStroke("control released R");
+        getRootPane().getInputMap(IFW).put(ksR, "CTRL + R");
+        getRootPane().getActionMap().put("CTRL + R", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 regex.setSelected(!regex.isSelected());
+            }
+        });
+
+        KeyStroke ksF12 = KeyStroke.getKeyStroke("control released F12");
+        getRootPane().getInputMap(IFW).put(ksF12, "CTRL + F12");
+        getRootPane().getActionMap().put("CTRL + F12", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!inherited.isEnabled()) return;
+                inherited.setSelected(!inherited.isSelected());
+                populate();
             }
         });
 
@@ -185,7 +271,7 @@ public class FileStructure extends UndecoratedFrame {
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
                 if (e.getClickCount() > 1) {
-                    setVisible(false);
+                    enterAction.actionPerformed(new ActionEvent(e, 0, null));
                 }
             }
         });
@@ -195,9 +281,7 @@ public class FileStructure extends UndecoratedFrame {
                 jTFS.requestFocus();
                 if (jTree.getMaxSelectionRow() < 0) return;
                 Node node = (Node) jTree.getSelectionPath().getLastPathComponent();
-                if (node.hasNode()) {
-                    EditorWrapper.getInstance().goToLine(node.node().getStartLine(), false);
-                }
+                jTextArea.setText(node.getDocumentation());
             }
         });
 
@@ -206,7 +290,7 @@ public class FileStructure extends UndecoratedFrame {
         jTree.getActionMap().put("ENTER", new AbstractAction("ENTER") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setVisible(false);
+                enterAction.actionPerformed(new ActionEvent(e, 0, null));
             }
         });
 
@@ -221,7 +305,6 @@ public class FileStructure extends UndecoratedFrame {
                 setTreeRoot(jTree.filter(p), true);
             } catch (PatternSyntaxException e) {
                 jTFS.setForeground(Color.RED);
-                return;
             }
         } else {
             setTreeRoot(jTree.filter(pattern), true);
@@ -241,9 +324,11 @@ public class FileStructure extends UndecoratedFrame {
             nodeType = MTree.NodeType.CELL_TITLE;
             cells.setSelected(true);
         }
+        // inherited.setEnabled(classes.isSelected());
+        inherited.setEnabled(false);
 
         Node root = new Node(ew.getShortName());
-        MTree mTree = MTree.parse(this.editor.getText());
+        MTree mTree = MTree.parse(editor.getText());
 
         Tree<MTree.Node> nodeTree = mTree.findAsTree(nodeType);
         if (nodeType.equals(MTree.NodeType.CLASSDEF) & nodeTree.getChildCount(nodeTree.getRoot()) < 1) {
@@ -251,7 +336,8 @@ public class FileStructure extends UndecoratedFrame {
             nodeType = MTree.NodeType.FUNCTION;
             nodeTree = mTree.findAsTree(nodeType);
         } else if (nodeType.equals(MTree.NodeType.CLASSDEF) & nodeTree.getChildCount(nodeTree.getRoot()) > 0) {
-            root.add(forClass(mTree, nodeTree.getChild(nodeTree.getRoot(), 0)));
+            String fqn = ew.getFullQualifiedClass();
+            root = forClassMeta(fqn, mTree);
             setTreeRoot(root, false);
             return;
         }
@@ -265,16 +351,15 @@ public class FileStructure extends UndecoratedFrame {
     }
 
     public void populate(final EditorWrapper ew) {
-        if (this.editor != ew.gae()) jTFS.setText(""); // resetting search if editor has been changed
-        this.ew = ew;
-        this.editor = ew.gae();
+        if (editor != ew.gae()) jTFS.setText(""); // resetting search if editor has been changed
+        FileStructure.ew = ew;
+        editor = ew.gae();
 
         // (disable/enable) class RadioButton if the current file (is no/is) class
-        MTree mTree = MTree.parse(this.editor.getText());
+        MTree mTree = MTree.parse(editor.getText());
 
         Tree<MTree.Node> nodeTree = mTree.findAsTree(MTree.NodeType.CLASSDEF);
-        //classes.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
-        classes.setEnabled(false); // TODO: performance issue
+        classes.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
 
         nodeTree = mTree.findAsTree(MTree.NodeType.FUNCTION);
         functions.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
@@ -299,26 +384,6 @@ public class FileStructure extends UndecoratedFrame {
         expandAll();
     }
 
-    private Node forClass(MTree mTree, MTree.Node classDef) {
-        Node classDefNode = new Node(classDef);
-
-        Tree<MTree.Node> propertyTree = mTree.findAsTree(MTree.NodeType.PROPERTIES);
-        Tree<MTree.Node> methodsTree = mTree.findAsTree(MTree.NodeType.METHODS);
-        for (int i = 0; i < methodsTree.getChildCount(methodsTree.getRoot()); i++) {
-            MTree.Node method = methodsTree.getChild(methodsTree.getRoot(), i);
-            Node methodNode = new Node(method);
-
-            List<MTree.Node> methodsSub = method.getSubtree();
-            for (MTree.Node methodSub : methodsSub) {
-                if (methodSub.getType() == MTree.NodeType.FUNCTION) {
-                    methodNode.add(new Node(methodSub));
-                }
-            }
-            classDefNode.add(methodNode);
-        }
-        return classDefNode;
-    }
-
     public void showDialog() {
         setVisible(true);
         findPattern(jTFS.getText()); // show last search (if editor has not been changed @populate)
@@ -327,7 +392,12 @@ public class FileStructure extends UndecoratedFrame {
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        setAlwaysOnTop(visible);
+        // setAlwaysOnTop(visible);
+        if (visible) {
+            jTextArea.setFont(new Font("Courier New", Font.PLAIN, Settings.getPropertyInt("fs.fontSizeDocu")));
+            docuScrollPane.getHorizontalScrollBar().setValue(docuScrollPane.getHorizontalScrollBar().getMinimum());
+            docuScrollPane.getVerticalScrollBar().setValue(docuScrollPane.getVerticalScrollBar().getMinimum());
+        }
     }
 
     public void expandAll() {
@@ -342,3 +412,74 @@ public class FileStructure extends UndecoratedFrame {
         }
     }
 }
+
+/*
+// ///////////////////////////
+// /////// UNUSED CODE ///////
+// ///////////////////////////
+
+private Node forClass(MTree mTree, MTree.Node classDef) {
+    Node classDefNode = new Node(classDef);
+
+    // TODO: properties
+    // current problem is identifying properties in a way that always works.
+    // properties have "ID" as type, but so does MetaProperty Attributes like
+    // <Constant, GetAccess..., private..., true ...>
+    // see "doc property attributes"
+    //
+    //    0 = {MTree$Node@13044} "PROPERTIES [5, 5] to [9, 7]"
+    //    1 = {MTree$Node@13058} "ATTRIBUTES [5, 16] to [6, 31]"
+    //    2 = {MTree$Node@13059} "ATTR [5, 26] to [0, 0]"
+    //    3 = {MTree$Node@13046} "ID (Constant) [5, 17] to [0, 0]"
+    //    4 = {MTree$Node@13060} "ID (true) [5, 28] to [0, 0]"
+    //    5 = {MTree$Node@13061} "ATTR [6, 23] to [0, 0]"
+    //    6 = {MTree$Node@13062} "ID (GetAccess) [6, 13] to [0, 0]"
+    //    7 = {MTree$Node@13063} "ID (public) [6, 25] to [0, 0]"
+    //    8 = {MTree$Node@13064} "EQUALS [7, 15] to [0, 0]"
+    //    9 = {MTree$Node@13065} "ID (prop1) [7, 9] to [0, 0]"
+    //
+// Tree<MTree.Node> propertyTree = mTree.findAsTree(MTree.MetaNodeType.PROPERTIES);
+// classDefNode = fillClassNode(classDefNode, propertyTree, MTree.MetaNodeType.ID);
+
+Tree<MTree.Node> methodsTree = mTree.findAsTree(MTree.NodeType.METHODS);
+    classDefNode = fillClassNode(classDefNode, methodsTree, MTree.NodeType.FUNCTION);
+            return classDefNode;
+            }
+
+private Node forClassGetTree(MTree mTree, MTree.Node classDef) {
+    Node classDefNode = new Node(classDef);
+
+    Tree<MTree.Node> propertyTree = mTree.findAsTree(MTree.NodeType.PROPERTIES);
+    Tree<MTree.Node> methodsTree = mTree.findAsTree(MTree.NodeType.METHODS);
+    for (int i = 0; i < methodsTree.getChildCount(methodsTree.getRoot()); i++) {
+    MTree.Node method = methodsTree.getChild(methodsTree.getRoot(), i);
+    Node methodNode = new Node(method);
+
+    List<MTree.Node> methodsSub = method.getSubtree();
+    for (MTree.Node methodSub : methodsSub) {
+    if (methodSub.getType() == MTree.NodeType.FUNCTION) {
+    methodNode.add(new Node(methodSub));
+    }
+    }
+    classDefNode.add(methodNode);
+    }
+    return classDefNode;
+    }
+
+private static Node fillClassNode(Node classDefNode, Tree<MTree.Node> tree, MTree.NodeType type) {
+for (int i = 0; i < tree.getChildCount(tree.getRoot()); i++) {
+MTree.Node typeNodes = tree.getChild(tree.getRoot(), i);
+List<MTree.Node> subs = typeNodes.getSubtree();
+for (MTree.Node sub : subs) {
+    if (sub.getType() == type) {
+        if (type == MTree.NodeType.ID
+                && (sub.getText().matches("(Constant|Static|true|false|GetAccess|SetAccess|Access|private|public)"))) {
+            continue;
+        }
+        classDefNode.add(new Node(sub));
+    }
+}
+}
+return classDefNode;
+}
+ */
