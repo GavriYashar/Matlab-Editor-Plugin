@@ -1,12 +1,18 @@
 package at.justin.matlab.util;
 
+import at.justin.matlab.installer.Install;
+
 import javax.swing.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /** Created by Andreas Justin on 2016-08-23. */
@@ -103,7 +109,6 @@ public class FileUtils {
     public static void exportResource(String resourceName, File target) throws Exception {
         InputStream stream = null;
         OutputStream resStreamOut = null;
-        String jarFolder;
         try {
             stream = FileUtils.class.getResourceAsStream(resourceName);
             if (stream == null) {
@@ -122,5 +127,87 @@ public class FileUtils {
             stream.close();
             resStreamOut.close();
         }
+    }
+
+    public static void exportNames(String destDir, String[] names) throws IOException {
+        JarFile jar = new JarFile(Install.getJarFile());
+        Enumeration enumEntries = jar.entries();
+        while (enumEntries.hasMoreElements()) {
+            JarEntry file = (JarEntry) enumEntries.nextElement();
+
+            if (!jarEntryEqNames(file.getName(), names)) continue;
+
+            File f = new File(destDir + File.separator + file.getName());
+            if (file.isDirectory()) {
+                f.mkdir();
+                continue;
+            }
+            if (!f.getParentFile().exists()) {
+                f.getParentFile().mkdirs();
+            }
+            InputStream is = jar.getInputStream(file);
+            FileOutputStream fos = new FileOutputStream(f);
+            while (is.available() > 0) {
+                fos.write(is.read());
+            }
+            fos.close();
+            is.close();
+        }
+    }
+
+    public static void exportRegex(String destDir, String regex) throws IOException {
+        JarFile jar = new JarFile(Install.getJarFile());
+        Enumeration enumEntries = jar.entries();
+
+        Pattern p = Pattern.compile(regex);
+        while (enumEntries.hasMoreElements()) {
+            JarEntry file = (JarEntry) enumEntries.nextElement();
+
+            Matcher m = p.matcher(file.getName());
+            if (!m.find()) continue;
+
+            File f = new File(destDir + File.separator + file.getName());
+            if (file.isDirectory()) {
+                f.mkdir();
+                continue;
+            }
+            if (!f.getParentFile().exists()) {
+                f.getParentFile().mkdirs();
+            }
+            InputStream is = jar.getInputStream(file);
+            FileOutputStream fos = new FileOutputStream(f);
+            while (is.available() > 0) {
+                fos.write(is.read());
+            }
+            fos.close();
+            is.close();
+        }
+    }
+
+    private static boolean jarEntryEqNames(String name, String[] names) {
+        for (String n : names) {
+            if (n.equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static File searchForFileInFolder(File folder, String name, boolean exact) {
+        File[] files = folder.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                boolean found = false;
+                if (exact) {
+                    found = file.getName().equals(name);
+                } else {
+                    found = file.getName().toLowerCase().equals(name.toLowerCase());
+                }
+                if (found) {
+                    return file;
+                }
+            }
+        }
+        return null;
     }
 }
