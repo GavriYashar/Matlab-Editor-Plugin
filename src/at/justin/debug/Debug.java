@@ -43,4 +43,10 @@ public class Debug {
         } catch (MatlabInvocationException ignored) {
         }
     }
+
+    public static void checkProxy() {
+        System.out.println("isConnected: " + Matlab.getInstance().proxyHolder.get().isConnected());
+        System.out.println("isExistingSession: " + Matlab.getInstance().proxyHolder.get().isExistingSession());
+        System.out.println("isRunningInsideMatlab: " + Matlab.getInstance().proxyHolder.get().isRunningInsideMatlab());
+    }
 }
