@@ -1,6 +1,7 @@
 package at.justin.matlab.meta;
 
 import at.justin.matlab.Matlab;
+import at.justin.matlab.installer.Install;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,14 +21,15 @@ public class MetaClass extends Meta {
     }
 
     public static MetaClass getMatlabClass(String name) throws Exception {
-        String metaVar = "MEP_1637_meta";
-        String classVar = "MEP_1637_c";
-        String propVar = "MEP_1637_p";
-        String propVarP = "MEP_1637_pp";
-        String methVar = "MEP_1637_m";
-        String methVarM = "MEP_1637_mm";
-        String fori = "MEP_1637_i";
-        String forj = "MEP_1637_j";
+        String version = Install.getVersion();
+        String metaVar = "MEP_" + version + "_meta";
+        String classVar = "MEP_" + version + "_c";
+        String propVar = "MEP_" + version + "_p";
+        String propVarP = "MEP_" + version + "_pp";
+        String methVar = "MEP_" + version + "_m";
+        String methVarM = "MEP_" + version + "_mm";
+        String fori = "MEP_" + version + "_i";
+        String forj = "MEP_" + version + "_j";
 
         String command = metaVar + " = ?" + name + ";\n"
                 + classVar + " = at.justin.matlab.meta.MetaClass();\n"
