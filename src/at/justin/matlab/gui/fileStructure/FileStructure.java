@@ -336,7 +336,7 @@ public class FileStructure extends UndecoratedFrame {
             nodeType = MTree.NodeType.FUNCTION;
             nodeTree = mTree.findAsTree(nodeType);
         } else if (nodeType.equals(MTree.NodeType.CLASSDEF) & nodeTree.getChildCount(nodeTree.getRoot()) > 0) {
-            String fqn = ew.getFullQualiefiedClass();
+            String fqn = ew.getFullQualifiedClass();
             root = forClassMeta(fqn, mTree);
             setTreeRoot(root, false);
             return;

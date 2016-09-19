@@ -42,7 +42,7 @@ public class Install {
         System.exit(0);
     }
 
-    public static File getFileOfClass() throws IOException {
+    public static File getJarFile() throws IOException {
         try {
             return new File(Install.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
         } catch (URISyntaxException e) {
@@ -86,7 +86,7 @@ public class Install {
     }
 
     public static String getVersion() throws IOException {
-        String versionString = Install.getFileOfClass().toString();
+        String versionString = Install.getJarFile().toString();
         Pattern pattern = Pattern.compile("\\d{4}[a-z]");
         Matcher matcher = pattern.matcher(versionString);
         if (matcher.find()) {

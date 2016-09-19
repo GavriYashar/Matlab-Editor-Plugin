@@ -21,7 +21,7 @@ public class PrefsChanger extends PrefsDialog {
             System.out.println();
             System.out.println("MEP is not in Static path. Please Run the jar file or add MEP to javaclasspath.txt");
             try {
-                System.out.println(Install.getFileOfClass().toString());
+                System.out.println(Install.getJarFile().toString());
             } catch (IOException ignored) {
             }
             System.out.println();

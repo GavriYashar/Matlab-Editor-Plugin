@@ -56,7 +56,7 @@ public class EditorWrapper {
         return gae().getLongName();
     }
 
-    public String getFullQualiefiedClass() {
+    public String getFullQualifiedClass() {
         String lName = EditorWrapper.getInstance().getLongName();
         lName = lName.replace("\\", ".");
         lName = lName.replace("/", ".");
