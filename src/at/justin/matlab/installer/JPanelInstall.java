@@ -1,5 +1,6 @@
 package at.justin.matlab.installer;
 
+import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.FileUtils;
 
 import javax.swing.*;
@@ -9,9 +10,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by Andreas Justin on 2016-08-22.
- */
+/** Created by Andreas Justin on 2016-08-22. */
 public class JPanelInstall extends JPanel {
     private final static Color INVALID = new Color(224, 125, 112);
     private final static Color VALID = new Color(139, 255, 109);
@@ -40,7 +39,7 @@ public class JPanelInstall extends JPanel {
     private void addPathSelectionPanel() {
         File file = null;
         try {
-            file = Install.getFileOfClass();
+            file = Install.getJarFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -191,7 +190,12 @@ public class JPanelInstall extends JPanel {
 
     private void searchJars(File folder) {
         File[] files = folder.listFiles();
-
+        String version = null;
+        try {
+            version = Install.getVersion();
+        } catch (IOException e) {
+            version = "";
+        }
         for (File f : files) {
             String s = f.getName();
             if (s.startsWith("matconsolectl")) {
@@ -202,7 +206,7 @@ public class JPanelInstall extends JPanel {
                 }
                 jarMCTL = f;
             }
-            if (s.startsWith("MEP")) {
+            if (s.startsWith("MEP_" + version)) {
                 if (jarMEP != null) {
                     // if there are more than one files matching this, only one allowed
                     jarMEP = null;
@@ -367,6 +371,24 @@ public class JPanelInstall extends JPanel {
                         JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();
             }
+        }
+        // copy MEP[RV]
+        try {
+            FileUtils.exportRegex(id.getPath(), "^Replacements");
+            Settings.setProperty("path.mepr.rep", id.getPath() + "/Replacements");
+            Settings.setProperty("path.mepr.var", id.getPath() + "/Replacements/Variables");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(
+                    new JFrame(""),
+                    e.getMessage(),
+                    "something went wrong, very very wrong",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+        try {
+            Settings.store();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
