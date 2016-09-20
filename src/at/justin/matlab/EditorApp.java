@@ -132,7 +132,7 @@ public class EditorApp {
                     Bookmarks.getInstance().adjustBookmarks(e, true);
                     try {
                         String insertString = e.getDocument().getText(e.getOffset(), e.getLength());
-                        if (insertString.equals("%")) MESR.doYourThing();
+                        if (insertString.equals("%")) MESR.doReplace();
                     } catch (BadLocationException ignored) {
                         ignored.printStackTrace();
                     }
