@@ -126,8 +126,10 @@ public class PrefsPanel extends MJPanel {
                 "feature.enableFileStructure",
                 "feature.enableBookmarksViewer",
                 "feature.enableDuplicateLine",
-                "feature.enableDeleteCurrentLine"};
+                "feature.enableDeleteCurrentLine",
+                "feature.enableReplacements"};
         PropertyType[] types = {PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
@@ -197,46 +199,18 @@ public class PrefsPanel extends MJPanel {
 
         String[] properties;
         PropertyType[] types;
-        String[] helptxt;
-        if (Settings.getPropertyBoolean("isPublicUser")) {
-            properties = new String[]{"isPublicUser",
-                    "verbose",
-                    "autoReloadProps",
-                    "enableDoubleOperator",
-                    "autoDetailViewer",
-                    "bpColor",
-                    "fs.iconSet"};
-            types = new PropertyType[]{PropertyType.BOOLEAN,
-                    PropertyType.BOOLEAN,
-                    PropertyType.BOOLEAN,
-                    PropertyType.BOOLEAN,
-                    PropertyType.BOOLEAN,
-                    PropertyType.COLOR,
-                    PropertyType.STRING_DROPDOWN};
-        } else {
-            properties = new String[]{"isPublicUser",
-                    "ExtendedEditor",
-                    "EnableAutoBrackets",
-                    "EnableOperator",
-                    "enableAlphaPhase",
-                    "verbose",
-                    "autoReloadProps",
-                    "enableDoubleOperator",
-                    "autoDetailViewer",
-                    "bpColor",
-                    "fs.iconSet"};
-            types = new PropertyType[]{PropertyType.BOOLEAN,
-                    PropertyType.BOOLEAN,
-                    PropertyType.BOOLEAN,
-                    PropertyType.BOOLEAN,
-                    PropertyType.BOOLEAN,
-                    PropertyType.BOOLEAN,
-                    PropertyType.BOOLEAN,
-                    PropertyType.BOOLEAN,
-                    PropertyType.BOOLEAN,
-                    PropertyType.COLOR,
-                    PropertyType.STRING_DROPDOWN};
-        }
+        properties = new String[]{"isPublicUser",
+                "verbose",
+                "autoReloadProps",
+                "autoDetailViewer",
+                "bpColor",
+                "fs.iconSet"};
+        types = new PropertyType[]{PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN,
+                PropertyType.COLOR,
+                PropertyType.STRING_DROPDOWN};
         addPropsToPanel(ps, properties, types);
 
         jp.add(ps);
