@@ -22,6 +22,8 @@ public class Start {
             MatlabKeyStrokesCommands.setCustomKeyStrokes();
             Bookmarks.getInstance().load();
             addShortcut();
+            setReplacementPath();
+            Settings.store();
         } catch (Exception | NoClassDefFoundError e) {
             try {
                 EditorApp.getInstance().removeCallbacks();
@@ -31,6 +33,32 @@ public class Start {
             JOptionPane.showMessageDialog(
                     new JFrame(""),
                     e.getMessage() + "\nIt might be that There is no Editor or CommandWindow Open",
+                    "something went wrong, very very wrong",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private static void setReplacementPath() {
+        if (Settings.getPropertyBoolean("feature.enableReplacements") && Settings.getProperty("path.mepr.rep").length() > 1) return;
+        try {
+            File fileRep = new File(Install.getJarFile().getParentFile().getPath() + "\\Replacements");
+            File fileVar = new File(Install.getJarFile().getParentFile().getPath() + "\\Replacements\\Variables");
+            if (!fileRep.exists() || !fileVar.exists()) {
+                System.out.println(
+                        "Live Templates has been disabled for one or both following reasons:"
+                                + "\n  * No Replacement folder found in \"" + fileRep.getParent()
+                                + "\n  * No Variables folder found in \"" + fileVar.getParent() + "\""
+                                + "\nplease set \"path.mepr.rep\" and \"path.mepr.var\" manually");
+                Settings.setPropertyBoolean("feature.enableReplacements", false);
+                return;
+            }
+            Settings.setProperty("path.mepr.rep", fileRep.getPath());
+            Settings.setProperty("path.mepr.var", fileVar.getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    new JFrame(""),
+                    e.getMessage() + "\nplease set \"path.mepr.rep\" and \"path.mepr.var\" manually",
                     "something went wrong, very very wrong",
                     JOptionPane.ERROR_MESSAGE);
         }

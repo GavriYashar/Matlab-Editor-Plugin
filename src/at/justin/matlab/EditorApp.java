@@ -2,7 +2,7 @@ package at.justin.matlab;
 
 import at.justin.matlab.gui.autoDetailViewer.AutoDetailViewer;
 import at.justin.matlab.gui.bookmarks.Bookmarks;
-import at.justin.matlab.mesr.MESR;
+import at.justin.matlab.mepr.MEPR;
 import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.ComponentUtil;
 import com.mathworks.matlab.api.editor.Editor;
@@ -132,7 +132,7 @@ public class EditorApp {
                     Bookmarks.getInstance().adjustBookmarks(e, true);
                     try {
                         String insertString = e.getDocument().getText(e.getOffset(), e.getLength());
-                        if (insertString.equals("%")) MESR.doReplace();
+                        if (insertString.equals("%")) MEPR.doReplace();
                     } catch (BadLocationException ignored) {
                         ignored.printStackTrace();
                     }
@@ -272,7 +272,7 @@ public class EditorApp {
 //         Bookmarks.getInstance().adjustBookmarks(e, true);
 //         try {
 //         String insertString = e.getDocument().getText(e.getOffset(), e.getLength());
-//         if (insertString.equals("%")) MESR.doYourThing();
+//         if (insertString.equals("%")) MEPR.doYourThing();
 //         } catch (BadLocationException ignored) {
 //         ignored.printStackTrace();
 //         }

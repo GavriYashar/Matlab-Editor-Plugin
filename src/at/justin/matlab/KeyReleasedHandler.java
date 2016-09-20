@@ -5,7 +5,7 @@ import at.justin.matlab.gui.bookmarks.Bookmarks;
 import at.justin.matlab.gui.bookmarks.BookmarksViewer;
 import at.justin.matlab.gui.clipboardStack.ClipboardStack;
 import at.justin.matlab.gui.fileStructure.FileStructure;
-import at.justin.matlab.mesr.MESR;
+import at.justin.matlab.mepr.MEPR;
 import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.KeyStrokeUtil;
 import com.mathworks.mde.cmdwin.XCmdWndView;
@@ -129,7 +129,7 @@ class KeyReleasedHandler {
             // do only editor
             if (e.getKeyChar() == ("%").charAt(0)
                     && Settings.getPropertyBoolean("feature.enableClipboardStack"))
-                MESR.doYourThing();
+                MEPR.doYourThing();
             if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C
                     && Settings.getPropertyBoolean("feature.enableClipboardStack"))
                 doCopyAction(null);
