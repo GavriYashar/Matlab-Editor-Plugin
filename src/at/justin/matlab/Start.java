@@ -5,6 +5,7 @@ import at.justin.matlab.installer.Install;
 import at.justin.matlab.prefs.Settings;
 import com.mathworks.mlwidgets.prefs.PrefsChanger;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -14,12 +15,25 @@ public class Start {
         if (customSettings != null && defaultSettings != null) {
             loadSettings(customSettings, defaultSettings);
         }
-        setEditorCallbacks();
-        setCmdWinCallbacks();
-        addPrefs();
-        MatlabKeyStrokesCommands.setCustomKeyStrokes();
-        Bookmarks.getInstance().load();
-        addShortcut();
+        try {
+            setEditorCallbacks();
+            setCmdWinCallbacks();
+            addPrefs();
+            MatlabKeyStrokesCommands.setCustomKeyStrokes();
+            Bookmarks.getInstance().load();
+            addShortcut();
+        } catch (Exception | NoClassDefFoundError e) {
+            try {
+                EditorApp.getInstance().removeCallbacks();
+            } catch (Exception ignored) {
+            }
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    new JFrame(""),
+                    e.getMessage() + "\nIt might be that There is no Editor or CommandWindow Open",
+                    "something went wrong, very very wrong",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void start() {

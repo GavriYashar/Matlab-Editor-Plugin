@@ -13,12 +13,14 @@ import java.awt.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-/**
- * Created by Andreas Justin on 2016 - 02 - 06.
- */
+/** Created by Andreas Justin on 2016-09-19. */
 public class Matlab {
     private static Matlab INSTANCE = null;
 
+    /**
+     * can't be used in a Document Event.
+     * When executed while an document event has been notified matconsolectl enters an endless loop
+     */
     public final AtomicReference<MatlabProxy> proxyHolder = new AtomicReference<>();
 
     public static Matlab getInstance() {
