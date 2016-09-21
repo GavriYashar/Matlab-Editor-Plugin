@@ -5,7 +5,7 @@ It'll add following features to Matlab, and it's editor
 * **KeyPressListener**: executes custom Matlab functions passed in by the user beforehand
 * **ClipboardStack**: opened via <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>V</kbd>, stores the previous 10 strings copied to clipboard from Matlab.
 * **FileStructure**: opened via <kbd>CTRL</kbd> + <kbd>F12</kbd>, searching through functions and sections
-* **BookmarkViewer**: opened via <kbd>CTRL</kbd> + <kbd>F12</kbd> + <kbd>CTRL</kbd> (if <kbd>CTRL</kbd> + <kbd>F2</kbd> is default for bookmarks) View all bookmarks in every opened and closed editor. Stored and restored after closing and reopening an editor or Matlab
+* **BookmarkViewer**: opened via <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>F2</kbd> (if <kbd>CTRL</kbd> + <kbd>F2</kbd> is default for bookmarks) View all bookmarks in every opened and closed editor. Stored and restored after closing and reopening an editor or Matlab
 * **Duplicate line**:  <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>D</kbd>
 * **delete line**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>Y</kbd>
 * **LiveTemplatesViewer**: <kbd>CTRL</kbd> + <kbd>INSERT</kbd> view all created livetemplates
