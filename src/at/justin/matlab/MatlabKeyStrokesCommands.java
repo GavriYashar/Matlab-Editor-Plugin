@@ -1,10 +1,11 @@
 package at.justin.matlab;
 
+
+import at.justin.matlab.editor.EditorWrapper;
+
 import javax.swing.*;
 
-/**
- * Created by Andreas Justin on 2016-08-25.
- */
+/** Created by Andreas Justin on 2016-08-25. */
 public enum MatlabKeyStrokesCommands {
     ALT_PRESSED_ENTER("alt pressed ENTER", "mlint-fix-action", ""),
     ALT_PRESSED_KP_DOWN("alt pressed KP_DOWN", "next-message", ""),
@@ -151,7 +152,7 @@ public enum MatlabKeyStrokesCommands {
 
     public static void setCustomKeyStrokes() {
         MatlabKeyStrokesCommands[] list = MatlabKeyStrokesCommands.values();
-        InputMap inputMap = EditorWrapper.getInstance().getInputMap();
+        InputMap inputMap = EditorWrapper.getInputMap();
         KeyStroke[] keyStrokes = inputMap.allKeys();
 
         for (MatlabKeyStrokesCommands commands : list) {

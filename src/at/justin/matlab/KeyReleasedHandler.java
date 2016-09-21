@@ -1,10 +1,12 @@
 package at.justin.matlab;
 
 import at.justin.debug.Debug;
+import at.justin.matlab.editor.EditorWrapper;
 import at.justin.matlab.gui.bookmarks.Bookmarks;
 import at.justin.matlab.gui.bookmarks.BookmarksViewer;
 import at.justin.matlab.gui.clipboardStack.ClipboardStack;
 import at.justin.matlab.gui.fileStructure.FileStructure;
+import at.justin.matlab.gui.mepr.MEPRViewer;
 import at.justin.matlab.mepr.MEPR;
 import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.KeyStrokeUtil;
@@ -21,10 +23,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by Andreas Justin on 2016 - 02 - 09.
- */
-class KeyReleasedHandler {
+/** Created by Andreas Justin on 2016 - 02 - 09. */
+public class KeyReleasedHandler {
     private static List<String> mCallbacks = new ArrayList<>();
     private static String opEqString;
     private static Pattern opEqPattern = Pattern.compile("[\\+]"); // "[\\+\\-\\*/]"
@@ -77,7 +77,7 @@ class KeyReleasedHandler {
     private KeyReleasedHandler() {
     }
 
-    static KeyListener getKeyListener() {
+    public static KeyListener getKeyListener() {
         return keyListener;
     }
 
@@ -86,7 +86,7 @@ class KeyReleasedHandler {
      *
      * @param string valid matlab function which can be called
      */
-    static void addMatlabCallback(String string) throws Exception {
+    public static void addMatlabCallback(String string) throws Exception {
         if (!testMatlabCallback(string)) {
             throw new Exception("'" + string + "' is not a valid function");
         }
@@ -139,6 +139,12 @@ class KeyReleasedHandler {
             if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_D
                     && Settings.getPropertyBoolean("feature.enableDuplicateLine"))
                 doDuplicateLineAction();
+            if (altOnlyFlag && e.getKeyCode() == KeyEvent.VK_INSERT
+                    && Settings.getPropertyBoolean("feature.enableReplacements"))
+                MEPRViewer.getInstance().showDialog();
+            if (ctrlOnlyFlag && e.getKeyCode() == KeyEvent.VK_SPACE
+                    && Settings.getPropertyBoolean("feature.enableReplacements"))
+                MEPRViewer.getInstance().quickSearch();
             if (KS_BOOKMARK.getModifiers() == mod && KS_BOOKMARK.getKeyCode() == e.getKeyCode()
                     && Settings.getPropertyBoolean("feature.enableBookmarksViewer"))
                 ctrlf2 = true;
@@ -165,27 +171,26 @@ class KeyReleasedHandler {
     }
 
     private static void doDeleteLineAction() {
-        EditorWrapper.getInstance().deleteCurrentLine();
+        EditorWrapper.deleteCurrentLine();
     }
 
     private static void doDuplicateLineAction() {
-        EditorWrapper.getInstance().duplicateCurrentLine();
+        EditorWrapper.duplicateCurrentLine();
     }
 
     private static void operatorEqualsThing(KeyEvent e) {
         if (opEqString.length() != 2) return;
-        EditorWrapper ew = EditorWrapper.getInstance();
         String keyStr = Character.toString(e.getKeyChar());
-        String currentLineStr = ew.getCurrentLineText() + keyStr; // current line does not include currently pressed character
+        String currentLineStr = EditorWrapper.getCurrentLineText() + keyStr; // current line does not include currently pressed character
         Matcher matcher = opEqLeftArgPattern.matcher(currentLineStr);
         String newLine;
         if (!matcher.find()) return;
 
         newLine = matcher.group(2) + " = " + matcher.group(2) + " " + keyStr + "  ";
-        int currentLine = ew.getCurrentLine();
-        ew.goToLine(currentLine, true);
-        ew.setSelectedTxt(newLine);
-        ew.goToLineCol(currentLine, newLine.length() + matcher.group(1).length() + 2);
+        int currentLine = EditorWrapper.getCurrentLine();
+        EditorWrapper.goToLine(currentLine, true);
+        EditorWrapper.setSelectedTxt(newLine);
+        EditorWrapper.goToLineCol(currentLine, newLine.length() + matcher.group(1).length() + 2);
     }
 
     private static void doOperatorThing(KeyEvent e) {
@@ -202,7 +207,7 @@ class KeyReleasedHandler {
     private static void doBookmarkThing(KeyEvent e) {
         if (ctrlf2) {
             ctrlf2 = false;
-            Bookmarks.getInstance().setBookmarks(EditorWrapper.getInstance());
+            Bookmarks.getInstance().setBookmarks();
             if (BookmarksViewer.getInstance().isVisible()) {
                 BookmarksViewer.getInstance().updateList();
             }
@@ -211,7 +216,7 @@ class KeyReleasedHandler {
     }
 
     static void doCopyAction(ActionEvent event) {
-        ClipboardStack.getInstance().add(EditorWrapper.getInstance().getSelectedTxt());
+        ClipboardStack.getInstance().add(EditorWrapper.getSelectedTxt());
         // try {
         //     String data = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
         //     if (data != null) clipboardStack.getInstance().add(data);
@@ -229,8 +234,8 @@ class KeyReleasedHandler {
     }
 
     static void showFileStructure(ActionEvent event) {
-        FileStructure.getINSTANCE().populate(EditorWrapper.getInstance());
-        FileStructure.getINSTANCE().showDialog();
+        FileStructure.getInstance().populateTree();
+        FileStructure.getInstance().showDialog();
     }
 
     static void DEBUG(ActionEvent event) {
