@@ -1,6 +1,6 @@
 package at.justin.matlab.prefs;
 
-import at.justin.matlab.EditorApp;
+import at.justin.matlab.editor.EditorApp;
 import com.mathworks.mwswing.MJPanel;
 
 import javax.swing.*;
