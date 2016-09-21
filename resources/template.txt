@@ -1,0 +1,13 @@
+%% MEPRBEGIN
+% One line description here please.
+%
+% Tags: Tag1, Tag2
+%
+% V1.0 | ${DATE} | ${AUTHORLONG} | Creation
+%% MEPREND
+%% FUNCHANDLEBEGIN
+$VAR_1$ ${@()questdlg('question?)','title','answer1','answer2','answer3')}
+%% FUNCHANDLEEND
+
+%% custom variables inside this live templates
+var1 = $VAR_1$
