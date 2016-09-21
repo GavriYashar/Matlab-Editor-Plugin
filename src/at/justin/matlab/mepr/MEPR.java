@@ -1,7 +1,7 @@
 package at.justin.matlab.mepr;
 
-import at.justin.matlab.EditorWrapper;
 import at.justin.matlab.Matlab;
+import at.justin.matlab.editor.EditorWrapper;
 import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.FileUtils;
 import matlabcontrol.MatlabInvocationException;
@@ -15,17 +15,15 @@ import java.util.regex.Pattern;
 
 /** Created by Andreas Justin on 2016-09-06. */
 public class MEPR {
+    public static final Pattern actionPattern = Pattern.compile("%\\w+(\\([\\w\\.,]+\\))?");
+    public static final Pattern commentPatternBegin = Pattern.compile("%%.*MEPRBEGIN");
+    public static final Pattern commentPatternEnd = Pattern.compile("%%.*MEPREND");
+    public static final Pattern funcHandlPatternBegin = Pattern.compile("%%.*FUNCHANDLEBEGIN");
+    public static final Pattern funcHandlPatternEnd = Pattern.compile("%%.*FUNCHANDLEEND");
+    public static final Pattern funcHandlVar = Pattern.compile("\\$\\w+\\$");
+    public static final Pattern funcHandlFunc = Pattern.compile("\\$\\{@[^${]+\\}\\$");
+    public static final Pattern variablePattern = Pattern.compile("\\$\\{[^}]+\\}");
     private static final MEPR INSTANCE = new MEPR();
-    private static final Pattern actionPattern = Pattern.compile("%\\w+(\\([\\w\\.,]+\\))?");
-    private static final Pattern commentPatternBegin = Pattern.compile("%%.*MEPRBEGIN");
-    private static final Pattern commentPatternEnd = Pattern.compile("%%.*MEPREND");
-    private static final Pattern funcHandlPatternBegin = Pattern.compile("%%.*FUNCHANDLEBEGIN");
-    private static final Pattern funcHandlPatternEnd = Pattern.compile("%%.*FUNCHANDLEEND");
-    private static final Pattern funcHandlVar = Pattern.compile("\\$\\w+\\$");
-    private static final Pattern funcHandlFunc = Pattern.compile("\\$\\{@[^${]+\\}\\$");
-    private static final Pattern variablePattern = Pattern.compile("\\$\\{[^}]+\\}");
-
-    private static EditorWrapper ew = EditorWrapper.getInstance();
     private static File repPath = new File(Settings.getProperty("path.mepr.rep"));
     private static File varPath = new File(Settings.getProperty("path.mepr.var"));
 
@@ -49,36 +47,45 @@ public class MEPR {
     private MEPR() {
     }
 
+    public static void setRepText(String repText) {
+        MEPR.repText = repText;
+    }
+
+    public static void setSelectionSE(int[] selectionSE) {
+        MEPR.selectionSE = selectionSE;
+    }
+
     public static void doYourThing() {
         if (!repPath.exists() || !varPath.exists()) return;
 
         // prepareReplace and doReplace are separated because matconsolectl enters an endless loop otherwise.
         // Also KeyReleaseHandler is notified before DocumentEvent (sometimes). So theoretically the KeyReleaseHandler could
         // replace %action% but then the last "%" is not deleted.
-        prepareReplace();
+        prepareReplace(false);
     }
 
     public static void doReplace() {
         doReplaceTime = System.nanoTime();
         if (repText.length() < 1) return;
-        EditorWrapper.getInstance().setSelectionPosition(selectionSE[0], selectionSE[1]);
-        EditorWrapper.getInstance().setSelectedTxt(repText);
+        EditorWrapper.setSelectionPosition(selectionSE[0], selectionSE[1]);
+        EditorWrapper.setSelectedTxt(repText);
         repText = "";
     }
 
-    private static void prepareReplace() {
-        prepareReplaceTime = System.nanoTime();
-        repText = "";
-        varStarts = new ArrayList<>(10);
-        varEnds = new ArrayList<>(10);
-        variables = new ArrayList<>(10);
-        varReps = new ArrayList<>(10);
+    public static void prepareReplace(boolean srcIsViewer) {
+        String action = getAction();
+        if (action.length() < 1) return;
+        int s = EditorWrapper.getSelectionPositionStart();
+        selectionSE = new int[]{s - action.length(), s + 1};
+        prepareReplace(action, srcIsViewer);
+    }
 
-        int s = ew.getSelectionPositionStart();
-        int[] lc = ew.pos2lc(s);
+    public static String getAction() {
+        int s = EditorWrapper.getSelectionPositionStart();
+        int[] lc = EditorWrapper.pos2lc(s);
         lc[1] -= 1;
 
-        String lineString = ew.getCurrentLineText();
+        String lineString = EditorWrapper.getCurrentLineText();
         lineString = lineString.substring(0, lc[1]);
         Matcher matcher = actionPattern.matcher(lineString);
 
@@ -87,12 +94,27 @@ public class MEPR {
             se[0] = matcher.start();
             se[1] = matcher.end(); // +1 bei %asdaf% (documentEvent)
         }
-        if (se[0] == -1 || se[1] != lc[1]) return; // only currently typed action
+        if (se[0] == -1 || se[1] != lc[1]) return ""; // only currently typed action
         String action = lineString.substring(se[0], se[1]);
+        return action;
+    }
+
+    public static void prepareReplace(String action, boolean srcIsViewer) {
+        prepareReplaceTime = System.nanoTime();
+        repText = "";
+        varStarts = new ArrayList<>(10);
+        varEnds = new ArrayList<>(10);
+        variables = new ArrayList<>(10);
+        varReps = new ArrayList<>(10);
+
         String actionVar = "";
         File actionFile = FileUtils.searchForFileInFolder(repPath, "MEPR_" + action.substring(1, action.length()) + ".m", false);
         if (actionFile == null) {
             int index = action.indexOf('(');
+            if (index < 0) {
+                System.out.println("unknown action: \"" + action + "%\"");
+                return;
+            }
             actionFile = FileUtils.searchForFileInFolder(repPath, "MEPR_" + action.substring(1, index) + ".m", false);
             if (actionFile == null) {
                 System.out.println("unknown action: \"" + action + "%\"");
@@ -107,16 +129,20 @@ public class MEPR {
             e1.printStackTrace();
             return;
         }
-        txt = txt.substring(0, txt.length() - 1); // remove last \n
+        if (txt.length() >= 1) {
+            txt = txt.substring(0, txt.length() - 1); // remove last \n
+        }
         txt = trimCommentBlock(txt);
         txt = doFunctionHandles(txt);
         repText = replaceVariables(txt, actionVar);
-        selectionSE = new int[]{s - action.length(), s + 1};
+        int s = EditorWrapper.getSelectionPositionStart();
 
         // at this line ine the code it looks  like it is useless, but trust me it's not.
         // @see comment above of prepareReplaceTime and doReplaceTime.
         if (doReplaceTime > prepareReplaceTime) {
             doReplace();
+        } else if (srcIsViewer) {
+            selectionSE = new int[]{s, s};
         }
     }
 
@@ -184,7 +210,8 @@ public class MEPR {
 
     /**
      * loads the replacement for variables
-     * @param var MEPV_[VAR]
+     *
+     * @param var       MEPV_[VAR]
      * @param actionVar MEPV_[VAR] additional input
      */
     private static String getVariableRep(String var, String actionVar) throws MatlabInvocationException {
@@ -194,6 +221,11 @@ public class MEPR {
         oldPath = (String) outs[0];
 
         String repVar = var;
+        if (!Settings.getPropertyBoolean("isPublicUser") && var.matches("\\$\\{H\\d\\}") && actionVar.length() == 0) {
+            // speziell für überschriften
+            actionVar = var.substring(3, 4);
+            var = "${H}";
+        }
         if (actionVar.length() != 0) {
             repVar = var.substring(0, var.length() - 1) + actionVar + var.substring(var.length() - 1);
         }
