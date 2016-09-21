@@ -1,7 +1,7 @@
 package at.justin.matlab.util;
 
-import at.justin.matlab.EditorWrapper;
 import at.justin.matlab.MatlabKeyStrokesCommands;
+import at.justin.matlab.editor.EditorWrapper;
 
 import javax.swing.*;
 import java.awt.event.InputEvent;
@@ -74,12 +74,12 @@ public class KeyStrokeUtil {
     }
 
     public static KeyStroke[] getMatlabKeyStrokes() {
-        return EditorWrapper.getInstance().getInputMap().allKeys();
+        return EditorWrapper.getInputMap().allKeys();
     }
 
     public static KeyStroke getMatlabKeyStroke(MatlabKeyStrokesCommands e) {
         KeyStroke[] keyStrokes = getMatlabKeyStrokes();
-        InputMap inputMap = EditorWrapper.getInstance().getInputMap();
+        InputMap inputMap = EditorWrapper.getInputMap();
         for (KeyStroke keystroke : keyStrokes) {
             String action = inputMap.get(keystroke).toString();
             if (action.toLowerCase().equals(e.getCommand().toLowerCase())) {

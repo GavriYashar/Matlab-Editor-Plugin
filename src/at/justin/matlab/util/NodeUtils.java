@@ -1,10 +1,8 @@
 package at.justin.matlab.util;
 
-/**
- * Created by Andreas Justin on 2016 - 02 - 24.
- */
+/** Created by Andreas Justin on 2016 - 02 - 24. */
 
-import at.justin.matlab.EditorWrapper;
+import at.justin.matlab.editor.EditorWrapper;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import java.util.ArrayList;
@@ -156,13 +154,12 @@ public final class NodeUtils {
     }
 
     public static String getTextForNode(final MTree.Node node) {
-        EditorWrapper ew = EditorWrapper.getInstance();
-        int startPos = ew.lc2pos(node.getStartLine(), node.getStartColumn());
-        int endPos = ew.lc2pos(node.getEndLine(), node.getEndColumn() + 1);
+        int startPos = EditorWrapper.lc2pos(node.getStartLine(), node.getStartColumn());
+        int endPos = EditorWrapper.lc2pos(node.getEndLine(), node.getEndColumn() + 1);
         if (endPos < startPos) {
-            return ew.getTextByLine(node.getStartLine());
+            return EditorWrapper.getTextByLine(node.getStartLine());
         }
-        return ew.getText(startPos, endPos);
+        return EditorWrapper.getText(startPos, endPos);
     }
 
     public static String getTextFormattedForNode(final MTree.Node node) {
