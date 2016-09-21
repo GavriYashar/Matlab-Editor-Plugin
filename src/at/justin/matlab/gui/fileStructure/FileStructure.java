@@ -1,10 +1,7 @@
 package at.justin.matlab.gui.fileStructure;
 
-/**
- * Created by Andreas Justin on 2016 - 02 - 24.
- */
 
-import at.justin.matlab.EditorWrapper;
+import at.justin.matlab.editor.EditorWrapper;
 import at.justin.matlab.gui.components.JTextFieldSearch;
 import at.justin.matlab.gui.components.UndecoratedFrame;
 import at.justin.matlab.meta.MetaClass;
@@ -30,10 +27,10 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+/** Created by Andreas Justin on 2016 - 02 - 24. */
 public class FileStructure extends UndecoratedFrame {
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
     private static FileStructure INSTANCE;
-    private static EditorWrapper ew;
     private static Editor editor;
     private static JTextFieldSearch jTFS;
     private static JTextArea jTextArea;
@@ -51,7 +48,7 @@ public class FileStructure extends UndecoratedFrame {
             if (jTree.getMaxSelectionRow() < 0) return;
             Node node = (Node) jTree.getSelectionPath().getLastPathComponent();
             if (node.hasNode()) {
-                EditorWrapper.getInstance().goToLine(node.node().getStartLine(), false);
+                EditorWrapper.goToLine(node.node().getStartLine(), false);
             }
         }
     };
@@ -60,7 +57,7 @@ public class FileStructure extends UndecoratedFrame {
         setLayout();
     }
 
-    public static FileStructure getINSTANCE() {
+    public static FileStructure getInstance() {
         if (INSTANCE != null) return INSTANCE;
         INSTANCE = new FileStructure();
         return INSTANCE;
@@ -114,6 +111,7 @@ public class FileStructure extends UndecoratedFrame {
     }
 
     private void setLayout() {
+        setTitle("FileStructureViewer");
         int width = ScreenSize.getWidth();
         int height = ScreenSize.getHeight();
 
@@ -191,6 +189,7 @@ public class FileStructure extends UndecoratedFrame {
                     jTree.setSelectionRow(0);
                 }
                 jTree.setSelectionRow(row - 1); // zero is top, so up means -1
+                jTree.scrollRowToVisible(jTree.getMaxSelectionRow());
             }
         });
 
@@ -206,6 +205,7 @@ public class FileStructure extends UndecoratedFrame {
                 if (jTree.getRowCount() - 1 > row) {
                     jTree.setSelectionRow(row + 1); // zero is top, so down means +1
                 }
+                jTree.scrollRowToVisible(jTree.getMaxSelectionRow());
             }
         });
     }
@@ -227,7 +227,7 @@ public class FileStructure extends UndecoratedFrame {
         ActionListener actionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (ew != null) populate();
+                populateTree();
             }
         };
         cells.addActionListener(actionListener);
@@ -282,6 +282,7 @@ public class FileStructure extends UndecoratedFrame {
                 if (jTree.getMaxSelectionRow() < 0) return;
                 Node node = (Node) jTree.getSelectionPath().getLastPathComponent();
                 jTextArea.setText(node.getDocumentation());
+                moveBarsDocuScrollpane();
             }
         });
 
@@ -327,7 +328,7 @@ public class FileStructure extends UndecoratedFrame {
         // inherited.setEnabled(classes.isSelected());
         inherited.setEnabled(false);
 
-        Node root = new Node(ew.getShortName());
+        Node root = new Node(EditorWrapper.getShortName());
         MTree mTree = MTree.parse(editor.getText());
 
         Tree<MTree.Node> nodeTree = mTree.findAsTree(nodeType);
@@ -336,7 +337,7 @@ public class FileStructure extends UndecoratedFrame {
             nodeType = MTree.NodeType.FUNCTION;
             nodeTree = mTree.findAsTree(nodeType);
         } else if (nodeType.equals(MTree.NodeType.CLASSDEF) & nodeTree.getChildCount(nodeTree.getRoot()) > 0) {
-            String fqn = ew.getFullQualifiedClass();
+            String fqn = EditorWrapper.getFullQualifiedClass();
             root = forClassMeta(fqn, mTree);
             setTreeRoot(root, false);
             return;
@@ -350,10 +351,9 @@ public class FileStructure extends UndecoratedFrame {
         }
     }
 
-    public void populate(final EditorWrapper ew) {
-        if (editor != ew.gae()) jTFS.setText(""); // resetting search if editor has been changed
-        FileStructure.ew = ew;
-        editor = ew.gae();
+    public void populateTree() {
+        if (editor != EditorWrapper.getActiveEditor()) jTFS.setText(""); // resetting search if editor has been changed
+        editor = EditorWrapper.getActiveEditor();
 
         // (disable/enable) class RadioButton if the current file (is no/is) class
         MTree mTree = MTree.parse(editor.getText());
@@ -395,9 +395,13 @@ public class FileStructure extends UndecoratedFrame {
         // setAlwaysOnTop(visible);
         if (visible) {
             jTextArea.setFont(new Font("Courier New", Font.PLAIN, Settings.getPropertyInt("fs.fontSizeDocu")));
-            docuScrollPane.getHorizontalScrollBar().setValue(docuScrollPane.getHorizontalScrollBar().getMinimum());
-            docuScrollPane.getVerticalScrollBar().setValue(docuScrollPane.getVerticalScrollBar().getMinimum());
+            moveBarsDocuScrollpane();
         }
+    }
+
+    private void moveBarsDocuScrollpane() {
+        docuScrollPane.getHorizontalScrollBar().setValue(docuScrollPane.getHorizontalScrollBar().getMinimum());
+        docuScrollPane.getVerticalScrollBar().setValue(docuScrollPane.getVerticalScrollBar().getMinimum());
     }
 
     public void expandAll() {
