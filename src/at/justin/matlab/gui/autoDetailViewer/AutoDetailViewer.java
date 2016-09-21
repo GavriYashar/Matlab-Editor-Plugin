@@ -1,6 +1,6 @@
 package at.justin.matlab.gui.autoDetailViewer;
 
-import at.justin.matlab.EditorWrapper;
+import at.justin.matlab.editor.EditorWrapper;
 import at.justin.matlab.prefs.Settings;
 import com.mathworks.matlab.api.explorer.FileLocation;
 import com.mathworks.matlab.api.explorer.FileSystemEntry;
@@ -29,11 +29,11 @@ public class AutoDetailViewer {
 
     public static void doYourThing() {
         addCheckbox();
-        if (!EditorWrapper.getInstance().getFile().exists()) {
+        if (!EditorWrapper.getFile().exists()) {
             // check for "Untitled" as name is not good, since a "Untitled.m" can exist
             return;
         }
-        FileLocation fileLocation = new FileLocation(EditorWrapper.getInstance().getLongName());
+        FileLocation fileLocation = new FileLocation(EditorWrapper.getLongName());
         FileSystemEntry fileSystemEntry;
         try {
             fileSystemEntry = RealFileSystem.getInstance().getEntry(fileLocation);
