@@ -1,8 +1,8 @@
 package at.justin.debug;
 
-import at.justin.matlab.EditorApp;
-import at.justin.matlab.EditorWrapper;
+import at.justin.matlab.editor.EditorApp;
 import at.justin.matlab.Matlab;
+import at.justin.matlab.editor.EditorWrapper;
 import at.justin.matlab.gui.bookmarks.Bookmarks;
 import com.mathworks.matlab.api.debug.BreakpointMargin;
 import com.mathworks.mde.editor.ExecutionArrowDisplay;
@@ -10,16 +10,14 @@ import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
 import matlabcontrol.MatlabInvocationException;
 
-/**
- * Created by Andreas Justin on 2016-08-25.
- */
+/** Created by Andreas Justin on 2016-08-25. */
 public class Debug {
     public static void debug() {
         System.out.println("yay");
     }
 
     public static void assignObjectsToMatlab() {
-        MTree mTree = MTree.parse(EditorWrapper.getInstance().gae().getText());
+        MTree mTree = MTree.parse(EditorWrapper.getText());
 
         Tree<MTree.Node> commentTree = mTree.findAsTree(MTree.NodeType.COMMENT, MTree.NodeType.BLOCK_COMMENT);
         Tree<MTree.Node> functionTree = mTree.findAsTree(MTree.NodeType.FUNCTION, MTree.NodeType.CELL_TITLE, MTree.NodeType.PROPERTIES, MTree.NodeType.ENUMERATION, MTree.NodeType.EVENT);
@@ -38,7 +36,6 @@ public class Debug {
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "mlDesktop", Matlab.getInstance().getMlDesktop());
 
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorApp", ea);
-            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorWrapper", EditorWrapper.getInstance());
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "bookmarks", Bookmarks.getInstance());
         } catch (MatlabInvocationException ignored) {
         }
