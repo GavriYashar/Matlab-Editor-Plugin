@@ -1,7 +1,7 @@
 package at.justin.matlab.gui.bookmarks;
 
-import at.justin.matlab.EditorApp;
-import at.justin.matlab.EditorWrapper;
+import at.justin.matlab.editor.EditorApp;
+import at.justin.matlab.editor.EditorWrapper;
 import com.mathworks.matlab.api.editor.Editor;
 
 import java.io.File;
@@ -20,8 +20,8 @@ public class Bookmark {
     private String shortName;
     private String longName;
 
-    public Bookmark(EditorWrapper editorWrapper) {
-        this(editorWrapper.gae(), editorWrapper.getCurrentLine() - 1);
+    public Bookmark() {
+        this(EditorWrapper.getActiveEditor(), EditorWrapper.getCurrentLine() - 1);
     }
 
     public Bookmark(Editor editor, int lineIndex) {
@@ -65,17 +65,17 @@ public class Bookmark {
         return line;
     }
 
+    public void setLine(int line) {
+        this.line = line;
+        this.lineIndex = line - 1;
+    }
+
     public int getLineIndex() {
         return lineIndex;
     }
 
     public Editor getEditor() {
         return editor;
-    }
-
-    public void setLine(int line) {
-        this.line = line;
-        this.lineIndex = line - 1;
     }
 
     public Editor reopen() {
@@ -108,6 +108,10 @@ public class Bookmark {
     }
 
     public void goTo() {
-        reopen().goToLine(line, false);
+        try {
+            reopen().goToLine(line, false);
+        } catch (Exception e) {
+            System.out.println("it seems that this bookmark (" + getName() + " " + getShortName() + ") is invalid");
+        }
     }
 }

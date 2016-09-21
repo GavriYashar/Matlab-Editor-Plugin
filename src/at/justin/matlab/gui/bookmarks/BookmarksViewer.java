@@ -49,6 +49,7 @@ public class BookmarksViewer extends UndecoratedFrame {
     }
 
     private void setLayout() {
+        setTitle("BookmarksViewer");
         setResizable(true);
         setSize(dimension);
         setPreferredSize(dimension);
@@ -123,6 +124,8 @@ public class BookmarksViewer extends UndecoratedFrame {
         jList.setLayoutOrientation(JList.VERTICAL);
         jList.setVisibleRowCount(-1);
         jList.setCellRenderer(new BookmarkCellRenderer());
+        jList.addMouseListener(mlClick);
+        jList.addMouseMotionListener(mlMove);
         jList.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {

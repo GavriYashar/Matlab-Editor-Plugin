@@ -1,7 +1,6 @@
 package at.justin.matlab.gui.bookmarks;
 
-import at.justin.matlab.EditorApp;
-import at.justin.matlab.EditorWrapper;
+import at.justin.matlab.editor.EditorWrapper;
 import at.justin.matlab.installer.Install;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.mde.editor.EditorAction;
@@ -15,9 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-/**
- * Created by Andreas Justin on 2016-08-25.
- */
+/** Created by Andreas Justin on 2016-08-25. */
 public class Bookmarks {
     private static final Bookmarks INSTANCE = new Bookmarks();
     private List<Bookmark> bookmarkList = new ArrayList<>(10);
@@ -38,7 +35,7 @@ public class Bookmarks {
     }
 
     public void clearBookmarks() {
-        List<Editor> editors = EditorApp.getInstance().getMatlabEditorApplication().getOpenEditors();
+        List<Editor> editors = EditorWrapper.getOpenEditors();
         for (Editor editor : editors) {
             ((ExecutionArrowDisplay) editor.getExecutionArrowMargin()).clearBookmarks();
         }
@@ -126,15 +123,15 @@ public class Bookmarks {
     }
 
     public void addBookmarksForAllOpenEditors() {
-        List<Editor> editors = EditorApp.getInstance().getMatlabEditorApplication().getOpenEditors();
+        List<Editor> editors = EditorWrapper.getOpenEditors();
         for (Editor editor : editors) {
             addBookmarksForEditor(editor);
         }
     }
 
-    public void setBookmarks(EditorWrapper ew) {
-        removeBookmarksForEditor(ew.gae());
-        toggleBookmarksForEditor(ew.gae());
+    public void setBookmarks() {
+        removeBookmarksForEditor(EditorWrapper.getActiveEditor());
+        toggleBookmarksForEditor(EditorWrapper.getActiveEditor());
     }
 
     /**
@@ -206,7 +203,7 @@ public class Bookmarks {
         }
 
         // setting editor bookmarks
-        List<Editor> editors = EditorApp.getInstance().getMatlabEditorApplication().getOpenEditors();
+        List<Editor> editors = EditorWrapper.getOpenEditors();
         for (Editor editor : editors) {
             setEditorBookmarks(editor);
         }
@@ -224,7 +221,7 @@ public class Bookmarks {
      * @param insertUpdate true add line, false remline
      */
     public void adjustBookmarks(DocumentEvent event, boolean insertUpdate) {
-        List<Bookmark> bookmarks = getBookmarksForEditor(EditorWrapper.getInstance().gae());
+        List<Bookmark> bookmarks = getBookmarksForEditor(EditorWrapper.getActiveEditor());
 
         if (!bookmarks.isEmpty()) {
             int minLine = ((BaseDocumentEvent) event).getLine();
@@ -244,8 +241,8 @@ public class Bookmarks {
                     // if (event.getLength() == 1) {
                     //     int p1 = event.getOffset();
                         // int p2 = p1 + event.getLength();
-                        // enter1 = EditorWrapper.getInstance().getText(p1, p1 + 1).charAt(0);
-                        // enter2 = EditorWrapper.getInstance().getText(p2, p2 + 1).charAt(0);
+                        // enter1 = EditorWrapperActive.getInstance().getText(p1, p1 + 1).charAt(0);
+                        // enter2 = EditorWrapperActive.getInstance().getText(p2, p2 + 1).charAt(0);
                     // }
 
                     if (maxLine < bm.getLine()) {
