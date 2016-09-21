@@ -87,11 +87,12 @@ public class Install {
 
     public static String getVersion() throws IOException {
         String versionString = Install.getJarFile().toString();
-        Pattern pattern = Pattern.compile("\\d{4}[a-z]");
+        Pattern pattern = Pattern.compile("(\\d{4}[a-z]|\\d+\\.\\d+)");
         Matcher matcher = pattern.matcher(versionString);
         if (matcher.find()) {
             int s = matcher.start();
             versionString = versionString.substring(s, s + 5);
+            versionString = versionString.replace('.','_');
         } else {
             versionString = "To do a great right do a little wrong. <William Shakespeare>";
         }
