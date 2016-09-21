@@ -1,6 +1,6 @@
 package at.justin.matlab.gui.clipboardStack;
 
-import at.justin.matlab.EditorWrapper;
+import at.justin.matlab.editor.EditorWrapper;
 import at.justin.matlab.gui.components.UndecoratedFrame;
 import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.KeyStrokeUtil;
@@ -15,9 +15,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-/**
- * Created by Andreas Justin on 2016 - 02 - 09.
- */
+/** Created by Andreas Justin on 2016 - 02 - 09. */
 public class ClipboardStack {
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
     private static final String ENTER_ACTION = "ENTER";
@@ -68,6 +66,7 @@ public class ClipboardStack {
     }
 
     private void create() {
+        undecoratedFrame.setTitle("CliboardStack");
         undecoratedFrame.setSize(300, 600);
         undecoratedFrame.setResizable(true);
         undecoratedFrame.setLocation(ScreenSize.getCenter(undecoratedFrame.getSize()));
@@ -159,7 +158,7 @@ public class ClipboardStack {
     }
 
     private void insertSelectedText() {
-        EditorWrapper.getInstance().setSelectedTxt(strings[jList.getSelectedIndex()]);
+        EditorWrapper.setSelectedTxt(strings[jList.getSelectedIndex()]);
         ClipboardStack.getInstance().setVisible(false);
         moveTextToPosition(jList.getSelectedIndex(), 0);
     }
