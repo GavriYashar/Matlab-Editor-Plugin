@@ -1,5 +1,6 @@
 package at.justin.matlab;
 
+import at.justin.matlab.editor.EditorApp;
 import at.justin.matlab.gui.bookmarks.Bookmarks;
 import at.justin.matlab.installer.Install;
 import at.justin.matlab.prefs.Settings;
@@ -12,6 +13,8 @@ import java.io.IOException;
 /** Created by Andreas Justin on 2016-08-25. */
 public class Start {
     public static void start(String customSettings, String defaultSettings) {
+        if (!Settings.getPropertyBoolean("feature.enableMEP")) return;
+
         if (customSettings != null && defaultSettings != null) {
             loadSettings(customSettings, defaultSettings);
         }
@@ -38,8 +41,23 @@ public class Start {
         }
     }
 
+    public static void start() {
+        if (!Settings.getPropertyBoolean("feature.enableMEP")) return;
+        File customFile;
+        File defaultFile;
+        try {
+            defaultFile = Install.getDefaultPropertyFile();
+            customFile = Install.getCustomPropertyFile();
+            start(defaultFile.getAbsolutePath(), customFile.getAbsolutePath());
+        } catch (IOException ignored) {
+        }
+        start(null, null);
+    }
+
     private static void setReplacementPath() {
-        if (Settings.getPropertyBoolean("feature.enableReplacements") && Settings.getProperty("path.mepr.rep").length() > 1) return;
+        if (Settings.getPropertyBoolean("feature.enableReplacements")
+                && Settings.getProperty("path.mepr.rep").length() > 1)
+            return;
         try {
             File fileRep = new File(Install.getJarFile().getParentFile().getPath() + "\\Replacements");
             File fileVar = new File(Install.getJarFile().getParentFile().getPath() + "\\Replacements\\Variables");
@@ -63,19 +81,6 @@ public class Start {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    public static void start() {
-        File customFile;
-        File defaultFile;
-        try {
-            defaultFile = Install.getDefaultPropertyFile();
-            customFile = Install.getCustomPropertyFile();
-            start(defaultFile.getAbsolutePath(), customFile.getAbsolutePath());
-        } catch (IOException ignored) {
-        }
-        start(null, null);
-    }
-
 
     private static void loadSettings(String customFile, String defaultFile) {
         Settings.loadSettings(customFile, defaultFile);
