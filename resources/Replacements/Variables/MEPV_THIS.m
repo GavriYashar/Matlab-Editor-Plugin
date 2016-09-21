@@ -12,6 +12,5 @@ function txt = MESV_TIME(txt)
 % See also
 expr = '\$\{(THIS)\}';
 if ~isempty(regexp(txt,expr,'once'))
-    ew = at.justin.matlab.EditorWrapper.getInstance();
-    txt = ew.getFullQualifiedClass(); % returns package.package.Class or name of current file
+    txt = char(at.justin.matlab.editor.EditorWrapper.getFullQualifiedClass());
 end
