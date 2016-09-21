@@ -36,10 +36,21 @@ public class FileUtils {
     }
 
     public static List<String> readFileToStringList(File file) throws IOException {
+        return readFileToStringList(file, null);
+    }
+
+    public static List<String> readFileToStringList(File file, Pattern regexBreakCondition) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
         List<String> lines = new ArrayList<>();
         String line;
         while ((line = br.readLine()) != null) {
+            if (regexBreakCondition != null) {
+                Matcher matcher = regexBreakCondition.matcher(line);
+                if (matcher.find()) {
+                    br.close();
+                    return lines;
+                }
+            }
             lines.add(line);
         }
         br.close();
