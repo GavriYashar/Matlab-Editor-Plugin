@@ -92,7 +92,9 @@ public class Install {
         if (matcher.find()) {
             int s = matcher.start();
             versionString = versionString.substring(s, s + 5);
-            versionString = versionString.replace('.','_');
+            versionString = versionString.replace('.', '_');
+            if (versionString.endsWith("_"))
+                versionString = versionString.substring(0, versionString.length() - 1);
         } else {
             versionString = "To do a great right do a little wrong. <William Shakespeare>";
         }
