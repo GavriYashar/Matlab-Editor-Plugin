@@ -8,7 +8,7 @@ It'll add following features to Matlab, and it's editor
 * **BookmarkViewer**: opened via <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>F2</kbd> (if <kbd>CTRL</kbd> + <kbd>F2</kbd> is default for bookmarks) View all bookmarks in every opened and closed editor. Stored and restored after closing and reopening an editor or Matlab
 * **Duplicate line**:  <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>D</kbd>
 * **delete line**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>Y</kbd>
-* **LiveTemplatesViewer**: <kbd>CTRL</kbd> + <kbd>INSERT</kbd> view all created livetemplates
+* **LiveTemplatesViewer**: <kbd>ALT</kbd> + <kbd>INSERT</kbd> view all created livetemplates
 * **Quicksearch Templates**: <kbd>CTRL</kbd> + <kbd>SPACE</kbd> quick searches live templates when writing an command (`%MYTEMPL` + <kbd>CTRL</kbd> + <kbd>SPACE</kbd> = `%MYTEMPLATE`)
 
 ## Setup
