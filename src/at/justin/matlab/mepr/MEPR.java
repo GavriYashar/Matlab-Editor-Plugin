@@ -86,6 +86,7 @@ public class MEPR {
         lc[1] -= 1;
 
         String lineString = EditorWrapper.getCurrentLineText();
+        if (lineString.length() < 1) return "";
         lineString = lineString.substring(0, lc[1]);
         Matcher matcher = actionPattern.matcher(lineString);
 
@@ -173,7 +174,7 @@ public class MEPR {
                         "feval(str2func('" + func + "'))",
                         1);
                 rep = (String) out[0];
-            } catch (MatlabInvocationException e1) {
+            } catch (Exception e1) {
                 e1.printStackTrace();
                 rep = varFunc[0];
             }
