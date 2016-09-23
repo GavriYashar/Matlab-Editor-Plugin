@@ -14,8 +14,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /** Created by Andreas Justin on 2016-08-23. */
 public class PrefsWelcome extends MJPanel {
@@ -51,7 +49,7 @@ public class PrefsWelcome extends MJPanel {
     }
 
     private void addLicense() throws IOException {
-        InputStream stream = PrefsChanger.class.getResourceAsStream("/license.txt");
+        InputStream stream = PrefsChanger.class.getResourceAsStream("/MEP_license.txt");
         BufferedReader br = new BufferedReader(new InputStreamReader(stream));
         String license = FileUtils.readBufferedReaderToString(br, true);
         br.close();
