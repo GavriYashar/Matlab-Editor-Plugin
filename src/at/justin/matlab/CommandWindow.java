@@ -10,7 +10,15 @@ public class CommandWindow {
     }
 
     public static String getSelectedTxt() {
-        return XCmdWndView.getInstance().getSelectedText();
+        return getXCmdWndView().getSelectedText();
+    }
+
+    public static void insertTextAtPos(String string, int pos) {
+        getXCmdWndView().insert(string, pos);
+    }
+
+    public static int getCaretPosition() {
+        return getXCmdWndView().getCaretPosition();
     }
 
     public static XCmdWndView getXCmdWndView() {
