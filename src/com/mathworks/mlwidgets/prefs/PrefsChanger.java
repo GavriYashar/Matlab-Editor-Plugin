@@ -6,9 +6,7 @@ import at.justin.matlab.prefs.Settings;
 
 import java.io.IOException;
 
-/**
- * Created by Andreas Justin on 2016-08-23.
- */
+/** Created by Andreas Justin on 2016-08-23. */
 public class PrefsChanger extends PrefsDialog {
     public static void addPrefs() throws ClassNotFoundException {
         try {
