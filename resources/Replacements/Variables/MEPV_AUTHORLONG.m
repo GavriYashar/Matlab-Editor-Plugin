@@ -1,4 +1,4 @@
-function txt = MESRV_AUTHORLONG(txt)
+function txt = MEPV_AUTHORLONG(txt)
 % returns name of currently logged in user
 %% VERSIONING
 %             Author: Andreas Justin
