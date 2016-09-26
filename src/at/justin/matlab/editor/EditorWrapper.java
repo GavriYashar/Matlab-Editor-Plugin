@@ -25,6 +25,9 @@ public class EditorWrapper {
     private static boolean isActiveEditorDirty = true;
     private static boolean isLastEditorDirty = true;
 
+    // ////////////////////////////////////////////////////////////////////////////
+    // //////////////// some performance optimization things /////////////////////
+    // //////////////////////////////////////////////////////////////////////////
     public static boolean isActiveEditorDirty() {
         return EditorWrapper.isActiveEditorDirty;
     }
@@ -66,14 +69,19 @@ public class EditorWrapper {
         EditorWrapper.lastEditorTextArray = EditorWrapper.getTextArray(lastEditor);
     }
 
+    // ////////////////////////////////////////////////////////////////////////////
+
+    /** open editor of give java.io.File */
     public static Editor openEditor(File file) {
         return EditorWrapper.getMatlabEditorApplication().openEditor(file);
     }
 
+    /** returns com.mathworks.mde.editor.MatlabEditorApplication*/
     public static MatlabEditorApplication getMatlabEditorApplication() {
         return MatlabEditorApplication.getInstance();
     }
 
+    /** returns java.util.List[Editor] of all opened editors */
     public static List<Editor> getOpenEditors() {
         return getMatlabEditorApplication().getOpenEditors();
     }
@@ -87,18 +95,22 @@ public class EditorWrapper {
         return EditorWrapper.getActiveEditor();
     }
 
+    /** returns currently active Editor in Matlab */
     public static Editor getActiveEditor() {
         return EditorApp.getInstance().getActiveEditor();
     }
 
+    /** returns full qualified name of given editor */
     public static String getLongName(Editor editor) {
         return editor.getLongName();
     }
 
+    /** returns file name of given editor */
     public static String getShortName(Editor editor) {
         return editor.getShortName();
     }
 
+    /** returns full class name of given editor, if MFile is a class, otherwise just the filename will be returned */
     public static String getFullQualifiedClass(Editor editor) {
         String lName = EditorWrapper.getLongName(editor);
         lName = lName.replace("\\", ".");
@@ -116,14 +128,17 @@ public class EditorWrapper {
         return editor.getTextComponent().getInputMap();
     }
 
+    /** returns java .io.File of given editor */
     public static File getFile(Editor editor) {
         return new File(EditorWrapper.getLongName(editor));
     }
 
+    /** returns containing text of given editor */
     public static String getText(Editor editor) {
         return editor.getText();
     }
 
+    /** returns containing text of given editor for start and end position */
     public static String getText(Editor editor, int start, int end) {
         String txt = EditorWrapper.getText(editor);
         if (start < 0) start = 0;
@@ -132,6 +147,7 @@ public class EditorWrapper {
         return txt.substring(start, end);
     }
 
+    /** returns containing text of given editor for an offset and length */
     public static String getTextOffsetLength(Editor editor, int offset, int length) {
         try {
             return editor.getTextComponent().getText(offset, length);
@@ -141,6 +157,7 @@ public class EditorWrapper {
         return "";
     }
 
+    /** returns String[] of containing text for given editor, where each entry is represented by a line. !!reloads text on every call */
     public static String[] getTextArray(Editor editor) {
         String[] textArray = EditorWrapper.getText(editor).split("\\n");
         for (int i = 0; i < textArray.length; i++) {
@@ -149,6 +166,7 @@ public class EditorWrapper {
         return textArray;
     }
 
+    /** returns String[] of containing text for given editor, where each entry is represented by a line. !!reloads text only when changed */
     public static String[] getTextArrayFast(Editor editor) {
         String[] strings;
         if (editor == gae()) {
@@ -162,12 +180,13 @@ public class EditorWrapper {
         return strings;
     }
 
+    /** returns currently selected text of given editor */
     public static String getSelectedTxt(Editor editor) {
         return editor.getSelection();
     }
 
     /**
-     * converts position in line and column
+     * converts position to line and column for given editor. see position as an index of a 1D-Array of characters.
      *
      * @return [line, column]
      */
@@ -175,6 +194,7 @@ public class EditorWrapper {
         return editor.positionToLineAndColumn(pos);
     }
 
+    /** converts line and column to position for given editor. see position as an index of a 1D-Array of characters. */
     public static int lc2pos(Editor editor, int line, int col) {
         int[] lc = EditorWrapper.fixLineCol(editor, line, col);
         line = lc[0] - 1;// line 1 is actually 0;
@@ -188,54 +208,63 @@ public class EditorWrapper {
         return p + col - 1;
     }
 
+    /** replaces selected text with given string for given editor */
     public static void setSelectedTxt(Editor editor, String string) {
         editor.replaceText(string, EditorWrapper.getSelectionPositionStart(editor), EditorWrapper.getSelectionPositionEnd(editor));
     }
 
+    /** get position of caret of given editor */
     public static int getCaretPosition(Editor editor) {
         return editor.getCaretPosition();
     }
 
+    /** sets the position of caret for given editor */
     public static void setCaretPosition(Editor editor, int caretPosition) {
         editor.setCaretPosition(caretPosition);
     }
 
-    /** @return [start, end] position */
+    /** @return [start, end] position of given editor*/
     public static int[] getSelectionPosition(Editor editor) {
         return new int[]{EditorWrapper.getSelectionPositionStart(editor), EditorWrapper.getSelectionPositionEnd(editor)};
     }
 
+    /** sets selection position of given editor */
     public static void setSelectionPosition(Editor editor, int start, int end) {
         editor.setSelection(start, end);
     }
 
+    /** returns the end position of current selection of given editor */
     public static int getSelectionPositionEnd(Editor editor) {
         return editor.getTextComponent().getSelectionEnd();
     }
 
+    /** sets the end position of selection of given editor */
     public static void setSelectionPositionEnd(Editor editor, int end) {
         editor.getTextComponent().setSelectionEnd(end);
     }
 
+    /** returns the start position of current selection of given editor */
     public static int getSelectionPositionStart(Editor editor) {
         return editor.getTextComponent().getSelectionStart();
     }
 
+    /** sets the start position of current selection of given editor */
     public static void setSelectionPositionStart(Editor editor, int start) {
         editor.getTextComponent().setSelectionStart(start);
     }
 
+    /** returns com.mathworks.mde.editor.EditorSyntaxTextPane */
     public static EditorSyntaxTextPane getEditorSyntaxTextPane(Editor editor) {
         return ComponentUtil.getEditorSyntaxTextPaneForEditor(editor);
     }
 
+    /** moves caret to given line of given editor. if select flag is true, the current line will be selected */
     public static void goToLine(Editor editor, int line, boolean select) {
         editor.goToLine(line, select);
     }
 
     /**
      * fixing line and number to active editor valid values
-     *
      * @return fixed [line, column]
      */
     public static int[] fixLineCol(Editor editor, int line, int col) {
@@ -247,29 +276,33 @@ public class EditorWrapper {
         return new int[]{line, col};
     }
 
+    /** returns the length of given line of given editor */
     public static int getLineLength(Editor editor, int line) {
         String[] strings = EditorWrapper.getTextArrayFast(editor);
         int[] lc = EditorWrapper.fixLineCol(editor, line, 1);
         return strings[lc[0] - 1].length(); // + 1 for \n (now \n is added at end)
     }
 
+    /** moves cursor to line and column of given editor */
     public static void goToLineCol(Editor editor, int line, int col) {
         int[] lc = EditorWrapper.fixLineCol(editor, line, col);
         int pos = EditorWrapper.lc2pos(editor, lc[0], lc[1]);
         editor.goToPositionAndHighlight(pos, pos);
     }
 
+    /** selects given line of given editor */
     public static void selectLine(Editor editor, int line) {
         EditorWrapper.goToLine(editor, line, true);
     }
 
+    /** string will be inserted at given position of given editor */
     public static void inserTextAtPos(Editor editor, String string, int pos) {
         EditorWrapper.setCaretPosition(editor, pos);
         editor.insertTextAtCaret(string);
 
     }
 
-    /** will return all < <start, stop>, <start, stop> ...> positions of text found by expr */
+    /** will return all [ [start, stop], [start, stop] ...] positions of text found by expr */
     public static ArrayList<Integer> getTextPosByExpr(Editor editor, String expr, int startSearch, int stopSearch) {
         String text = EditorWrapper.getText(editor, startSearch, stopSearch);
         Pattern p = Pattern.compile(expr);
@@ -322,21 +355,25 @@ public class EditorWrapper {
         return EditorWrapper.getSectionPosByPos(editor, EditorWrapper.lc2pos(editor, line, 1));
     }
 
+    /** returns String of an entire section surrounding given position of given editor */
     public static String getTextOfSectionByPos(Editor editor, int pos) throws Exception {
         int[] se = EditorWrapper.getSectionPosByPos(editor, pos);
         return EditorWrapper.getText(editor, se[0], se[1]);
 
     }
 
+    /** returns current line index of caret of given editor */
     public static int getCurrentLine(Editor editor) {
         int[] lc = EditorWrapper.pos2lc(editor, EditorWrapper.getCaretPosition(editor));
         return lc[0];
     }
 
+    /** returns text of current line of given editor */
     public static String getCurrentLineText(Editor editor) {
         return EditorWrapper.getTextByLine(editor, EditorWrapper.getCurrentLine(editor));
     }
 
+    /** deletes current line of given editor */
     public static void deleteCurrentLine(Editor editor) {
         int line = EditorWrapper.getCurrentLine(editor);
         int[] se = new int[2];
@@ -348,6 +385,7 @@ public class EditorWrapper {
         EditorWrapper.goToLine(editor, line - 1, false);
     }
 
+    /** duplicates current line of given editor */
     public static void duplicateCurrentLine(Editor editor) {
         int line = EditorWrapper.getCurrentLine(editor);
         String lineStr = EditorWrapper.getTextByLine(editor, line);
@@ -361,6 +399,7 @@ public class EditorWrapper {
         EditorWrapper.goToLine(editor, line + 1, false);
     }
 
+    /** returns text of entire line of given editor */
     public static String getTextByLine(Editor editor, int line) {
         String[] strings;
         if (editor == gae()) {
@@ -372,6 +411,7 @@ public class EditorWrapper {
         return strings[line - 1];
     }
 
+    /** returns String[] of lines as int[] of given editor */
     public static String[] getTextByLines(Editor editor, int[] lines) {
         String[] retString = new String[lines.length];
 
