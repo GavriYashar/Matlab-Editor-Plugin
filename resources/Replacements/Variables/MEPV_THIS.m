@@ -1,4 +1,4 @@
-function txt = MESV_TIME(txt)
+function txt = MEPV_TIME(txt)
 % returns the package name of the class currently editing, or name of current m-File if it is no class
 %% VERSIONING
 %             Author: Andreas Justin
