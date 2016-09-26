@@ -1,4 +1,4 @@
-function txt = MESRV_DATE(txt)
+function txt = MEPV_DATE(txt)
 % returns date string as yyyy-mm-dd format
 %% VERSIONING
 %             Author: Andreas Justin,
