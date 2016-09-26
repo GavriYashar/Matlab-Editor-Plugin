@@ -4,6 +4,7 @@ import at.justin.matlab.editor.EditorWrapper;
 import at.justin.matlab.gui.components.UndecoratedFrame;
 import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.KeyStrokeUtil;
+import at.justin.matlab.util.RunnableUtil;
 import at.justin.matlab.util.ScreenSize;
 
 import javax.swing.*;
@@ -27,8 +28,13 @@ public class ClipboardStack {
     private String[] strings = new String[Settings.getPropertyInt("clipboardStack.size")];
 
     private ClipboardStack() {
-        create();
-        undecoratedFrame.setVisible(false);
+        Runnable runnable = new Runnable() {
+            public void run() {
+                create();
+                undecoratedFrame.setVisible(false);
+            }
+        };
+        RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
     }
 
     public static ClipboardStack getInstance() {

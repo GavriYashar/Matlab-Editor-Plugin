@@ -9,7 +9,9 @@ import at.justin.matlab.meta.MetaMethod;
 import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.KeyStrokeUtil;
 import at.justin.matlab.util.NodeUtils;
+import at.justin.matlab.util.RunnableUtil;
 import at.justin.matlab.util.ScreenSize;
+import com.mathworks.jmi.AWTUtilities;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
@@ -54,7 +56,12 @@ public class FileStructure extends UndecoratedFrame {
     };
 
     public FileStructure() {
-        setLayout();
+        Runnable runnable = new Runnable() {
+            public void run() {
+                setLayout();
+            }
+        };
+        RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
     }
 
     public static FileStructure getInstance() {

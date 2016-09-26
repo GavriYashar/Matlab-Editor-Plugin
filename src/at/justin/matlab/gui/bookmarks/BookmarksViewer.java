@@ -3,6 +3,7 @@ package at.justin.matlab.gui.bookmarks;
 import at.justin.matlab.gui.components.JTextFieldSearch;
 import at.justin.matlab.gui.components.UndecoratedFrame;
 import at.justin.matlab.util.KeyStrokeUtil;
+import at.justin.matlab.util.RunnableUtil;
 import at.justin.matlab.util.ScreenSize;
 
 import javax.swing.*;
@@ -29,7 +30,12 @@ public class BookmarksViewer extends UndecoratedFrame {
     };
 
     private BookmarksViewer() {
-        setLayout();
+        Runnable runnable = new Runnable() {
+            public void run() {
+                setLayout();
+            }
+        };
+        RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
     }
 
     public static BookmarksViewer getInstance() {

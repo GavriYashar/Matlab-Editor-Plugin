@@ -8,6 +8,7 @@ import at.justin.matlab.mepr.MEPR;
 import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.FileUtils;
 import at.justin.matlab.util.KeyStrokeUtil;
+import at.justin.matlab.util.RunnableUtil;
 import at.justin.matlab.util.ScreenSize;
 import com.mathworks.matlab.api.editor.Editor;
 
@@ -39,7 +40,12 @@ public class MEPRViewer extends UndecoratedFrame {
     };
 
     private MEPRViewer() {
-        setLayout();
+        Runnable runnable = new Runnable() {
+            public void run() {
+                setLayout();
+            }
+        };
+        RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
     }
 
     public static MEPRViewer getInstance() {
