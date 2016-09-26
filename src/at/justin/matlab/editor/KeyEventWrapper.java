@@ -29,10 +29,10 @@ public class KeyEventWrapper {
     }
 
     public static boolean isEditor(KeyEvent keyEvent) {
-        return keyEvent.getSource().toString().endsWith("EditorSyntaxTextPane");
+        return keyEvent.getSource().getClass().toString().endsWith("EditorSyntaxTextPane");
     }
 
     public static boolean isCmdWin(KeyEvent keyEvent) {
-        return keyEvent.getSource().toString().endsWith("XCmdWndView");
+        return keyEvent.getSource().getClass().toString().endsWith("XCmdWndView");
     }
 }
