@@ -202,7 +202,7 @@ public class PrefsPanel extends MJPanel {
         properties = new String[]{"isPublicUser",
                 "verbose",
                 "autoReloadProps",
-                "autoDetailViewer",
+                "feature.enableAutoDetailViewer",
                 "bpColor",
                 "fs.iconSet"};
         types = new PropertyType[]{PropertyType.BOOLEAN,
