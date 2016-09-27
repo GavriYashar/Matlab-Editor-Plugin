@@ -357,7 +357,8 @@ public class MEPRViewer extends UndecoratedFrame {
 
         if (foundEntries.size() == 1) {
             int end = EditorWrapper.getSelectionPositionStart();
-            MEPR.setRepText("%" + foundEntries.get(0).getAction());
+            MEPR.prepareReplace("%" + foundEntries.get(0).getAction(), false);
+            // MEPR.setRepText("%" + foundEntries.get(0).getAction());
             MEPR.setSelectionSE(new int[]{end - action.length(), end});
             MEPR.doReplace();
             return;
