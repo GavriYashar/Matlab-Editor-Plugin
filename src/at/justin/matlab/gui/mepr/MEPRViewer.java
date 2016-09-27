@@ -6,10 +6,7 @@ import at.justin.matlab.gui.components.JTextFieldSearch;
 import at.justin.matlab.gui.components.UndecoratedFrame;
 import at.justin.matlab.mepr.MEPR;
 import at.justin.matlab.prefs.Settings;
-import at.justin.matlab.util.FileUtils;
-import at.justin.matlab.util.KeyStrokeUtil;
-import at.justin.matlab.util.RunnableUtil;
-import at.justin.matlab.util.ScreenSize;
+import at.justin.matlab.util.*;
 import com.mathworks.matlab.api.editor.Editor;
 
 import javax.swing.*;
@@ -138,7 +135,7 @@ public class MEPRViewer extends UndecoratedFrame {
                 BufferedReader br = new BufferedReader(new InputStreamReader(stream));
                 String template = "";
                 try {
-                    template = FileUtils.readBufferedReaderToString(br, true);
+                    template = FileUtils.readBufferedReaderToString(br, TrimE.TRAILING);
                     br.close();
                 } catch (IOException ignored) {
                 }
