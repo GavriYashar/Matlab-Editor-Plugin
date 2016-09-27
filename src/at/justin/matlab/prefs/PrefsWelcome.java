@@ -49,7 +49,7 @@ public class PrefsWelcome extends MJPanel {
     }
 
     private void addLicense() throws IOException {
-        InputStream stream = PrefsChanger.class.getResourceAsStream("/MEP_license.txt");
+        InputStream stream = PrefsWelcome.class.getResourceAsStream("/MEP_license.txt");
         BufferedReader br = new BufferedReader(new InputStreamReader(stream));
         String license = FileUtils.readBufferedReaderToString(br, true);
         br.close();
