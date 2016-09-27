@@ -120,15 +120,17 @@ public class PrefsPanel extends MJPanel {
     private void addFeatureSelector() {
         JPanel ps = new JPanel();
         ps.setLayout(new GridBagLayout());
-        ps.setBorder(BorderFactory.createTitledBorder("Features"));
+        ps.setBorder(BorderFactory.createTitledBorder("MEP-Features"));
 
         String[] properties = {"feature.enableClipboardStack",
                 "feature.enableFileStructure",
                 "feature.enableBookmarksViewer",
                 "feature.enableDuplicateLine",
                 "feature.enableDeleteCurrentLine",
-                "feature.enableReplacements"};
+                "feature.enableReplacements",
+                "feature.enableAutoDetailViewer"};
         PropertyType[] types = {PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
@@ -202,11 +204,9 @@ public class PrefsPanel extends MJPanel {
         properties = new String[]{"isPublicUser",
                 "verbose",
                 "autoReloadProps",
-                "feature.enableAutoDetailViewer",
                 "bpColor",
                 "fs.iconSet"};
         types = new PropertyType[]{PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.COLOR,
