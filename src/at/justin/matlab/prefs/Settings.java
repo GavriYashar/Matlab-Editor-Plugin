@@ -9,7 +9,10 @@ import com.mathworks.services.settings.SettingTypeException;
 
 import java.awt.*;
 import java.io.*;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Properties;
+import java.util.TreeSet;
 
 /**
  * Created by Andreas Justin on 2016 - 02 - 07.
@@ -49,8 +52,15 @@ public class Settings {
     }
 
     public static void store() throws IOException {
+        Properties tmp = new Properties() {
+            @Override
+            public synchronized Enumeration<Object> keys() {
+                return Collections.enumeration(new TreeSet<>(super.keySet()));
+            }
+        };
+        tmp.putAll(customProps);
         Writer writer = new FileWriter(customSettingsName, false);
-        customProps.store(writer, "Custom Settings Documentation in DefaultProps.properties");
+        tmp.store(writer, "Custom Settings Documentation in DefaultProps.properties");
     }
 
     public static String getCustomSettingsName() {
