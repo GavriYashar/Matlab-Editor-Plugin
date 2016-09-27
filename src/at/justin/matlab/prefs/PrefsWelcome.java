@@ -2,6 +2,7 @@ package at.justin.matlab.prefs;
 
 import at.justin.matlab.installer.Install;
 import at.justin.matlab.util.FileUtils;
+import at.justin.matlab.util.TrimE;
 import com.mathworks.mlwidgets.prefs.PrefsChanger;
 import com.mathworks.mwswing.MJPanel;
 
@@ -51,7 +52,7 @@ public class PrefsWelcome extends MJPanel {
     private void addLicense() throws IOException {
         InputStream stream = PrefsWelcome.class.getResourceAsStream("/MEP_license.txt");
         BufferedReader br = new BufferedReader(new InputStreamReader(stream));
-        String license = FileUtils.readBufferedReaderToString(br, true);
+        String license = FileUtils.readBufferedReaderToString(br, TrimE.BOTH);
         br.close();
 
         JTextPane jtp = new JTextPane();
