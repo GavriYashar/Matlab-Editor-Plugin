@@ -59,17 +59,25 @@ public class FileUtils {
 
     public static String readFileToString(File file) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
-        String s = readBufferedReaderToString(br, true);
+        String s = readBufferedReaderToString(br, TrimE.TRAILING);
         br.close();
         return s;
     }
 
-    public static String readBufferedReaderToString(BufferedReader br, boolean trim) throws IOException {
+    public static String readBufferedReaderToString(BufferedReader br, TrimE trim) throws IOException {
         String line;
         String s = "";
         while ((line = br.readLine()) != null) {
-            if (trim) {
-                line = line.trim();
+            switch (trim) {
+                case BOTH:
+                    line = line.trim();
+                    break;
+                case LEADING:
+                    line = StringUtils.trimStart(line);
+                    break;
+                case TRAILING:
+                    line = StringUtils.trimEnd(line);
+                    break;
             }
             s += line + "\n";
         }
