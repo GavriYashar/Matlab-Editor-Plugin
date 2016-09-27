@@ -103,7 +103,7 @@ public class EditorApp {
                 @Override
                 public void eventOccurred(EditorEvent editorEvent) {
                     // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
-                    if (editorEvent == EditorEvent.ACTIVATED && Settings.getPropertyBoolean("autoDetailViewer")) {
+                    if (editorEvent == EditorEvent.ACTIVATED && Settings.getPropertyBoolean("feature.enableAutoDetailViewer")) {
                         AutoDetailViewer.doYourThing();
                     }
                 }
