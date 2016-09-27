@@ -48,14 +48,14 @@ public class AutoDetailViewer {
         added = true;
         setJCheckBox();
         jCheckBox.setText("Auto Select");
-        jCheckBox.setSelected(Settings.getPropertyBoolean("autoDetailViewer"));
+        jCheckBox.setSelected(Settings.getPropertyBoolean("feature.enableAutoDetailViewer"));
 
         jCheckBox.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 String val = "false";
                 if (jCheckBox.isSelected()) val = "true";
-                Settings.setProperty("autoDetailViewer", val);
+                Settings.setProperty("feature.enableAutoDetailViewer", val);
                 try {
                     Settings.store();
                 } catch (IOException e1) {
