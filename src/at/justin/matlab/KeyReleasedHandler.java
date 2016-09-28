@@ -9,12 +9,16 @@ import at.justin.matlab.gui.fileStructure.FileStructure;
 import at.justin.matlab.gui.mepr.MEPRViewer;
 import at.justin.matlab.mepr.MEPR;
 import at.justin.matlab.prefs.Settings;
+import at.justin.matlab.util.ClipboardUtil;
 import at.justin.matlab.util.KeyStrokeUtil;
 import com.mathworks.mde.cmdwin.XCmdWndView;
 import com.mathworks.mde.editor.EditorSyntaxTextPane;
 import matlabcontrol.MatlabInvocationException;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -216,17 +220,15 @@ public class KeyReleasedHandler {
     }
 
     static void doCopyAction(ActionEvent event) {
-        ClipboardStack.getInstance().add(EditorWrapper.getSelectedTxt());
-        // try {
-        //     String data = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
-        //     if (data != null) clipboardStack.getInstance().add(data);
-        // } catch (UnsupportedFlavorException | IOException ignored) {
-        //     e.printStackTrace();
-        // }
+        String selText = EditorWrapper.getSelectedTxt();
+        ClipboardStack.getInstance().add(selText);
+        ClipboardUtil.addToClipboard(selText);
     }
 
     static void doCopyActionCmdView(ActionEvent event) {
-        ClipboardStack.getInstance().add(CommandWindow.getSelectedTxt());
+        String selText = CommandWindow.getSelectedTxt();
+        ClipboardStack.getInstance().add(selText);
+        ClipboardUtil.addToClipboard(selText);
     }
 
     static void showClipboardStack(ActionEvent event) {
