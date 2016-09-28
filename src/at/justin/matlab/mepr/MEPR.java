@@ -61,7 +61,7 @@ public class MEPR {
         // prepareReplace and doReplace are separated because matconsolectl enters an endless loop otherwise.
         // Also KeyReleaseHandler is notified before DocumentEvent (sometimes). So theoretically the KeyReleaseHandler could
         // replace %action% but then the last "%" is not deleted.
-        prepareReplace(false);
+        prepareReplace(MEPRActionE.COMMAND);
     }
 
     public static void doReplace() {
@@ -72,12 +72,13 @@ public class MEPR {
         repText = "";
     }
 
-    public static void prepareReplace(boolean srcIsViewer) {
+    public static void prepareReplace(MEPRActionE actionE) {
+        prepareReplaceTime = System.nanoTime();
         String action = getAction();
         if (action.length() < 1) return;
         int s = EditorWrapper.getSelectionPositionStart();
         selectionSE = new int[]{s - action.length(), s + 1};
-        prepareReplace(action, srcIsViewer);
+        prepareReplace(action, actionE);
     }
 
     public static String getAction() {
@@ -93,14 +94,18 @@ public class MEPR {
         int[] se = {-1, -1};
         while (matcher.find()) {
             se[0] = matcher.start();
-            se[1] = matcher.end(); // +1 bei %asdaf% (documentEvent)
+            se[1] = matcher.end();
+
+            // document event sometimes returns w/ "%" and sometimes w/o "%"
+            if (lineString.endsWith("%"))
+                se[1] += 1; // lc[1] -1 would be better, but then the last "%" will stay in editor
         }
         if (se[0] == -1 || se[1] != lc[1]) return ""; // only currently typed action
         String action = lineString.substring(se[0], se[1]);
         return action;
     }
 
-    public static void prepareReplace(String action, boolean srcIsViewer) {
+    public static void prepareReplace(String action, MEPRActionE actionE) {
         prepareReplaceTime = System.nanoTime();
         repText = "";
         varStarts = new ArrayList<>(10);
@@ -108,8 +113,9 @@ public class MEPR {
         variables = new ArrayList<>(10);
         varReps = new ArrayList<>(10);
 
+        int fixLength = action.endsWith("%") ? -1 : 0;
         String actionVar = "";
-        File actionFile = FileUtils.searchForFileInFolder(repPath, "MEPR_" + action.substring(1, action.length()) + ".m", false);
+        File actionFile = FileUtils.searchForFileInFolder(repPath, "MEPR_" + action.substring(1, action.length() + fixLength) + ".m", false);
         if (actionFile == null) {
             int index = action.indexOf('(');
             if (index < 0) {
@@ -121,7 +127,7 @@ public class MEPR {
                 System.out.println("unknown action: \"" + action + "%\"");
                 return;
             }
-            actionVar = action.substring(index, action.length());
+            actionVar = action.substring(index, action.length() + fixLength);
         }
         String txt = "";
         try {
@@ -140,10 +146,15 @@ public class MEPR {
 
         // at this line ine the code it looks  like it is useless, but trust me it's not.
         // @see comment above of prepareReplaceTime and doReplaceTime.
-        if (doReplaceTime > prepareReplaceTime) {
-            doReplace();
-        } else if (srcIsViewer) {
-            selectionSE = new int[]{s, s};
+        switch (actionE) {
+            case VIEWER: /* doReplaceTime > prepareReplaceTime*/
+                selectionSE = new int[]{s, s};
+                break;
+            case QUICKSEARCH:
+                break;
+            case COMMAND:
+                doReplace();
+                break;
         }
     }
 
