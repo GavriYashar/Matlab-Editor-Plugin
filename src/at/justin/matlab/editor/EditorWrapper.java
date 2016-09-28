@@ -76,7 +76,7 @@ public class EditorWrapper {
         return EditorWrapper.getMatlabEditorApplication().openEditor(file);
     }
 
-    /** returns com.mathworks.mde.editor.MatlabEditorApplication*/
+    /** returns com.mathworks.mde.editor.MatlabEditorApplication */
     public static MatlabEditorApplication getMatlabEditorApplication() {
         return MatlabEditorApplication.getInstance();
     }
@@ -145,6 +145,17 @@ public class EditorWrapper {
         if (end > txt.length() || end < 0) end = txt.length() - 1;
         if (end < start) return "";
         return txt.substring(start, end);
+    }
+
+    /** returns List of Strings of found expr */
+    public static List<String> getTextByExpr(Editor editor, String expr) {
+        List<Integer> pos = EditorWrapper.getTextPosByExpr(editor, expr, 0, Integer.MAX_VALUE);
+        List<String> strings = new ArrayList<>(pos.size() / 2);
+        String string = EditorWrapper.getText(editor);
+        for (int i = 0; i < pos.size(); i += 2) {
+            strings.add(string.substring(pos.get(i), pos.get(i + 1)));
+        }
+        return strings;
     }
 
     /** returns containing text of given editor for an offset and length */
@@ -223,7 +234,7 @@ public class EditorWrapper {
         editor.setCaretPosition(caretPosition);
     }
 
-    /** @return [start, end] position of given editor*/
+    /** @return [start, end] position of given editor */
     public static int[] getSelectionPosition(Editor editor) {
         return new int[]{EditorWrapper.getSelectionPositionStart(editor), EditorWrapper.getSelectionPositionEnd(editor)};
     }
@@ -265,6 +276,7 @@ public class EditorWrapper {
 
     /**
      * fixing line and number to active editor valid values
+     *
      * @return fixed [line, column]
      */
     public static int[] fixLineCol(Editor editor, int line, int col) {
@@ -296,7 +308,7 @@ public class EditorWrapper {
     }
 
     /** string will be inserted at given position of given editor */
-    public static void inserTextAtPos(Editor editor, String string, int pos) {
+    public static void insertTextAtPos(Editor editor, String string, int pos) {
         EditorWrapper.setCaretPosition(editor, pos);
         editor.insertTextAtCaret(string);
 
@@ -467,12 +479,12 @@ public class EditorWrapper {
         return EditorWrapper.getShortName(gae());
     }
 
-    public static void setSelectedTxt(String string) {
-        EditorWrapper.setSelectedTxt(gae(), string);
-    }
-
     public static String getSelectedTxt() {
         return EditorWrapper.getSelectedTxt(gae());
+    }
+
+    public static void setSelectedTxt(String string) {
+        EditorWrapper.setSelectedTxt(gae(), string);
     }
 
     public static String getFullQualifiedClass() {
