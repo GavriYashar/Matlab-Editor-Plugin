@@ -5,6 +5,7 @@ import at.justin.matlab.editor.EditorWrapper;
 import at.justin.matlab.gui.components.JTextFieldSearch;
 import at.justin.matlab.gui.components.UndecoratedFrame;
 import at.justin.matlab.mepr.MEPR;
+import at.justin.matlab.mepr.MEPRActionE;
 import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.*;
 import com.mathworks.matlab.api.editor.Editor;
@@ -31,7 +32,7 @@ public class MEPRViewer extends UndecoratedFrame {
         public void actionPerformed(ActionEvent e) {
             setVisible(false);
             String action = "%" + ((MEPREntry) jList.getSelectedValue()).getAction();
-            MEPR.prepareReplace(action, true);
+            MEPR.prepareReplace(action, MEPRActionE.VIEWER);
             MEPR.doReplace();
         }
     };
@@ -357,7 +358,7 @@ public class MEPRViewer extends UndecoratedFrame {
 
         if (foundEntries.size() == 1) {
             int end = EditorWrapper.getSelectionPositionStart();
-            MEPR.prepareReplace("%" + foundEntries.get(0).getAction(), false);
+            MEPR.prepareReplace("%" + foundEntries.get(0).getAction(), MEPRActionE.QUICKSEARCH);
             // MEPR.setRepText("%" + foundEntries.get(0).getAction());
             MEPR.setSelectionSE(new int[]{end - action.length(), end});
             MEPR.doReplace();
