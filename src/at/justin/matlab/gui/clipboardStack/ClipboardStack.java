@@ -22,9 +22,8 @@ public class ClipboardStack {
     private static final String ENTER_ACTION = "ENTER";
     private static ClipboardStack INSTANCE;
     private final UndecoratedFrame undecoratedFrame = new UndecoratedFrame();
-    private JList jList;
+    private JList<String> jList;
     private JTextArea jTextArea;
-    private DefaultListModel<String> stringListModel;
     private String[] strings = new String[Settings.getPropertyInt("clipboardStack.size")];
 
     private ClipboardStack() {
@@ -53,17 +52,9 @@ public class ClipboardStack {
         // first string is the new one, old ones will be moved one down in the list
         String[] newStrings = new String[Settings.getPropertyInt("clipboardStack.size")];
         newStrings[0] = string;
-        for (int i = 1; i < strings.length; i++) {
-            newStrings[i] = strings[i - 1];
-        }
+        System.arraycopy(strings, 0, newStrings, 1, strings.length - 1);
         strings = newStrings;
-
-        stringListModel.removeAllElements();
-        for (String s : strings) {
-            if (s == null) break;
-            if (s.length() > 50) s = s.substring(0, 49);
-            stringListModel.addElement(s);
-        }
+        jList.setListData(strings);
     }
 
     public void setVisible(boolean visible) {
@@ -79,11 +70,9 @@ public class ClipboardStack {
         undecoratedFrame.setLayout(new GridBagLayout());
 
         {
-            jList = new JList();
+            jList = new JList<>();
             jList.setBackground(undecoratedFrame.getBackground());
-            stringListModel = new DefaultListModel<>();
-            jList.setModel(stringListModel);
-
+            jList.setCellRenderer(new ClipboardCellRenderer());
             JScrollPane jsp = new JScrollPane(jList);
 
             GridBagConstraints gbc = new GridBagConstraints();
