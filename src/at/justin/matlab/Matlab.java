@@ -1,5 +1,6 @@
 package at.justin.matlab;
 
+import at.justin.matlab.installer.Install;
 import at.justin.matlab.util.ComponentUtil;
 import com.mathworks.mde.cmdwin.XCmdWndView;
 import com.mathworks.mde.desk.MLDesktop;
@@ -10,6 +11,7 @@ import matlabcontrol.MatlabProxyFactory;
 import matlabcontrol.MatlabProxyFactoryOptions;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -44,7 +46,11 @@ public class Matlab {
                 @Override
                 public void proxyCreated(final MatlabProxy proxy) {
                     proxyHolder.set(proxy);
-                    Matlab.getInstance().setStatusMessage("MEP Connected!");
+                    try {
+                        Matlab.getInstance().setStatusMessage("MEP Connected! Version: " + Install.getVersion());
+                    } catch (IOException e) {
+                        Matlab.getInstance().setStatusMessage("MEP Connected, but something went very, very, very wrong");
+                    }
 
                     proxy.addDisconnectionListener(new MatlabProxy.DisconnectionListener() {
                         @Override
@@ -89,6 +95,12 @@ public class Matlab {
                 System.out.println(e.getMessage());
             }
         }
+    }
+
+    public boolean isBusy() {
+        String string = getMlDesktop().getMainFrame().getStatusBar().getText();
+        if (string == null) return false;
+        return string.contains("Busy");
     }
 
 }

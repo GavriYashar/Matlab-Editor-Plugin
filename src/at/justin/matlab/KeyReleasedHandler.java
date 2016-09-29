@@ -47,6 +47,7 @@ public class KeyReleasedHandler {
 
         @Override
         public void keyPressed(KeyEvent e) {
+            if (Matlab.getInstance().isBusy()) return;
             for (String s : mCallbacks) {
                 try {
                     Matlab.getInstance().proxyHolder.get().feval(s, e);
@@ -221,12 +222,14 @@ public class KeyReleasedHandler {
 
     static void doCopyAction(ActionEvent event) {
         String selText = EditorWrapper.getSelectedTxt();
+        if (selText == null || selText.length() < 1) return;
         ClipboardStack.getInstance().add(selText);
         ClipboardUtil.addToClipboard(selText);
     }
 
     static void doCopyActionCmdView(ActionEvent event) {
         String selText = CommandWindow.getSelectedTxt();
+        if (selText == null || selText.length() < 1) return;
         ClipboardStack.getInstance().add(selText);
         ClipboardUtil.addToClipboard(selText);
     }
