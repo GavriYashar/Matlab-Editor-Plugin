@@ -20,7 +20,7 @@ public class Start {
         }
         try {
             setEditorCallbacks();
-            setCmdWinCallbacks();
+            //setCmdWinCallbacks();
             addPrefs();
             MatlabKeyStrokesCommands.setCustomKeyStrokes();
             Bookmarks.getInstance().load();
