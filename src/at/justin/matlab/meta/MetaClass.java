@@ -21,7 +21,7 @@ public class MetaClass extends Meta {
     }
 
     public static MetaClass getMatlabClass(String name) throws Exception {
-        String version = Install.getVersion();
+        String version = Install.getVersion().replace(".", "_");
         String metaVar = "MEP_" + version + "_meta";
         String classVar = "MEP_" + version + "_c";
         String propVar = "MEP_" + version + "_p";
