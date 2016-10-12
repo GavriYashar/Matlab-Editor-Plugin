@@ -210,6 +210,7 @@ public class Bookmarks {
     }
 
     public void enableBookmarksForMatlab(Editor editor) {
+        // com.mathworks.mde.editor.ActionManager:enableBookmarkDependentCommands
         EditorViewClient editorViewClient = (EditorViewClient) editor.getComponent();
 
         // otherwise "F2" wouldn't jump to bookmark after reopening, unless a bookmark has been toggled
