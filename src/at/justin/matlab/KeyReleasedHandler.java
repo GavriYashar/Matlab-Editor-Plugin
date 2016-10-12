@@ -1,25 +1,15 @@
 package at.justin.matlab;
 
-import at.justin.debug.Debug;
 import at.justin.matlab.editor.EditorWrapper;
-import at.justin.matlab.gui.bookmarks.Bookmarks;
-import at.justin.matlab.gui.bookmarks.BookmarksViewer;
-import at.justin.matlab.gui.clipboardStack.ClipboardStack;
-import at.justin.matlab.gui.fileStructure.FileStructure;
-import at.justin.matlab.gui.mepr.MEPRViewer;
+import at.justin.matlab.editor.MEPActionE;
 import at.justin.matlab.mepr.MEPR;
 import at.justin.matlab.prefs.Settings;
-import at.justin.matlab.util.ClipboardUtil;
 import at.justin.matlab.util.KeyStrokeUtil;
 import com.mathworks.mde.cmdwin.XCmdWndView;
 import com.mathworks.mde.editor.EditorSyntaxTextPane;
 import matlabcontrol.MatlabInvocationException;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -133,54 +123,25 @@ public class KeyReleasedHandler {
         if (isEditor && !isCmdWin) {
             // do only editor
             if (e.getKeyChar() == ("%").charAt(0)
-                    && Settings.getPropertyBoolean("feature.enableClipboardStack"))
+                    && Settings.getPropertyBoolean("feature.enableReplacements"))
                 MEPR.doYourThing();
-            if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C
-                    && Settings.getPropertyBoolean("feature.enableClipboardStack"))
-                doCopyAction(null);
-            if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_Y
-                    && Settings.getPropertyBoolean("feature.enableDeleteCurrentLine"))
-                doDeleteLineAction();
-            if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_D
-                    && Settings.getPropertyBoolean("feature.enableDuplicateLine"))
-                doDuplicateLineAction();
-            if (altOnlyFlag && e.getKeyCode() == KeyEvent.VK_INSERT
-                    && Settings.getPropertyBoolean("feature.enableReplacements"))
-                MEPRViewer.getInstance().showDialog();
-            if (ctrlOnlyFlag && e.getKeyCode() == KeyEvent.VK_SPACE
-                    && Settings.getPropertyBoolean("feature.enableReplacements"))
-                MEPRViewer.getInstance().quickSearch();
-            if (KS_BOOKMARK.getModifiers() == mod && KS_BOOKMARK.getKeyCode() == e.getKeyCode()
-                    && Settings.getPropertyBoolean("feature.enableBookmarksViewer"))
+            if (KS_BOOKMARK.getModifiers() == mod && KS_BOOKMARK.getKeyCode() == e.getKeyCode())
                 ctrlf2 = true;
                 // Doing the bookmarks here is error prone and won't work correctly.
                 // this function ist called every time (afaik) before Matlab's keyRelease
-            else if (KS_SHOWBOOKARKS.getModifiers() == mod && KS_SHOWBOOKARKS.getKeyCode() == e.getKeyCode()
-                    && Settings.getPropertyBoolean("feature.enableBookmarksViewer"))
-                BookmarksViewer.getInstance().showDialog();
+            else if (KS_SHOWBOOKARKS.getModifiers() == mod && KS_SHOWBOOKARKS.getKeyCode() == e.getKeyCode())
+                MEPActionE.MEP_SHOW_BOOKMARKS.getAction().actionPerformed(null);
+
         } else if (!isEditor && isCmdWin) {
             // do only cmdWin
-            if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C
-                    && Settings.getPropertyBoolean("feature.enableClipboardStack"))
-                doCopyActionCmdView(null);
+            if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C)
+                MEPActionE.doCopyActionCmdView();
         }
         // do editor and cmdWin
-        if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_V
-                && Settings.getPropertyBoolean("feature.enableClipboardStack"))
-            showClipboardStack(null);
+        if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_V)
+            MEPActionE.MEP_SHOW_CLIP_BOARD_STACK.getAction().actionPerformed(null);
         if (Settings.DEBUG && ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_E)
-            DEBUG(null);
-        if (ctrlOnlyFlag && e.getKeyCode() == KeyEvent.VK_F12
-                && Settings.getPropertyBoolean("feature.enableFileStructure"))
-            showFileStructure(null);
-    }
-
-    private static void doDeleteLineAction() {
-        EditorWrapper.deleteCurrentLine();
-    }
-
-    private static void doDuplicateLineAction() {
-        EditorWrapper.duplicateCurrentLine();
+            MEPActionE.MEP_DEBUG.getAction().actionPerformed(null);
     }
 
     private static void operatorEqualsThing(KeyEvent e) {
@@ -212,42 +173,7 @@ public class KeyReleasedHandler {
     private static void doBookmarkThing(KeyEvent e) {
         if (ctrlf2) {
             ctrlf2 = false;
-            Bookmarks.getInstance().setBookmarks();
-            if (BookmarksViewer.getInstance().isVisible()) {
-                BookmarksViewer.getInstance().updateList();
-            }
-            Bookmarks.getInstance().save();
+            MEPActionE.MEP_BOOKMARK.getAction().actionPerformed(null);
         }
-    }
-
-    static void doCopyAction(ActionEvent event) {
-        String selText = EditorWrapper.getSelectedTxt();
-        if (selText == null || selText.length() < 1) return;
-        ClipboardStack.getInstance().add(selText);
-        ClipboardUtil.addToClipboard(selText);
-    }
-
-    static void doCopyActionCmdView(ActionEvent event) {
-        String selText = CommandWindow.getSelectedTxt();
-        if (selText == null || selText.length() < 1) return;
-        ClipboardStack.getInstance().add(selText);
-        ClipboardUtil.addToClipboard(selText);
-    }
-
-    static void showClipboardStack(ActionEvent event) {
-        ClipboardStack.getInstance().setVisible(true);
-    }
-
-    static void showFileStructure(ActionEvent event) {
-        FileStructure.getInstance().populateTree();
-        FileStructure.getInstance().showDialog();
-    }
-
-    static void DEBUG(ActionEvent event) {
-        Debug.assignObjectsToMatlab();
-    }
-
-    static void showBookmarksViewer(ActionEvent event) {
-        BookmarksViewer.getInstance().showDialog();
     }
 }
