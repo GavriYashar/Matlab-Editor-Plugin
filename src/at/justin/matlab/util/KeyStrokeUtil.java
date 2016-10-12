@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
  */
 public class KeyStrokeUtil {
 
+    private static final String ALT = "alt";
     private static final String CONTROL = "control";
     private static final String SHIFT = "shift";
     private static final String RELEASED = "released";
@@ -93,16 +94,17 @@ public class KeyStrokeUtil {
         return KeyStroke.getKeyStroke(getKeyText(keyCode));
     }
 
-    public static KeyStroke getKeyStroke(int keyCode, boolean control, boolean shift, boolean released) {
-        return KeyStroke.getKeyStroke(getKeyText(keyCode, control, shift, released));
+    public static KeyStroke getKeyStroke(int keyCode, boolean control, boolean shift, boolean alt, boolean released) {
+        return KeyStroke.getKeyStroke(getKeyText(keyCode, control, shift, alt, released));
     }
 
-    public static String getKeyText(int keyCode, boolean control, boolean shift, boolean released) {
+    public static String getKeyText(int keyCode, boolean control, boolean shift, boolean alt, boolean released) {
         String keyText = getKeyText(keyCode);
 
         String retText = "";
         if (shift) retText = retText + " " + SHIFT;
         if (control) retText = retText + " " + CONTROL;
+        if (alt) retText = retText + " " + ALT;
         if (released) retText = retText + " " + RELEASED;
         if (!released) retText = retText + " " + PRESSED;
         return retText + " " + keyText;
