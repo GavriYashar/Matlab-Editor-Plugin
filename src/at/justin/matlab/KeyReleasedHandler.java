@@ -7,19 +7,15 @@ import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.KeyStrokeUtil;
 import com.mathworks.mde.cmdwin.XCmdWndView;
 import com.mathworks.mde.editor.EditorSyntaxTextPane;
-import matlabcontrol.MatlabInvocationException;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /** Created by Andreas Justin on 2016 - 02 - 09. */
 public class KeyReleasedHandler {
-    private static List<String> mCallbacks = new ArrayList<>();
     private static String opEqString;
     private static Pattern opEqPattern = Pattern.compile("[\\+]"); // "[\\+\\-\\*/]"
     private static Pattern opEqLeftArgPattern = Pattern.compile("(\\s*)(.*?)(?=\\s*[\\+\\-\\*/]{2})");
@@ -29,6 +25,7 @@ public class KeyReleasedHandler {
             KS_BOOKMARK.getKeyCode(),
             (KS_BOOKMARK.getModifiers() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK,
             (KS_BOOKMARK.getModifiers() & KeyEvent.SHIFT_DOWN_MASK) != KeyEvent.SHIFT_DOWN_MASK,
+            false,
             false);
     private static final KeyListener keyListener = new KeyListener() {
         @Override
@@ -38,13 +35,6 @@ public class KeyReleasedHandler {
         @Override
         public void keyPressed(KeyEvent e) {
             if (Matlab.getInstance().isBusy()) return;
-            for (String s : mCallbacks) {
-                try {
-                    Matlab.getInstance().proxyHolder.get().feval(s, e);
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-            }
             KeyReleasedHandler.doYourThing(e);
         }
 
@@ -76,37 +66,6 @@ public class KeyReleasedHandler {
         return keyListener;
     }
 
-    /**
-     * adds a matlab function call to the matlab call stack
-     *
-     * @param string valid matlab function which can be called
-     */
-    public static void addMatlabCallback(String string) throws Exception {
-        if (!testMatlabCallback(string)) {
-            throw new Exception("'" + string + "' is not a valid function");
-        }
-        if (!mCallbacks.contains(string))
-            mCallbacks.add(string);
-        else System.out.println("'" + string + "' already added");
-    }
-
-    /**
-     * user can test if the passed string will actually be called as intended. will call the function w/o passing any
-     * input arguments
-     *
-     * @param string valid matlab function which can be called
-     * @return returns a boolean value true if succeeded
-     */
-    private static boolean testMatlabCallback(String string) {
-        try {
-            Matlab.getInstance().proxyHolder.get().feval(string);
-            return true;
-        } catch (MatlabInvocationException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     private static void doYourThing(KeyEvent e) {
         boolean ctrlFlag = e.isControlDown() | e.getKeyCode() == KeyEvent.VK_CONTROL;
         boolean shiftFlag = e.isShiftDown();
@@ -131,17 +90,7 @@ public class KeyReleasedHandler {
                 // this function ist called every time (afaik) before Matlab's keyRelease
             else if (KS_SHOWBOOKARKS.getModifiers() == mod && KS_SHOWBOOKARKS.getKeyCode() == e.getKeyCode())
                 MEPActionE.MEP_SHOW_BOOKMARKS.getAction().actionPerformed(null);
-
-        } else if (!isEditor && isCmdWin) {
-            // do only cmdWin
-            if (ctrlFlag && e.getKeyCode() == KeyEvent.VK_C)
-                MEPActionE.doCopyActionCmdView();
         }
-        // do editor and cmdWin
-        if (ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_V)
-            MEPActionE.MEP_SHOW_CLIP_BOARD_STACK.getAction().actionPerformed(null);
-        if (Settings.DEBUG && ctrlShiftFlag && e.getKeyCode() == KeyEvent.VK_E)
-            MEPActionE.MEP_DEBUG.getAction().actionPerformed(null);
     }
 
     private static void operatorEqualsThing(KeyEvent e) {
