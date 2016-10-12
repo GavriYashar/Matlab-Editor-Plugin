@@ -88,6 +88,7 @@ public class MEPR {
 
         String lineString = EditorWrapper.getCurrentLineText();
         if (lineString.length() < 1) return "";
+        if (lineString.length() <= lc[1]) return "";
         lineString = lineString.substring(0, lc[1]);
         Matcher matcher = actionPattern.matcher(lineString);
 
