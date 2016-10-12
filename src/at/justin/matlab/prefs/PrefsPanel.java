@@ -128,14 +128,18 @@ public class PrefsPanel extends MJPanel {
                 "feature.enableDuplicateLine",
                 "feature.enableDeleteCurrentLine",
                 "feature.enableReplacements",
-                "feature.enableAutoDetailViewer"};
+                "feature.enableAutoDetailViewer",
+                "feature.enableExecuteCurrentLine"
+        };
         PropertyType[] types = {PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN};
+                PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN
+        };
 
         addPropsToPanel(ps, properties, types);
         jp.add(ps);
@@ -180,7 +184,8 @@ public class PrefsPanel extends MJPanel {
                 "UseLDS",
                 "showQuotes",
                 "FreeCommander",
-                "DefaultFigureGraphicsSmoothing"};
+                "DefaultFigureGraphicsSmoothing"
+        };
         PropertyType[] types = {PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
@@ -188,7 +193,8 @@ public class PrefsPanel extends MJPanel {
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.PATH,
-                PropertyType.ONOFF};
+                PropertyType.ONOFF
+        };
 
         addPropsToPanel(ps, properties, types);
         jp.add(ps);
@@ -205,12 +211,14 @@ public class PrefsPanel extends MJPanel {
                 "verbose",
                 "autoReloadProps",
                 "bpColor",
-                "fs.iconSet"};
+                "fs.iconSet"
+        };
         types = new PropertyType[]{PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.COLOR,
-                PropertyType.STRING_DROPDOWN};
+                PropertyType.STRING_DROPDOWN
+        };
         addPropsToPanel(ps, properties, types);
 
         jp.add(ps);
@@ -223,10 +231,12 @@ public class PrefsPanel extends MJPanel {
 
         String[] properties = {"LoadMessDaten_Shortener",
                 "LoadMessDaten_NoExprManipulate",
-                "LoadMessDaten_EnableSimpleView"};
+                "LoadMessDaten_EnableSimpleView"
+        };
         PropertyType[] types = {PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN};
+                PropertyType.BOOLEAN
+        };
         addPropsToPanel(ps, properties, types);
 
         jp.add(ps);
