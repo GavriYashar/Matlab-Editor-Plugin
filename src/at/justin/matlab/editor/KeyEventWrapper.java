@@ -1,8 +1,10 @@
 package at.justin.matlab.editor;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 /** Created by Andreas Justin on 2016-09-26. */
+@SuppressWarnings("WeakerAccess")
 public class KeyEventWrapper {
     public static boolean ctrlFlag(KeyEvent keyEvent) {
         return keyEvent.isControlDown();
@@ -32,7 +34,15 @@ public class KeyEventWrapper {
         return keyEvent.getSource().getClass().toString().endsWith("EditorSyntaxTextPane");
     }
 
+    public static boolean isEditor(ActionEvent actionEvent) {
+        return actionEvent.getSource().getClass().toString().endsWith("EditorSyntaxTextPane");
+    }
+
     public static boolean isCmdWin(KeyEvent keyEvent) {
         return keyEvent.getSource().getClass().toString().endsWith("XCmdWndView");
+    }
+
+    public static boolean isCmdWin(ActionEvent actionEvent) {
+        return actionEvent.getSource().getClass().toString().endsWith("XCmdWndView");
     }
 }

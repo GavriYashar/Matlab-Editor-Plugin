@@ -58,6 +58,14 @@ public enum MEPActionE {
         }
     }),
 
+    MEP_COPY_CLIP_BOARD_CMD(new AbstractAction("MEP_COPY_CLIP_BOARD_CMD") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!Settings.getPropertyBoolean("feature.enableClipboardStack")) return;
+            doCopyActionCmdView();
+        }
+    }),
+
     MEP_BOOKMARK(new AbstractAction("MEP_BOOKMARK") {
         @Override
         public void actionPerformed(ActionEvent e) {

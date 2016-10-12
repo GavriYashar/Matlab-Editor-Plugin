@@ -4,6 +4,7 @@ import at.justin.matlab.util.ComponentUtil;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.mde.editor.EditorSyntaxTextPane;
 import com.mathworks.mde.editor.MatlabEditorApplication;
+import com.mathworks.widgets.editor.breakpoints.BreakpointView;
 import com.mathworks.widgets.text.mcode.cell.CellUtils;
 
 import javax.swing.*;
@@ -267,6 +268,10 @@ public class EditorWrapper {
     /** returns com.mathworks.mde.editor.EditorSyntaxTextPane */
     public static EditorSyntaxTextPane getEditorSyntaxTextPane(Editor editor) {
         return ComponentUtil.getEditorSyntaxTextPaneForEditor(editor);
+    }
+
+    public static BreakpointView.Background getBreakPointView(Editor editor) {
+        return ComponentUtil.getBreakPointViewForEditor(editor);
     }
 
     /** moves caret to given line of given editor. if select flag is true, the current line will be selected */

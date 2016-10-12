@@ -6,7 +6,6 @@ import at.justin.matlab.gui.autoDetailViewer.AutoDetailViewer;
 import at.justin.matlab.gui.bookmarks.Bookmarks;
 import at.justin.matlab.mepr.MEPR;
 import at.justin.matlab.prefs.Settings;
-import at.justin.matlab.util.ComponentUtil;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.matlab.api.editor.EditorApplicationListener;
 import com.mathworks.matlab.api.editor.EditorEvent;
@@ -20,6 +19,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.ArrayList;
@@ -41,6 +41,9 @@ import java.util.List;
 
 
 public class EditorApp {
+    private static List<String> mCallbacks = new ArrayList<>();
+    private static List<KeyStroke> keyStrokes = new ArrayList<>();
+    private static List<String> actionMapKeys = new ArrayList<>();
     public static final Color ENABLED = new Color(179, 203, 111);
     public static final Color DISABLED = new Color(240, 240, 240);
     private static final int WF = JComponent.WHEN_FOCUSED;
@@ -54,8 +57,33 @@ public class EditorApp {
         return INSTANCE;
     }
 
-    public void addMatlabCallback(String string) throws Exception {
-        KeyReleasedHandler.addMatlabCallback(string);
+
+    /** adds a matlab function call to the matlab call stack */
+    public static void addMatlabCallback(String string, KeyStroke keyStroke, String actionMapKey) throws Exception {
+        if (!testMatlabCallback(string)) {
+            throw new Exception("'" + string + "' is not a valid function");
+        }
+        if (!mCallbacks.contains(string)) {
+            mCallbacks.add(string);
+            keyStrokes.add(keyStroke);
+            actionMapKeys.add(actionMapKey);
+            EditorApp.getInstance().setCallbacks();
+        }
+        else System.out.println("'" + string + "' already added");
+    }
+
+    /**
+     * user can test if the passed string will actually be called as intended. will call the function w/o passing any
+     * input arguments
+     */
+    private static boolean testMatlabCallback(String string) {
+        try {
+            Matlab.getInstance().proxyHolder.get().feval(string);
+            return true;
+        } catch (MatlabInvocationException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     /**
@@ -98,7 +126,12 @@ public class EditorApp {
     public void setCallbacks() {
         List<Editor> openEditors = EditorWrapper.getOpenEditors();
         for (final Editor editor : openEditors) {
+            EditorSyntaxTextPane editorSyntaxTextPane = EditorWrapper.getEditorSyntaxTextPane(editor);
+            if (editorSyntaxTextPane == null) continue;
+            addKeyStrokes(editorSyntaxTextPane);
+            addCustomKeyStrokes(editorSyntaxTextPane);
             if (editors.contains(editor)) continue;
+
             editors.add(editor);
             editor.addEventListener(new EditorEventListener() {
                 @Override
@@ -110,8 +143,6 @@ public class EditorApp {
                 }
             });
 
-            EditorSyntaxTextPane editorSyntaxTextPane = ComponentUtil.getEditorSyntaxTextPaneForEditor(editor);
-            if (editorSyntaxTextPane == null) continue;
             KeyListener[] keyListeners = editorSyntaxTextPane.getKeyListeners();
             for (KeyListener keyListener1 : keyListeners) {
                 if (keyListener1.toString().equals(KeyReleasedHandler.getKeyListener().toString())) {
@@ -121,7 +152,6 @@ public class EditorApp {
                 }
             }
 
-            addKeyStrokes(editorSyntaxTextPane);
             editorSyntaxTextPane.addKeyListener(KeyReleasedHandler.getKeyListener());
             editorSyntaxTextPane.getDocument().addDocumentListener(new DocumentListener() {
                 @Override
@@ -152,6 +182,23 @@ public class EditorApp {
             colorizeBreakpointView(Settings.getPropertyColor("bpColor"));
         } else {
             colorizeBreakpointView(ENABLED);
+        }
+    }
+
+    private void addCustomKeyStrokes(EditorSyntaxTextPane editorSyntaxTextPane) {
+        for (int i = 0; i < mCallbacks.size(); i++) {
+            editorSyntaxTextPane.getInputMap(WF).put(keyStrokes.get(i), actionMapKeys.get(i));
+            final int finalI = i;
+            editorSyntaxTextPane.getActionMap().put(actionMapKeys.get(i), new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        Matlab.getInstance().proxyHolder.get().feval(mCallbacks.get(finalI), e);
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
         }
     }
 
@@ -188,7 +235,7 @@ public class EditorApp {
     public void removeCallbacks() {
         List<Editor> openEditors = EditorWrapper.getMatlabEditorApplication().getOpenEditors();
         for (Editor editor : openEditors) {
-            EditorSyntaxTextPane editorSyntaxTextPane = ComponentUtil.getEditorSyntaxTextPaneForEditor(editor);
+            EditorSyntaxTextPane editorSyntaxTextPane = EditorWrapper.getEditorSyntaxTextPane(editor);
             editorSyntaxTextPane.removeKeyListener(KeyReleasedHandler.getKeyListener());
         }
         colorizeBreakpointView(DISABLED);
@@ -197,7 +244,7 @@ public class EditorApp {
     public void colorizeBreakpointView(Color color) {
         List<Editor> openEditors = EditorWrapper.getMatlabEditorApplication().getOpenEditors();
         for (Editor editor : openEditors) {
-            BreakpointView.Background breakpointView = ComponentUtil.getBreakPointViewForEditor(editor);
+            BreakpointView.Background breakpointView = EditorWrapper.getBreakPointView(editor);
             if (breakpointView != null) breakpointView.setBackground(color);
         }
     }
