@@ -10,6 +10,8 @@ import java.awt.event.KeyEvent;
 public enum MEPKeyStrokesE {
     KS_MEP_DEBUG(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_E, true, true, false)),
 
+    KS_MEP_EXECUTE_CURRENT_LINE(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_F9, false, true, false)),
+
     KS_MEP_SHOW_FILE_STRUCTURE(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_F12, true, false, false)),
 
     KS_MEP_SHOW_COPY_CLIP_BOARD(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_V, true, true, false)),

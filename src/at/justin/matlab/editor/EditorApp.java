@@ -47,7 +47,6 @@ public class EditorApp {
     private static EditorApp INSTANCE;
     private static List<Editor> editors = new ArrayList<>();
 
-
     public static EditorApp getInstance() {
         if (INSTANCE != null) return INSTANCE;
         INSTANCE = new EditorApp();
@@ -159,6 +158,9 @@ public class EditorApp {
     private void addKeyStrokes(EditorSyntaxTextPane editorSyntaxTextPane) {
         editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_DEBUG.getKeyStroke(), "MEP_DEBUG");
         editorSyntaxTextPane.getActionMap().put("MEP_DEBUG", MEPActionE.MEP_DEBUG.getAction());
+
+        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_EXECUTE_CURRENT_LINE.getKeyStroke(), "MEP_EXECUTE_CURRENT_LINE");
+        editorSyntaxTextPane.getActionMap().put("MEP_EXECUTE_CURRENT_LINE", MEPActionE.MEP_EXECUTE_CURRENT_LINE.getAction());
 
         editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_SHOW_FILE_STRUCTURE.getKeyStroke(), "MEP_SHOW_FILE_STRUCTURE");
         editorSyntaxTextPane.getActionMap().put("MEP_SHOW_FILE_STRUCTURE", MEPActionE.MEP_SHOW_FILE_STRUCTURE.getAction());

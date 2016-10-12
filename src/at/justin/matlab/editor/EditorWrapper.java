@@ -274,6 +274,10 @@ public class EditorWrapper {
         editor.goToLine(line, select);
     }
 
+    public static void goToPositionAndHighlight(Editor editor, int start, int end) {
+        editor.goToPositionAndHighlight(start, end);
+    }
+
     /**
      * fixing line and number to active editor valid values
      *
@@ -517,5 +521,13 @@ public class EditorWrapper {
 
     public static String getText(int start, int end) {
         return EditorWrapper.getText(gae(), start, end);
+    }
+
+    public static int getSelectionPositionEnd() {
+        return EditorWrapper.getSelectionPositionEnd(gae());
+    }
+
+    public static EditorSyntaxTextPane getEditorSyntaxTextPane() {
+        return EditorWrapper.getEditorSyntaxTextPane(gae());
     }
 }

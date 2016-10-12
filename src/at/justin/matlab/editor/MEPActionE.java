@@ -9,6 +9,9 @@ import at.justin.matlab.gui.fileStructure.FileStructure;
 import at.justin.matlab.gui.mepr.MEPRViewer;
 import at.justin.matlab.prefs.Settings;
 import at.justin.matlab.util.ClipboardUtil;
+import com.mathworks.matlab.api.editor.Editor;
+import com.mathworks.mde.editor.ActionID;
+import com.mathworks.mde.editor.EditorSyntaxTextPane;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -20,6 +23,14 @@ public enum MEPActionE {
         public void actionPerformed(ActionEvent e) {
             if (!Settings.DEBUG) return;
             Debug.assignObjectsToMatlab();
+        }
+    }),
+
+    MEP_EXECUTE_CURRENT_LINE(new AbstractAction("MEP_EXECUTE_CURRENT_LINE") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!Settings.getPropertyBoolean("feature.enableExecuteCurrentLine")) return;
+            doExecuteCurrentLine();
         }
     }),
 
@@ -151,5 +162,31 @@ public enum MEPActionE {
         if (selText == null || selText.length() < 1) return;
         ClipboardStack.getInstance().add(selText);
         ClipboardUtil.addToClipboard(selText);
+    }
+
+    private static void doExecuteCurrentLine() {
+        Editor editor = EditorWrapper.getActiveEditor();
+        int[] position = EditorWrapper.getSelectionPosition(editor);
+        int[] lcStart = EditorWrapper.pos2lc(editor, position[0]);
+        int[] lcEnd = EditorWrapper.pos2lc(editor, position[1]);
+
+        EditorWrapper.selectLine(editor, lcStart[0]);
+        int newStart = EditorWrapper.getSelectionPositionStart();
+        EditorWrapper.selectLine(editor, lcEnd[0]);
+        int newEnd = EditorWrapper.getSelectionPositionEnd();
+
+        EditorWrapper.goToPositionAndHighlight(editor, newStart, newEnd);
+
+        EditorSyntaxTextPane editorSyntaxTextPane = EditorWrapper.getEditorSyntaxTextPane();
+        Action action = editorSyntaxTextPane.getActionMap().get(ActionID.EVALUATE_SELECTION.getId());
+        if (action == null) {
+            JOptionPane.showMessageDialog(
+                    new JFrame(""),
+                    "Something went wrong: could not get action for \"" + ActionID.EVALUATE_SELECTION.getId() + "\"",
+                    "Uh-Oh",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        action.actionPerformed(new ActionEvent(editorSyntaxTextPane, 0, null));
     }
 }
