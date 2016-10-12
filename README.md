@@ -10,7 +10,7 @@ It'll add following features to Matlab, and it's editor
 * **delete line**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>Y</kbd>
 * **LiveTemplatesViewer**: <kbd>ALT</kbd> + <kbd>INSERT</kbd> view all created livetemplates
 * **Quicksearch Templates**: <kbd>CTRL</kbd> + <kbd>SPACE</kbd> quick searches live templates when writing an command (`%MYTEMPL` + <kbd>CTRL</kbd> + <kbd>SPACE</kbd> = `%MYTEMPLATE`)
-* **Execute Current Line**: * <kbd>SHIFT</kbd> + <kbd>F9</kbd>
+* **Execute Current Line**: <kbd>SHIFT</kbd> + <kbd>F9</kbd>
 
 ## Setup
 [Follow this link](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Setup)
