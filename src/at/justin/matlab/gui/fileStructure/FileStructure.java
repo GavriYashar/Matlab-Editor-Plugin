@@ -11,7 +11,6 @@ import at.justin.matlab.util.KeyStrokeUtil;
 import at.justin.matlab.util.NodeUtils;
 import at.justin.matlab.util.RunnableUtil;
 import at.justin.matlab.util.ScreenSize;
-import com.mathworks.jmi.AWTUtilities;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
@@ -51,6 +50,16 @@ public class FileStructure extends UndecoratedFrame {
             Node node = (Node) jTree.getSelectionPath().getLastPathComponent();
             if (node.hasNode()) {
                 EditorWrapper.goToLine(node.node().getStartLine(), false);
+            }
+        }
+    };
+
+    private AbstractAction updateAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            findPattern(jTFS.getText());
+            if (jTree.getRowCount() > 1) {
+                jTree.setSelectionRow(1);
             }
         }
     };
@@ -174,12 +183,12 @@ public class FileStructure extends UndecoratedFrame {
         jTFS.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                findPattern(jTFS.getText());
+                updateAction.actionPerformed(null);
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                findPattern(jTFS.getText());
+                updateAction.actionPerformed(null);
             }
 
             @Override
@@ -393,13 +402,14 @@ public class FileStructure extends UndecoratedFrame {
 
     public void showDialog() {
         setVisible(true);
-        findPattern(jTFS.getText()); // show last search (if editor has not been changed @populate)
+        // ISSUE: #36
+        // findPattern(jTFS.getText()); // show last search (if editor has not been changed @populate)
+        jTFS.setText("");
     }
 
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        // setAlwaysOnTop(visible);
         if (visible) {
             jTextArea.setFont(new Font("Courier New", Font.PLAIN, Settings.getPropertyInt("fs.fontSizeDocu")));
             moveBarsDocuScrollpane();
