@@ -37,6 +37,18 @@ public class MEPRViewer extends UndecoratedFrame {
         }
     };
 
+    private AbstractAction updateAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setJComboBoxAll();
+            findPattern(jtfs.getText());
+            if (jList.getModel().getSize() > 1) {
+                jList.setSelectedIndex(0);
+            }
+            jList.ensureIndexIsVisible(jList.getSelectedIndex());
+        }
+    };
+
     private MEPRViewer() {
         Runnable runnable = new Runnable() {
             public void run() {
@@ -196,19 +208,16 @@ public class MEPRViewer extends UndecoratedFrame {
         jtfs.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                setJComboBoxAll();
-                findPattern(jtfs.getText());
+                updateAction.actionPerformed(null);
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                setJComboBoxAll();
-                findPattern(jtfs.getText());
+                updateAction.actionPerformed(null);
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-
             }
         });
         KeyStroke ksU = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_UP);
@@ -341,7 +350,9 @@ public class MEPRViewer extends UndecoratedFrame {
         this.setVisible(true);
         this.setLocation(ScreenSize.getCenter(this.getSize()));
         updateList();
-        findPattern(jtfs.getText()); // show last search (if editor has not been changed @populate)
+        // ISSUE: #36
+        // findPattern(jtfs.getText()); // show last search (if editor has not been changed @populate)
+        jtfs.setText("");
     }
 
     public void quickSearch() {
@@ -372,4 +383,5 @@ public class MEPRViewer extends UndecoratedFrame {
         System.out.println("=================================");
 
     }
+
 }
