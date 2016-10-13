@@ -187,7 +187,12 @@ public class Bookmarks {
         }
 
         // reading props
-        int count = Integer.parseInt(bookmarks.getProperty("bookmarksCount"));
+        int count = 0;
+        try {
+            count = Integer.parseInt(bookmarks.getProperty("bookmarksCount"));
+        } catch (Exception ignored) {
+            return;
+        }
         for (int i = 0; i < count; i++) {
             String prop = "bookmark_" + i;
             try {
@@ -241,9 +246,9 @@ public class Bookmarks {
                     // char enter2 = 0;
                     // if (event.getLength() == 1) {
                     //     int p1 = event.getOffset();
-                        // int p2 = p1 + event.getLength();
-                        // enter1 = EditorWrapperActive.getInstance().getText(p1, p1 + 1).charAt(0);
-                        // enter2 = EditorWrapperActive.getInstance().getText(p2, p2 + 1).charAt(0);
+                    // int p2 = p1 + event.getLength();
+                    // enter1 = EditorWrapperActive.getInstance().getText(p1, p1 + 1).charAt(0);
+                    // enter2 = EditorWrapperActive.getInstance().getText(p2, p2 + 1).charAt(0);
                     // }
 
                     if (maxLine < bm.getLine()) {
