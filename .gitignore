@@ -3,3 +3,4 @@ META-INF/
 out/
 test/
 matlab-editor-plugin.iml
+src/sandbox/*
