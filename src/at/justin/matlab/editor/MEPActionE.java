@@ -69,8 +69,7 @@ public enum MEPActionE {
     MEP_BOOKMARK(new AbstractAction("MEP_BOOKMARK") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("MEP_BOOKMARK");
-
+            // System.out.println("MEP_BOOKMARK");
             if (!Settings.getPropertyBoolean("feature.enableBookmarksViewer")) return;
             doToggleBookmark();
         }

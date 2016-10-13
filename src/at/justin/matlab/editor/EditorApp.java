@@ -27,26 +27,13 @@ import java.util.List;
 
 /** Created by Andreas Justin on 2016 - 02 - 09. */
 
-/**
- * clear classes
- * clc
- * javaaddpath('D:\Matlab\MATLAB\matlabcontrol-4.1.0.jar')
- * javaaddpath('D:\Matlab\MATLAB\matlab-editor-plugin_01.jar')
- * import at.justin.matlab.editor.EditorApp;
- * ea = EditorApp.getInstance();
- * ea.setCallbacks
- * ea.addMatlabCallback('testFunc')
- * ea.addMatlabCallback('TestFunction2')
- */
-
-
 public class EditorApp {
-    private static List<String> mCallbacks = new ArrayList<>();
-    private static List<KeyStroke> keyStrokes = new ArrayList<>();
-    private static List<String> actionMapKeys = new ArrayList<>();
     public static final Color ENABLED = new Color(179, 203, 111);
     public static final Color DISABLED = new Color(240, 240, 240);
     private static final int WF = JComponent.WHEN_FOCUSED;
+    private static List<String> mCallbacks = new ArrayList<>();
+    private static List<KeyStroke> keyStrokes = new ArrayList<>();
+    private static List<String> actionMapKeys = new ArrayList<>();
     private static EditorApp INSTANCE;
     private static List<Editor> editors = new ArrayList<>();
 
@@ -68,8 +55,7 @@ public class EditorApp {
             keyStrokes.add(keyStroke);
             actionMapKeys.add(actionMapKey);
             EditorApp.getInstance().setCallbacks();
-        }
-        else System.out.println("'" + string + "' already added");
+        } else System.out.println("'" + string + "' already added");
     }
 
     /**
@@ -143,16 +129,18 @@ public class EditorApp {
                 }
             });
 
-            KeyListener[] keyListeners = editorSyntaxTextPane.getKeyListeners();
-            for (KeyListener keyListener1 : keyListeners) {
-                if (keyListener1.toString().equals(KeyReleasedHandler.getKeyListener().toString())) {
-                    editorSyntaxTextPane.removeKeyListener(keyListener1);
-                    // this will assure that the new keylistener is added and the previous one is removed
-                    // while matlab is still running and the .jar is replaced
+            boolean useListener = true;
+            if (useListener) {
+                KeyListener[] keyListeners = editorSyntaxTextPane.getKeyListeners();
+                for (KeyListener keyListener1 : keyListeners) {
+                    if (keyListener1.toString().equals(KeyReleasedHandler.getKeyListener().toString())) {
+                        editorSyntaxTextPane.removeKeyListener(keyListener1);
+                        // this will assure that the new keylistener is added and the previous one is removed
+                        // while matlab is still running and the .jar is replaced
+                    }
                 }
+                editorSyntaxTextPane.addKeyListener(KeyReleasedHandler.getKeyListener());
             }
-
-            editorSyntaxTextPane.addKeyListener(KeyReleasedHandler.getKeyListener());
             editorSyntaxTextPane.getDocument().addDocumentListener(new DocumentListener() {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
@@ -203,23 +191,13 @@ public class EditorApp {
     }
 
     private void addKeyStrokes(EditorSyntaxTextPane editorSyntaxTextPane) {
+        // DEBUG
         editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_DEBUG.getKeyStroke(), "MEP_DEBUG");
         editorSyntaxTextPane.getActionMap().put("MEP_DEBUG", MEPActionE.MEP_DEBUG.getAction());
 
+        // CURRENT LINES
         editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_EXECUTE_CURRENT_LINE.getKeyStroke(), "MEP_EXECUTE_CURRENT_LINE");
         editorSyntaxTextPane.getActionMap().put("MEP_EXECUTE_CURRENT_LINE", MEPActionE.MEP_EXECUTE_CURRENT_LINE.getAction());
-
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_SHOW_FILE_STRUCTURE.getKeyStroke(), "MEP_SHOW_FILE_STRUCTURE");
-        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_FILE_STRUCTURE", MEPActionE.MEP_SHOW_FILE_STRUCTURE.getAction());
-
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_SHOW_COPY_CLIP_BOARD.getKeyStroke(), "MEP_SHOW_CLIP_BOARD_STACK");
-        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_CLIP_BOARD_STACK", MEPActionE.MEP_SHOW_CLIP_BOARD_STACK.getAction());
-
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_COPY_CLIP_BOARD.getKeyStroke(), "MEP_COPY_CLIP_BOARD");
-        editorSyntaxTextPane.getActionMap().put("MEP_COPY_CLIP_BOARD", MEPActionE.MEP_COPY_CLIP_BOARD.getAction());
-
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_SHOW_BOOKMARKS.getKeyStroke(), "MEP_SHOW_BOOKMARKS");
-        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_BOOKMARKS", MEPActionE.MEP_SHOW_BOOKMARKS.getAction());
 
         editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_DELETE_CURRENT_LINE.getKeyStroke(), "MEP_DELETE_CURRENT_LINE");
         editorSyntaxTextPane.getActionMap().put("MEP_DELETE_CURRENT_LINE", MEPActionE.MEP_DELETE_CURRENT_LINE.getAction());
@@ -227,9 +205,30 @@ public class EditorApp {
         editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_DUPLICATE_CURRENT_LINE.getKeyStroke(), "MEP_DUPLICATE_CURRENT_LINE");
         editorSyntaxTextPane.getActionMap().put("MEP_DUPLICATE_CURRENT_LINE", MEPActionE.MEP_DUPLICATE_CURRENT_LINE.getAction());
 
+        // FILE STRUCTURE
+        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_SHOW_FILE_STRUCTURE.getKeyStroke(), "MEP_SHOW_FILE_STRUCTURE");
+        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_FILE_STRUCTURE", MEPActionE.MEP_SHOW_FILE_STRUCTURE.getAction());
+
+        // CLIPBOARD
+        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_SHOW_COPY_CLIP_BOARD.getKeyStroke(), "MEP_SHOW_CLIP_BOARD_STACK");
+        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_CLIP_BOARD_STACK", MEPActionE.MEP_SHOW_CLIP_BOARD_STACK.getAction());
+
+        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_COPY_CLIP_BOARD.getKeyStroke(), "MEP_COPY_CLIP_BOARD");
+        editorSyntaxTextPane.getActionMap().put("MEP_COPY_CLIP_BOARD", MEPActionE.MEP_COPY_CLIP_BOARD.getAction());
+
+        // MEPR
+        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_MEPR_INSERT.getKeyStroke(), "MEP_MEPR_INSERT");
+        editorSyntaxTextPane.getActionMap().put("MEP_MEPR_INSERT", MEPActionE.MEP_MEPR_INSERT.getAction());
+
+        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_MEPR_QUICK_SEARCH.getKeyStroke(), "MEP_MEPR_QUICK_SEARCH");
+        editorSyntaxTextPane.getActionMap().put("MEP_MEPR_QUICK_SEARCH", MEPActionE.MEP_MEPR_QUICK_SEARCH.getAction());
+
+        // BOOKMARKS
+        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_SHOW_BOOKMARKS.getKeyStroke(), "MEP_SHOW_BOOKMARKS");
+        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_BOOKMARKS", MEPActionE.MEP_SHOW_BOOKMARKS.getAction());
         // for some reason bookmarks don't work if editor is opened, while the others (actions) do
-        // editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_BOOKMARK.getKeyStroke(), "MEP_BOOKMARK");
-        // editorSyntaxTextPane.getActionMap().put("MEP_BOOKMARK", MEPActionE.MEP_BOOKMARK.getAction());
+        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_BOOKMARK.getKeyStroke(), "MEP_BOOKMARK");
+        editorSyntaxTextPane.getActionMap().put("MEP_BOOKMARK", MEPActionE.MEP_BOOKMARK.getAction());
     }
 
     public void removeCallbacks() {

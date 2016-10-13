@@ -26,7 +26,10 @@ public enum MEPKeyStrokesE {
             (KS_MEP_BOOKMARK.getKeyStroke().getModifiers() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK,
             (KS_MEP_BOOKMARK.getKeyStroke().getModifiers() & KeyEvent.SHIFT_DOWN_MASK) != KeyEvent.SHIFT_DOWN_MASK,
             false,
-            false));
+            false)),
+    KS_MEP_MEPR_INSERT(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_INSERT, false, false, true, false)),
+    KS_MEP_MEPR_QUICK_SEARCH(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_SPACE, true, false, true, false)),
+    ;
 
     private final KeyStroke keyStroke;
 
