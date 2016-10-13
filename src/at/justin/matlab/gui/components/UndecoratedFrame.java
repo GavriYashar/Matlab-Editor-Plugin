@@ -7,15 +7,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- * Created by Andreas Justin on 2016 - 02 - 24.
- */
+/** Created by Andreas Justin on 2016 - 02 - 24. */
 public class UndecoratedFrame extends JFrame {
     private static final String CLOSE_ACTION = "closeAction";
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
     public final AbstractAction closeAction = new AbstractAction(CLOSE_ACTION) {
         @Override
         public void actionPerformed(ActionEvent e) {
+            setVisible(false);
+        }
+    };
+
+    public final WindowFocusListener focusLostHide = new WindowFocusListener() {
+        @Override
+        public void windowGainedFocus(WindowEvent e) {
+        }
+
+        @Override
+        public void windowLostFocus(WindowEvent e) {
             setVisible(false);
         }
     };
@@ -84,8 +93,11 @@ public class UndecoratedFrame extends JFrame {
         addMouseListener(mlClick);
         addMouseMotionListener(mlMove);
 
-        setMinimumSize(new Dimension(282,200));
+        setMinimumSize(new Dimension(282, 200));
         setMaximumSize(ScreenSize.getSize());
+
+        // losing focus hiding window
+        addWindowFocusListener(focusLostHide);
     }
 
     @Override
