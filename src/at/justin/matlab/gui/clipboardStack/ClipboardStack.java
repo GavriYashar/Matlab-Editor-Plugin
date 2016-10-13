@@ -59,7 +59,6 @@ public class ClipboardStack {
 
     public void setVisible(boolean visible) {
         undecoratedFrame.setVisible(visible);
-        undecoratedFrame.setAlwaysOnTop(visible);
     }
 
     private void create() {
