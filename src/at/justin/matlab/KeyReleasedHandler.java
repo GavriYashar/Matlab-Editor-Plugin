@@ -20,13 +20,8 @@ public class KeyReleasedHandler {
     private static Pattern opEqPattern = Pattern.compile("[\\+]"); // "[\\+\\-\\*/]"
     private static Pattern opEqLeftArgPattern = Pattern.compile("(\\s*)(.*?)(?=\\s*[\\+\\-\\*/]{2})");
     private static boolean ctrlf2 = false; // if ctrl is released before F2. there may be a better way to fix the keyevent issue
-    private static KeyStroke KS_BOOKMARK = KeyStrokeUtil.getMatlabKeyStroke(MatlabKeyStrokesCommands.CTRL_PRESSED_F2);
-    private static KeyStroke KS_SHOWBOOKARKS = KeyStrokeUtil.getKeyStroke(
-            KS_BOOKMARK.getKeyCode(),
-            (KS_BOOKMARK.getModifiers() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK,
-            (KS_BOOKMARK.getModifiers() & KeyEvent.SHIFT_DOWN_MASK) != KeyEvent.SHIFT_DOWN_MASK,
-            false,
-            false);
+    private static KeyStroke KS_BOOKMARK;
+    private static KeyStroke KS_SHOWBOOKARKS;
     private static final KeyListener keyListener = new KeyListener() {
         @Override
         public void keyTyped(KeyEvent e) {
@@ -82,8 +77,21 @@ public class KeyReleasedHandler {
         if (isEditor && !isCmdWin) {
             // do only editor
             if (e.getKeyChar() == ("%").charAt(0)
-                    && Settings.getPropertyBoolean("feature.enableReplacements"))
+                    && Settings.getPropertyBoolean("feature.enableReplacements")) {
                 MEPR.doYourThing();
+            }
+
+            if (KS_BOOKMARK == null) {
+                KS_BOOKMARK = KeyStrokeUtil.getMatlabKeyStroke(MatlabKeyStrokesCommands.CTRL_PRESSED_F2);
+            }
+            if (KS_SHOWBOOKARKS == null) {
+                KS_SHOWBOOKARKS = KeyStrokeUtil.getKeyStroke(
+                        KS_BOOKMARK.getKeyCode(),
+                        (KS_BOOKMARK.getModifiers() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK,
+                        (KS_BOOKMARK.getModifiers() & KeyEvent.SHIFT_DOWN_MASK) != KeyEvent.SHIFT_DOWN_MASK,
+                        false,
+                        false);
+            }
             if (KS_BOOKMARK.getModifiers() == mod && KS_BOOKMARK.getKeyCode() == e.getKeyCode())
                 ctrlf2 = true;
                 // Doing the bookmarks here is error prone and won't work correctly.
