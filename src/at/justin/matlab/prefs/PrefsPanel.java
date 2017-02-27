@@ -98,7 +98,7 @@ public class PrefsPanel extends MJPanel {
         jsp.getHorizontalScrollBar().setUnitIncrement(20);
 
         if (Settings.getPropertyBoolean("jar.isOnStaticPath")) {
-            jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+            jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         } else {
             jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
