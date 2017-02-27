@@ -191,6 +191,10 @@ public class EditorApp {
     }
 
     private void addKeyStrokes(EditorSyntaxTextPane editorSyntaxTextPane) {
+        // NOTE: enable/disable feature cannot be checked here. the problem in the current design is, that matlab would
+        //       need a restart after enabling features afterwards. that's why the features are checked in the
+        //       "MEPActionE" Class 
+
         // DEBUG
         editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_DEBUG.getKeyStroke(), "MEP_DEBUG");
         editorSyntaxTextPane.getActionMap().put("MEP_DEBUG", MEPActionE.MEP_DEBUG.getAction());

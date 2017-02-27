@@ -53,7 +53,10 @@ public enum MEPActionE {
     MEP_COPY_CLIP_BOARD(new AbstractAction("MEP_COPY_CLIP_BOARD") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!Settings.getPropertyBoolean("feature.enableClipboardStack")) return;
+            // ISSUE #52
+            // The problem of checking here is that the CTRL+C command is overwritten by MEP and this prevents everyone
+            // from copying
+            // if (!Settings.getPropertyBoolean("feature.enableClipboardStack")) return;
             doCopyAction();
         }
     }),
@@ -152,8 +155,10 @@ public enum MEPActionE {
     private static void doCopyAction() {
         String selText = EditorWrapper.getSelectedTxt();
         if (selText == null || selText.length() < 1) return;
-        ClipboardStack.getInstance().add(selText);
         ClipboardUtil.addToClipboard(selText);
+        // Issue: #52
+        if (!Settings.getPropertyBoolean("feature.enableClipboardStack")) return;
+        ClipboardStack.getInstance().add(selText);
     }
 
     private static void doToggleBookmark() {
