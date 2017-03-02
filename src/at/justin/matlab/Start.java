@@ -33,11 +33,17 @@ public class Start {
             } catch (Exception ignored) {
             }
             e.printStackTrace();
-            JOptionPane.showMessageDialog(
-                    new JFrame(""),
-                    e.getMessage() + "\nIt might be that There is no Editor or CommandWindow Open",
-                    "something went wrong, very very wrong",
-                    JOptionPane.ERROR_MESSAGE);
+            StackTraceElement[] stackTraceElements = e.getStackTrace();
+            for (int i = stackTraceElements.length-1; i >= 0 ; i--) {
+                JOptionPane.showMessageDialog(
+                        new JFrame(""),
+                        stackTraceElements[i].getClassName() + "\n\n"
+                        + stackTraceElements[i].getFileName() + "\n\n"
+                        + stackTraceElements[i].getMethodName() + "\n\n"
+                        + stackTraceElements[i].getLineNumber(),
+                        "something went wrong, very very wrong",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
