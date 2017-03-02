@@ -177,8 +177,7 @@ public class PrefsPanel extends MJPanel {
         ps.setLayout(new GridBagLayout());
         ps.setBorder(BorderFactory.createTitledBorder("Other"));
 
-        String[] properties = {"ExtendedCommand",
-                "AutoLoadShortcuts",
+        String[] properties = {"AutoLoadShortcuts",
                 "EnableStartup",
                 "EnableMethodsView",
                 "UseLDS",
