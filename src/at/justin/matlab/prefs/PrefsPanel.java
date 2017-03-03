@@ -190,7 +190,6 @@ public class PrefsPanel extends MJPanel {
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
                 PropertyType.PATH,
                 PropertyType.ONOFF
         };
