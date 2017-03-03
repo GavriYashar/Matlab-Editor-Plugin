@@ -98,20 +98,7 @@ public class EditorWrapper {
 
     /** returns currently active Editor in Matlab */
     public static Editor getActiveEditor() {
-        Editor editor = EditorApp.getInstance().getActiveEditor();
-        if (editor == null) {
-            // ISSUE: #51
-            // When Matlab starts, there is no active editor, yet. So the first editor is selected, but
-            // if there is nothing, a new editor is opened.
-            List<Editor> editors = EditorWrapper.getOpenEditors();
-            if (editors.size() > 0) {
-                editor = editors.get(0);
-            } else {
-                editor = EditorWrapper.getMatlabEditorApplication().newEditor(
-                        "MEP: I'm sorry i opened an untitled a new document, but would you rather watch the world burn (issue #51)");
-            }
-        }
-        return editor;
+        return EditorApp.getInstance().getActiveEditor();
     }
 
     /** returns full qualified name of given editor */
