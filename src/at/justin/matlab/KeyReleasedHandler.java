@@ -84,20 +84,27 @@ public class KeyReleasedHandler {
             if (KS_BOOKMARK == null) {
                 KS_BOOKMARK = KeyStrokeUtil.getMatlabKeyStroke(MatlabKeyStrokesCommands.CTRL_PRESSED_F2);
             }
-            if (KS_SHOWBOOKARKS == null) {
-                KS_SHOWBOOKARKS = KeyStrokeUtil.getKeyStroke(
-                        KS_BOOKMARK.getKeyCode(),
-                        (KS_BOOKMARK.getModifiers() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK,
-                        (KS_BOOKMARK.getModifiers() & KeyEvent.SHIFT_DOWN_MASK) != KeyEvent.SHIFT_DOWN_MASK,
-                        false,
-                        false);
+            if (KS_BOOKMARK != null) {
+                if (KS_SHOWBOOKARKS == null) {
+                    KS_SHOWBOOKARKS = KeyStrokeUtil.getKeyStroke(
+                            KS_BOOKMARK.getKeyCode(),
+                            (KS_BOOKMARK.getModifiers() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK,
+                            (KS_BOOKMARK.getModifiers() & KeyEvent.SHIFT_DOWN_MASK) != KeyEvent.SHIFT_DOWN_MASK,
+                            false,
+                            false);
+                }
+
+                if (KS_BOOKMARK.getModifiers() == mod && KS_BOOKMARK.getKeyCode() == e.getKeyCode())
+                    ctrlf2 = true;
+                    // Doing the bookmarks here is error prone and won't work correctly.
+                    // this function ist called every time (afaik) before Matlab's keyRelease
+                else if (KS_SHOWBOOKARKS.getModifiers() == mod && KS_SHOWBOOKARKS.getKeyCode() == e.getKeyCode())
+                    MEPActionE.MEP_SHOW_BOOKMARKS.getAction().actionPerformed(null);
+            } else {
+                // FIXME: i could try to fix it to just manually assign it to CTRL+F2
+                //        but this causes other problems. What if the user changed the shortcut?
+                System.out.println("Issue #57 is happening right now. What was your workflow from Matlab start to now.");
             }
-            if (KS_BOOKMARK.getModifiers() == mod && KS_BOOKMARK.getKeyCode() == e.getKeyCode())
-                ctrlf2 = true;
-                // Doing the bookmarks here is error prone and won't work correctly.
-                // this function ist called every time (afaik) before Matlab's keyRelease
-            else if (KS_SHOWBOOKARKS.getModifiers() == mod && KS_SHOWBOOKARKS.getKeyCode() == e.getKeyCode())
-                MEPActionE.MEP_SHOW_BOOKMARKS.getAction().actionPerformed(null);
         }
     }
 
