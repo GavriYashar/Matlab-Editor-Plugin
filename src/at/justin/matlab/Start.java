@@ -1,14 +1,17 @@
 package at.justin.matlab;
 
 import at.justin.matlab.editor.EditorApp;
+import at.justin.matlab.editor.EditorWrapper;
 import at.justin.matlab.gui.bookmarks.Bookmarks;
 import at.justin.matlab.installer.Install;
 import at.justin.matlab.prefs.Settings;
+import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.mlwidgets.prefs.PrefsChanger;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /** Created by Andreas Justin on 2016-08-25. */
 public class Start {
@@ -18,6 +21,9 @@ public class Start {
         if (customSettings != null && defaultSettings != null) {
             loadSettings(customSettings, defaultSettings);
         }
+
+        openEditorIfNecessary();
+
         try {
             setEditorCallbacks();
             setCmdWinCallbacks();
@@ -43,6 +49,25 @@ public class Start {
                         + stackTraceElements[i].getLineNumber(),
                         "something went wrong, very very wrong",
                         JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private static void openEditorIfNecessary() {
+        // ISSUE: #56
+        // it was wrong to put this code in EditorWrapper. getActiveEditor should never open a new editor.
+        // this issue needs to be handled in "Start"
+
+        // ISSUE: #51
+        // When Matlab starts, there is no active editor, yet. So the first editor is selected, but
+        // if there is nothing, a new editor is opened.
+        Editor editor = EditorWrapper.getActiveEditor();
+        if (editor == null) {
+            List<Editor> editors = EditorWrapper.getOpenEditors();
+            if (editors.size() < 1) {
+                EditorWrapper.getMatlabEditorApplication().newEditor(
+                        "MEP: I'm sorry i opened a new document, but would you rather watch the world burn? (issue #51)");
+                // TODO: this afterwards?
             }
         }
     }
