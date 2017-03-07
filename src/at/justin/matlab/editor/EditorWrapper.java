@@ -171,7 +171,7 @@ public class EditorWrapper {
 
     /** returns String[] of containing text for given editor, where each entry is represented by a line. !!reloads text on every call */
     public static String[] getTextArray(Editor editor) {
-        String[] textArray = EditorWrapper.getText(editor).split("\\n");
+        String[] textArray = EditorWrapper.getText(editor).split("\\n", -1); // limit -1 to include trailing empty lines
         for (int i = 0; i < textArray.length; i++) {
             textArray[i] += "\n";
         }
