@@ -403,7 +403,6 @@ public class EditorWrapper {
 
         EditorWrapper.setSelectionPosition(editor, se[0], se[1] - 1);
         EditorWrapper.setSelectedTxt(editor, "");
-        EditorWrapper.goToLine(editor, line - 1, false);
     }
 
     /** duplicates current line of given editor */
