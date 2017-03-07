@@ -94,11 +94,11 @@ public enum MEPActionE {
         }
     }),
 
-    MEP_DUPLICATE_CURRENT_LINE(new AbstractAction("MEP_DUPLICATE_CURRENT_LINE") {
+    MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION(new AbstractAction("MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION") {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!Settings.getPropertyBoolean("feature.enableDuplicateLine")) return;
-            doDuplicateLineAction();
+            doDuplicateLineOrSelectionAction();
         }
     }),
 
@@ -135,8 +135,8 @@ public enum MEPActionE {
         EditorWrapper.deleteCurrentLines();
     }
 
-    private static void doDuplicateLineAction() {
-        EditorWrapper.duplicateCurrentLine();
+    private static void doDuplicateLineOrSelectionAction() {
+        EditorWrapper.duplicateCurrentLineOrSelection();
     }
 
     private static void showClipboardStack() {
