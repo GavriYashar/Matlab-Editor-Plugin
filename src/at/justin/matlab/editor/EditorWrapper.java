@@ -394,6 +394,23 @@ public class EditorWrapper {
         return EditorWrapper.getTextByLine(editor, EditorWrapper.getCurrentLine(editor));
     }
 
+    /** deletes current line if no text is selected or all the lines of selection is some text is selected */
+    public static void deleteCurrentLines(Editor editor) {
+        int[] se = getSelectionPosition(editor);
+        int[] lcStart = EditorWrapper.pos2lc(editor, se[0]);
+        int[] lcEnd = EditorWrapper.pos2lc(editor, se[1]);
+
+        if (lcEnd[1] == 1 && lcEnd[0] != lcStart[0]) { // don't delete last line of selection if no characters are selected on it
+            lcEnd[0]--;
+        }
+
+        se[0] = EditorWrapper.lc2pos(editor, lcStart[0], 0);
+        se[1] = EditorWrapper.lc2pos(editor, lcEnd[0] + 1, 0) + 1;
+
+        EditorWrapper.setSelectionPosition(editor, se[0], se[1] - 1);
+        EditorWrapper.setSelectedTxt(editor, "");
+    }
+
     /** deletes current line of given editor */
     public static void deleteCurrentLine(Editor editor) {
         int line = EditorWrapper.getCurrentLine(editor);
@@ -449,6 +466,10 @@ public class EditorWrapper {
 
     public static InputMap getInputMap() {
         return EditorWrapper.getInputMap(gae());
+    }
+
+    public static void deleteCurrentLines() {
+        EditorWrapper.deleteCurrentLines(gae());
     }
 
     public static void deleteCurrentLine() {
