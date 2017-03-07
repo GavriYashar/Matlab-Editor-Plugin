@@ -422,6 +422,23 @@ public class EditorWrapper {
         EditorWrapper.setSelectedTxt(editor, "");
     }
 
+    /** duplicates
+     *  - current line if no text is selected
+     *  - selection content if some text is selected
+     */
+    public static void duplicateCurrentLineOrSelection(Editor editor) {
+        int[] se = getSelectionPosition(editor);
+        if (se[0] == se[1]) {
+            duplicateCurrentLine(editor);
+        } else {
+            String selectedText = EditorWrapper.getSelectedTxt(editor);
+            selectedText += selectedText;
+            EditorWrapper.setSelectedTxt(editor, selectedText);
+            EditorWrapper.setSelectionPosition(editor, se[1], se[1] + se[1] - se[0]);
+        }
+
+    }
+
     /** duplicates current line of given editor */
     public static void duplicateCurrentLine(Editor editor) {
         int line = EditorWrapper.getCurrentLine(editor);
@@ -474,6 +491,10 @@ public class EditorWrapper {
 
     public static void deleteCurrentLine() {
         EditorWrapper.deleteCurrentLine(gae());
+    }
+
+    public static void duplicateCurrentLineOrSelection() {
+        EditorWrapper.duplicateCurrentLineOrSelection(gae());
     }
 
     public static void duplicateCurrentLine() {
