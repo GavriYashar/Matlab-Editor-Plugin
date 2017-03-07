@@ -17,7 +17,7 @@ public enum MEPKeyStrokesE {
     KS_MEP_SHOW_COPY_CLIP_BOARD(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_V, true, true, false, false)),
     KS_MEP_COPY_CLIP_BOARD(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_C, true, false, false, false)),
 
-    KS_MEP_DELETE_CURRENT_LINE(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_Y, true, true, false, false)),
+    KS_MEP_DELETE_CURRENT_LINES(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_Y, true, true, false, false)),
     KS_MEP_DUPLICATE_CURRENT_LINE(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_D, true, true, false, false)),
 
     KS_MEP_BOOKMARK(KeyStrokeUtil.getMatlabKeyStroke(MatlabKeyStrokesCommands.CTRL_PRESSED_F2)),

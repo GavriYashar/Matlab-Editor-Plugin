@@ -86,11 +86,11 @@ public enum MEPActionE {
         }
     }),
 
-    MEP_DELETE_CURRENT_LINE(new AbstractAction("MEP_DELETE_CURRENT_LINE") {
+    MEP_DELETE_CURRENT_LINES(new AbstractAction("MEP_DELETE_CURRENT_LINE") {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!Settings.getPropertyBoolean("feature.enableDeleteCurrentLine")) return;
-            doDeleteLineAction();
+            doDeleteLinesAction();
         }
     }),
 
@@ -131,8 +131,8 @@ public enum MEPActionE {
 
     // //////////////////////////////////////////////////////////////////////////////////////////// //
 
-    private static void doDeleteLineAction() {
-        EditorWrapper.deleteCurrentLine();
+    private static void doDeleteLinesAction() {
+        EditorWrapper.deleteCurrentLines();
     }
 
     private static void doDuplicateLineAction() {
