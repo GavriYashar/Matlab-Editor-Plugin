@@ -14,9 +14,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.TreeSet;
 
-/**
- * Created by Andreas Justin on 2016 - 02 - 07.
- */
+/** Created by Andreas Justin on 2016 - 02 - 07. */
 public class Settings {
     public static boolean DEBUG = false;
     private static long RELOAD_TIME = 5000;
@@ -27,6 +25,7 @@ public class Settings {
     private static String defaultSettingsName;
     private static boolean autoReload = false;
     private static long lastReload = System.currentTimeMillis();
+    public static boolean issue57DisplayMessage = true;
 
     static {
         internalProps = load(Settings.class.getResourceAsStream("/properties/Internal.properties"));

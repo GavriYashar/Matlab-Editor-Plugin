@@ -100,10 +100,11 @@ public class KeyReleasedHandler {
                     // this function ist called every time (afaik) before Matlab's keyRelease
                 else if (KS_SHOWBOOKARKS.getModifiers() == mod && KS_SHOWBOOKARKS.getKeyCode() == e.getKeyCode())
                     MEPActionE.MEP_SHOW_BOOKMARKS.getAction().actionPerformed(null);
-            } else {
+            } else if (Settings.issue57DisplayMessage) {
+                Settings.issue57DisplayMessage = false;
                 // FIXME: i could try to fix it to just manually assign it to CTRL+F2
-                //        but this causes other problems. What if the user changed the shortcut?
-                System.out.println("Issue #57 is happening right now. What was your workflow from Matlab start to now.");
+                //        but this causes other problems, if the user changed the shortcut.
+                System.out.println("Issue #57 is happening right now.");
             }
         }
     }
