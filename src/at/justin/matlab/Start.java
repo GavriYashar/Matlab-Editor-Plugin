@@ -22,8 +22,8 @@ public class Start {
             loadSettings(customSettings, defaultSettings);
         }
 
-        openEditorIfNecessary();
-
+        EditorWrapper.getActiveEditor();
+        
         try {
             setEditorCallbacks();
             setCmdWinCallbacks();
@@ -49,25 +49,6 @@ public class Start {
                         + stackTraceElements[i].getLineNumber(),
                         "something went wrong, very very wrong",
                         JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    private static void openEditorIfNecessary() {
-        // ISSUE: #56
-        // it was wrong to put this code in EditorWrapper. getActiveEditor should never open a new editor.
-        // this issue needs to be handled in "Start"
-
-        // ISSUE: #51
-        // When Matlab starts, there is no active editor, yet. So the first editor is selected, but
-        // if there is nothing, a new editor is opened.
-        Editor editor = EditorWrapper.getActiveEditor();
-        if (editor == null) {
-            List<Editor> editors = EditorWrapper.getOpenEditors();
-            if (editors.size() < 1) {
-                EditorWrapper.getMatlabEditorApplication().newEditor(
-                        "MEP: I'm sorry i opened a new document, but would you rather watch the world burn? (issue #51)");
-                // TODO: this afterwards?
             }
         }
     }

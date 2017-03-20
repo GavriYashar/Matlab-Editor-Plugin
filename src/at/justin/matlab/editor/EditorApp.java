@@ -101,7 +101,13 @@ public class EditorApp {
     }
 
     public Editor getActiveEditor() {
-        return EditorWrapper.getMatlabEditorApplication().getActiveEditor();
+        Editor editor = EditorWrapper.getMatlabEditorApplication().getActiveEditor();
+        if (editor == null) {
+            EditorWrapper.getMatlabEditorApplication().newEditor(
+                    "MEP: Sorry!"
+            );
+        }
+        return editor;
     }
 
 
