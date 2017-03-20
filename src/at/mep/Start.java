@@ -5,6 +5,7 @@ import at.mep.editor.EditorWrapper;
 import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.installer.Install;
 import at.mep.prefs.Settings;
+import at.mep.util.RunnableUtil;
 import com.mathworks.mlwidgets.prefs.PrefsChanger;
 
 import javax.swing.*;
@@ -20,7 +21,15 @@ public class Start {
             loadSettings(customSettings, defaultSettings);
         }
 
-        EditorWrapper.getActiveEditor();
+        // i don't get it. issue #56
+        // now it froze on splash screen, an editor was open... i really don't get it.
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                EditorWrapper.getActiveEditor();
+            }
+        };
+        RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
 
         try {
             setEditorCallbacks();
