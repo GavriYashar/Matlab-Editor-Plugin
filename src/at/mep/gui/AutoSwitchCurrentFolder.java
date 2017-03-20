@@ -8,11 +8,10 @@ import com.mathworks.mlwidgets.explorer.model.navigation.NavigationContext;
 
 /** Created by Gavri on 2017-03-20. */
 public class AutoSwitchCurrentFolder {
-    public static NavigationContext navigationContext = Explorer.getInstance().getContext();
+    private static NavigationContext navigationContext = Explorer.getInstance().getContext();
 
     public static void doYourThing() {
         if (!EditorWrapper.getFile().exists()) {
-            // check for "Untitled" as name is not good, since a "Untitled.m" can exist
             return;
         }
         FileLocation fileLocation = new FileLocation(EditorWrapper.getFile().getParent());
@@ -21,5 +20,9 @@ public class AutoSwitchCurrentFolder {
         } catch (InvalidLocationException e) {
             e.printStackTrace();
         }
+    }
+
+    public static NavigationContext getNavigationContext() {
+        return navigationContext;
     }
 }

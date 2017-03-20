@@ -18,7 +18,7 @@ import java.io.IOException;
  * creates a checkbox on the DetailsViewer Bar in matlab
  */
 public class AutoDetailViewer {
-    public static DetailViewer detailViewer = Explorer.getInstance().getDetailViewer();
+    private static DetailViewer detailViewer = Explorer.getInstance().getDetailViewer();
     private static JCheckBox jCheckBox = new JCheckBox();
 
     private static boolean added = false;
@@ -84,5 +84,9 @@ public class AutoDetailViewer {
             }
         }
         detailViewer.getButton().getParent().add(jCheckBox);
+    }
+
+    public static DetailViewer getDetailViewer() {
+        return detailViewer;
     }
 }
