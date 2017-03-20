@@ -129,9 +129,11 @@ public class PrefsPanel extends MJPanel {
                 "feature.enableDeleteCurrentLine",
                 "feature.enableReplacements",
                 "feature.enableAutoDetailViewer",
+                "feature.enableAutoCurrentFolder",
                 "feature.enableExecuteCurrentLine"
         };
         PropertyType[] types = {PropertyType.BOOLEAN,
+                PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,
                 PropertyType.BOOLEAN,

@@ -12,5 +12,5 @@ function txt = MEPV_TIME(txt)
 % See also
 expr = '\$\{(THIS)\}';
 if ~isempty(regexp(txt,expr,'once'))
-    txt = char(at.justin.matlab.editor.EditorWrapper.getFullQualifiedClass());
+    txt = char(at.mep.editor.EditorWrapper.getFullQualifiedClass());
 end

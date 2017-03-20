@@ -2,6 +2,7 @@ package at.mep.editor;
 
 import at.mep.KeyReleasedHandler;
 import at.mep.Matlab;
+import at.mep.gui.AutoSwitchCurrentFolder;
 import at.mep.gui.autoDetailViewer.AutoDetailViewer;
 import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.mepr.MEPR;
@@ -131,6 +132,9 @@ public class EditorApp {
                     // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
                     if (editorEvent == EditorEvent.ACTIVATED && Settings.getPropertyBoolean("feature.enableAutoDetailViewer")) {
                         AutoDetailViewer.doYourThing();
+                    }
+                    if (editorEvent == EditorEvent.ACTIVATED && Settings.getPropertyBoolean("feature.enableAutoCurrentFolder")) {
+                        AutoSwitchCurrentFolder.doYourThing();
                     }
                 }
             });
