@@ -209,11 +209,11 @@ public class EditorApp {
         editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_EXECUTE_CURRENT_LINE.getKeyStroke(), "MEP_EXECUTE_CURRENT_LINE");
         editorSyntaxTextPane.getActionMap().put("MEP_EXECUTE_CURRENT_LINE", MEPActionE.MEP_EXECUTE_CURRENT_LINE.getAction());
 
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_DELETE_CURRENT_LINE.getKeyStroke(), "MEP_DELETE_CURRENT_LINE");
-        editorSyntaxTextPane.getActionMap().put("MEP_DELETE_CURRENT_LINE", MEPActionE.MEP_DELETE_CURRENT_LINE.getAction());
+        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_DELETE_CURRENT_LINES.getKeyStroke(), "MEP_DELETE_CURRENT_LINES");
+        editorSyntaxTextPane.getActionMap().put("MEP_DELETE_CURRENT_LINES", MEPActionE.MEP_DELETE_CURRENT_LINES.getAction());
 
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_DUPLICATE_CURRENT_LINE.getKeyStroke(), "MEP_DUPLICATE_CURRENT_LINE");
-        editorSyntaxTextPane.getActionMap().put("MEP_DUPLICATE_CURRENT_LINE", MEPActionE.MEP_DUPLICATE_CURRENT_LINE.getAction());
+        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION.getKeyStroke(), "MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION");
+        editorSyntaxTextPane.getActionMap().put("MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION", MEPActionE.MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION.getAction());
 
         // FILE STRUCTURE
         editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_SHOW_FILE_STRUCTURE.getKeyStroke(), "MEP_SHOW_FILE_STRUCTURE");

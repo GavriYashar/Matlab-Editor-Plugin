@@ -171,7 +171,7 @@ public class EditorWrapper {
 
     /** returns String[] of containing text for given editor, where each entry is represented by a line. !!reloads text on every call */
     public static String[] getTextArray(Editor editor) {
-        String[] textArray = EditorWrapper.getText(editor).split("\\n");
+        String[] textArray = EditorWrapper.getText(editor).split("\\n", -1); // limit -1 to include trailing empty lines
         for (int i = 0; i < textArray.length; i++) {
             textArray[i] += "\n";
         }
@@ -394,6 +394,23 @@ public class EditorWrapper {
         return EditorWrapper.getTextByLine(editor, EditorWrapper.getCurrentLine(editor));
     }
 
+    /** deletes current line if no text is selected or all the lines of selection is some text is selected */
+    public static void deleteCurrentLines(Editor editor) {
+        int[] se = getSelectionPosition(editor);
+        int[] lcStart = EditorWrapper.pos2lc(editor, se[0]);
+        int[] lcEnd = EditorWrapper.pos2lc(editor, se[1]);
+
+        if (lcEnd[1] == 1 && lcEnd[0] != lcStart[0]) { // don't delete last line of selection if no characters are selected on it
+            lcEnd[0]--;
+        }
+
+        se[0] = EditorWrapper.lc2pos(editor, lcStart[0], 0);
+        se[1] = EditorWrapper.lc2pos(editor, lcEnd[0] + 1, 0) + 1;
+
+        EditorWrapper.setSelectionPosition(editor, se[0], se[1] - 1);
+        EditorWrapper.setSelectedTxt(editor, "");
+    }
+
     /** deletes current line of given editor */
     public static void deleteCurrentLine(Editor editor) {
         int line = EditorWrapper.getCurrentLine(editor);
@@ -403,7 +420,23 @@ public class EditorWrapper {
 
         EditorWrapper.setSelectionPosition(editor, se[0], se[1] - 1);
         EditorWrapper.setSelectedTxt(editor, "");
-        EditorWrapper.goToLine(editor, line - 1, false);
+    }
+
+    /** duplicates
+     *  - current line if no text is selected
+     *  - selection content if some text is selected
+     */
+    public static void duplicateCurrentLineOrSelection(Editor editor) {
+        int[] se = getSelectionPosition(editor);
+        if (se[0] == se[1]) {
+            duplicateCurrentLine(editor);
+        } else {
+            String selectedText = EditorWrapper.getSelectedTxt(editor);
+            selectedText += selectedText;
+            EditorWrapper.setSelectedTxt(editor, selectedText);
+            EditorWrapper.setSelectionPosition(editor, se[1], se[1] + se[1] - se[0]);
+        }
+
     }
 
     /** duplicates current line of given editor */
@@ -452,8 +485,16 @@ public class EditorWrapper {
         return EditorWrapper.getInputMap(gae());
     }
 
+    public static void deleteCurrentLines() {
+        EditorWrapper.deleteCurrentLines(gae());
+    }
+
     public static void deleteCurrentLine() {
         EditorWrapper.deleteCurrentLine(gae());
+    }
+
+    public static void duplicateCurrentLineOrSelection() {
+        EditorWrapper.duplicateCurrentLineOrSelection(gae());
     }
 
     public static void duplicateCurrentLine() {

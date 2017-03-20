@@ -86,19 +86,19 @@ public enum MEPActionE {
         }
     }),
 
-    MEP_DELETE_CURRENT_LINE(new AbstractAction("MEP_DELETE_CURRENT_LINE") {
+    MEP_DELETE_CURRENT_LINES(new AbstractAction("MEP_DELETE_CURRENT_LINE") {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!Settings.getPropertyBoolean("feature.enableDeleteCurrentLine")) return;
-            doDeleteLineAction();
+            doDeleteLinesAction();
         }
     }),
 
-    MEP_DUPLICATE_CURRENT_LINE(new AbstractAction("MEP_DUPLICATE_CURRENT_LINE") {
+    MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION(new AbstractAction("MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION") {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!Settings.getPropertyBoolean("feature.enableDuplicateLine")) return;
-            doDuplicateLineAction();
+            doDuplicateLineOrSelectionAction();
         }
     }),
 
@@ -131,12 +131,12 @@ public enum MEPActionE {
 
     // //////////////////////////////////////////////////////////////////////////////////////////// //
 
-    private static void doDeleteLineAction() {
-        EditorWrapper.deleteCurrentLine();
+    private static void doDeleteLinesAction() {
+        EditorWrapper.deleteCurrentLines();
     }
 
-    private static void doDuplicateLineAction() {
-        EditorWrapper.duplicateCurrentLine();
+    private static void doDuplicateLineOrSelectionAction() {
+        EditorWrapper.duplicateCurrentLineOrSelection();
     }
 
     private static void showClipboardStack() {
