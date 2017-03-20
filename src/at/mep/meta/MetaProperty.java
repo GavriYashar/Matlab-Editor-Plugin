@@ -14,10 +14,18 @@ public class MetaProperty extends Meta {
     private boolean hasDefaults = false;
 
     public void setGetAccess(String getAccess) {
+        if (getAccess == null) {
+            getAccess = "unknown"; // TODO: figure out what todo on "unknwon"
+        }
+
         this.getAccess = getAccess;
     }
 
     public void setSetAccess(String setAccess) {
+        if (setAccess == null) {
+            setAccess = "unknown";
+        }
+
         this.setAccess = setAccess;
     }
 

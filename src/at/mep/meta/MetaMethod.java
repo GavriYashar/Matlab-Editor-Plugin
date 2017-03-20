@@ -20,6 +20,9 @@ public class MetaMethod extends Meta {
     }
 
     public void setAccess(String access) {
+        if (access == null) {
+            access = "unknown"; // TODO: figure out what todo on "unknwon"
+        }
         Access = access;
     }
 
