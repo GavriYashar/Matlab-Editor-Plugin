@@ -489,6 +489,7 @@ public class EditorWrapper {
         EditorWrapper.deleteCurrentLines(gae());
     }
 
+    @Deprecated
     public static void deleteCurrentLine() {
         EditorWrapper.deleteCurrentLine(gae());
     }
@@ -497,6 +498,7 @@ public class EditorWrapper {
         EditorWrapper.duplicateCurrentLineOrSelection(gae());
     }
 
+    @Deprecated
     public static void duplicateCurrentLine() {
         EditorWrapper.duplicateCurrentLine(gae());
     }
