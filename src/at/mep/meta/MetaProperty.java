@@ -15,7 +15,7 @@ public class MetaProperty extends Meta {
 
     public void setGetAccess(String getAccess) {
         if (getAccess == null) {
-            getAccess = "unknown"; // TODO: figure out what todo on "unknwon"
+            getAccess = "unknown"; // TODO: figure out what todo on "unknwon" issue #65
         }
 
         this.getAccess = getAccess;
@@ -23,7 +23,7 @@ public class MetaProperty extends Meta {
 
     public void setSetAccess(String setAccess) {
         if (setAccess == null) {
-            setAccess = "unknown";
+            setAccess = "unknown";  // TODO: figure out what todo on "unknwon" issue #65
         }
 
         this.setAccess = setAccess;
