@@ -1,8 +1,8 @@
 package com.mathworks.mlwidgets.prefs;
 
-import at.justin.matlab.installer.Install;
-import at.justin.matlab.prefs.PrefsWindow;
-import at.justin.matlab.prefs.Settings;
+import at.mep.installer.Install;
+import at.mep.prefs.PrefsWindow;
+import at.mep.prefs.Settings;
 
 import java.io.IOException;
 
@@ -11,8 +11,8 @@ public class PrefsChanger extends PrefsDialog {
     public static void addPrefs() throws ClassNotFoundException {
         try {
             PrefsDialog prefsDialog = (PrefsDialog) getMLPrefsDialog();
-            prefsDialog.registerPanel("MEP", "at.justin.matlab.prefs.PrefsWelcome", false);
-            prefsDialog.registerPanel("MEP.Settings", "at.justin.matlab.prefs.PrefsPanel", false);
+            prefsDialog.registerPanel("MEP", "at.mep.prefs.PrefsWelcome", false);
+            prefsDialog.registerPanel("MEP.Settings", "at.mep.prefs.PrefsPanel", false);
             Settings.setPropertyBoolean("jar.isOnStaticPath", true);
         } catch (IllegalAccessError e) {
             e.printStackTrace();
