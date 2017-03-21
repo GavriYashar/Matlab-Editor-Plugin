@@ -1,9 +1,6 @@
 package at.mep.gui.fileStructure;
 
-import at.mep.meta.Meta;
-import at.mep.meta.MetaClass;
-import at.mep.meta.MetaMethod;
-import at.mep.meta.MetaProperty;
+import at.mep.meta.*;
 import at.mep.util.NodeUtils;
 import com.mathworks.widgets.text.mcode.MTree;
 
@@ -38,10 +35,10 @@ public class Node extends DefaultMutableTreeNode {
     private boolean isDependent = false;
     private boolean isTransient = false;
     private boolean isImmutable = false;
-    private boolean isPrivate = false;
+    private MetaAccessE Access = MetaAccessE.PUBLIC;
     private boolean isHidden = false;
-    private boolean isGetAccessPrivate = false;
-    private boolean isSetAccessPrivate = false;
+    private MetaAccessE GetAccessPrivate = MetaAccessE.PUBLIC;
+    private MetaAccessE SetAccessPrivate = MetaAccessE.PUBLIC;
     private boolean hasDefaults = false;
     private String documentation = "";
     private String detailedDocumentation = "";
@@ -76,8 +73,8 @@ public class Node extends DefaultMutableTreeNode {
         meta = p;
         node = mtNode;
 
-        isGetAccessPrivate = p.getGetAccess().equals("private");
-        isSetAccessPrivate = p.getSetAccess().equals("private");
+        GetAccessPrivate = p.getGetAccess() ;
+        SetAccessPrivate = p.getSetAccess();
         isAbstract = p.isAbstract();
         isHidden = p.isHidden();
         isDependent = p.isDependent();
@@ -95,7 +92,7 @@ public class Node extends DefaultMutableTreeNode {
         meta = m;
         node = mtNode;
 
-        isPrivate = m.getAccess().equals("private");
+        Access = m.getAccess();
         isStatic = m.isStatic();
         isAbstract = m.isAbstract();
         isHidden = m.isHidden();
@@ -167,8 +164,8 @@ public class Node extends DefaultMutableTreeNode {
         return isStatic;
     }
 
-    public boolean isPrivate() {
-        return isPrivate;
+    public MetaAccessE getAccess() {
+        return Access;
     }
 
     public Meta getMeta() {
