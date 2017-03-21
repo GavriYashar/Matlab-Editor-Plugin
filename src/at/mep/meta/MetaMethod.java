@@ -3,11 +3,9 @@ package at.mep.meta;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Andreas Justin on 2016-09-12.
- */
+/** Created by Andreas Justin on 2016-09-12. */
 public class MetaMethod extends Meta {
-    protected String Access = "";
+    protected MetaAccessE access = MetaAccessE.PUBLIC;
     protected String definingClass = "";
     protected boolean isStatic = false;
     protected boolean isAbstract = false;
@@ -19,11 +17,8 @@ public class MetaMethod extends Meta {
     public MetaMethod() {
     }
 
-    public void setAccess(String access) {
-        if (access == null) {
-            access = "unknown"; // TODO: figure out what todo on "unknwon" issue #65
-        }
-        Access = access;
+    public void setAccess(MetaAccessE access) {
+        this.access = access;
     }
 
     public void setDefiningClass(String definingClass) {
@@ -58,8 +53,8 @@ public class MetaMethod extends Meta {
         outputNames.add(string);
     }
 
-    public String getAccess() {
-        return Access;
+    public MetaAccessE getAccess() {
+        return access;
     }
 
     public String getDefiningClass() {

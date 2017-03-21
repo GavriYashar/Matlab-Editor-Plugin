@@ -49,8 +49,32 @@ public class MetaClass extends Meta {
                 + "     " + propVar + ".setName(" + propVarP + ".Name);\n"
                 + "     " + propVar + ".setDescription(" + propVarP + ".Description);\n"
                 + "     " + propVar + ".setDetailedDescription(" + propVarP + ".DetailedDescription);\n"
-                + "     " + propVar + ".setGetAccess(" + propVarP + ".GetAccess);\n"
-                + "     " + propVar + ".setSetAccess(" + propVarP + ".SetAccess);\n"
+
+                // ACCESS
+                // TODO: fill list with meta classes propVarP.GetAccess/SetAccess
+                + "     " + "if iscell(" + propVarP + ".GetAccess)\n"
+                + "         " + propVar + ".setGetAccess(at.mep.meta.MetaAccessE.META);\n"
+                + "     " +  "elseif ischar(" + propVarP + ".GetAccess) && strcmpi(" + propVarP + ".GetAccess, 'private')\n"
+                + "         " + propVar + ".setGetAccess(at.mep.meta.MetaAccessE.PRIVATE);\n"
+                + "     " +  "elseif ischar(" + propVarP + ".GetAccess) && strcmpi(" + propVarP + ".GetAccess, 'public')\n"
+                + "         " + propVar + ".setGetAccess(at.mep.meta.MetaAccessE.PUBLIC);\n"
+                + "     " +  "elseif ischar(" + propVarP + ".GetAccess) && strcmpi(" + propVarP + ".GetAccess, 'protected')\n"
+                + "         " + propVar + ".setGetAccess(at.mep.meta.MetaAccessE.PROTECTED);\n"
+                + "     " +  "else\n"
+                + "         " + propVar + ".setGetAccess(at.mep.meta.MetaAccessE.INVALID);\n"
+                + "     " +  "end\n"
+                + "     " +  "if iscell(" + propVarP + ".SetAccess)\n"
+                + "         " + propVar + ".setSetAccess(at.mep.meta.MetaAccessE.META);\n"
+                + "     " +  "elseif ischar(" + propVarP + ".SetAccess) && strcmpi(" + propVarP + ".SetAccess, 'private')\n"
+                + "         " + propVar + ".setSetAccess(at.mep.meta.MetaAccessE.PRIVATE);\n"
+                + "     " +  "elseif ischar(" + propVarP + ".SetAccess) && strcmpi(" + propVarP + ".SetAccess, 'public')\n"
+                + "         " + propVar + ".setSetAccess(at.mep.meta.MetaAccessE.PUBLIC);\n"
+                + "     " +  "elseif ischar(" + propVarP + ".SetAccess) && strcmpi(" + propVarP + ".SetAccess, 'protected')\n"
+                + "         " + propVar + ".setSetAccess(at.mep.meta.MetaAccessE.PROTECTED);\n"
+                + "     " +  "else\n"
+                + "         " + propVar + ".setSetAccess(at.mep.meta.MetaAccessE.INVALID);\n"
+                + "     " +  "end\n"
+
                 + "     " + propVar + ".setDependent(" + propVarP + ".Dependent);\n"
                 + "     " + propVar + ".setConstant(" + propVarP + ".Constant);\n"
                 + "     " + propVar + ".setAbstract(" + propVarP + ".Abstract);\n"
@@ -67,7 +91,22 @@ public class MetaClass extends Meta {
                 + "     " + methVar + ".setName(" + methVarM + ".Name);\n"
                 + "     " + methVar + ".setDescription(" + methVarM + ".Description);\n"
                 + "     " + methVar + ".setDetailedDescription(" + methVarM + ".DetailedDescription);\n"
-                + "     " + methVar + ".setAccess(" + methVarM + ".Access);\n"
+
+
+                // ACCESS
+                // TODO: fill list with meta classes methVarM.Access
+                + "     " + "if iscell(" + methVarM + ".Access)\n"
+                + "         " + methVar + ".setAccess(at.mep.meta.MetaAccessE.META);\n"
+                + "     " +  "elseif ischar(" + methVarM + ".Access) && strcmpi(" + methVarM + ".Access, 'private')\n"
+                + "         " + methVar + ".setAccess(at.mep.meta.MetaAccessE.PRIVATE);\n"
+                + "     " +  "elseif ischar(" + methVarM + ".Access) && strcmpi(" + methVarM + ".Access, 'public')\n"
+                + "         " + methVar + ".setAccess(at.mep.meta.MetaAccessE.PUBLIC);\n"
+                + "     " +  "elseif ischar(" + methVarM + ".Access) && strcmpi(" + methVarM + ".Access, 'protected')\n"
+                + "         " + methVar + ".setAccess(at.mep.meta.MetaAccessE.PROTECTED);\n"
+                + "     " +  "else\n"
+                + "         " + methVar + ".setAccess(at.mep.meta.MetaAccessE.INVALID);\n"
+                + "     " +  "end\n"
+
                 + "     " + methVar + ".setStatic(" + methVarM + ".Static);\n"
                 + "     " + methVar + ".setAbstract(" + methVarM + ".Abstract);\n"
                 + "     " + methVar + ".setSealed(" + methVarM + ".Sealed);\n"

@@ -17,9 +17,12 @@ public enum Icons {
     PROPERTY_INTELLIJ("FileStructureSymbols/intellij/field.png"),
 
     METHOD_PRIVATE_ECLIPSE("FileStructureSymbols/eclipse/methpri_obj.png"),
+    METHOD_PUBLIC_ECLIPSE("FileStructureSymbols/eclipse/methpub_obj.png"),
+    METHOD_PROTECTED_ECLIPSE("FileStructureSymbols/eclipse/methpro_obj.png"),
 
     DECORATOR_PRIVATE_INTELLIJ("FileStructureSymbols/intellij/private.png"),
     DECORATOR_PUBLIC_INTELLIJ("FileStructureSymbols/intellij/public.png"),
+    DECORATOR_PROTECTED_INTELLIJ("FileStructureSymbols/intellij/protected.png"),
     DECORATOR_STATIC_ECLIPSE("FileStructureSymbols/eclipse/static_co.png"),
     DECORATOR_STATIC_INTELLIJ("FileStructureSymbols/intellij/staticMark.png");
 
