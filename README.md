@@ -1,4 +1,4 @@
-## Welcome to the Matlab-Editor-Plugin wiki!
+## Welcome to the Matlab-Editor-Plugin [wiki](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki)!
 
 In short, it will mess around with Matlabs Editor:
 
