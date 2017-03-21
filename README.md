@@ -1,7 +1,9 @@
-Welcome to the Matlab-Editor-Plugin wiki!
+## Welcome to the Matlab-Editor-Plugin wiki!
 
-## What is it?
-It'll add following features to Matlab, and it's editor
+In short, it will mess around with Matlabs Editor:
+
+* **Auto-Detail-Viewer**: updates the detailviewer of matlab if active editor has changed
+* **Auto-Switch-Current-Folder**: changes currentfolder if active editor has changed
 * **KeyPressListener**: executes custom Matlab functions on keypress passed in by the user beforehand
 * **ClipboardStack**: opened via <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>V</kbd>, stores the previous 10 strings copied to clipboard from Matlab.
 * **FileStructure**: opened via <kbd>CTRL</kbd> + <kbd>F12</kbd>, searching through functions and sections
