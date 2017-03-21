@@ -59,6 +59,9 @@ public class ClipboardStack {
 
     public void setVisible(boolean visible) {
         undecoratedFrame.setVisible(visible);
+        if (jList.getSelectedIndex() < 0) {
+            jList.setSelectedIndex(0);
+        }
     }
 
     private void create() {
