@@ -1,11 +1,9 @@
 package at.mep.meta;
 
-/**
- * Created by Andreas Justin on 2016-09-12.
- */
+/** Created by Andreas Justin on 2016-09-12. */
 public class MetaProperty extends Meta {
-    private String getAccess = "";
-    private String setAccess = "";
+    private MetaAccessE getAccess = MetaAccessE.PUBLIC;
+    private MetaAccessE setAccess = MetaAccessE.PUBLIC;
     protected String definingClass = "";
     private boolean isDependent = false;
     private boolean isConstant = false;
@@ -13,19 +11,11 @@ public class MetaProperty extends Meta {
     private boolean isTransient = false;
     private boolean hasDefaults = false;
 
-    public void setGetAccess(String getAccess) {
-        if (getAccess == null) {
-            getAccess = "unknown"; // TODO: figure out what todo on "unknwon" issue #65
-        }
-
+    public void setGetAccess(MetaAccessE getAccess) {
         this.getAccess = getAccess;
     }
 
-    public void setSetAccess(String setAccess) {
-        if (setAccess == null) {
-            setAccess = "unknown";  // TODO: figure out what todo on "unknwon" issue #65
-        }
-
+    public void setSetAccess(MetaAccessE setAccess) {
         this.setAccess = setAccess;
     }
 
@@ -53,11 +43,11 @@ public class MetaProperty extends Meta {
         this.hasDefaults = hasDefaults;
     }
 
-    public String getGetAccess() {
+    public MetaAccessE getGetAccess() {
         return getAccess;
     }
 
-    public String getSetAccess() {
+    public MetaAccessE getSetAccess() {
         return setAccess;
     }
 
