@@ -2,6 +2,8 @@ package at.mep.util;
 
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.mde.editor.EditorSyntaxTextPane;
+import com.mathworks.mde.explorer.Explorer;
+import com.mathworks.widgets.desk.DTTitleBar;
 import com.mathworks.widgets.editor.breakpoints.BreakpointView;
 
 import java.awt.*;
@@ -71,5 +73,20 @@ public class ComponentUtil {
             }
         }
         return editorSyntaxTextPane;
+    }
+
+    public static DTTitleBar getCurrentFolderTitleBar() {
+        Explorer explorer = Explorer.getInstance();
+        DTTitleBar titleBar = null;
+        Container container = explorer.getParent().getParent().getParent();
+
+        java.util.List<Component> list = getComponents(container, "DTTitleBar");
+        for (Component c : list) {
+            if (c instanceof DTTitleBar) {
+                titleBar = (DTTitleBar) c;
+                break;
+            }
+        }
+        return titleBar;
     }
 }
