@@ -224,8 +224,8 @@ public class EditorApp {
         editorSyntaxTextPane.getActionMap().put("MEP_SHOW_FILE_STRUCTURE", EMEPAction.MEP_SHOW_FILE_STRUCTURE.getAction());
 
         // CLIPBOARD
-        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_SHOW_COPY_CLIP_BOARD.getKeyStroke(), "MEP_SHOW_CLIP_BOARD_STACK");
-        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_CLIP_BOARD_STACK", EMEPAction.MEP_SHOW_CLIP_BOARD_STACK.getAction());
+        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_SHOW_COPY_CLIP_BOARD.getKeyStroke(), "MEP_SHOW_CLIP_BOARD_STACK_EDT");
+        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_CLIP_BOARD_STACK_EDT", EMEPAction.MEP_SHOW_CLIP_BOARD_STACK_EDT.getAction());
 
         editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_COPY_CLIP_BOARD.getKeyStroke(), "MEP_COPY_CLIP_BOARD");
         editorSyntaxTextPane.getActionMap().put("MEP_COPY_CLIP_BOARD", EMEPAction.MEP_COPY_CLIP_BOARD.getAction());

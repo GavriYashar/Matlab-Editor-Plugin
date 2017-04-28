@@ -18,8 +18,8 @@ public class CommandWindow {
         getXCmdWndView().getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_DEBUG.getKeyStroke(), "MEP_DEBUG");
         getXCmdWndView().getActionMap().put("MEP_DEBUG", EMEPAction.MEP_DEBUG.getAction());
 
-        getXCmdWndView().getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_SHOW_COPY_CLIP_BOARD.getKeyStroke(), "MEP_SHOW_CLIP_BOARD_STACK");
-        getXCmdWndView().getActionMap().put("MEP_SHOW_CLIP_BOARD_STACK", EMEPAction.MEP_SHOW_CLIP_BOARD_STACK.getAction());
+        getXCmdWndView().getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_SHOW_COPY_CLIP_BOARD.getKeyStroke(), "MEP_SHOW_CLIP_BOARD_STACK_CMD");
+        getXCmdWndView().getActionMap().put("MEP_SHOW_CLIP_BOARD_STACK_CMD", EMEPAction.MEP_SHOW_CLIP_BOARD_STACK_CMD.getAction());
 
         //// FIXME: 2016-10-12 cancels CTRL + C feature, so no more canceling execution
         // getXCmdWndView().getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_COPY_CLIP_BOARD.getKeyStroke(), "MEP_COPY_CLIP_BOARD_CMD");
