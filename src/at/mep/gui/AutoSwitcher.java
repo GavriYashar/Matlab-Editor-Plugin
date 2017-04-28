@@ -38,18 +38,18 @@ public class AutoSwitcher {
         }
         FileLocation fileLocation = new FileLocation(EditorWrapper.getLongName());
         FileSystemEntry fileSystemEntry;
+        if (jCBSwitchFolder.isSelected()) {
+            try {
+                navigationContext.setLocation(fileLocation.getParent());
+            } catch (InvalidLocationException e) {
+                e.printStackTrace();
+            }
+        }
         if (jCBDetailViewer.isSelected()) {
             try {
                 fileSystemEntry = RealFileSystem.getInstance().getEntry(fileLocation);
                 detailViewer.setFile(fileSystemEntry);
             } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (jCBSwitchFolder.isSelected()) {
-            try {
-                navigationContext.setLocation(fileLocation.getParent());
-            } catch (InvalidLocationException e) {
                 e.printStackTrace();
             }
         }
