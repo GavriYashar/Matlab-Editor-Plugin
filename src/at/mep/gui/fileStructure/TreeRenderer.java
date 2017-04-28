@@ -25,7 +25,7 @@ class TreeRenderer extends DefaultTreeCellRenderer {
     }
 
     private static Icon decorateAccess(Node node, Icon icon, String setting) {
-        switch (node.geteMetaNodeType()) {
+        switch (node.getEMetaNodeType()) {
             case META_METHOD:
                 icon = decorateAccessMethod(node, icon, setting);
                 break;
@@ -174,17 +174,17 @@ class TreeRenderer extends DefaultTreeCellRenderer {
 
         if (row == 0 && nodeStringL.endsWith(".m")) {
             setIcon(FileTypeIcon.M.getIcon());
-        } else if (node.geteMetaNodeType() == EMetaNodeType.META_CLASS) {
+        } else if (node.getEMetaNodeType() == EMetaNodeType.META_CLASS) {
             // CLASS
             setClassDefIcon(node);
-        } else if (node.geteMetaNodeType() == EMetaNodeType.MATLAB && node.getType() == MTree.NodeType.FUNCTION
-                || node.geteMetaNodeType() == EMetaNodeType.META_METHOD) {
+        } else if (node.getEMetaNodeType() == EMetaNodeType.MATLAB && node.getType() == MTree.NodeType.FUNCTION
+                || node.getEMetaNodeType() == EMetaNodeType.META_METHOD) {
             // METHOD
             setFunctionIcon(node);
-        } else if (node.geteMetaNodeType() == EMetaNodeType.META_PROPERTY) {
+        } else if (node.getEMetaNodeType() == EMetaNodeType.META_PROPERTY) {
             // PROPERTY
             setPropertyIcon(node);
-        } else if (node.geteMetaNodeType() == EMetaNodeType.MATLAB && node.getType() == MTree.NodeType.CELL_TITLE) {
+        } else if (node.getEMetaNodeType() == EMetaNodeType.MATLAB && node.getType() == MTree.NodeType.CELL_TITLE) {
             // SECTION
             setIcon(ProjectIcon.CELL.getIcon());
         }

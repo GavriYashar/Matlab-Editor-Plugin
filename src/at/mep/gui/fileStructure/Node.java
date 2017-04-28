@@ -126,7 +126,7 @@ public class Node extends DefaultMutableTreeNode {
         return node != null;
     }
 
-    public EMetaNodeType geteMetaNodeType() {
+    public EMetaNodeType getEMetaNodeType() {
         return eMetaNodeType;
     }
 
@@ -178,7 +178,7 @@ public class Node extends DefaultMutableTreeNode {
 
     private String nodeDocumentation() {
         if (!(getType() == MTree.NodeType.FUNCTION || getType() == MTree.NodeType.CLASSDEF
-                || geteMetaNodeType() == eMetaNodeType.META_CLASS || geteMetaNodeType() == eMetaNodeType.META_METHOD)) {
+                || getEMetaNodeType() == eMetaNodeType.META_CLASS || getEMetaNodeType() == eMetaNodeType.META_METHOD)) {
             return "";
         }
         List<MTree.Node> nodeList = NodeUtils.getDocumentationNodesForNode(node);

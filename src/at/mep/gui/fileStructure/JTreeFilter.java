@@ -50,7 +50,7 @@ class JTreeFilter extends JTree {
             if (str.endsWith(".m")
                     || n.getType().equals(MTree.NodeType.CLASSDEF)
                     || n.getType().equals(MTree.NodeType.METHODS)
-                    || n.geteMetaNodeType() == EMetaNodeType.META_CLASS) {
+                    || n.getEMetaNodeType() == EMetaNodeType.META_CLASS) {
                 continue;
             }
             if (!useRegex && !str.toLowerCase().contains(filterText.toLowerCase())) {
@@ -64,15 +64,15 @@ class JTreeFilter extends JTree {
 
     private Node deepCopyNode(Node node) {
         Node copiedNode;
-        if (node.geteMetaNodeType() == EMetaNodeType.MATLAB && node.hasNode()) {
+        if (node.getEMetaNodeType() == EMetaNodeType.MATLAB && node.hasNode()) {
             copiedNode = new Node(node.node());
-        } else if (node.geteMetaNodeType() == EMetaNodeType.STRING) {
+        } else if (node.getEMetaNodeType() == EMetaNodeType.STRING) {
             copiedNode = new Node(node.nodeText());
-        } else if (node.geteMetaNodeType() == EMetaNodeType.META_CLASS) {
+        } else if (node.getEMetaNodeType() == EMetaNodeType.META_CLASS) {
             copiedNode = new Node((MetaClass) node.getMeta(), node.node());
-        } else if (node.geteMetaNodeType() == EMetaNodeType.META_PROPERTY) {
+        } else if (node.getEMetaNodeType() == EMetaNodeType.META_PROPERTY) {
             copiedNode = new Node((MetaProperty) node.getMeta(), node.node());
-        } else if (node.geteMetaNodeType() == EMetaNodeType.META_METHOD) {
+        } else if (node.getEMetaNodeType() == EMetaNodeType.META_METHOD) {
             copiedNode = new Node((MetaMethod) node.getMeta(), node.node());
         } else {
             throw new IllegalArgumentException("unknown Node");
