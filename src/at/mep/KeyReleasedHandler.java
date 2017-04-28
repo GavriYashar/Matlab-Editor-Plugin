@@ -1,7 +1,7 @@
 package at.mep;
 
+import at.mep.editor.EMEPAction;
 import at.mep.editor.EditorWrapper;
-import at.mep.editor.MEPActionE;
 import at.mep.mepr.MEPR;
 import at.mep.prefs.Settings;
 import at.mep.util.KeyStrokeUtil;
@@ -82,7 +82,7 @@ public class KeyReleasedHandler {
             }
 
             if (KS_BOOKMARK == null) {
-                KS_BOOKMARK = KeyStrokeUtil.getMatlabKeyStroke(MatlabKeyStrokesCommands.CTRL_PRESSED_F2);
+                KS_BOOKMARK = KeyStrokeUtil.getMatlabKeyStroke(EMatlabKeyStrokesCommands.CTRL_PRESSED_F2);
             }
             if (KS_BOOKMARK != null) {
                 if (KS_SHOWBOOKARKS == null) {
@@ -99,7 +99,7 @@ public class KeyReleasedHandler {
                     // Doing the bookmarks here is error prone and won't work correctly.
                     // this function ist called every time (afaik) before Matlab's keyRelease
                 else if (KS_SHOWBOOKARKS.getModifiers() == mod && KS_SHOWBOOKARKS.getKeyCode() == e.getKeyCode())
-                    MEPActionE.MEP_SHOW_BOOKMARKS.getAction().actionPerformed(null);
+                    EMEPAction.MEP_SHOW_BOOKMARKS.getAction().actionPerformed(null);
             } else if (Settings.issue57DisplayMessage) {
                 Settings.issue57DisplayMessage = false;
                 // FIXME: i could try to fix it to just manually assign it to CTRL+F2
@@ -138,7 +138,7 @@ public class KeyReleasedHandler {
     private static void doBookmarkThing(KeyEvent e) {
         if (ctrlf2) {
             ctrlf2 = false;
-            MEPActionE.MEP_BOOKMARK.getAction().actionPerformed(null);
+            EMEPAction.MEP_BOOKMARK.getAction().actionPerformed(null);
         }
     }
 }

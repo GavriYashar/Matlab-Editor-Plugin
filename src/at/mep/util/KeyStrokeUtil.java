@@ -1,6 +1,6 @@
 package at.mep.util;
 
-import at.mep.MatlabKeyStrokesCommands;
+import at.mep.EMatlabKeyStrokesCommands;
 import at.mep.editor.EditorWrapper;
 
 import javax.swing.*;
@@ -78,7 +78,7 @@ public class KeyStrokeUtil {
         return EditorWrapper.getInputMap().allKeys();
     }
 
-    public static KeyStroke getMatlabKeyStroke(MatlabKeyStrokesCommands e) {
+    public static KeyStroke getMatlabKeyStroke(EMatlabKeyStrokesCommands e) {
         KeyStroke[] keyStrokes = getMatlabKeyStrokes();
         InputMap inputMap = EditorWrapper.getInputMap();
         for (KeyStroke keystroke : keyStrokes) {
@@ -111,7 +111,7 @@ public class KeyStrokeUtil {
     }
 
     public static String getKeyText(int keyCode) {
-        return KeyStrokeE.getKeyStrokeE(keyCode).getCommand();
+        return EKeyStroke.getKeyStrokeE(keyCode).getCommand();
     }
 
     public static int keyEventModifiersToKeyStrokeModifiers(int modifiers) {

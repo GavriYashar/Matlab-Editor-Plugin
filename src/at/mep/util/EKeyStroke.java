@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 /**
  * Created by Andreas Justin on 2016-08-25.
  */
-public enum KeyStrokeE {
+public enum EKeyStroke {
     VK_COMMA(KeyEvent.VK_COMMA, "COMMA"),
     VK_PERIOD(KeyEvent.VK_PERIOD, "PERIOD"),
     VK_SEMICOLON(KeyEvent.VK_SEMICOLON, "SEMICOLON"),
@@ -214,7 +214,7 @@ public enum KeyStrokeE {
     private final int keyCode;
     private String command;
 
-    KeyStrokeE(int key, String command) {
+    EKeyStroke(int key, String command) {
         this.keyCode = key;
         this.command = command;
     }
@@ -231,24 +231,24 @@ public enum KeyStrokeE {
         this.command = command;
     }
 
-    public static KeyStrokeE getKeyStrokeE(int keyCode) {
-        KeyStrokeE[] list = KeyStrokeE.values();
-        for (KeyStrokeE keystroke : list) {
+    public static EKeyStroke getKeyStrokeE(int keyCode) {
+        EKeyStroke[] list = EKeyStroke.values();
+        for (EKeyStroke keystroke : list) {
             if (keystroke.getKeyCode() == keyCode) return keystroke;
         }
 
-        KeyStrokeE ret = UNKNOWN;
+        EKeyStroke ret = UNKNOWN;
         ret.setCommand("unknown(0x" + Integer.toString(keyCode, 16) + ")");
         return ret;
     }
 
-    public static KeyStrokeE getKeyStrokeE(String command) {
-        KeyStrokeE[] list = KeyStrokeE.values();
-        for (KeyStrokeE keystroke : list) {
+    public static EKeyStroke getKeyStrokeE(String command) {
+        EKeyStroke[] list = EKeyStroke.values();
+        for (EKeyStroke keystroke : list) {
             if (keystroke.getCommand().toLowerCase().equals(command.toLowerCase()))
                 return keystroke;
         }
-        KeyStrokeE ret = UNKNOWN;
+        EKeyStroke ret = UNKNOWN;
         ret.setCommand("unknown command: \"" + command + "\"");
         return null;
     }

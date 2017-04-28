@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class PrefsPanel extends MJPanel {
     private static java.util.List<Component> componentList = new ArrayList<>(20);
-    private static java.util.List<PropertyType> componentTypeList = new ArrayList<>(20);
+    private static java.util.List<EPropertyType> componentTypeList = new ArrayList<>(20);
     private static java.util.List<String> componentKeyList = new ArrayList<>(20);
     private JScrollPane jsp;
     private JPanel jp;
@@ -132,22 +132,22 @@ public class PrefsPanel extends MJPanel {
                 "feature.enableAutoCurrentFolder",
                 "feature.enableExecuteCurrentLine"
         };
-        PropertyType[] types = {PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN
+        EPropertyType[] types = {EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN
         };
 
         addPropsToPanel(ps, properties, types);
         jp.add(ps);
     }
 
-    private void addPropsToPanel(JPanel ps, String[] properties, PropertyType[] types) {
+    private void addPropsToPanel(JPanel ps, String[] properties, EPropertyType[] types) {
         for (int i = 0; i < properties.length; i++) {
             Component[] components = PrefsPanelUtil.getComponentsForSetting(properties[i], types[i]);
 
@@ -187,13 +187,13 @@ public class PrefsPanel extends MJPanel {
                 "FreeCommander",
                 "DefaultFigureGraphicsSmoothing"
         };
-        PropertyType[] types = {PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
-                PropertyType.PATH,
-                PropertyType.ONOFF
+        EPropertyType[] types = {EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
+                EPropertyType.PATH,
+                EPropertyType.ONOFF
         };
 
         addPropsToPanel(ps, properties, types);
@@ -206,18 +206,18 @@ public class PrefsPanel extends MJPanel {
         ps.setBorder(BorderFactory.createTitledBorder("Extend Matlab Editor Functionality"));
 
         String[] properties;
-        PropertyType[] types;
+        EPropertyType[] types;
         properties = new String[]{"isPublicUser",
                 "verbose",
                 "autoReloadProps",
                 "bpColor",
                 "fs.iconSet"
         };
-        types = new PropertyType[]{PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
-                PropertyType.COLOR,
-                PropertyType.STRING_DROPDOWN
+        types = new EPropertyType[]{EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
+                EPropertyType.COLOR,
+                EPropertyType.STRING_DROPDOWN
         };
         addPropsToPanel(ps, properties, types);
 
@@ -233,9 +233,9 @@ public class PrefsPanel extends MJPanel {
                 "LoadMessDaten_NoExprManipulate",
                 "LoadMessDaten_EnableSimpleView"
         };
-        PropertyType[] types = {PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN,
-                PropertyType.BOOLEAN
+        EPropertyType[] types = {EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN
         };
         addPropsToPanel(ps, properties, types);
 

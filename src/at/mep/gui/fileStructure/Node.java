@@ -22,7 +22,7 @@ public class Node extends DefaultMutableTreeNode {
     private MTree.Node node; // might not always be set, e.g.: First node is just the string of the filename
     private String nodeText = "DEFAULT NODE TEXT";
     private MTree.NodeType nodeType = MTree.NodeType.JAVA_NULL_NODE;
-    private MetaNodeType metaNodeType = MetaNodeType.INVALID;
+    private EMetaNodeType eMetaNodeType = EMetaNodeType.INVALID;
     private Meta meta = null;
 
     // custom Node properties for metaClass
@@ -35,10 +35,10 @@ public class Node extends DefaultMutableTreeNode {
     private boolean isDependent = false;
     private boolean isTransient = false;
     private boolean isImmutable = false;
-    private MetaAccessE Access = MetaAccessE.PUBLIC;
+    private EMetaAccess Access = EMetaAccess.PUBLIC;
     private boolean isHidden = false;
-    private MetaAccessE GetAccessPrivate = MetaAccessE.PUBLIC;
-    private MetaAccessE SetAccessPrivate = MetaAccessE.PUBLIC;
+    private EMetaAccess GetAccessPrivate = EMetaAccess.PUBLIC;
+    private EMetaAccess SetAccessPrivate = EMetaAccess.PUBLIC;
     private boolean hasDefaults = false;
     private String documentation = "";
     private String detailedDocumentation = "";
@@ -48,11 +48,11 @@ public class Node extends DefaultMutableTreeNode {
         this.node = node;
         this.nodeText = NodeUtils.getTextFormattedForNode(node);
         this.nodeType = node.getType();
-        metaNodeType = MetaNodeType.MATLAB;
+        eMetaNodeType = eMetaNodeType.MATLAB;
     }
 
     public Node(MetaClass c, MTree.Node mtNode) {
-        metaNodeType = MetaNodeType.META_CLASS;
+        eMetaNodeType = eMetaNodeType.META_CLASS;
         meta = c;
         node = mtNode;
 
@@ -69,7 +69,7 @@ public class Node extends DefaultMutableTreeNode {
     }
 
     public Node(MetaProperty p, MTree.Node mtNode) {
-        metaNodeType = MetaNodeType.META_PROPERTY;
+        eMetaNodeType = eMetaNodeType.META_PROPERTY;
         meta = p;
         node = mtNode;
 
@@ -88,7 +88,7 @@ public class Node extends DefaultMutableTreeNode {
     }
 
     public Node(MetaMethod m, MTree.Node mtNode) {
-        metaNodeType = MetaNodeType.META_METHOD;
+        eMetaNodeType = eMetaNodeType.META_METHOD;
         meta = m;
         node = mtNode;
 
@@ -114,7 +114,7 @@ public class Node extends DefaultMutableTreeNode {
     }
 
     public Node(String nodeText) {
-        metaNodeType = MetaNodeType.STRING;
+        eMetaNodeType = eMetaNodeType.STRING;
         this.nodeText = nodeText;
     }
 
@@ -126,8 +126,8 @@ public class Node extends DefaultMutableTreeNode {
         return node != null;
     }
 
-    public MetaNodeType getMetaNodeType() {
-        return metaNodeType;
+    public EMetaNodeType geteMetaNodeType() {
+        return eMetaNodeType;
     }
 
     public String nodeText() {
@@ -151,20 +151,20 @@ public class Node extends DefaultMutableTreeNode {
     }
 
     public boolean isProperty() {
-        if (metaNodeType == MetaNodeType.MATLAB && nodeType == MTree.NodeType.ID) {
+        if (eMetaNodeType == eMetaNodeType.MATLAB && nodeType == MTree.NodeType.ID) {
             return true;
         }
-        return metaNodeType == MetaNodeType.META_PROPERTY;
+        return eMetaNodeType == eMetaNodeType.META_PROPERTY;
     }
 
     public boolean isStatic() {
-        // (metaNodeType == MetaNodeType.META_PROPERTY || metaNodeType == MetaNodeType.META_METHOD) &&
+        // (eMetaNodeType == eMetaNodeType.META_PROPERTY || eMetaNodeType == eMetaNodeType.META_METHOD) &&
         // isStatic is only set in Meta<Class,Property,Method> constructors, otherwise it's always false
         // so it is safe to just return isStatic
         return isStatic;
     }
 
-    public MetaAccessE getAccess() {
+    public EMetaAccess getAccess() {
         return Access;
     }
 
@@ -178,7 +178,7 @@ public class Node extends DefaultMutableTreeNode {
 
     private String nodeDocumentation() {
         if (!(getType() == MTree.NodeType.FUNCTION || getType() == MTree.NodeType.CLASSDEF
-                || getMetaNodeType() == MetaNodeType.META_CLASS || getMetaNodeType() == MetaNodeType.META_METHOD)) {
+                || geteMetaNodeType() == eMetaNodeType.META_CLASS || geteMetaNodeType() == eMetaNodeType.META_METHOD)) {
             return "";
         }
         List<MTree.Node> nodeList = NodeUtils.getDocumentationNodesForNode(node);

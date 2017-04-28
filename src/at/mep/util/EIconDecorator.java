@@ -3,7 +3,7 @@ package at.mep.util;
 /**
  * Created by Andreas Justin on 2016-08-25.
  */
-public enum IconDecoratorE {
+public enum EIconDecorator {
     NORTH_EAST_INSIDE(45),
     SOUTH_EAST_INSIDE(135),
     SOUTH_WEST_INSIDE(225),
@@ -15,7 +15,7 @@ public enum IconDecoratorE {
 
     private final int location;
 
-    IconDecoratorE(int location) {
+    EIconDecorator(int location) {
         this.location = location;
     }
 

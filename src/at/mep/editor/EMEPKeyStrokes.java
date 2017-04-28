@@ -1,13 +1,13 @@
 package at.mep.editor;
 
-import at.mep.MatlabKeyStrokesCommands;
+import at.mep.EMatlabKeyStrokesCommands;
 import at.mep.util.KeyStrokeUtil;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
 /** Created by Andreas Justin on 2016-10-12. */
-public enum MEPKeyStrokesE {
+public enum EMEPKeyStrokes {
     KS_MEP_DEBUG(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_E, true, true, false, false)),
 
     KS_MEP_EXECUTE_CURRENT_LINE(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_F9, false, true, false, false)),
@@ -20,7 +20,7 @@ public enum MEPKeyStrokesE {
     KS_MEP_DELETE_CURRENT_LINES(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_Y, true, true, false, false)),
     KS_MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_D, true, true, false, false)),
 
-    KS_MEP_BOOKMARK(KeyStrokeUtil.getMatlabKeyStroke(MatlabKeyStrokesCommands.CTRL_PRESSED_F2)),
+    KS_MEP_BOOKMARK(KeyStrokeUtil.getMatlabKeyStroke(EMatlabKeyStrokesCommands.CTRL_PRESSED_F2)),
     KS_MEP_SHOW_BOOKMARKS(KeyStrokeUtil.getKeyStroke(
             KS_MEP_BOOKMARK.getKeyStroke().getKeyCode(),
             (KS_MEP_BOOKMARK.getKeyStroke().getModifiers() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK,
@@ -33,7 +33,7 @@ public enum MEPKeyStrokesE {
 
     private final KeyStroke keyStroke;
 
-    MEPKeyStrokesE(KeyStroke keyStroke) {
+    EMEPKeyStrokes(KeyStroke keyStroke) {
         this.keyStroke = keyStroke;
     }
 

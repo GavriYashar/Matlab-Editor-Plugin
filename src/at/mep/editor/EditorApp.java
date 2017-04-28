@@ -203,46 +203,46 @@ public class EditorApp {
     private void addKeyStrokes(EditorSyntaxTextPane editorSyntaxTextPane) {
         // NOTE: enable/disable feature cannot be checked here. the problem in the current design is, that matlab would
         //       need a restart after enabling features afterwards. that's why the features are checked in the
-        //       "MEPActionE" Class 
+        //       "EMEPAction" Class
 
         // DEBUG
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_DEBUG.getKeyStroke(), "MEP_DEBUG");
-        editorSyntaxTextPane.getActionMap().put("MEP_DEBUG", MEPActionE.MEP_DEBUG.getAction());
+        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_DEBUG.getKeyStroke(), "MEP_DEBUG");
+        editorSyntaxTextPane.getActionMap().put("MEP_DEBUG", EMEPAction.MEP_DEBUG.getAction());
 
         // CURRENT LINES
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_EXECUTE_CURRENT_LINE.getKeyStroke(), "MEP_EXECUTE_CURRENT_LINE");
-        editorSyntaxTextPane.getActionMap().put("MEP_EXECUTE_CURRENT_LINE", MEPActionE.MEP_EXECUTE_CURRENT_LINE.getAction());
+        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_EXECUTE_CURRENT_LINE.getKeyStroke(), "MEP_EXECUTE_CURRENT_LINE");
+        editorSyntaxTextPane.getActionMap().put("MEP_EXECUTE_CURRENT_LINE", EMEPAction.MEP_EXECUTE_CURRENT_LINE.getAction());
 
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_DELETE_CURRENT_LINES.getKeyStroke(), "MEP_DELETE_CURRENT_LINES");
-        editorSyntaxTextPane.getActionMap().put("MEP_DELETE_CURRENT_LINES", MEPActionE.MEP_DELETE_CURRENT_LINES.getAction());
+        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_DELETE_CURRENT_LINES.getKeyStroke(), "MEP_DELETE_CURRENT_LINES");
+        editorSyntaxTextPane.getActionMap().put("MEP_DELETE_CURRENT_LINES", EMEPAction.MEP_DELETE_CURRENT_LINES.getAction());
 
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION.getKeyStroke(), "MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION");
-        editorSyntaxTextPane.getActionMap().put("MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION", MEPActionE.MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION.getAction());
+        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION.getKeyStroke(), "MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION");
+        editorSyntaxTextPane.getActionMap().put("MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION", EMEPAction.MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION.getAction());
 
         // FILE STRUCTURE
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_SHOW_FILE_STRUCTURE.getKeyStroke(), "MEP_SHOW_FILE_STRUCTURE");
-        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_FILE_STRUCTURE", MEPActionE.MEP_SHOW_FILE_STRUCTURE.getAction());
+        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_SHOW_FILE_STRUCTURE.getKeyStroke(), "MEP_SHOW_FILE_STRUCTURE");
+        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_FILE_STRUCTURE", EMEPAction.MEP_SHOW_FILE_STRUCTURE.getAction());
 
         // CLIPBOARD
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_SHOW_COPY_CLIP_BOARD.getKeyStroke(), "MEP_SHOW_CLIP_BOARD_STACK");
-        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_CLIP_BOARD_STACK", MEPActionE.MEP_SHOW_CLIP_BOARD_STACK.getAction());
+        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_SHOW_COPY_CLIP_BOARD.getKeyStroke(), "MEP_SHOW_CLIP_BOARD_STACK");
+        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_CLIP_BOARD_STACK", EMEPAction.MEP_SHOW_CLIP_BOARD_STACK.getAction());
 
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_COPY_CLIP_BOARD.getKeyStroke(), "MEP_COPY_CLIP_BOARD");
-        editorSyntaxTextPane.getActionMap().put("MEP_COPY_CLIP_BOARD", MEPActionE.MEP_COPY_CLIP_BOARD.getAction());
+        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_COPY_CLIP_BOARD.getKeyStroke(), "MEP_COPY_CLIP_BOARD");
+        editorSyntaxTextPane.getActionMap().put("MEP_COPY_CLIP_BOARD", EMEPAction.MEP_COPY_CLIP_BOARD.getAction());
 
         // MEPR
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_MEPR_INSERT.getKeyStroke(), "MEP_MEPR_INSERT");
-        editorSyntaxTextPane.getActionMap().put("MEP_MEPR_INSERT", MEPActionE.MEP_MEPR_INSERT.getAction());
+        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_MEPR_INSERT.getKeyStroke(), "MEP_MEPR_INSERT");
+        editorSyntaxTextPane.getActionMap().put("MEP_MEPR_INSERT", EMEPAction.MEP_MEPR_INSERT.getAction());
 
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_MEPR_QUICK_SEARCH.getKeyStroke(), "MEP_MEPR_QUICK_SEARCH");
-        editorSyntaxTextPane.getActionMap().put("MEP_MEPR_QUICK_SEARCH", MEPActionE.MEP_MEPR_QUICK_SEARCH.getAction());
+        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_MEPR_QUICK_SEARCH.getKeyStroke(), "MEP_MEPR_QUICK_SEARCH");
+        editorSyntaxTextPane.getActionMap().put("MEP_MEPR_QUICK_SEARCH", EMEPAction.MEP_MEPR_QUICK_SEARCH.getAction());
 
         // BOOKMARKS
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_SHOW_BOOKMARKS.getKeyStroke(), "MEP_SHOW_BOOKMARKS");
-        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_BOOKMARKS", MEPActionE.MEP_SHOW_BOOKMARKS.getAction());
+        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_SHOW_BOOKMARKS.getKeyStroke(), "MEP_SHOW_BOOKMARKS");
+        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_BOOKMARKS", EMEPAction.MEP_SHOW_BOOKMARKS.getAction());
         // for some reason bookmarks don't work if editor is opened, while the others (actions) do
-        editorSyntaxTextPane.getInputMap(WF).put(MEPKeyStrokesE.KS_MEP_BOOKMARK.getKeyStroke(), "MEP_BOOKMARK");
-        editorSyntaxTextPane.getActionMap().put("MEP_BOOKMARK", MEPActionE.MEP_BOOKMARK.getAction());
+        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_BOOKMARK.getKeyStroke(), "MEP_BOOKMARK");
+        editorSyntaxTextPane.getActionMap().put("MEP_BOOKMARK", EMEPAction.MEP_BOOKMARK.getAction());
     }
 
     public void removeCallbacks() {

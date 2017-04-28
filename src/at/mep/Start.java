@@ -35,7 +35,7 @@ public class Start {
             setEditorCallbacks();
             setCmdWinCallbacks();
             addPrefs();
-            MatlabKeyStrokesCommands.setCustomKeyStrokes();
+            EMatlabKeyStrokesCommands.setCustomKeyStrokes();
             Bookmarks.getInstance().load();
             addShortcut();
             setReplacementPath();

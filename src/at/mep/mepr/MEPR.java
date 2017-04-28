@@ -61,7 +61,7 @@ public class MEPR {
         // prepareReplace and doReplace are separated because matconsolectl enters an endless loop otherwise.
         // Also KeyReleaseHandler is notified before DocumentEvent (sometimes). So theoretically the KeyReleaseHandler could
         // replace %action% but then the last "%" is not deleted.
-        prepareReplace(MEPRActionE.COMMAND);
+        prepareReplace(EMEPRAction.COMMAND);
     }
 
     public static void doReplace() {
@@ -72,7 +72,7 @@ public class MEPR {
         repText = "";
     }
 
-    public static void prepareReplace(MEPRActionE actionE) {
+    public static void prepareReplace(EMEPRAction actionE) {
         prepareReplaceTime = System.nanoTime();
         String action = getAction();
         if (action.length() < 1) return;
@@ -106,7 +106,7 @@ public class MEPR {
         return action;
     }
 
-    public static void prepareReplace(String action, MEPRActionE actionE) {
+    public static void prepareReplace(String action, EMEPRAction actionE) {
         prepareReplaceTime = System.nanoTime();
         repText = "";
         varStarts = new ArrayList<>(10);

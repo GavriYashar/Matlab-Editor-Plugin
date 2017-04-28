@@ -1,7 +1,8 @@
 package at.mep.gui.components;
 
-import at.mep.gui.Icons;
+import at.mep.gui.EIcons;
 
+import javax.swing.FocusManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -67,7 +68,7 @@ public class JTextFieldSearch extends JTextField {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setColor(Color.lightGray);
             g2.setFont(getFont().deriveFont(Font.BOLD));
-            Icons.SEARCH_15.getIcon().paintIcon(this, g, this.getWidth() - 21, 3);
+            EIcons.SEARCH_15.getIcon().paintIcon(this, g, this.getWidth() - 21, 3);
             g2.drawString(" Search...", 7, 15);
             g2.dispose();
             repaint();
@@ -75,7 +76,7 @@ public class JTextFieldSearch extends JTextField {
 
         // set listener for emptying the search bar on click to the right end of the field
         if (!getText().isEmpty()) {
-            Icons.TOOLBAR_DELETE_16.getIcon().paintIcon(this, g, this.getWidth() - 17, 2);
+            EIcons.TOOLBAR_DELETE_16.getIcon().paintIcon(this, g, this.getWidth() - 17, 2);
         }
     }
 

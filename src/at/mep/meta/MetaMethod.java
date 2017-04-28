@@ -5,7 +5,7 @@ import java.util.List;
 
 /** Created by Andreas Justin on 2016-09-12. */
 public class MetaMethod extends Meta {
-    protected MetaAccessE access = MetaAccessE.PUBLIC;
+    protected EMetaAccess access = EMetaAccess.PUBLIC;
     protected String definingClass = "";
     protected boolean isStatic = false;
     protected boolean isAbstract = false;
@@ -17,7 +17,7 @@ public class MetaMethod extends Meta {
     public MetaMethod() {
     }
 
-    public void setAccess(MetaAccessE access) {
+    public void setAccess(EMetaAccess access) {
         this.access = access;
     }
 
@@ -53,7 +53,7 @@ public class MetaMethod extends Meta {
         outputNames.add(string);
     }
 
-    public MetaAccessE getAccess() {
+    public EMetaAccess getAccess() {
         return access;
     }
 

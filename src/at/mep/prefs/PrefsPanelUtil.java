@@ -14,7 +14,7 @@ public class PrefsPanelUtil {
     /**
      * @return [0] the property changer(e.g.: checkbox) [1] label
      */
-    public static Component[] getComponentsForSetting(String property, PropertyType type) {
+    public static Component[] getComponentsForSetting(String property, EPropertyType type) {
         Component[] components = new Component[2];
         switch (type) {
             case BOOLEAN:

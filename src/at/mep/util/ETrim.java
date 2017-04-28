@@ -1,7 +1,7 @@
 package at.mep.util;
 
 /** Created by Andreas Justin on 2016-09-27. */
-public enum TrimE {
+public enum ETrim {
 
     BOTH(0),
     LEADING(1),
@@ -9,7 +9,7 @@ public enum TrimE {
 
     private final int value;
 
-    TrimE(int value) {
+    ETrim(int value) {
         this.value = value;
     }
 

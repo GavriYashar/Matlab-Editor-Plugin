@@ -1,7 +1,7 @@
 package at.mep.meta;
 
 /** Created by Gavri on 2017-03-21. */
-public enum MetaAccessE {
+public enum EMetaAccess {
     INVALID(-1),
     PRIVATE(0),
     PROTECTED(1),
@@ -10,7 +10,7 @@ public enum MetaAccessE {
 
     private final int access;
 
-    MetaAccessE(int access) {
+    EMetaAccess(int access) {
         this.access = access;
     }
 

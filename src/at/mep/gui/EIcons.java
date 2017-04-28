@@ -1,9 +1,8 @@
 package at.mep.gui;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
+import javax.swing.*;
 
-public enum Icons {
+public enum EIcons {
     // 0-16 pixels
     CHECK_10("check_10.png"),
     SEARCH_15("search_15.png"),
@@ -32,8 +31,8 @@ public enum Icons {
 
     private final ImageIcon icon;
 
-    Icons(String filename) {
-        this.icon = new ImageIcon(Icons.class.getResource("/icons/" + filename));
+    EIcons(String filename) {
+        this.icon = new ImageIcon(EIcons.class.getResource("/icons/" + filename));
     }
 
     public Icon getIcon() {

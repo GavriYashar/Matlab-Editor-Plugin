@@ -4,8 +4,8 @@ import at.mep.editor.EditorApp;
 import at.mep.editor.EditorWrapper;
 import at.mep.gui.components.JTextFieldSearch;
 import at.mep.gui.components.UndecoratedFrame;
+import at.mep.mepr.EMEPRAction;
 import at.mep.mepr.MEPR;
-import at.mep.mepr.MEPRActionE;
 import at.mep.prefs.Settings;
 import at.mep.util.*;
 import com.mathworks.matlab.api.editor.Editor;
@@ -32,7 +32,7 @@ public class MEPRViewer extends UndecoratedFrame {
         public void actionPerformed(ActionEvent e) {
             setVisible(false);
             String action = "%" + ((MEPREntry) jList.getSelectedValue()).getAction();
-            MEPR.prepareReplace(action, MEPRActionE.VIEWER);
+            MEPR.prepareReplace(action, EMEPRAction.VIEWER);
             MEPR.doReplace();
         }
     };
@@ -148,7 +148,7 @@ public class MEPRViewer extends UndecoratedFrame {
                 BufferedReader br = new BufferedReader(new InputStreamReader(stream));
                 String template = "";
                 try {
-                    template = FileUtils.readBufferedReaderToString(br, TrimE.TRAILING);
+                    template = FileUtils.readBufferedReaderToString(br, ETrim.TRAILING);
                     br.close();
                 } catch (IOException ignored) {
                 }
@@ -369,7 +369,7 @@ public class MEPRViewer extends UndecoratedFrame {
 
         if (foundEntries.size() == 1) {
             int end = EditorWrapper.getSelectionPositionStart();
-            MEPR.prepareReplace("%" + foundEntries.get(0).getAction(), MEPRActionE.QUICKSEARCH);
+            MEPR.prepareReplace("%" + foundEntries.get(0).getAction(), EMEPRAction.QUICKSEARCH);
             // MEPR.setRepText("%" + foundEntries.get(0).getAction());
             MEPR.setSelectionSE(new int[]{end - action.length(), end});
             MEPR.doReplace();

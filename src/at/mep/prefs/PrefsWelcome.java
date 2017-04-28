@@ -1,8 +1,8 @@
 package at.mep.prefs;
 
 import at.mep.installer.Install;
+import at.mep.util.ETrim;
 import at.mep.util.FileUtils;
-import at.mep.util.TrimE;
 import com.mathworks.mwswing.MJPanel;
 
 import javax.swing.*;
@@ -51,7 +51,7 @@ public class PrefsWelcome extends MJPanel {
     private void addLicense() throws IOException {
         InputStream stream = PrefsWelcome.class.getResourceAsStream("/MEP_license.txt");
         BufferedReader br = new BufferedReader(new InputStreamReader(stream));
-        String license = FileUtils.readBufferedReaderToString(br, TrimE.BOTH);
+        String license = FileUtils.readBufferedReaderToString(br, ETrim.BOTH);
         br.close();
 
         JTextPane jtp = new JTextPane();

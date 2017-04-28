@@ -25,7 +25,7 @@ public class IconUtil {
         return new ImageIcon(bimage);
     }
 
-    public static Icon decorateIcon(final Icon icon, final Icon decorator, IconDecoratorE location) {
+    public static Icon decorateIcon(final Icon icon, final Icon decorator, EIconDecorator location) {
         Image img = getImage(icon);
         Image imgDecorator = getImage(decorator);
         BufferedImage bimage;
@@ -132,7 +132,7 @@ public class IconUtil {
     }
 
     /** the basic icon has to be moved accordingly where the location of the decorator is. */
-    private static int[] getXYForIcon(Icon icon, Icon decorator, IconDecoratorE location, int xOffset, int yOffset) {
+    private static int[] getXYForIcon(Icon icon, Icon decorator, EIconDecorator location, int xOffset, int yOffset) {
         int x = 0;
         int y = 0;
         switch (location) {
@@ -161,7 +161,7 @@ public class IconUtil {
 
     }
 
-    private static int[] getXYForIconDecorator(Icon icon, Icon decorator, IconDecoratorE location, int xOffset, int yOffset) {
+    private static int[] getXYForIconDecorator(Icon icon, Icon decorator, EIconDecorator location, int xOffset, int yOffset) {
         int x = 0;
         int y = 0;
         switch (location) {
@@ -201,7 +201,7 @@ public class IconUtil {
         return new int[]{x + xOffset, y + yOffset};
     }
 
-    private static BufferedImage getBufferedImageForLocation(Image img, Image imgDecorator, IconDecoratorE location) {
+    private static BufferedImage getBufferedImageForLocation(Image img, Image imgDecorator, EIconDecorator location) {
         BufferedImage b = new BufferedImage(
                 img.getWidth(null),
                 img.getHeight(null),

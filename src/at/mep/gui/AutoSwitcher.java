@@ -65,9 +65,9 @@ public class AutoSwitcher {
 
         jCBDetailViewer.setSelected(Settings.getPropertyBoolean("feature.enableAutoDetailViewer"));
         if (jCBDetailViewer.isSelected()) {
-            jCBDetailViewer.setIcon(Icons.DETAIL_VIEWER_A.getIcon());
+            jCBDetailViewer.setIcon(EIcons.DETAIL_VIEWER_A.getIcon());
         } else {
-            jCBDetailViewer.setIcon(Icons.DETAIL_VIEWER_I.getIcon());
+            jCBDetailViewer.setIcon(EIcons.DETAIL_VIEWER_I.getIcon());
         }
         jCBDetailViewer.addChangeListener(new ChangeListener() {
             @Override
@@ -75,10 +75,10 @@ public class AutoSwitcher {
                 String val = "false";
                 if (jCBDetailViewer.isSelected()) {
                     val = "true";
-                    jCBDetailViewer.setIcon(Icons.DETAIL_VIEWER_A.getIcon());
+                    jCBDetailViewer.setIcon(EIcons.DETAIL_VIEWER_A.getIcon());
                     doYourThing();
                 } else {
-                    jCBDetailViewer.setIcon(Icons.DETAIL_VIEWER_I.getIcon());
+                    jCBDetailViewer.setIcon(EIcons.DETAIL_VIEWER_I.getIcon());
                 }
                 Settings.setProperty("feature.enableAutoDetailViewer", val);
                 try {
@@ -91,9 +91,9 @@ public class AutoSwitcher {
 
         jCBSwitchFolder.setSelected(Settings.getPropertyBoolean("feature.enableAutoCurrentFolder"));
         if (jCBSwitchFolder.isSelected()) {
-            jCBSwitchFolder.setIcon(Icons.GO_TO_FOLDER_A.getIcon());
+            jCBSwitchFolder.setIcon(EIcons.GO_TO_FOLDER_A.getIcon());
         } else {
-            jCBSwitchFolder.setIcon(Icons.GO_TO_FOLDER_I.getIcon());
+            jCBSwitchFolder.setIcon(EIcons.GO_TO_FOLDER_I.getIcon());
         }
         jCBSwitchFolder.addChangeListener(new ChangeListener() {
             @Override
@@ -101,10 +101,10 @@ public class AutoSwitcher {
                 String val = "false";
                 if (jCBSwitchFolder.isSelected()) {
                     val = "true";
-                    jCBSwitchFolder.setIcon(Icons.GO_TO_FOLDER_A.getIcon());
+                    jCBSwitchFolder.setIcon(EIcons.GO_TO_FOLDER_A.getIcon());
                     doYourThing();
                 } else {
-                    jCBSwitchFolder.setIcon(Icons.GO_TO_FOLDER_I.getIcon());
+                    jCBSwitchFolder.setIcon(EIcons.GO_TO_FOLDER_I.getIcon());
                 }
                 Settings.setProperty("feature.enableAutoCurrentFolder", val);
                 try {

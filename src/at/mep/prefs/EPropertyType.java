@@ -1,6 +1,6 @@
 package at.mep.prefs;
 
-public enum PropertyType {
+public enum EPropertyType {
     BOOLEAN(0),
     INTEGER(1),
     STRING(2),
@@ -11,7 +11,7 @@ public enum PropertyType {
 
     private final int type;
 
-    PropertyType(int type) {
+    EPropertyType(int type) {
         this.type = type;
     }
 

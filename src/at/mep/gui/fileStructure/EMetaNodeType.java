@@ -1,6 +1,6 @@
 package at.mep.gui.fileStructure;
 
-public enum MetaNodeType {
+public enum EMetaNodeType {
     INVALID(-1),
     STRING(0),
     MATLAB(1),
@@ -10,7 +10,7 @@ public enum MetaNodeType {
 
     private final int nodeType;
 
-    MetaNodeType(int nodeType) {
+    EMetaNodeType(int nodeType) {
         this.nodeType = nodeType;
     }
 

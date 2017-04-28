@@ -406,8 +406,8 @@ private Node forClass(MTree mTree, MTree.Node classDef) {
     //    8 = {MTree$Node@13064} "EQUALS [7, 15] to [0, 0]"
     //    9 = {MTree$Node@13065} "ID (prop1) [7, 9] to [0, 0]"
     //
-// Tree<MTree.Node> propertyTree = mTree.findAsTree(MTree.MetaNodeType.PROPERTIES);
-// classDefNode = fillClassNode(classDefNode, propertyTree, MTree.MetaNodeType.ID);
+// Tree<MTree.Node> propertyTree = mTree.findAsTree(MTree.EMetaNodeType.PROPERTIES);
+// classDefNode = fillClassNode(classDefNode, propertyTree, MTree.EMetaNodeType.ID);
 
 Tree<MTree.Node> methodsTree = mTree.findAsTree(MTree.NodeType.METHODS);
     classDefNode = fillClassNode(classDefNode, methodsTree, MTree.NodeType.FUNCTION);

@@ -1,8 +1,8 @@
 package at.mep.gui.fileStructure;
 
-import at.mep.gui.Icons;
+import at.mep.gui.EIcons;
 import at.mep.prefs.Settings;
-import at.mep.util.IconDecoratorE;
+import at.mep.util.EIconDecorator;
 import at.mep.util.IconUtil;
 import com.mathworks.common.icons.FileTypeIcon;
 import com.mathworks.common.icons.ProjectIcon;
@@ -25,7 +25,7 @@ class TreeRenderer extends DefaultTreeCellRenderer {
     }
 
     private static Icon decorateAccess(Node node, Icon icon, String setting) {
-        switch (node.getMetaNodeType()) {
+        switch (node.geteMetaNodeType()) {
             case META_METHOD:
                 icon = decorateAccessMethod(node, icon, setting);
                 break;
@@ -48,33 +48,33 @@ class TreeRenderer extends DefaultTreeCellRenderer {
             case "intellij":
                 switch (node.getAccess()) {
                     case INVALID: {
-                        Icon decorator = Icons.DECORATOR_PUBLIC_INTELLIJ.getIcon();
+                        Icon decorator = EIcons.DECORATOR_PUBLIC_INTELLIJ.getIcon();
                         icon = IconUtil.color(icon, INVALID_COLOR);
-                        icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
+                        icon = IconUtil.decorateIcon(icon, decorator, EIconDecorator.EAST_OUTSIDE);
                         break;
                     }
                     case PRIVATE: {
-                        Icon decorator = Icons.DECORATOR_PRIVATE_INTELLIJ.getIcon();
+                        Icon decorator = EIcons.DECORATOR_PRIVATE_INTELLIJ.getIcon();
                         if (node.isHidden()) decorator = IconUtil.color(decorator, HIDDEN_COLOR);
-                        icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
+                        icon = IconUtil.decorateIcon(icon, decorator, EIconDecorator.EAST_OUTSIDE);
                         break;
                     }
                     case PROTECTED: {
-                        Icon decorator = Icons.DECORATOR_PROTECTED_INTELLIJ.getIcon();
+                        Icon decorator = EIcons.DECORATOR_PROTECTED_INTELLIJ.getIcon();
                         if (node.isHidden()) decorator = IconUtil.color(decorator, HIDDEN_COLOR);
-                        icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
+                        icon = IconUtil.decorateIcon(icon, decorator, EIconDecorator.EAST_OUTSIDE);
                         break;
                     }
                     case PUBLIC: {
-                        Icon decorator = Icons.DECORATOR_PUBLIC_INTELLIJ.getIcon();
+                        Icon decorator = EIcons.DECORATOR_PUBLIC_INTELLIJ.getIcon();
                         if (node.isHidden()) decorator = IconUtil.color(decorator, HIDDEN_COLOR);
-                        icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
+                        icon = IconUtil.decorateIcon(icon, decorator, EIconDecorator.EAST_OUTSIDE);
                         break;
                     }
                     case META: {
-                        Icon decorator = Icons.DECORATOR_PRIVATE_INTELLIJ.getIcon();
+                        Icon decorator = EIcons.DECORATOR_PRIVATE_INTELLIJ.getIcon();
                         decorator = IconUtil.color(decorator, META_COLOR);
-                        icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
+                        icon = IconUtil.decorateIcon(icon, decorator, EIconDecorator.EAST_OUTSIDE);
                         break;
                     }
                 }
@@ -84,31 +84,31 @@ class TreeRenderer extends DefaultTreeCellRenderer {
                     case INVALID: {
                         Icon decorator = ProjectIcon.PUBLIC_OVERLAY_11x11.getIcon();
                         icon = IconUtil.color(icon, INVALID_COLOR);
-                        icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
+                        icon = IconUtil.decorateIcon(icon, decorator, EIconDecorator.EAST_OUTSIDE);
                         break;
                     }
                     case PRIVATE: {
                         Icon decorator = ProjectIcon.PRIVATE_OVERLAY_11x11.getIcon();
                         if (node.isHidden()) decorator = IconUtil.color(decorator, HIDDEN_COLOR);
-                        icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
+                        icon = IconUtil.decorateIcon(icon, decorator, EIconDecorator.EAST_OUTSIDE);
                         break;
                     }
                     case PROTECTED: {
                         Icon decorator = ProjectIcon.PROTECTED_OVERLAY_11x11.getIcon();
                         if (node.isHidden()) decorator = IconUtil.color(decorator, HIDDEN_COLOR);
-                        icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
+                        icon = IconUtil.decorateIcon(icon, decorator, EIconDecorator.EAST_OUTSIDE);
                         break;
                     }
                     case PUBLIC: {
                         Icon decorator = ProjectIcon.PUBLIC_OVERLAY_11x11.getIcon();
                         if (node.isHidden()) decorator = IconUtil.color(decorator, HIDDEN_COLOR);
-                        icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
+                        icon = IconUtil.decorateIcon(icon, decorator, EIconDecorator.EAST_OUTSIDE);
                         break;
                     }
                     case META: {
                         Icon decorator = ProjectIcon.PRIVATE_OVERLAY_11x11.getIcon();
                         decorator = IconUtil.color(decorator, META_COLOR);
-                        icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.EAST_OUTSIDE);
+                        icon = IconUtil.decorateIcon(icon, decorator, EIconDecorator.EAST_OUTSIDE);
                         break;
                     }
                 }
@@ -116,23 +116,23 @@ class TreeRenderer extends DefaultTreeCellRenderer {
             case "eclipse":
                 switch (node.getAccess()) {
                     case INVALID:
-                        icon = Icons.METHOD_PUBLIC_ECLIPSE.getIcon();
+                        icon = EIcons.METHOD_PUBLIC_ECLIPSE.getIcon();
                         icon = IconUtil.color(icon, INVALID_COLOR);
                         break;
                     case PRIVATE:
-                        icon = Icons.METHOD_PRIVATE_ECLIPSE.getIcon();
+                        icon = EIcons.METHOD_PRIVATE_ECLIPSE.getIcon();
                         if (node.isHidden()) icon = IconUtil.color(icon, HIDDEN_COLOR);
                         break;
                     case PROTECTED:
-                        icon = Icons.METHOD_PROTECTED_ECLIPSE.getIcon();
+                        icon = EIcons.METHOD_PROTECTED_ECLIPSE.getIcon();
                         if (node.isHidden()) icon = IconUtil.color(icon, HIDDEN_COLOR);
                         break;
                     case PUBLIC:
-                        icon = Icons.METHOD_PUBLIC_ECLIPSE.getIcon();
+                        icon = EIcons.METHOD_PUBLIC_ECLIPSE.getIcon();
                         if (node.isHidden()) icon = IconUtil.color(icon, HIDDEN_COLOR);
                         break;
                     case META:
-                        icon = Icons.METHOD_PRIVATE_ECLIPSE.getIcon();
+                        icon = EIcons.METHOD_PRIVATE_ECLIPSE.getIcon();
                         icon = IconUtil.color(icon, META_COLOR);
                         break;
                 }
@@ -144,20 +144,20 @@ class TreeRenderer extends DefaultTreeCellRenderer {
         switch (setting) {
             case "intellij":
                 if (node.isStatic()) {
-                    Icon decorator = Icons.DECORATOR_STATIC_INTELLIJ.getIcon();
-                    icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.SOUTH_WEST_INSIDE);
+                    Icon decorator = EIcons.DECORATOR_STATIC_INTELLIJ.getIcon();
+                    icon = IconUtil.decorateIcon(icon, decorator, EIconDecorator.SOUTH_WEST_INSIDE);
                 }
                 break;
             case "matlab":
                 if (node.isStatic()) {
                     Icon decorator = ProjectIcon.STATIC_OVERLAY_11x11.getIcon();
-                    icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.SOUTH_WEST_INSIDE);
+                    icon = IconUtil.decorateIcon(icon, decorator, EIconDecorator.SOUTH_WEST_INSIDE);
                 }
                 break;
             case "eclipse":
                 if (node.isStatic()) {
-                    Icon decorator = Icons.DECORATOR_STATIC_ECLIPSE.getIcon();
-                    icon = IconUtil.decorateIcon(icon, decorator, IconDecoratorE.SOUTH_WEST_INSIDE);
+                    Icon decorator = EIcons.DECORATOR_STATIC_ECLIPSE.getIcon();
+                    icon = IconUtil.decorateIcon(icon, decorator, EIconDecorator.SOUTH_WEST_INSIDE);
                 }
             default:
         }
@@ -174,17 +174,17 @@ class TreeRenderer extends DefaultTreeCellRenderer {
 
         if (row == 0 && nodeStringL.endsWith(".m")) {
             setIcon(FileTypeIcon.M.getIcon());
-        } else if (node.getMetaNodeType() == MetaNodeType.META_CLASS) {
+        } else if (node.geteMetaNodeType() == EMetaNodeType.META_CLASS) {
             // CLASS
             setClassDefIcon(node);
-        } else if (node.getMetaNodeType() == MetaNodeType.MATLAB && node.getType() == MTree.NodeType.FUNCTION
-                || node.getMetaNodeType() == MetaNodeType.META_METHOD) {
+        } else if (node.geteMetaNodeType() == EMetaNodeType.MATLAB && node.getType() == MTree.NodeType.FUNCTION
+                || node.geteMetaNodeType() == EMetaNodeType.META_METHOD) {
             // METHOD
             setFunctionIcon(node);
-        } else if (node.getMetaNodeType() == MetaNodeType.META_PROPERTY) {
+        } else if (node.geteMetaNodeType() == EMetaNodeType.META_PROPERTY) {
             // PROPERTY
             setPropertyIcon(node);
-        } else if (node.getMetaNodeType() == MetaNodeType.MATLAB && node.getType() == MTree.NodeType.CELL_TITLE) {
+        } else if (node.geteMetaNodeType() == EMetaNodeType.MATLAB && node.getType() == MTree.NodeType.CELL_TITLE) {
             // SECTION
             setIcon(ProjectIcon.CELL.getIcon());
         }
@@ -196,13 +196,13 @@ class TreeRenderer extends DefaultTreeCellRenderer {
     private void setClassDefIcon(Node node) {
         switch (Settings.getProperty("fs.iconSet")) {
             case "intellij":
-                setIcon(Icons.CLASS_INTELLIJ.getIcon());
+                setIcon(EIcons.CLASS_INTELLIJ.getIcon());
                 break;
             case "matlab":
                 setIcon(FileTypeIcon.M_CLASS.getIcon());
                 break;
             case "eclipse":
-                setIcon(Icons.CLASS_ECLIPSE.getIcon());
+                setIcon(EIcons.CLASS_ECLIPSE.getIcon());
                 break;
             default:
                 setIcon(FileTypeIcon.M_CLASS.getIcon());
@@ -213,7 +213,7 @@ class TreeRenderer extends DefaultTreeCellRenderer {
         String setting = Settings.getProperty("fs.iconSet");
         switch (setting) {
             case "intellij":
-                Icon iconIJ = Icons.METHOD_INTELLIJ.getIcon();
+                Icon iconIJ = EIcons.METHOD_INTELLIJ.getIcon();
                 iconIJ = decorateAccess(node, iconIJ, setting);
                 iconIJ = decorateStatic(node, iconIJ, setting);
                 setIcon(iconIJ);
@@ -238,7 +238,7 @@ class TreeRenderer extends DefaultTreeCellRenderer {
         String setting = Settings.getProperty("fs.iconSet");
         switch (setting) {
             case "intellij":
-                Icon iconIJ = Icons.PROPERTY_INTELLIJ.getIcon();
+                Icon iconIJ = EIcons.PROPERTY_INTELLIJ.getIcon();
                 iconIJ = decorateAccess(node, iconIJ, setting);
                 iconIJ = decorateStatic(node, iconIJ, setting);
                 setIcon(iconIJ);

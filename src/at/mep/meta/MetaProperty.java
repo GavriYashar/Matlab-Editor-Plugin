@@ -2,8 +2,8 @@ package at.mep.meta;
 
 /** Created by Andreas Justin on 2016-09-12. */
 public class MetaProperty extends Meta {
-    private MetaAccessE getAccess = MetaAccessE.PUBLIC;
-    private MetaAccessE setAccess = MetaAccessE.PUBLIC;
+    private EMetaAccess getAccess = EMetaAccess.PUBLIC;
+    private EMetaAccess setAccess = EMetaAccess.PUBLIC;
     protected String definingClass = "";
     private boolean isDependent = false;
     private boolean isConstant = false;
@@ -11,11 +11,11 @@ public class MetaProperty extends Meta {
     private boolean isTransient = false;
     private boolean hasDefaults = false;
 
-    public void setGetAccess(MetaAccessE getAccess) {
+    public void setGetAccess(EMetaAccess getAccess) {
         this.getAccess = getAccess;
     }
 
-    public void setSetAccess(MetaAccessE setAccess) {
+    public void setSetAccess(EMetaAccess setAccess) {
         this.setAccess = setAccess;
     }
 
@@ -43,11 +43,11 @@ public class MetaProperty extends Meta {
         this.hasDefaults = hasDefaults;
     }
 
-    public MetaAccessE getGetAccess() {
+    public EMetaAccess getGetAccess() {
         return getAccess;
     }
 
-    public MetaAccessE getSetAccess() {
+    public EMetaAccess getSetAccess() {
         return setAccess;
     }
 

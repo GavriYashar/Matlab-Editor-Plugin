@@ -1,7 +1,7 @@
 package at.mep.editor;
 
-import at.mep.debug.Debug;
 import at.mep.CommandWindow;
+import at.mep.debug.Debug;
 import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.gui.bookmarks.BookmarksViewer;
 import at.mep.gui.clipboardStack.ClipboardStack;
@@ -17,7 +17,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 /** Created by Andreas Justin on 2016-10-12. */
-public enum MEPActionE {
+public enum EMEPAction {
     MEP_DEBUG(new AbstractAction("MEP_SHOW_FILE_STRUCTURE") {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -121,7 +121,7 @@ public enum MEPActionE {
 
     private final AbstractAction action;
 
-    MEPActionE(AbstractAction action) {
+    EMEPAction(AbstractAction action) {
         this.action = action;
     }
 

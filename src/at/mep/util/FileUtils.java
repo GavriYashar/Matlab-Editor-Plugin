@@ -59,12 +59,12 @@ public class FileUtils {
 
     public static String readFileToString(File file) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
-        String s = readBufferedReaderToString(br, TrimE.TRAILING);
+        String s = readBufferedReaderToString(br, ETrim.TRAILING);
         br.close();
         return s;
     }
 
-    public static String readBufferedReaderToString(BufferedReader br, TrimE trim) throws IOException {
+    public static String readBufferedReaderToString(BufferedReader br, ETrim trim) throws IOException {
         String line;
         String s = "";
         while ((line = br.readLine()) != null) {

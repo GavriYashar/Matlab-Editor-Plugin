@@ -6,7 +6,7 @@ import at.mep.editor.EditorWrapper;
 import javax.swing.*;
 
 /** Created by Andreas Justin on 2016-08-25. */
-public enum MatlabKeyStrokesCommands {
+public enum EMatlabKeyStrokesCommands {
     ALT_PRESSED_ENTER("alt pressed ENTER", "mlint-fix-action", ""),
     ALT_PRESSED_KP_DOWN("alt pressed KP_DOWN", "next-message", ""),
     ALT_PRESSED_KP_UP("alt pressed KP_UP", "previous-message", ""),
@@ -136,7 +136,7 @@ public enum MatlabKeyStrokesCommands {
     private String customKeyStroke;
 
 
-    MatlabKeyStrokesCommands(String defaultKeyStroke, String command, String customKeyStroke) {
+    EMatlabKeyStrokesCommands(String defaultKeyStroke, String command, String customKeyStroke) {
         this.defaultKeyStroke = defaultKeyStroke;
         this.command = command;
         this.customKeyStroke = customKeyStroke;
@@ -151,11 +151,11 @@ public enum MatlabKeyStrokesCommands {
     }
 
     public static void setCustomKeyStrokes() {
-        MatlabKeyStrokesCommands[] list = MatlabKeyStrokesCommands.values();
+        EMatlabKeyStrokesCommands[] list = EMatlabKeyStrokesCommands.values();
         InputMap inputMap = EditorWrapper.getInputMap();
         KeyStroke[] keyStrokes = inputMap.allKeys();
 
-        for (MatlabKeyStrokesCommands commands : list) {
+        for (EMatlabKeyStrokesCommands commands : list) {
             for (int i = 0; i < keyStrokes.length; i++) {
                 KeyStroke keyStroke = keyStrokes[i];
                 if (commands.getCommand().toLowerCase().equals(inputMap.get(keyStroke).toString().toLowerCase())) {
