@@ -20,7 +20,7 @@ import java.io.IOException;
  */
 public class AutoDetailViewer {
     private static DetailViewer detailViewer = Explorer.getInstance().getDetailViewer();
-    private static JCheckBox jCheckBox = new JCheckBox();
+    private static JCheckBox jCheckBox = new JCheckBox("");
 
     private static boolean added = false;
 
@@ -48,8 +48,11 @@ public class AutoDetailViewer {
         if (added) return;
         added = true;
         setJCheckBox();
-        jCheckBox.setText("");
-        jCheckBox.setIcon(Icons.DETAIL_VIEWER_I.getIcon());
+        if (Settings.getPropertyBoolean("feature.enableAutoDetailViewer")) {
+            jCheckBox.setIcon(Icons.DETAIL_VIEWER_A.getIcon());
+        } else {
+            jCheckBox.setIcon(Icons.DETAIL_VIEWER_I.getIcon());
+        }
         jCheckBox.setSelected(Settings.getPropertyBoolean("feature.enableAutoDetailViewer"));
 
         jCheckBox.addChangeListener(new ChangeListener() {
@@ -59,6 +62,7 @@ public class AutoDetailViewer {
                 if (jCheckBox.isSelected()) {
                     val = "true";
                     jCheckBox.setIcon(Icons.DETAIL_VIEWER_A.getIcon());
+                    doYourThing();
                 } else {
                     jCheckBox.setIcon(Icons.DETAIL_VIEWER_I.getIcon());
                 }
