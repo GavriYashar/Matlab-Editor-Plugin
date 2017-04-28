@@ -1,6 +1,7 @@
 package at.mep.gui.autoDetailViewer;
 
 import at.mep.editor.EditorWrapper;
+import at.mep.gui.Icons;
 import at.mep.prefs.Settings;
 import com.mathworks.matlab.api.explorer.FileLocation;
 import com.mathworks.matlab.api.explorer.FileSystemEntry;
@@ -47,14 +48,20 @@ public class AutoDetailViewer {
         if (added) return;
         added = true;
         setJCheckBox();
-        jCheckBox.setText("Auto Select");
+        jCheckBox.setText("");
+        jCheckBox.setIcon(Icons.DETAIL_VIEWER_I.getIcon());
         jCheckBox.setSelected(Settings.getPropertyBoolean("feature.enableAutoDetailViewer"));
 
         jCheckBox.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 String val = "false";
-                if (jCheckBox.isSelected()) val = "true";
+                if (jCheckBox.isSelected()) {
+                    val = "true";
+                    jCheckBox.setIcon(Icons.DETAIL_VIEWER_A.getIcon());
+                } else {
+                    jCheckBox.setIcon(Icons.DETAIL_VIEWER_I.getIcon());
+                }
                 Settings.setProperty("feature.enableAutoDetailViewer", val);
                 try {
                     Settings.store();
