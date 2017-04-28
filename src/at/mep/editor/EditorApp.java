@@ -2,8 +2,7 @@ package at.mep.editor;
 
 import at.mep.KeyReleasedHandler;
 import at.mep.Matlab;
-import at.mep.gui.AutoSwitchCurrentFolder;
-import at.mep.gui.autoDetailViewer.AutoDetailViewer;
+import at.mep.gui.AutoSwitcher;
 import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.mepr.MEPR;
 import at.mep.prefs.Settings;
@@ -126,15 +125,16 @@ public class EditorApp {
             if (editors.contains(editor)) continue;
 
             editors.add(editor);
+            AutoSwitcher.addCheckbox();
             editor.addEventListener(new EditorEventListener() {
                 @Override
                 public void eventOccurred(EditorEvent editorEvent) {
                     // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
-                    if (editorEvent == EditorEvent.ACTIVATED && Settings.getPropertyBoolean("feature.enableAutoDetailViewer")) {
-                        AutoDetailViewer.doYourThing();
-                    }
-                    if (editorEvent == EditorEvent.ACTIVATED && Settings.getPropertyBoolean("feature.enableAutoCurrentFolder")) {
-                        AutoSwitchCurrentFolder.doYourThing();
+                    if (editorEvent == EditorEvent.ACTIVATED
+                            && (Settings.getPropertyBoolean("feature.enableAutoDetailViewer"))
+                                || Settings.getPropertyBoolean("feature.enableAutoCurrentFolder"))
+                            {
+                        AutoSwitcher.doYourThing();
                     }
                 }
             });
