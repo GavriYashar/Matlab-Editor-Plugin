@@ -3,6 +3,7 @@ package at.mep.gui.clipboardStack;
 import at.mep.editor.EditorWrapper;
 import at.mep.gui.components.UndecoratedFrame;
 import at.mep.prefs.Settings;
+import at.mep.util.ClipboardUtil;
 import at.mep.util.KeyStrokeUtil;
 import at.mep.util.RunnableUtil;
 import at.mep.util.ScreenSize;
@@ -155,7 +156,10 @@ public class ClipboardStack {
     }
 
     private void insertSelectedText() {
-        EditorWrapper.setSelectedTxt(strings[jList.getSelectedIndex()]);
+        String txtToInsert = strings[jList.getSelectedIndex()];
+        ClipboardUtil.addToClipboard(txtToInsert);
+
+        EditorWrapper.setSelectedTxt(txtToInsert);
         ClipboardStack.getInstance().setVisible(false);
         moveTextToPosition(jList.getSelectedIndex(), 0);
     }
