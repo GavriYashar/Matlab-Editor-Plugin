@@ -5,6 +5,7 @@ import at.mep.debug.Debug;
 import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.gui.bookmarks.BookmarksViewer;
 import at.mep.gui.clipboardStack.ClipboardStack;
+import at.mep.gui.clipboardStack.EClipboardParent;
 import at.mep.gui.fileStructure.FileStructure;
 import at.mep.gui.mepr.MEPRViewer;
 import at.mep.prefs.Settings;
@@ -42,11 +43,19 @@ public enum EMEPAction {
         }
     }),
 
-    MEP_SHOW_CLIP_BOARD_STACK(new AbstractAction("MEP_SHOW_CLIP_BOARD_STACK") {
+    MEP_SHOW_CLIP_BOARD_STACK_CMD(new AbstractAction("MEP_SHOW_CLIP_BOARD_STACK_CMD") {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!Settings.getPropertyBoolean("feature.enableClipboardStack")) return;
-            showClipboardStack();
+            showClipboardStack(EClipboardParent.COMMAND);
+        }
+    }),
+
+    MEP_SHOW_CLIP_BOARD_STACK_EDT(new AbstractAction("MEP_SHOW_CLIP_BOARD_STACK_EDT") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!Settings.getPropertyBoolean("feature.enableClipboardStack")) return;
+            showClipboardStack(EClipboardParent.EDITOR);
         }
     }),
 
@@ -139,7 +148,8 @@ public enum EMEPAction {
         EditorWrapper.duplicateCurrentLineOrSelection();
     }
 
-    private static void showClipboardStack() {
+    private static void showClipboardStack(EClipboardParent eClipboardParent) {
+        ClipboardStack.getInstance().setEClipboardParent(eClipboardParent);
         ClipboardStack.getInstance().setVisible(true);
     }
 
