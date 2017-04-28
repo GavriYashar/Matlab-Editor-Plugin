@@ -1,5 +1,6 @@
 package at.mep.gui.clipboardStack;
 
+import at.mep.CommandWindow;
 import at.mep.editor.EditorWrapper;
 import at.mep.gui.components.UndecoratedFrame;
 import at.mep.prefs.Settings;
@@ -26,6 +27,7 @@ public class ClipboardStack {
     private JList<String> jList;
     private JTextArea jTextArea;
     private String[] strings = new String[Settings.getPropertyInt("clipboardStack.size")];
+    private EClipboardParent eClipboardParent = EClipboardParent.INVALID;
 
     private ClipboardStack() {
         Runnable runnable = new Runnable() {
@@ -159,8 +161,22 @@ public class ClipboardStack {
         String txtToInsert = strings[jList.getSelectedIndex()];
         ClipboardUtil.addToClipboard(txtToInsert);
 
-        EditorWrapper.setSelectedTxt(txtToInsert);
+        switch (eClipboardParent) {
+            case INVALID:
+                System.out.println("MEP: ClipboardStack has no parent; EClipboardParent.INVALID");
+                break;
+            case EDITOR:
+                EditorWrapper.setSelectedTxt(txtToInsert);
+                moveTextToPosition(jList.getSelectedIndex(), 0);
+                break;
+            case COMMAND:
+                CommandWindow.insertTextAtPos(txtToInsert, CommandWindow.getCaretPosition());
+                break;
+        }
         ClipboardStack.getInstance().setVisible(false);
-        moveTextToPosition(jList.getSelectedIndex(), 0);
+    }
+
+    public void setEClipboardParent(EClipboardParent eClipboardParent) {
+        this.eClipboardParent = eClipboardParent;
     }
 }
