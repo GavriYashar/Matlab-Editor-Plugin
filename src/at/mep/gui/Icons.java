@@ -8,6 +8,8 @@ public enum Icons {
     CHECK_10("check_10.png"),
     SEARCH_15("search_15.png"),
     TOOLBAR_DELETE_16("toolbar_delete_16.png"),
+    GO_TO_FOLDER("detail_viewer_16.png"),
+    DETAIL_VIEWER("go_to_folder_16.png"),
 
     CLASS_ECLIPSE("FileStructureSymbols/eclipse/class_obj.png"),
     CLASS_INTELLIJ("FileStructureSymbols/intellij/classTypeJavaClass.png"),
