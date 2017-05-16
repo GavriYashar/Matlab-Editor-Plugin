@@ -2,6 +2,7 @@ package at.mep.editor;
 
 import at.mep.KeyReleasedHandler;
 import at.mep.Matlab;
+import at.mep.debug.Debug;
 import at.mep.gui.AutoSwitcher;
 import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.mepr.MEPR;
@@ -80,6 +81,9 @@ public class EditorApp {
         EditorWrapper.getMatlabEditorApplication().addEditorApplicationListener(new EditorApplicationListener() {
             @Override
             public void editorOpened(Editor editor) {
+                if (Debug.isDebugEnabled()) {
+                    System.out.println("EditorApp: " + editor.getLongName() + " has been opened");
+                }
                 setCallbacks();
                 Bookmarks.getInstance().setEditorBookmarks(editor);
                 Bookmarks.getInstance().enableBookmarksForMatlab(editor);
@@ -87,10 +91,10 @@ public class EditorApp {
 
             @Override
             public void editorClosed(Editor editor) {
-                if (Settings.getPropertyBoolean("verbose")) {
-                    System.out.println(editor.getLongName() + " has been closed");
-                    editors.remove(editor);
+                if (Debug.isDebugEnabled()) {
+                    System.out.println("EditorApp: " + editor.getLongName() + " has been closed");
                 }
+                editors.remove(editor);
             }
 
             @Override
@@ -154,6 +158,9 @@ public class EditorApp {
             editorSyntaxTextPane.getDocument().addDocumentListener(new DocumentListener() {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
+                    if (Debug.isDebugEnabled()) {
+                        System.out.println("EditorApp: " + "insertUpdate");
+                    }
                     Bookmarks.getInstance().adjustBookmarks(e, true);
                     try {
                         String insertString = e.getDocument().getText(e.getOffset(), e.getLength());
@@ -165,11 +172,17 @@ public class EditorApp {
 
                 @Override
                 public void removeUpdate(DocumentEvent e) {
+                    if (Debug.isDebugEnabled()) {
+                        System.out.println("EditorApp: " + "removeUpdate");
+                    }
                     Bookmarks.getInstance().adjustBookmarks(e, false);
                 }
 
                 @Override
                 public void changedUpdate(DocumentEvent e) {
+                    if (Debug.isDebugEnabled()) {
+                        System.out.println("EditorApp: " + "changedUpdate");
+                    }
                     EditorWrapper.setDirtyIfLastEditorChanged(editor);
                     EditorWrapper.setIsActiveEditorDirty(true);
                 }

@@ -12,6 +12,8 @@ import matlabcontrol.MatlabInvocationException;
 
 /** Created by Andreas Justin on 2016-08-25. */
 public class Debug {
+    private static boolean IS_DEBUG_ENABLED = false;
+
     public static void debug() {
         System.out.println("yay");
     }
@@ -45,5 +47,13 @@ public class Debug {
         System.out.println("isConnected: " + Matlab.getInstance().proxyHolder.get().isConnected());
         System.out.println("isExistingSession: " + Matlab.getInstance().proxyHolder.get().isExistingSession());
         System.out.println("isRunningInsideMatlab: " + Matlab.getInstance().proxyHolder.get().isRunningInsideMatlab());
+    }
+
+    public static boolean isDebugEnabled() {
+        return IS_DEBUG_ENABLED;
+    }
+
+    public static void setIsDebugEnabled(boolean isDebugEnabled) {
+        IS_DEBUG_ENABLED = isDebugEnabled;
     }
 }

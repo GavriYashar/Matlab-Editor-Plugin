@@ -29,7 +29,6 @@ public class FileStructure extends UndecoratedFrame {
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
     private static FileStructure INSTANCE;
     private static Editor activeEditor;
-    private static Editor lastEditor;
     private static JTextFieldSearch jTFS;
     private static JTextArea jTextArea;
     private static JScrollPane docuScrollPane;
@@ -310,8 +309,7 @@ public class FileStructure extends UndecoratedFrame {
     }
 
     public void populateTree() {
-        if (activeEditor == null
-            || activeEditor != lastEditor) {
+        if (activeEditor != EditorWrapper.getActiveEditor()) {
             setDefaultSettings();
         }
         populate();
@@ -319,7 +317,6 @@ public class FileStructure extends UndecoratedFrame {
 
     public void setDefaultSettings() {
         if (activeEditor != EditorWrapper.getActiveEditor()) jTFS.setText(""); // resetting search if activeEditor has been changed
-        lastEditor = activeEditor;
         activeEditor = EditorWrapper.getActiveEditor();
         // preferred classes, if only functions or sections are available, radioButtons will be set accordingly
         classes.setSelected(classes.isEnabled());
