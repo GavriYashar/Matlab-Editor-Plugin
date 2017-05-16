@@ -310,14 +310,14 @@ public class FileStructure extends UndecoratedFrame {
 
     public void populateTree() {
         if (activeEditor != EditorWrapper.getActiveEditor()) {
+            jTFS.setText(""); // resetting search if activeEditor has been changed
+            activeEditor = EditorWrapper.getActiveEditor();
             setDefaultSettings();
         }
         populate();
     }
 
     public void setDefaultSettings() {
-        if (activeEditor != EditorWrapper.getActiveEditor()) jTFS.setText(""); // resetting search if activeEditor has been changed
-        activeEditor = EditorWrapper.getActiveEditor();
         // preferred classes, if only functions or sections are available, radioButtons will be set accordingly
         classes.setSelected(classes.isEnabled());
         functions.setSelected(!classes.isEnabled() & !sections.isEnabled() & functions.isEnabled());
@@ -333,6 +333,11 @@ public class FileStructure extends UndecoratedFrame {
 
         nodeTree = EditorWrapper.getTreeSection(activeEditor);
         sections.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
+
+        // preferred classes, if only functions or cells are available, radioButtons will be set accordingly
+        classes.setSelected(classes.isEnabled());
+        functions.setSelected(!classes.isEnabled() & !sections.isEnabled() & functions.isEnabled());
+        sections.setSelected(!classes.isEnabled() & sections.isEnabled() & !functions.isEnabled());
     }
 
     private void setTreeRoot(Node root, boolean filtered) {
