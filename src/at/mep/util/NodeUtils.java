@@ -113,7 +113,7 @@ public final class NodeUtils {
     }
 
     public static String getFunctionOutArgs(final MTree.Node node) {
-        if (node.getType() != MTree.NodeType.FUNCTION) {
+        if (!node.getType().isFunction()) {
             throw new IllegalArgumentException("node has to be a MTree.NodeType.FUNCTION");
         }
         Iterator outIter = node.getOutputArguments().iterator();
@@ -121,6 +121,9 @@ public final class NodeUtils {
     }
 
     public static String getFunctionHeader(final MTree.Node node, boolean withSignature) {
+        if (node.getType() != MTree.NodeType.FUNCTION) {
+            throw new IllegalArgumentException("node has to be a MTree.NodeType.FUNCTION");
+        }
         String functionName = node.getFunctionName().getText();
         if (functionName != null) {
             if (withSignature) {
@@ -138,6 +141,13 @@ public final class NodeUtils {
         } else {
             return null;
         }
+    }
+
+    public static String getPropertyDecl(final MTree.Node node) {
+        if (node.getType() != MTree.NodeType.PROPTYPEDECL) {
+            throw new IllegalArgumentException("node has to be a MTree.NodeType.PROPTYPEDECL");
+        }
+        return node.getLeft().getText();
     }
 
     public static String getCellName(final MTree.Node node) {
