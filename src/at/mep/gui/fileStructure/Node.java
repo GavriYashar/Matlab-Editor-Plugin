@@ -82,7 +82,19 @@ public class Node extends DefaultMutableTreeNode {
         isTransient = p.isTransient();
         hasDefaults = p.isHasDefaults();
 
-        nodeText = p.getName();
+        switch (mtNode.getType()) {
+            case PROPTYPEDECL: {
+                nodeText = p.getName();
+                break;
+            }
+            case FUNCTION: {
+                nodeText = mtNode.getFunctionName().getText();
+                break;
+            }
+            default: {
+                throw new IllegalArgumentException("mtNode has to be either PROPTYPEDECL or FUNCTION");
+            }
+        }
         documentation = p.getDescription();
         detailedDocumentation = p.getDetailedDescription();
     }
