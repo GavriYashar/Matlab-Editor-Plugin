@@ -11,7 +11,7 @@ public class MetaProperty extends Meta {
     private boolean isTransient = false;
     private boolean hasDefaults = false;
     private boolean hasSetter = false;
-    private boolean HasGetter = false;
+    private boolean hasGetter = false;
 
     public void setGetAccess(EMetaAccess getAccess) {
         this.getAccess = getAccess;
@@ -58,7 +58,7 @@ public class MetaProperty extends Meta {
     }
 
     public void setHasGetter(boolean hasGetter) {
-        HasGetter = hasGetter;
+        this.hasGetter = hasGetter;
     }
 
     public EMetaAccess getGetAccess() {
@@ -98,6 +98,6 @@ public class MetaProperty extends Meta {
     }
 
     public boolean isHasGetter() {
-        return HasGetter;
+        return hasGetter;
     }
 }
