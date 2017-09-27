@@ -244,10 +244,11 @@ class TreeRenderer extends DefaultTreeCellRenderer {
                 setIcon(iconIJ);
                 break;
             case "matlab":
-                setIcon(ProjectIcon.FUNCTION.getIcon());
+                setIcon(ProjectIcon.PROPERTY.getIcon());
                 break;
             case "eclipse":
-                Icon iconE = decorateAccess(node, null, setting);
+                Icon iconE = EIcons.PROPERTY_INTELLIJ.getIcon();
+                iconE = decorateAccess(node, iconE, setting);
                 iconE = decorateStatic(node, iconE, setting);
                 setIcon(iconE);
                 break;
