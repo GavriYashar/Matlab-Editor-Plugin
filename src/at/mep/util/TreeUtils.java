@@ -1,6 +1,8 @@
 package at.mep.util;
 
+import at.mep.debug.Debug;
 import at.mep.gui.fileStructure.Node;
+import at.mep.meta.Meta;
 import at.mep.meta.MetaClass;
 import at.mep.meta.MetaMethod;
 import com.mathworks.util.tree.Tree;
@@ -42,6 +44,7 @@ public class TreeUtils {
 
         int counter = 0;
         for (int i = 0; i < methodNodes.size(); i++) {
+            boolean wasInMethodNodes = false;
             String nodeString = NodeUtils.getFunctionHeader(methodNodes.get(i), false);
             for (MetaMethod m : metaClass.getMethods()) {
                 // inherited, see FileStructure inherited checkbox
@@ -53,12 +56,19 @@ public class TreeUtils {
 
                 Node method = null;
                 if (nodeString != null && nodeString.equals(m.getName())) {
+                    wasInMethodNodes = true;
                     method = new Node(m, methodNodes.get(i));
                 }
                 if (method == null) continue;
                 classDefNode.add(method);
                 counter++;
                 if (counter == methodNodes.size()) break;
+            }
+            if (!wasInMethodNodes && Debug.isDebugEnabled()) {
+                MetaMethod m = new MetaMethod(methodNodes.get(i));
+                classDefNode.add(new Node(m, methodNodes.get(i)));
+                String msg = "i: " + i + " nodeString: " + nodeString + " text: " + methodNodes.get(i).getFunctionName().getText();
+                System.out.println(msg);
             }
         }
         return classDefNode;
