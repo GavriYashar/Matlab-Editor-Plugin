@@ -49,6 +49,8 @@ public class MetaClass extends Meta {
                 + "     " + propVar + ".setName(" + propVarP + ".Name);\n"
                 + "     " + propVar + ".setDescription(" + propVarP + ".Description);\n"
                 + "     " + propVar + ".setDetailedDescription(" + propVarP + ".DetailedDescription);\n"
+                + "     " + propVar + ".setHasSetter(~isempty(" + propVarP + ".SetMethod));\n"
+                + "     " + propVar + ".setHasGetter(~isempty(" + propVarP + ".GetMethod));\n"
 
                 // ACCESS
                 // TODO: fill list with meta classes propVarP.GetAccess/SetAccess
@@ -82,6 +84,8 @@ public class MetaClass extends Meta {
                 + "     " + propVar + ".setHidden(" + propVarP + ".Hidden);\n"
                 + "     " + propVar + ".setHasDefaults(" + propVarP + ".HasDefault);\n"
                 + "     " + propVar + ".setDefiningClass(" + propVarP + ".DefiningClass.Name);\n"
+                + "     " + propVar + ".setGetAccess(" + propVarP + ".GetAccess);\n"
+                + "     " + propVar + ".setSetAccess(" + propVarP + ".SetAccess);\n"
                 + "     " + classVar + ".addProperty(" + propVar +");\n"
                 + " end\n\n"
 
