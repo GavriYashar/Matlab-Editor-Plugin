@@ -40,7 +40,7 @@ class TreeRenderer extends DefaultTreeCellRenderer {
     }
 
     private static Icon decorateAccessProperty(Node node, Icon icon, String setting) {
-        return null;
+        return decorateAccessMethod(node, icon, setting);
     }
 
     private static Icon decorateAccessMethod(Node node, Icon icon, String setting) {
