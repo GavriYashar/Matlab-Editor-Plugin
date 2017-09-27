@@ -10,13 +10,23 @@ public class MetaProperty extends Meta {
     private boolean isAbstract = false;
     private boolean isTransient = false;
     private boolean hasDefaults = false;
+    private boolean hasSetter = false;
+    private boolean HasGetter = false;
 
     public void setGetAccess(EMetaAccess getAccess) {
         this.getAccess = getAccess;
     }
 
+    public void setGetAccess(String getAccess) {
+        setGetAccess(EMetaAccess.valueOf(getAccess.toUpperCase()));
+    }
+
     public void setSetAccess(EMetaAccess setAccess) {
         this.setAccess = setAccess;
+    }
+
+    public void setSetAccess(String setAccess) {
+        setSetAccess(EMetaAccess.valueOf(setAccess.toUpperCase()));
     }
 
     public void setDefiningClass(String definingClass) {
@@ -41,6 +51,14 @@ public class MetaProperty extends Meta {
 
     public void setHasDefaults(boolean hasDefaults) {
         this.hasDefaults = hasDefaults;
+    }
+
+    public void setHasSetter(boolean hasSetter) {
+        this.hasSetter = hasSetter;
+    }
+
+    public void setHasGetter(boolean hasGetter) {
+        HasGetter = hasGetter;
     }
 
     public EMetaAccess getGetAccess() {
@@ -73,5 +91,13 @@ public class MetaProperty extends Meta {
 
     public boolean isHasDefaults() {
         return hasDefaults;
+    }
+
+    public boolean isHasSetter() {
+        return hasSetter;
+    }
+
+    public boolean isHasGetter() {
+        return HasGetter;
     }
 }
