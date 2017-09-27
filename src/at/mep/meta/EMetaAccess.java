@@ -6,7 +6,8 @@ public enum EMetaAccess {
     PRIVATE(0),
     PROTECTED(1),
     PUBLIC(2),
-    META(3);
+    META(3),
+    NONE(4); // e.g. Constant properties
 
     private final int access;
 
