@@ -103,7 +103,7 @@ class TreeRenderer extends DefaultTreeCellRenderer {
 
         Icon icon;
         if (node.isProperty()) {
-            icon = EIconsFileStructure.POPERTY.getIcon(Settings.getFSIconSet(), decorators, colors, positions);
+            icon = EIconsFileStructure.PROPERTY.getIcon(Settings.getFSIconSet(), decorators, colors, positions);
         } else {
             icon = EIconsFileStructure.METHOD.getIcon(Settings.getFSIconSet(), decorators, colors, positions);
         }

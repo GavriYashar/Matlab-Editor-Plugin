@@ -1,6 +1,5 @@
 package at.mep.gui.fileStructure;
 
-import at.mep.gui.EIcons;
 import at.mep.prefs.EIconSetting;
 import at.mep.prefs.Settings;
 import at.mep.util.EIconDecorator;
@@ -19,7 +18,7 @@ public enum EIconsFileStructure {
     
     CLASS("FileStructureSymbols/intellij/classTypeJavaClass.png", "FileStructureSymbols/eclipse/class_obj.png", FileTypeIcon.M_CLASS.getIcon()),
     METHOD("FileStructureSymbols/intellij/method.png", "FileStructureSymbols/eclipse/methpub_obj.png", ProjectIcon.FUNCTION.getIcon()),
-    POPERTY("FileStructureSymbols/intellij/field.png", "FileStructureSymbols/eclipse/field_public_obj.png", ProjectIcon.PROPERTY.getIcon()),
+    PROPERTY("FileStructureSymbols/intellij/field.png", "FileStructureSymbols/eclipse/field_public_obj.png", ProjectIcon.PROPERTY.getIcon()),
 
     DECORATOR_INVALID("FileStructureSymbols/intellij/public.png", "FileStructureSymbols/eclipse/methpub_obj.png", ProjectIcon.PUBLIC_OVERLAY_11x11.getIcon()),
     DECORATOR_META("FileStructureSymbols/intellij/private.png", "FileStructureSymbols/eclipse/methpri_obj.png", ProjectIcon.PRIVATE_OVERLAY_11x11.getIcon()),
@@ -51,14 +50,6 @@ public enum EIconsFileStructure {
 
     public Icon getIcon() {
         return getIcon(Settings.getFSIconSet());
-    }
-
-    public Icon getIcon(Icon decorator, Color decoratorColor, EIconDecorator decoratorPosition) {
-        return getIcon(Settings.getFSIconSet(), decorator, decoratorColor, decoratorPosition);
-    }
-
-    public Icon getIcon(EIconSetting setting, Icon decorator, Color decoratorColor, EIconDecorator decoratorPosition) {
-        return this.iconM;
     }
 
     public Icon getIcon(EIconSetting setting, @NotNull java.util.List<Icon> decorators, java.util.List<Color> decoratorColors, java.util.List<EIconDecorator> decoratorPositions) {
@@ -93,6 +84,5 @@ public enum EIconsFileStructure {
             }
         }
         return icon;
-
     }
 }
