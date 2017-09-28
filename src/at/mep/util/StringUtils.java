@@ -43,4 +43,15 @@ public class StringUtils {
         return stripEnd(string, null);
     }
 
+    public static String blanks(int length) {
+        return StringUtils.repeat(" ", length);
+    }
+
+    public static String repeat(String string, int length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++){
+            sb.append(string);
+        }
+        return sb.toString();
+    }
 }
