@@ -11,6 +11,7 @@ import com.mathworks.widgets.text.mcode.MTree;
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
+import java.util.ArrayList;
 
 /** Created by Andreas Justin on 2016 - 02 - 25. */
 class TreeRenderer extends DefaultTreeCellRenderer {
@@ -177,13 +178,12 @@ class TreeRenderer extends DefaultTreeCellRenderer {
         } else if (node.getEMetaNodeType() == EMetaNodeType.META_CLASS) {
             // CLASS
             setClassDefIcon(node);
-        } else if (node.getEMetaNodeType() == EMetaNodeType.MATLAB && node.getType() == MTree.NodeType.FUNCTION
-                || node.getEMetaNodeType() == EMetaNodeType.META_METHOD) {
-            // METHOD
-            setFunctionIcon(node);
-        } else if (node.getEMetaNodeType() == EMetaNodeType.META_PROPERTY) {
-            // PROPERTY
-            setPropertyIcon(node);
+        } else if (node.getEMetaNodeType() == EMetaNodeType.MATLAB
+                && node.getType() == MTree.NodeType.FUNCTION
+                || node.getEMetaNodeType() == EMetaNodeType.META_METHOD
+                || node.getEMetaNodeType() == EMetaNodeType.META_PROPERTY) {
+            // METHOD, FUNCTION, PROPERTY
+            setFunctionPropertyIcon(node);
         } else if (node.getEMetaNodeType() == EMetaNodeType.MATLAB && node.getType() == MTree.NodeType.CELL_TITLE) {
             // SECTION
             setIcon(ProjectIcon.CELL.getIcon());
@@ -194,66 +194,66 @@ class TreeRenderer extends DefaultTreeCellRenderer {
     }
 
     private void setClassDefIcon(Node node) {
-        switch (Settings.getProperty("fs.iconSet")) {
-            case "intellij":
-                setIcon(EIcons.CLASS_INTELLIJ.getIcon());
-                break;
-            case "matlab":
-                setIcon(FileTypeIcon.M_CLASS.getIcon());
-                break;
-            case "eclipse":
-                setIcon(EIcons.CLASS_ECLIPSE.getIcon());
-                break;
-            default:
-                setIcon(FileTypeIcon.M_CLASS.getIcon());
-        }
+        setIcon(EIconsFileStructure.CLASS.getIcon(Settings.getFSIconSet()));
     }
 
-    private void setFunctionIcon(Node node) {
-        String setting = Settings.getProperty("fs.iconSet");
-        switch (setting) {
-            case "intellij":
-                Icon iconIJ = EIcons.METHOD_INTELLIJ.getIcon();
-                iconIJ = decorateAccess(node, iconIJ, setting);
-                iconIJ = decorateStatic(node, iconIJ, setting);
-                setIcon(iconIJ);
-                break;
-            case "matlab":
-                Icon iconM = ProjectIcon.FUNCTION.getIcon();
-                iconM = decorateAccess(node, iconM, setting);
-                iconM = decorateStatic(node, iconM, setting);
-                setIcon(iconM);
-                break;
-            case "eclipse":
-                Icon iconE = decorateAccess(node, null, setting);
-                iconE = decorateStatic(node, iconE, setting);
-                setIcon(iconE);
-                break;
-            default:
-                setIcon(ProjectIcon.FUNCTION.getIcon());
-        }
-    }
+    private void setFunctionPropertyIcon(Node node) {
+        java.util.List<Icon> decorators = new ArrayList<>(2);
+        java.util.List<Color> colors = new ArrayList<>(2);
+        java.util.List<EIconDecorator> positions = new ArrayList<>(2);
 
-    private void setPropertyIcon(Node node) {
-        String setting = Settings.getProperty("fs.iconSet");
-        switch (setting) {
-            case "intellij":
-                Icon iconIJ = EIcons.PROPERTY_INTELLIJ.getIcon();
-                iconIJ = decorateAccess(node, iconIJ, setting);
-                iconIJ = decorateStatic(node, iconIJ, setting);
-                setIcon(iconIJ);
+        switch (node.getAccess()) {
+            case INVALID: {
+                decorators.add(EIconsFileStructure.DECORATOR_INVALID.getIcon());
+                colors.add(INVALID_COLOR);
+                positions.add(EIconDecorator.EAST_OUTSIDE);
                 break;
-            case "matlab":
-                setIcon(ProjectIcon.PROPERTY.getIcon());
+            }
+            case PRIVATE: {
+                decorators.add(EIconsFileStructure.DECORATOR_PRIVATE.getIcon());
+                positions.add(EIconDecorator.EAST_OUTSIDE);
                 break;
-            case "eclipse":
-                Icon iconE = EIcons.PROPERTY_INTELLIJ.getIcon();
-                iconE = decorateAccess(node, iconE, setting);
-                iconE = decorateStatic(node, iconE, setting);
-                setIcon(iconE);
+            }
+            case PROTECTED: {
+                decorators.add(EIconsFileStructure.DECORATOR_PROTECTED.getIcon());
+                positions.add(EIconDecorator.EAST_OUTSIDE);
                 break;
-            default:
-                setIcon(ProjectIcon.PROPERTY.getIcon());
+            }
+            case PUBLIC: {
+                decorators.add(EIconsFileStructure.DECORATOR_PUBLIC.getIcon());
+                positions.add(EIconDecorator.EAST_OUTSIDE);
+                break;
+            }
+            case META: {
+                decorators.add(EIconsFileStructure.DECORATOR_META.getIcon());
+                positions.add(EIconDecorator.EAST_OUTSIDE);
+                break;
+            }
         }
+
+        if (node.isHidden()) {
+            colors.add(HIDDEN_COLOR);
+        } else {
+            if (colors.size() < decorators.size()) {
+                colors.add(null);
+            }
+        }
+        if (node.isStatic()) {
+            decorators.add(EIconsFileStructure.DECORATOR_STATIC.getIcon());
+            colors.add(null);
+            positions.add(EIconDecorator.SOUTH_WEST_INSIDE);
+        }
+
+        if (decorators.size() != colors.size() || decorators.size() != positions.size()) {
+            throw new IllegalStateException("size for icon does not match");
+        }
+
+        Icon icon;
+        if (node.isProperty()) {
+            icon = EIconsFileStructure.POPERTY.getIcon(Settings.getFSIconSet(), decorators, colors, positions);
+        } else {
+            icon = EIconsFileStructure.METHOD.getIcon(Settings.getFSIconSet(), decorators, colors, positions);
+        }
+        setIcon(icon);
     }
 }
