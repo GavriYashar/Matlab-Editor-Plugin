@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 public enum EIconsFileStructure {
     MFILE(FileTypeIcon.M.getIcon(), FileTypeIcon.M.getIcon(), FileTypeIcon.M.getIcon()),
+    CELL(ProjectIcon.CELL.getIcon(), ProjectIcon.CELL.getIcon(), ProjectIcon.CELL.getIcon()),
     
     CLASS("FileStructureSymbols/intellij/classTypeJavaClass.png", "FileStructureSymbols/eclipse/class_obj.png", FileTypeIcon.M_CLASS.getIcon()),
     METHOD("FileStructureSymbols/intellij/method.png", "FileStructureSymbols/eclipse/methpub_obj.png", ProjectIcon.FUNCTION.getIcon()),

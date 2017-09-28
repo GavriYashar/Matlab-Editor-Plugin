@@ -2,8 +2,6 @@ package at.mep.gui.fileStructure;
 
 import at.mep.prefs.Settings;
 import at.mep.util.EIconDecorator;
-import com.mathworks.common.icons.FileTypeIcon;
-import com.mathworks.common.icons.ProjectIcon;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import javax.swing.*;
@@ -32,10 +30,10 @@ class TreeRenderer extends DefaultTreeCellRenderer {
         String nodeStringL = nodeStringU.toLowerCase();
 
         if (row == 0 && nodeStringL.endsWith(".m")) {
-            setIcon(FileTypeIcon.M.getIcon());
+            setIcon(EIconsFileStructure.MFILE.getIcon());
         } else if (node.getEMetaNodeType() == EMetaNodeType.META_CLASS) {
             // CLASS
-            setClassDefIcon(node);
+            setIcon(EIconsFileStructure.CLASS.getIcon(Settings.getFSIconSet()));
         } else if (node.getEMetaNodeType() == EMetaNodeType.MATLAB
                 && node.getType() == MTree.NodeType.FUNCTION
                 || node.getEMetaNodeType() == EMetaNodeType.META_METHOD
@@ -44,15 +42,11 @@ class TreeRenderer extends DefaultTreeCellRenderer {
             setFunctionPropertyIcon(node);
         } else if (node.getEMetaNodeType() == EMetaNodeType.MATLAB && node.getType() == MTree.NodeType.CELL_TITLE) {
             // SECTION
-            setIcon(ProjectIcon.CELL.getIcon());
+            setIcon(EIconsFileStructure.CELL.getIcon());
         }
         setText(nodeStringU);
         setFont(new Font("Courier New", Font.PLAIN, 11));
         return c;
-    }
-
-    private void setClassDefIcon(Node node) {
-        setIcon(EIconsFileStructure.CLASS.getIcon(Settings.getFSIconSet()));
     }
 
     private void setFunctionPropertyIcon(Node node) {
