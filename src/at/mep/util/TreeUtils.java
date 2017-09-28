@@ -35,6 +35,8 @@ public class TreeUtils {
         java.util.List<MTree.Node> methodNodes = createNodesForClassDef(methodsTree, MTree.NodeType.FUNCTION);
 
         // creates Property Nodes for FileStructure
+        // these are only properties with the new type definition e.g.:
+        //    var string = "some string"
         Tree<MTree.Node> propertiesTree = mTree.findAsTree(MTree.NodeType.PROPTYPEDECL);
         java.util.List<MTree.Node> propertyNodes = createNodesForClassDef(propertiesTree, MTree.NodeType.PROPTYPEDECL);
 
@@ -70,10 +72,10 @@ public class TreeUtils {
         java.util.List<MTree.Node> nodes = new ArrayList<>(10);
         for (int i = 0; i < tree.getChildCount(tree.getRoot()); i++) {
             MTree.Node mtNode = tree.getChild(tree.getRoot(), i);
-            java.util.List<MTree.Node> methodsSub = mtNode.getSubtree();
-            for (MTree.Node methodSub : methodsSub) {
-                if (methodSub.getType() == nodeType) {
-                    nodes.add(methodSub);
+            java.util.List<MTree.Node> mtSubList = mtNode.getSubtree();
+            for (MTree.Node mtNodeSub : mtSubList) {
+                if (mtNodeSub.getType() == nodeType) {
+                    nodes.add(mtNodeSub);
                 }
             }
         }
