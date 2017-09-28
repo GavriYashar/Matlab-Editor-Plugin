@@ -143,14 +143,28 @@ public final class NodeUtils {
         }
     }
 
-    public static String getPropertyDecl(final MTree.Node node) {
+    public static String stringForPrptyDeclName(final MTree.Node node) {
         if (node.getType() != MTree.NodeType.PROPTYPEDECL) {
             throw new IllegalArgumentException("node has to be a MTree.NodeType.PROPTYPEDECL");
         }
         return node.getLeft().getText();
     }
 
-    public static String getCellName(final MTree.Node node) {
+    public static String stringForPrptyDeclNameWithTypeDef(final MTree.Node node) {
+        String str = stringForPrptyDeclName(node);
+        List<MTree.Node> l = node.getParent().getSubtree();
+
+        // find type definition
+        for (int i = 0; i < l.size(); i++) {
+            String strI = l.get(i).getText();
+            if (strI.length() > 0 && !strI.equals(str)) {
+                str += " (" + strI + ")";
+            }
+        }
+        return str;
+    }
+
+    public static String stringForCell(final MTree.Node node) {
         if (node.getType() != MTree.NodeType.CELL_TITLE) {
             throw new IllegalArgumentException("node has to be a MTree.NodeType.CELL_TITLE");
         }
@@ -181,7 +195,7 @@ public final class NodeUtils {
             case FUNCTION:
                 return NodeUtils.getFunctionHeader(node, true);
             case CELL_TITLE:
-                return NodeUtils.getCellName(node);
+                return NodeUtils.stringForCell(node);
             default:
                 return node.getText();
         }

@@ -91,7 +91,7 @@ public class TreeUtils {
     private static void populateClassDefNodeWithProperties(Node classDefNode, MetaClass metaClass, java.util.List<MTree.Node> methodNodes, java.util.List<MTree.Node> propertyNodes) {
         int counter = 0; // max: methodNodes.size()
         for (int i = 0; i < propertyNodes.size(); i++) {
-            String nodeString = NodeUtils.getPropertyDecl(propertyNodes.get(i));
+            String nodeString = NodeUtils.stringForPrptyDeclName(propertyNodes.get(i));
             for (MetaProperty p : metaClass.getProperties()) {
                 Node property = null;
                 if (nodeString != null && nodeString.equals(p.getName())) {
