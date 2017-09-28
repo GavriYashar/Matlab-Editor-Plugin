@@ -326,7 +326,10 @@ public class FileStructure extends UndecoratedFrame {
         // (disable/enable) class RadioButton if the current file (is no/is) class
         MTree mTree = EditorWrapper.getMTree();
         Tree<MTree.Node> nodeTree = mTree.findAsTree(MTree.NodeType.CLASSDEF);
-        classes.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
+        classes.setEnabled(
+                (nodeTree.getChildCount(nodeTree.getRoot()) > 0) // is a valid CLASSDEF
+                && EditorWrapper.getFile().exists() // Untitled may hold classdef
+        );
 
         nodeTree = EditorWrapper.getTreeFunction(activeEditor);
         functions.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
@@ -335,9 +338,12 @@ public class FileStructure extends UndecoratedFrame {
         sections.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
 
         // preferred classes, if only functions or cells are available, radioButtons will be set accordingly
-        classes.setSelected(classes.isEnabled());
-        functions.setSelected(!classes.isEnabled() & !sections.isEnabled() & functions.isEnabled());
+        classes.setSelected(classes.isEnabled()); // classes preferred
+        functions.setSelected(!classes.isEnabled() & functions.isEnabled()); // functions before sections preferred
         sections.setSelected(!classes.isEnabled() & sections.isEnabled() & !functions.isEnabled());
+
+        // search field request focus after resetting Settings
+        jTFS.requestFocus();
     }
 
     private void setTreeRoot(Node root, boolean filtered) {
