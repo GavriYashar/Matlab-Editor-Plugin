@@ -48,11 +48,11 @@ public class Node extends DefaultMutableTreeNode {
         this.node = node;
         this.nodeText = NodeUtils.getTextFormattedForNode(node);
         this.nodeType = node.getType();
-        eMetaNodeType = eMetaNodeType.MATLAB;
+        eMetaNodeType = EMetaNodeType.MATLAB;
     }
 
     public Node(MetaClass c, MTree.Node mtNode) {
-        eMetaNodeType = eMetaNodeType.META_CLASS;
+        eMetaNodeType = EMetaNodeType.META_CLASS;
         meta = c;
         node = mtNode;
 
@@ -69,7 +69,7 @@ public class Node extends DefaultMutableTreeNode {
     }
 
     public Node(MetaProperty p, MTree.Node mtNode) {
-        eMetaNodeType = eMetaNodeType.META_PROPERTY;
+        eMetaNodeType = EMetaNodeType.META_PROPERTY;
         meta = p;
         node = mtNode;
 
@@ -84,7 +84,8 @@ public class Node extends DefaultMutableTreeNode {
 
         switch (mtNode.getType()) {
             case PROPTYPEDECL: {
-                nodeText = p.getName();
+                nodeText = NodeUtils.stringForPrptyDeclNameWithTypeDef(mtNode);
+                // nodeText = p.getName();
                 break;
             }
             case FUNCTION: {
@@ -100,7 +101,7 @@ public class Node extends DefaultMutableTreeNode {
     }
 
     public Node(MetaMethod m, MTree.Node mtNode) {
-        eMetaNodeType = eMetaNodeType.META_METHOD;
+        eMetaNodeType = EMetaNodeType.META_METHOD;
         meta = m;
         node = mtNode;
 
@@ -126,7 +127,7 @@ public class Node extends DefaultMutableTreeNode {
     }
 
     public Node(String nodeText) {
-        eMetaNodeType = eMetaNodeType.STRING;
+        eMetaNodeType = EMetaNodeType.STRING;
         this.nodeText = nodeText;
     }
 
@@ -163,10 +164,10 @@ public class Node extends DefaultMutableTreeNode {
     }
 
     public boolean isProperty() {
-        if (eMetaNodeType == eMetaNodeType.MATLAB && nodeType == MTree.NodeType.ID) {
+        if (eMetaNodeType == EMetaNodeType.MATLAB && nodeType == MTree.NodeType.ID) {
             return true;
         }
-        return eMetaNodeType == eMetaNodeType.META_PROPERTY;
+        return eMetaNodeType == EMetaNodeType.META_PROPERTY;
     }
 
     public boolean isStatic() {
@@ -190,7 +191,7 @@ public class Node extends DefaultMutableTreeNode {
 
     private String nodeDocumentation() {
         if (!(getType() == MTree.NodeType.FUNCTION || getType() == MTree.NodeType.CLASSDEF
-                || getEMetaNodeType() == eMetaNodeType.META_CLASS || getEMetaNodeType() == eMetaNodeType.META_METHOD)) {
+                || getEMetaNodeType() == EMetaNodeType.META_CLASS || getEMetaNodeType() == EMetaNodeType.META_METHOD)) {
             return "";
         }
         List<MTree.Node> nodeList = NodeUtils.getDocumentationNodesForNode(node);
