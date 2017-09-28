@@ -207,6 +207,16 @@ public class Settings {
         }
         return file;
     }
+
+    public static EIconSetting getFSIconSet() {
+        String setting = Settings.getProperty("fs.iconSet");
+        try {
+            return EIconSetting.valueOf(setting.toUpperCase());
+        } catch (Exception e) {
+            // throw new IllegalStateException("Settings:getFSIconSet  fs.iconSet is not defined in EIconSetting");
+            return EIconSetting.DEFAULT;
+        }
+    }
 }
 
 // Code i don't want to delete for some reason *rolling eyes*
