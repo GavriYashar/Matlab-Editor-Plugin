@@ -52,6 +52,10 @@ public enum EIconsFileStructure {
         return getIcon(Settings.getFSIconSet());
     }
 
+    public Icon getIcon(@NotNull java.util.List<Icon> decorators, java.util.List<Color> decoratorColors, java.util.List<EIconDecorator> decoratorPositions) {
+        return getIcon(Settings.getFSIconSet(), decorators, decoratorColors, decoratorPositions);
+    }
+
     public Icon getIcon(EIconSetting setting, @NotNull java.util.List<Icon> decorators, java.util.List<Color> decoratorColors, java.util.List<EIconDecorator> decoratorPositions) {
         Icon icon;
         switch (setting) {

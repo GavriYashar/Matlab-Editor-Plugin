@@ -1,6 +1,5 @@
 package at.mep.gui.fileStructure;
 
-import at.mep.prefs.Settings;
 import at.mep.util.EIconDecorator;
 import com.mathworks.widgets.text.mcode.MTree;
 
@@ -33,7 +32,7 @@ class TreeRenderer extends DefaultTreeCellRenderer {
             setIcon(EIconsFileStructure.MFILE.getIcon());
         } else if (node.getEMetaNodeType() == EMetaNodeType.META_CLASS) {
             // CLASS
-            setIcon(EIconsFileStructure.CLASS.getIcon(Settings.getFSIconSet()));
+            setIcon(EIconsFileStructure.CLASS.getIcon());
         } else if (node.getEMetaNodeType() == EMetaNodeType.MATLAB
                 && node.getType() == MTree.NodeType.FUNCTION
                 || node.getEMetaNodeType() == EMetaNodeType.META_METHOD
@@ -103,9 +102,9 @@ class TreeRenderer extends DefaultTreeCellRenderer {
 
         Icon icon;
         if (node.isProperty()) {
-            icon = EIconsFileStructure.PROPERTY.getIcon(Settings.getFSIconSet(), decorators, colors, positions);
+            icon = EIconsFileStructure.PROPERTY.getIcon(decorators, colors, positions);
         } else {
-            icon = EIconsFileStructure.METHOD.getIcon(Settings.getFSIconSet(), decorators, colors, positions);
+            icon = EIconsFileStructure.METHOD.getIcon(decorators, colors, positions);
         }
         setIcon(icon);
     }
