@@ -568,7 +568,11 @@ public class EditorWrapper {
     }
 
     public static Node getNodeClass(Editor editor) {
-        return TreeUtils.toFileStructureNodeClass(EditorWrapper.getMTreeFast(editor), EditorWrapper.getFullQualifiedClass(editor));
+        Node node = new Node("No Class Node: Or No Class");
+        if (EditorWrapper.getFile(editor).exists()) {
+            node = TreeUtils.toFileStructureNodeClass(EditorWrapper.getMTreeFast(editor), EditorWrapper.getFullQualifiedClass(editor));
+        }
+        return node;
     }
 
     public static Node getNodeFunction(Editor editor) {
