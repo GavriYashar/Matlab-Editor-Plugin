@@ -21,4 +21,8 @@ public enum EMetaAccess {
     public int getAccess() {
         return access;
     }
+
+    public boolean convertBoolean() {
+        return access == TRUE.access;
+    }
 }
