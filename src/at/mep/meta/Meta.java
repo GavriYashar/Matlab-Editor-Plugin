@@ -50,6 +50,6 @@ public abstract class Meta {
     public abstract void populate(EAttributePropertyMethod attribute, EMetaAccess access);
 
     public void populate(EAttributePropertyMethod attribute) {
-        populate(attribute, attribute.getDefaultValue());
+        populate(attribute, attribute.getDefaultAccess());
     }
 }

@@ -20,18 +20,18 @@ public enum EAttributePropertyMethod {
     STATIC("Static", EMetaAccess.FALSE);
 
     private final String stringMatlab;
-    private final EMetaAccess defaultValue;
+    private final EMetaAccess defaultAccess;
 
     EAttributePropertyMethod(String stringMatlab, EMetaAccess defaultValue) {
         this.stringMatlab = stringMatlab;
-        this.defaultValue = defaultValue;
+        this.defaultAccess = defaultValue;
     }
 
     public String getStringMatlab() {
         return stringMatlab;
     }
 
-    public EMetaAccess getDefaultValue() {
-        return defaultValue;
+    public EMetaAccess getDefaultAccess() {
+        return defaultAccess;
     }
 }
