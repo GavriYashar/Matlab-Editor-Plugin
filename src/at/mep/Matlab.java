@@ -2,6 +2,7 @@ package at.mep;
 
 import at.mep.installer.Install;
 import at.mep.util.ComponentUtil;
+import com.mathworks.jmi.NativeMatlab;
 import com.mathworks.mde.cmdwin.XCmdWndView;
 import com.mathworks.mde.desk.MLDesktop;
 import com.mathworks.widgets.desk.DTRootPane;
@@ -14,10 +15,18 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** Created by Andreas Justin on 2016-09-19. */
 public class Matlab {
     private static Matlab INSTANCE = null;
+
+    /** has this format: 9.1.0.441655 (R2016b) */
+    private static String verString = "";
+
+    /** from verString (9.1.0.441655 (R2016b)) 9.1*/
+    private static double verNumber = 0;
 
     /**
      * can't be used in a Document Event.
@@ -97,10 +106,29 @@ public class Matlab {
         }
     }
 
+    public static String getMatlabVersion() {
+        return NativeMatlab.GetMatlabVersion();
+    }
+    public static String getVerString() {
+        if (verString.length() == 0) verString = getMatlabVersion();
+        return verString;
+    }
+    public static double getVerNumber() {
+        if (verNumber == 0) {
+            Pattern verPattern = Pattern.compile("\\d+\\.\\d+");
+            Matcher verMatcher = verPattern.matcher(getVerString());
+            verMatcher.find();
+            int s = verMatcher.start();
+            int e = verMatcher.end();
+            verNumber = Double.parseDouble(verString.substring(s, e));
+        }
+        return verNumber;
+    }
+    public static boolean verLessThan(double ver) {
+        return verNumber < ver;
+    }
     public boolean isBusy() {
         String string = getMlDesktop().getMainFrame().getStatusBar().getText();
-        if (string == null) return false;
-        return string.contains("Busy");
+        return string != null && string.contains("Busy");
     }
-
 }
