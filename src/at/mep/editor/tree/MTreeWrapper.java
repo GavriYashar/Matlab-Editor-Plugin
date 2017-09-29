@@ -1,5 +1,7 @@
 package at.mep.editor.tree;
 
+import at.mep.meta.EMetaAccess;
+import at.mep.meta.Meta;
 import at.mep.meta.MetaMethod;
 import at.mep.meta.MetaProperty;
 import at.mep.util.TreeUtilsV2;
@@ -61,10 +63,9 @@ public class MTreeWrapper {
         List<MetaProperty> list = new ArrayList<>(INITCAPACITY);
 
         for (MTree.Node mtNodeProperty : mtNodeProperties) {
-            MetaProperty p = new MetaProperty();
-            MTreeNodeProperties mTreeNodeProperties = propertyAttributes(mtNodeProperty);
+            MTreeNodeProperties mTreeNodeProperties = new MTreeNodeProperties(mtNodeProperty);
+            list.addAll(mTreeNodeProperties.metaProperties);
         }
-
         return list;
     }
 
@@ -72,63 +73,91 @@ public class MTreeWrapper {
         if (!isValidMethods) return new ArrayList<>(0);
         List<MetaMethod> list = new ArrayList<>(INITCAPACITY);
 
-        for (MTree.Node mtNodeProperty : mtNodeMethods) {
-            MetaMethod m = new MetaMethod();
-            MTreeNodeMethods mTreeNodeMethods = methodAttributes(mtNodeProperty);
+        for (MTree.Node mtNodeMethod : mtNodeMethods) {
+            MTreeNodeMethods mTreeNodeMethods = new MTreeNodeMethods(mtNodeMethod);
+            // list.addAll(mTreeNodeMethods.metaMethods);
         }
-
         return list;
     }
 
-    private static MTreeNodeProperties propertyAttributes(MTree.Node node) {
-        return new MTreeNodeProperties(node);
-    }
+    public static abstract class MTreeNodePropertyMethod {
+        MTree.Node mtNode = null;
+        List<MTree.Node> attributes = new ArrayList<>(10);
 
-    private static MTreeNodeMethods methodAttributes(MTree.Node node) {
-        return new MTreeNodeMethods(node);
-    }
-
-    // since methods and properties work basically the same
-    public static class MTreeNodeMethods extends MTreeNodeProperties {
-        public MTreeNodeMethods(MTree.Node mtNode) {
-            super(mtNode);
-        }
-    }
-
-    static class MTreeNodeProperties {
-        private MTree.Node mtNode = null;
-        private List<MTree.Node> attributes = new ArrayList<>(10);
-        private List<MTree.Node> properties = new ArrayList<>(10);
-
-        MTreeNodeProperties(MTree.Node mtNode) {
-            // since methods and properties work basically the same
+        public MTreeNodePropertyMethod(MTree.Node mtNode) {
+            this.mtNode = mtNode;
             if (!EnumSet.of(PROPERTIES, METHODS).contains(mtNode.getType())) {
                 return;
             }
-            this.mtNode = mtNode;
-            attributes = searchForAttributes();
+            if (!isValid()) {
+                return;
+            }
+            attributes = TreeUtilsV2.searchForAttributes(mtNode);
         }
 
         boolean isValid() {
             return mtNode != null;
         }
 
-        List<MTree.Node> searchForAttributes() {
-            if (!isValid()) {
-                return new ArrayList<>(0);
-            }
-            List<MTree.Node> attributes = TreeUtilsV2.findNode(mtNode.getSubtree(), ATTRIBUTES);
-            List<MTree.Node> attrs = new ArrayList<>(10);
-            for (MTree.Node n : attributes) {
-                List<MTree.Node> attributeBlock = n.getSubtree();
-                for (MTree.Node mtNode : attributeBlock) {
-                    if (mtNode.getType() == ATTR) {
-                        attrs.add(mtNode);
-                    }
+        public List<MTree.Node> getAttributes() {
+            return attributes;
+        }
+
+        private void populateAttributes(Meta m, List<MTree.Node> attributes) {
+            for (MTree.Node mtNodeAttr : attributes) {
+                List<MTree.Node> attrs = mtNodeAttr.getSubtree();
+
+                EAttributePropertyMethod attribute;
+                EMetaAccess access;
+                switch (attrs.size()) {
+                    case 2:
+                        // single definition e.g. (Transient):
+                        // properties (Transient)
+                        // properties (Transient, Access = private)
+                        attribute = EAttributePropertyMethod.valueOf(attrs.get(1).getText().toUpperCase());
+                        m.populate(attribute);
+                        break;
+                    case 3:
+                        // definition e.g.:
+                        // properties (Transient = true)
+                        // properties (Transient = true, Access = private)
+                        attribute = EAttributePropertyMethod.valueOf(attrs.get(1).getText().toUpperCase());
+                        access = EMetaAccess.INVALID;
+                        if (attrs.get(2).getType() != INT){
+                            access = EMetaAccess.valueOf(attrs.get(2).getText().toUpperCase());
+                        }
+                        m.populate(attribute, access);
+                        break;
+                    default:
+                        throw new IllegalStateException(
+                                "unknown state for Attributes to have neither 2 or 3 fields, Editor.Line: "
+                                        + mtNodeAttr.getStartLine());
                 }
             }
+        }
+    }
 
-            return attrs;
+    // since methods and properties work basically the same
+    public static class MTreeNodeMethods extends MTreeNodePropertyMethod {
+        public MTreeNodeMethods(MTree.Node mtNode) {
+            super(mtNode);
+        }
+    }
+
+    static class MTreeNodeProperties extends MTreeNodePropertyMethod {
+        private List<MTree.Node> properties = new ArrayList<>(10);
+        private List<MetaProperty> metaProperties = new ArrayList<>(10);
+
+        MTreeNodeProperties(MTree.Node mtNode) {
+            super(mtNode);
+            if (!isValid()) {
+                return;
+            }
+            properties = TreeUtilsV2.searchForProperties(mtNode);
+        }
+
+        public List<MTree.Node> getProperties() {
+            return properties;
         }
     }
 }
