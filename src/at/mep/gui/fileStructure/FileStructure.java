@@ -399,7 +399,7 @@ private Node forClass(MTree mTree, MTree.Node classDef) {
 
     // TODO: properties
     // current problem is identifying properties in a way that always works.
-    // properties have "ID" as type, but so does MetaProperty Attributes like
+    // properties have "ID" as type, but so does MetaProperty EAttributePropertyMethod like
     // <Constant, GetAccess..., private..., true ...>
     // see "doc property attributes"
     //
