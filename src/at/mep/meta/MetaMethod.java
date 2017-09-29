@@ -1,6 +1,6 @@
 package at.mep.meta;
 
-import com.mathworks.widgets.text.mcode.MTree;
+import at.mep.editor.tree.MTreeNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +17,6 @@ public class MetaMethod extends Meta {
 
 
     public MetaMethod() {
-    }
-
-    public MetaMethod(MTree.Node node) {
-        super();
-        setName(node.getFunctionName().getText());
-        setAccess(EMetaAccess.PUBLIC);
     }
 
     public void setAccess(EMetaAccess access) {
@@ -89,4 +83,8 @@ public class MetaMethod extends Meta {
         return outputNames;
     }
 
+    @Override
+    public void populate(MTreeNode mTreeNode) {
+        System.out.println("UH-OH not implemented");
+    }
 }

@@ -1,13 +1,19 @@
 package at.mep.meta;
 
+import at.mep.editor.tree.MTreeNode;
+import com.mathworks.widgets.text.mcode.MTree;
+
+import java.util.List;
+
 /**
  * Created by Andreas Justin on 2016-09-13.
  */
-public class Meta {
+public abstract class Meta {
     protected String name = "";
     protected String description = "";
     protected String detailedDescription = "";
     protected boolean isHidden = false;
+    private List<MTree.Node> attributes;
 
     public void setName(String name) {
         this.name = name;
@@ -40,4 +46,6 @@ public class Meta {
     public boolean isHidden() {
         return isHidden;
     }
+
+    public abstract void populate(MTreeNode mTreeNode);
 }

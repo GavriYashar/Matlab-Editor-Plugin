@@ -1,5 +1,7 @@
 package at.mep.meta;
 
+import at.mep.editor.tree.MTreeNode;
+
 /** Created by Andreas Justin on 2016-09-12. */
 public class MetaProperty extends Meta {
     private EMetaAccess getAccess = EMetaAccess.PUBLIC;
@@ -99,5 +101,10 @@ public class MetaProperty extends Meta {
 
     public boolean isHasGetter() {
         return hasGetter;
+    }
+
+    @Override
+    public void populate(MTreeNode mTreeNode) {
+        mTreeNode.populate(this, mTreeNode);
     }
 }
