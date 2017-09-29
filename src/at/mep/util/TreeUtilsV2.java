@@ -90,6 +90,14 @@ public class TreeUtilsV2 {
         return properties;
     }
 
+    public static boolean mTreeNodeHasAttributes(MTree.Node node) {
+        return node.getLeft().getType() != JAVA_NULL_NODE;
+    }
+
+    public static boolean mTreeNodeHasChildren(MTree.Node node) {
+        return node.getRight().getType() != JAVA_NULL_NODE;
+    }
+
     public static List<PropertyHolder> convertProperties(List<MTree.Node> properties) {
         return null;
     }
