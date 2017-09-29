@@ -6,6 +6,8 @@ import com.mathworks.widgets.text.mcode.MTree;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
+
 /** Created by Andreas Justin on 2017-09-29. */
 public class TreeUtilsV2 {
     public static List<MTree.Node> findNode(List<MTree.Node> nodes, MTree.NodeType nodeType) {
@@ -29,6 +31,26 @@ public class TreeUtilsV2 {
 
     public static boolean hasChildren(Tree<MTree.Node> tree) {
         return tree.getChildCount(tree.getRoot()) > 0;
+    }
+
+    public static List<MTree.Node> searchForAttributes(MTree.Node tree) {
+        List<MTree.Node> attributes = TreeUtilsV2.findNode(tree.getSubtree(), ATTRIBUTES);
+        List<MTree.Node> attrs = new ArrayList<>(10);
+        for (MTree.Node n : attributes) {
+            List<MTree.Node> attributeBlock = n.getSubtree();
+            for (MTree.Node mtNode : attributeBlock) {
+                if (mtNode.getType() == ATTR) {
+                    attrs.add(mtNode);
+                }
+            }
+        }
+
+        return attrs;
+    }
+
+    public static List<MTree.Node> searchForProperties(MTree.Node tree) {
+        List<MTree.Node> properties = TreeUtilsV2.findNode(tree.getSubtree(), EQUALS);
+        return properties;
     }
 
 
