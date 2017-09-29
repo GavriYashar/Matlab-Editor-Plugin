@@ -1,5 +1,7 @@
 package at.mep.util;
 
+import at.mep.editor.tree.EAttributePropertyMethod;
+import at.mep.meta.EMetaAccess;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
 
@@ -48,9 +50,48 @@ public class TreeUtilsV2 {
         return attrs;
     }
 
+    public static List<AttributeHolder> convertAttributes(List<MTree.Node> attributes) {
+        List<AttributeHolder> list = new ArrayList<>(10);
+
+        for (MTree.Node mtNodeAttr : attributes) {
+            List<MTree.Node> attrs = mtNodeAttr.getSubtree();
+            EAttributePropertyMethod eAttributes;
+
+            switch (attrs.size()) {
+                case 2:
+                    // single definition e.g. (Transient):
+                    // properties (Transient)
+                    // properties (Transient, Access = private)
+                    eAttributes = EAttributePropertyMethod.valueOf(attrs.get(1).getText().toUpperCase());
+                    list.add(new AttributeHolder(eAttributes, eAttributes.getDefaultAccess()));
+                    break;
+                case 3:
+                    // definition e.g.:
+                    // properties (Transient = true)
+                    // properties (Transient = true, Access = private)
+                    eAttributes = EAttributePropertyMethod.valueOf(attrs.get(1).getText().toUpperCase());
+                    EMetaAccess access = EMetaAccess.INVALID;
+                    if (attrs.get(2).getType() != INT){
+                        access = EMetaAccess.valueOf(attrs.get(2).getText().toUpperCase());
+                    }
+                    list.add(new AttributeHolder(eAttributes, access));
+                    break;
+                default:
+                    throw new IllegalStateException(
+                            "unknown state for Attributes to have neither 2 or 3 fields, Editor.Line: "
+                                    + mtNodeAttr.getStartLine());
+            }
+        }
+        return list;
+    }
+
     public static List<MTree.Node> searchForProperties(MTree.Node tree) {
         List<MTree.Node> properties = TreeUtilsV2.findNode(tree.getSubtree(), EQUALS);
         return properties;
+    }
+
+    public static List<PropertyHolder> convertProperties(List<MTree.Node> properties) {
+        return null;
     }
 
 

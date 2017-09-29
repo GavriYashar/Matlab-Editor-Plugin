@@ -83,6 +83,7 @@ public class MTreeWrapper {
     public static abstract class MTreeNodePropertyMethod {
         MTree.Node mtNode = null;
         List<MTree.Node> attributes = new ArrayList<>(10);
+        List<TreeUtilsV2.AttributeHolder> attributeHolders = new ArrayList<>(10);
 
         public MTreeNodePropertyMethod(MTree.Node mtNode) {
             this.mtNode = mtNode;
@@ -93,6 +94,7 @@ public class MTreeWrapper {
                 return;
             }
             attributes = TreeUtilsV2.searchForAttributes(mtNode);
+            attributeHolders = TreeUtilsV2.convertAttributes(attributes);
         }
 
         boolean isValid() {
@@ -101,39 +103,6 @@ public class MTreeWrapper {
 
         public List<MTree.Node> getAttributes() {
             return attributes;
-        }
-
-        protected void populateAttributes(Meta m, List<MTree.Node> attributes) {
-            for (MTree.Node mtNodeAttr : attributes) {
-                List<MTree.Node> attrs = mtNodeAttr.getSubtree();
-
-                EAttributePropertyMethod attribute;
-                EMetaAccess access;
-                switch (attrs.size()) {
-                    case 2:
-                        // single definition e.g. (Transient):
-                        // properties (Transient)
-                        // properties (Transient, Access = private)
-                        attribute = EAttributePropertyMethod.valueOf(attrs.get(1).getText().toUpperCase());
-                        m.populate(attribute);
-                        break;
-                    case 3:
-                        // definition e.g.:
-                        // properties (Transient = true)
-                        // properties (Transient = true, Access = private)
-                        attribute = EAttributePropertyMethod.valueOf(attrs.get(1).getText().toUpperCase());
-                        access = EMetaAccess.INVALID;
-                        if (attrs.get(2).getType() != INT){
-                            access = EMetaAccess.valueOf(attrs.get(2).getText().toUpperCase());
-                        }
-                        m.populate(attribute, access);
-                        break;
-                    default:
-                        throw new IllegalStateException(
-                                "unknown state for Attributes to have neither 2 or 3 fields, Editor.Line: "
-                                        + mtNodeAttr.getStartLine());
-                }
-            }
         }
     }
 
@@ -167,13 +136,16 @@ public class MTreeWrapper {
         private void createMetaProperties() {
             for (MTree.Node prop : properties) {
                 MetaProperty meta = new MetaProperty();
-                populateAttributes(meta, attributes);
                 populateProperty(meta, prop);
+                metaProperties.add(meta);
             }
         }
 
         private void populateProperty(MetaProperty meta, MTree.Node prop) {
-            System.out.println("");
+            for (TreeUtilsV2.AttributeHolder attributeHolder : attributeHolders) {
+                meta.populate(attributeHolder);
+            }
+
         }
 
         public List<MTree.Node> getProperties() {
