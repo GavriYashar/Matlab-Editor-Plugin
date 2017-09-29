@@ -74,6 +74,7 @@ public class Matlab {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     public DTRootPane getRootPane() {
         return (DTRootPane) getMlDesktop().getMainFrame().getComponent(0);
     }
@@ -82,18 +83,22 @@ public class Matlab {
         return MLDesktop.getInstance();
     }
 
+    @SuppressWarnings("unused")
     public XCmdWndView getXCmdWndView() {
         return CommandWindow.getXCmdWndView();
     }
 
+    @SuppressWarnings("WeakerAccess")
     public void setStatusMessage(String string) {
         getMlDesktop().setMatlabMessage(string);
     }
 
+    @SuppressWarnings("unused")
     public List<Component> getComponents(String classString) {
         return ComponentUtil.getComponents(getRootPane(), classString);
     }
 
+    @SuppressWarnings("unused")
     public void showClientTitles() {
         for (String str : getInstance().getMlDesktop().getClientTitles()) {
             System.out.println("+----------------------------------------------------------------+");
@@ -106,13 +111,18 @@ public class Matlab {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static String getMatlabVersion() {
         return NativeMatlab.GetMatlabVersion();
     }
+
+    @SuppressWarnings("unused")
     public static String getVerString() {
         if (verString.length() == 0) verString = getMatlabVersion();
         return verString;
     }
+
+    @SuppressWarnings("unused")
     public static double getVerNumber() {
         if (verNumber == 0) {
             Pattern verPattern = Pattern.compile("\\d+\\.\\d+");
@@ -124,9 +134,13 @@ public class Matlab {
         }
         return verNumber;
     }
+
+    @SuppressWarnings("unused")
     public static boolean verLessThan(double ver) {
         return verNumber < ver;
     }
+
+    @SuppressWarnings("WeakerAccess")
     public boolean isBusy() {
         String string = getMlDesktop().getMainFrame().getStatusBar().getText();
         return string != null && string.contains("Busy");
