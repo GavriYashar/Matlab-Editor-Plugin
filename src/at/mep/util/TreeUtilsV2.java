@@ -126,7 +126,7 @@ public class TreeUtilsV2 {
         private String validator = ": VALIDATORS NOT DEFINED";
     }
 
-    private static enum EMTreeNodeTypeString {
+    private enum EMTreeNodeTypeString {
         ERROR("error"),
         IF("if"),
         ELSE("else"),
@@ -214,7 +214,7 @@ public class TreeUtilsV2 {
         CEXPR("cexpr"),
         ROW("row"),
         ATTR("attr"),
-        ETC("..."),
+        ETC("ETC"),
         DISTFOR("distfor"),
         CELL_TITLE("%%"),
         COMMENT("%"),
