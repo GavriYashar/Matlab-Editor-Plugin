@@ -123,6 +123,7 @@ public class MTreeWrapper {
     static class MTreeNodeProperties extends MTreeNodePropertyMethod {
         private List<MTree.Node> properties = new ArrayList<>(10);
         private List<MetaProperty> metaProperties = new ArrayList<>(10);
+        List<TreeUtilsV2.PropertyHolder> propertyHolders = new ArrayList<>(10);
 
         MTreeNodeProperties(MTree.Node mtNode) {
             super(mtNode);
@@ -130,6 +131,7 @@ public class MTreeWrapper {
                 return;
             }
             properties = TreeUtilsV2.searchForProperties(mtNode);
+            propertyHolders = TreeUtilsV2.convertProperties(properties);
             createMetaProperties();
         }
 
