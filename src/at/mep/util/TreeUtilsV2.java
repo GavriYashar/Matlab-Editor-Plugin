@@ -99,13 +99,38 @@ public class TreeUtilsV2 {
     }
 
     public static List<PropertyHolder> convertProperties(List<MTree.Node> properties) {
+        List<PropertyHolder> propertyHolders = new ArrayList<>(10);
+
+        for (MTree.Node mtNodeProp : properties) {
+            List<MTree.Node> prop = mtNodeProp.getSubtree();
+            String name = "";
+            String type = "";
+            String validator = "";
+
+            List<MTree.Node> atbase = TreeUtilsV2.findNode(prop, ATBASE);
+            List<MTree.Node> prpdec = TreeUtilsV2.findNode(prop, PROPTYPEDECL);
+
+            // TODO CONTINUE: MTreeNode.attributesString line 114
+            // name erkennen, und dann den rest
+            if (atbase.size() == 0 && prpdec.size() == 0 && prop.size() == 2 && prop.get(1).getType() == ID) {
+                name = prop.get(1).getText();
+            }
+            if (atbase.size() > 0) {
+                name = atbase.get(0).getLeft().getText();
+                type = atbase.get(0).getRight().getText();
+            }
+            if (prpdec.size() > 0) {
+                name = prpdec.get(0).getLeft().getText();
+            }
+
+            propertyHolders.add(new PropertyHolder(name, type, validator));
+        }
         return null;
     }
 
     public static String stringForMTreeNodeType(MTree.NodeType type) {
         return EMTreeNodeTypeString.valueOf(type.name()).getDisplayString();
     }
-
 
     public static class AttributeHolder {
         private EAttributePropertyMethod attribute;
