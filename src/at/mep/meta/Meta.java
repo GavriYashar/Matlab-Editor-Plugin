@@ -1,6 +1,7 @@
 package at.mep.meta;
 
 import at.mep.editor.tree.EAttributePropertyMethod;
+import at.mep.util.TreeUtilsV2;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import java.util.List;
@@ -45,6 +46,10 @@ public abstract class Meta {
 
     public boolean isHidden() {
         return isHidden;
+    }
+
+    public void populate(TreeUtilsV2.AttributeHolder attributeHolder) {
+        populate(attributeHolder.getAttribute(), attributeHolder.getAccess());
     }
 
     public abstract void populate(EAttributePropertyMethod attribute, EMetaAccess access);

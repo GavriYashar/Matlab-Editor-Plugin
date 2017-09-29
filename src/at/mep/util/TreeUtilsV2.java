@@ -262,4 +262,31 @@ public class TreeUtilsV2 {
                 throw new IllegalArgumentException("type: " + type + "not defined");
         }
     }
+
+    public static class AttributeHolder {
+        private EAttributePropertyMethod attribute;
+        private EMetaAccess access;
+
+        public AttributeHolder(EAttributePropertyMethod attribute, EMetaAccess access) {
+            this.attribute = attribute;
+            this.access = access;
+        }
+
+        public EAttributePropertyMethod getAttribute() {
+            return attribute;
+        }
+
+        public EMetaAccess getAccess() {
+            if (access == null)
+                return attribute.getDefaultAccess();
+
+            return access;
+        }
+    }
+
+    public static class PropertyHolder {
+        private String name = ": NAME NOT SET";
+        private String type = ": TYPE NOT DEFINED";
+        private String validator = ": VALIDATORS NOT DEFINED";
+    }
 }
