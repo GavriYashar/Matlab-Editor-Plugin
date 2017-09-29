@@ -124,6 +124,24 @@ public class TreeUtilsV2 {
         private String name = ": NAME NOT SET";
         private String type = ": TYPE NOT DEFINED";
         private String validator = ": VALIDATORS NOT DEFINED";
+
+        public PropertyHolder(String name, String type, String validator) {
+            this.name = name;
+            this.type = type;
+            this.validator = validator;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public String getValidator() {
+            return validator;
+        }
     }
 
     private enum EMTreeNodeTypeString {
