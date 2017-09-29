@@ -19,12 +19,6 @@ public class MetaMethod extends Meta {
     public MetaMethod() {
     }
 
-    public MetaMethod(MTree.Node node) {
-        super();
-        setName(node.getFunctionName().getText());
-        setAccess(EMetaAccess.PUBLIC);
-    }
-
     public void setAccess(EMetaAccess access) {
         this.access = access;
     }
@@ -89,4 +83,8 @@ public class MetaMethod extends Meta {
         return outputNames;
     }
 
+    @Override
+    public void setAttributes(List<MTree.Node> attributes) {
+        System.out.println("UH-OH not implemented");
+    }
 }

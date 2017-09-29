@@ -2,6 +2,7 @@ package at.mep.meta;
 
 import at.mep.Matlab;
 import at.mep.installer.Install;
+import com.mathworks.widgets.text.mcode.MTree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,8 @@ public class MetaClass extends Meta {
                 + "         " + propVar + ".setGetAccess(at.mep.meta.EMetaAccess.PUBLIC);\n"
                 + "     " +  "elseif ischar(" + propVarP + ".GetAccess) && strcmpi(" + propVarP + ".GetAccess, 'protected')\n"
                 + "         " + propVar + ".setGetAccess(at.mep.meta.EMetaAccess.PROTECTED);\n"
+                + "     " +  "elseif ischar(" + propVarP + ".GetAccess) && strcmpi(" + propVarP + ".GetAccess, 'immutable')\n"
+                + "         " + propVar + ".setGetAccess(at.mep.meta.EMetaAccess.IMMUTABLE);\n"
                 + "     " +  "else\n"
                 + "         " + propVar + ".setGetAccess(at.mep.meta.EMetaAccess.INVALID);\n"
                 + "     " +  "end\n"
@@ -73,6 +76,8 @@ public class MetaClass extends Meta {
                 + "         " + propVar + ".setSetAccess(at.mep.meta.EMetaAccess.PUBLIC);\n"
                 + "     " +  "elseif ischar(" + propVarP + ".SetAccess) && strcmpi(" + propVarP + ".SetAccess, 'protected')\n"
                 + "         " + propVar + ".setSetAccess(at.mep.meta.EMetaAccess.PROTECTED);\n"
+                + "     " +  "elseif ischar(" + propVarP + ".SetAccess) && strcmpi(" + propVarP + ".SetAccess, 'immutable')\n"
+                + "         " + propVar + ".setSetAccess(at.mep.meta.EMetaAccess.IMMUTABLE);\n"
                 + "     " +  "else\n"
                 + "         " + propVar + ".setSetAccess(at.mep.meta.EMetaAccess.INVALID);\n"
                 + "     " +  "end\n"
@@ -84,8 +89,6 @@ public class MetaClass extends Meta {
                 + "     " + propVar + ".setHidden(" + propVarP + ".Hidden);\n"
                 + "     " + propVar + ".setHasDefaults(" + propVarP + ".HasDefault);\n"
                 + "     " + propVar + ".setDefiningClass(" + propVarP + ".DefiningClass.Name);\n"
-                + "     " + propVar + ".setGetAccess(" + propVarP + ".GetAccess);\n"
-                + "     " + propVar + ".setSetAccess(" + propVarP + ".SetAccess);\n"
                 + "     " + classVar + ".addProperty(" + propVar +");\n"
                 + " end\n\n"
 
@@ -203,5 +206,10 @@ public class MetaClass extends Meta {
 
     public List<MetaMethod> getMethods() {
         return methods;
+    }
+
+    @Override
+    public void setAttributes(List<MTree.Node> attributes) {
+        System.out.println("UH-OH not implemented");
     }
 }

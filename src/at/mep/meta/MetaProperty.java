@@ -1,5 +1,9 @@
 package at.mep.meta;
 
+import com.mathworks.widgets.text.mcode.MTree;
+
+import java.util.List;
+
 /** Created by Andreas Justin on 2016-09-12. */
 public class MetaProperty extends Meta {
     private EMetaAccess getAccess = EMetaAccess.PUBLIC;
@@ -99,5 +103,10 @@ public class MetaProperty extends Meta {
 
     public boolean isHasGetter() {
         return hasGetter;
+    }
+
+    @Override
+    public void setAttributes(List<MTree.Node> attributes) {
+        System.out.println("UH-OH not implemented");
     }
 }
