@@ -103,7 +103,7 @@ public class MTreeWrapper {
             return attributes;
         }
 
-        private void populateAttributes(Meta m, List<MTree.Node> attributes) {
+        protected void populateAttributes(Meta m, List<MTree.Node> attributes) {
             for (MTree.Node mtNodeAttr : attributes) {
                 List<MTree.Node> attrs = mtNodeAttr.getSubtree();
 
@@ -139,8 +139,15 @@ public class MTreeWrapper {
 
     // since methods and properties work basically the same
     public static class MTreeNodeMethods extends MTreeNodePropertyMethod {
+        private List<MTree.Node> functions = new ArrayList<>(10);
+        private List<MetaMethod> metaMethods = new ArrayList<>(10);
+
         public MTreeNodeMethods(MTree.Node mtNode) {
             super(mtNode);
+            if (!isValid()) {
+                return;
+            }
+            // functions = TreeUtilsV2.searchForFunctions(mtNode);
         }
     }
 
@@ -154,6 +161,19 @@ public class MTreeWrapper {
                 return;
             }
             properties = TreeUtilsV2.searchForProperties(mtNode);
+            createMetaProperties();
+        }
+
+        private void createMetaProperties() {
+            for (MTree.Node prop : properties) {
+                MetaProperty meta = new MetaProperty();
+                populateAttributes(meta, attributes);
+                populateProperty(meta, prop);
+            }
+        }
+
+        private void populateProperty(MetaProperty meta, MTree.Node prop) {
+            System.out.println("");
         }
 
         public List<MTree.Node> getProperties() {
