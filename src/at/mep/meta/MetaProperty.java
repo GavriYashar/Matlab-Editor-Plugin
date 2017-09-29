@@ -1,6 +1,6 @@
 package at.mep.meta;
 
-import at.mep.editor.tree.MTreeNode;
+import at.mep.editor.tree.EAttributePropertyMethod;
 
 /** Created by Andreas Justin on 2016-09-12. */
 public class MetaProperty extends Meta {
@@ -104,7 +104,41 @@ public class MetaProperty extends Meta {
     }
 
     @Override
-    public void populate(MTreeNode mTreeNode) {
-        mTreeNode.populate(this, mTreeNode);
+    public void populate(EAttributePropertyMethod attribute, EMetaAccess access) {
+        switch (attribute) {
+            case ABORTSET:
+                break;
+            case ABSTRACT:
+                isAbstract = access.convertBoolean();
+                break;
+            case ACCESS:
+                getAccess = access;
+                setAccess = access;
+                break;
+            case CONSTANT:
+                isConstant = access.convertBoolean();
+                break;
+            case DEPENDENT:
+                isDependent = access.convertBoolean();
+                break;
+            case GETACCESS:
+                getAccess = access;
+                break;
+            case GETOBSERVABLE:
+                break;
+            case HIDDEN:
+                isHidden = access.convertBoolean();
+                break;
+            case NONCOPYABLE:
+                break;
+            case SETACCESS:
+                setAccess = access;
+                break;
+            case SETOBSERVABLE:
+                break;
+            case TRANSIENT:
+                isTransient = access.convertBoolean();
+                break;
+        }
     }
 }

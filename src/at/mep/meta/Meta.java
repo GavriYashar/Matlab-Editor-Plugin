@@ -1,6 +1,6 @@
 package at.mep.meta;
 
-import at.mep.editor.tree.MTreeNode;
+import at.mep.editor.tree.EAttributePropertyMethod;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import java.util.List;
@@ -47,5 +47,9 @@ public abstract class Meta {
         return isHidden;
     }
 
-    public abstract void populate(MTreeNode mTreeNode);
+    public abstract void populate(EAttributePropertyMethod attribute, EMetaAccess access);
+
+    public void populate(EAttributePropertyMethod attribute) {
+        populate(attribute, attribute.getDefaultValue());
+    }
 }

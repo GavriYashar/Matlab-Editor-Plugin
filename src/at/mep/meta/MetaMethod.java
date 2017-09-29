@@ -1,6 +1,6 @@
 package at.mep.meta;
 
-import at.mep.editor.tree.MTreeNode;
+import at.mep.editor.tree.EAttributePropertyMethod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +84,7 @@ public class MetaMethod extends Meta {
     }
 
     @Override
-    public void populate(MTreeNode mTreeNode) {
+    public void populate(EAttributePropertyMethod attribute, EMetaAccess access) {
         System.out.println("UH-OH not implemented");
     }
 }
