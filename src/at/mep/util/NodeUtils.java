@@ -152,15 +152,26 @@ public final class NodeUtils {
 
     public static String stringForPrptyDeclNameWithTypeDef(final MTree.Node node) {
         String str = stringForPrptyDeclName(node);
-        List<MTree.Node> l = node.getParent().getSubtree();
+        List<MTree.Node> subNodes = node.getParent().getSubtree();
 
         // find type definition
-        for (int i = 0; i < l.size(); i++) {
-            String strI = l.get(i).getText();
+        boolean isParenthesesOpen = false;
+        for (MTree.Node subNode : subNodes) {
+            String strI = subNode.getText();
             if (strI.length() > 0 && !strI.equals(str)) {
-                str += " (" + strI + ")";
+                if (isParenthesesOpen) {
+                    // adds comma once parentheses is open AND the type definition is more than just the type e.g.:
+                    // var double {mustBeReal, mustBeFinite}
+                    str += ", ";
+                }
+                if (!isParenthesesOpen) {
+                    isParenthesesOpen = true;
+                    str += " (";
+                }
+                str += strI;
             }
         }
+        if (isParenthesesOpen) str += ")";
         return str;
     }
 
