@@ -1,10 +1,7 @@
 package at.mep.meta;
 
-import at.mep.editor.tree.EAttributePropertyMethod;
+import at.mep.editor.tree.EAttributes;
 import at.mep.util.TreeUtilsV2;
-import com.mathworks.widgets.text.mcode.MTree;
-
-import java.util.List;
 
 /**
  * Created by Andreas Justin on 2016-09-13.
@@ -51,9 +48,9 @@ public abstract class Meta {
         populate(attributeHolder.getAttribute(), attributeHolder.getAccess());
     }
 
-    public abstract void populate(EAttributePropertyMethod attribute, EMetaAccess access);
+    public abstract void populate(EAttributes attribute, EMetaAccess access);
 
-    public void populate(EAttributePropertyMethod attribute) {
+    public void populate(EAttributes attribute) {
         populate(attribute, attribute.getDefaultAccess());
     }
 }

@@ -1,7 +1,7 @@
 package at.mep.meta;
 
 import at.mep.Matlab;
-import at.mep.editor.tree.EAttributePropertyMethod;
+import at.mep.editor.tree.EAttributes;
 import at.mep.installer.Install;
 
 import java.util.ArrayList;
@@ -209,7 +209,26 @@ public class MetaClass extends Meta {
     }
 
     @Override
-    public void populate(EAttributePropertyMethod attribute, EMetaAccess access) {
-        System.out.println("UH-OH not implemented");
+    public void populate(EAttributes attribute, EMetaAccess access) {
+        switch (attribute) {
+            case ABSTRACT:
+                isAbstract = access.convertBoolean();
+                break;
+            case ALLOWEDSUBCLASSES:
+                break;
+            case CONSTRUCTONLOAD:
+                break;
+            case HANDLECOMPATIBLE:
+                break;
+            case HIDDEN:
+                isHidden = access.convertBoolean();
+                break;
+            case INFERIORCLASSES:
+                break;
+            case SEALED:
+                isSealed = access.convertBoolean();
+                break;
+        }
     }
+
 }

@@ -90,28 +90,38 @@ public class MTreeNode {
 
     public static MTreeNode construct(MTree mTree) {
         if (mTree.size() < 1) return null;
-        return MTreeNode.construct(mTree.getNode(0));
+        return MTreeNode.construct(mTree.getNode(0), false);
     }
 
-    public static MTreeNode construct(MTree.Node mtNode) {
+    /**
+     * construct an easier to understand tree than MTree.
+     * @param mtNode
+     * @param ignoreChildrenOfThisNode ignores children (getRight) of this level, attributes (getLeft) are constructed with children
+     *
+     * @return
+     */
+    public static MTreeNode construct(MTree.Node mtNode, boolean ignoreChildrenOfThisNode) {
         MTreeNode node = new MTreeNode(mtNode);
         if (mtNode.getType() == MTree.NodeType.JAVA_NULL_NODE) {
             return node;
         }
-
         node.parent = new MTreeNode(mtNode.getParent());
+
+        // Attributes
         MTree.Node attribute = mtNode.getLeft();
         while (attribute.getType() != MTree.NodeType.JAVA_NULL_NODE) {
-            node.attributes.add(MTreeNode.construct(attribute));
+            node.attributes.add(MTreeNode.construct(attribute, false));
             attribute = attribute.getNext();
         }
 
-        MTree.Node child = mtNode.getRight();
-        while (child.getType() != MTree.NodeType.JAVA_NULL_NODE) {
-            node.children.add(MTreeNode.construct(child));
-            child = child.getNext();
+        // Children
+        if (!ignoreChildrenOfThisNode) {
+            MTree.Node child = mtNode.getRight();
+            while (child.getType() != MTree.NodeType.JAVA_NULL_NODE) {
+                node.children.add(MTreeNode.construct(child, false));
+                child = child.getNext();
+            }
         }
-
         return node;
     }
 

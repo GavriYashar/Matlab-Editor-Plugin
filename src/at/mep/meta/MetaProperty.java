@@ -1,6 +1,6 @@
 package at.mep.meta;
 
-import at.mep.editor.tree.EAttributePropertyMethod;
+import at.mep.editor.tree.EAttributes;
 import at.mep.util.TreeUtilsV2;
 
 /** Created by Andreas Justin on 2016-09-12. */
@@ -133,7 +133,7 @@ public class MetaProperty extends Meta {
     }
 
     @Override
-    public void populate(EAttributePropertyMethod attribute, EMetaAccess access) {
+    public void populate(EAttributes attribute, EMetaAccess access) {
         switch (attribute) {
             case ABORTSET:
                 break;

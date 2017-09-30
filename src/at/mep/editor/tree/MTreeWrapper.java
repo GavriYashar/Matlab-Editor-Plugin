@@ -1,9 +1,6 @@
 package at.mep.editor.tree;
 
-import at.mep.meta.EMetaAccess;
-import at.mep.meta.Meta;
-import at.mep.meta.MetaMethod;
-import at.mep.meta.MetaProperty;
+import at.mep.meta.*;
 import at.mep.util.TreeUtilsV2;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
@@ -58,6 +55,13 @@ public class MTreeWrapper {
         if (isValidCellTitles) this.mtNodeCellTitles = TreeUtilsV2.treeToArrayList(mTreeCellTitles);
     }
 
+    public MetaClass metaClass() {
+        MTreeNode mTreeNode = MTreeNode.construct(mtNodeClassDef.get(0), true);
+
+        return new MetaClass();
+    }
+
+    @SuppressWarnings("unused")
     public List<MetaProperty> metaProperties() {
         if (!isValidProperties) return new ArrayList<>(0);
         List<MetaProperty> list = new ArrayList<>(INITCAPACITY);

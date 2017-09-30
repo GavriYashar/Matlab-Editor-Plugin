@@ -1,6 +1,6 @@
 package at.mep.util;
 
-import at.mep.editor.tree.EAttributePropertyMethod;
+import at.mep.editor.tree.EAttributes;
 import at.mep.editor.tree.MTreeNode;
 import at.mep.meta.EMetaAccess;
 import com.mathworks.util.tree.Tree;
@@ -14,6 +14,27 @@ import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
 
 /** Created by Andreas Justin on 2017-09-29. */
 public class TreeUtilsV2 {
+    public static boolean mTreeNodeHasAttributes(MTree.Node node) {
+        return mTreeNodeIsJavaNullNode(node.getLeft());
+    }
+
+    public static boolean mTreeNodeHasChildren(MTree.Node node) {
+        return mTreeNodeIsJavaNullNode(node.getRight());
+    }
+
+    public static boolean mTreeNodeIsJavaNullNode(MTree.Node node) {
+        return node.getType() == JAVA_NULL_NODE;
+    }
+
+    public static String stringForMTreeNodeType(MTree.NodeType type) {
+        return EMTreeNodeTypeString.valueOf(type.name()).getDisplayString();
+    }
+
+
+    public static boolean hasChildren(Tree<MTree.Node> tree) {
+        return tree.getChildCount(tree.getRoot()) > 0;
+    }
+
     public static List<MTree.Node> findNode(List<MTree.Node> nodes, MTree.NodeType nodeType) {
         List<MTree.Node> list = new ArrayList<>(0);
         for (MTree.Node node : nodes) {
@@ -33,9 +54,6 @@ public class TreeUtilsV2 {
         return list;
     }
 
-    public static boolean hasChildren(Tree<MTree.Node> tree) {
-        return tree.getChildCount(tree.getRoot()) > 0;
-    }
 
     public static List<MTree.Node> searchForAttributes(MTree.Node tree) {
         List<MTree.Node> attributes = TreeUtilsV2.findNode(tree.getSubtree(), ATTRIBUTES);
@@ -57,21 +75,21 @@ public class TreeUtilsV2 {
 
         for (MTree.Node mtNodeAttr : attributes) {
             List<MTree.Node> attrs = mtNodeAttr.getSubtree();
-            EAttributePropertyMethod eAttributes;
+            EAttributes eAttributes;
 
             switch (attrs.size()) {
                 case 2:
                     // single definition e.g. (Transient):
                     // properties (Transient)
                     // properties (Transient, Access = private)
-                    eAttributes = EAttributePropertyMethod.valueOf(attrs.get(1).getText().toUpperCase());
-                    list.add(new AttributeHolder(mtNodeAttr, eAttributes, eAttributes.getDefaultAccess()));
+                    eAttributes = EAttributes.valueOf(attrs.get(1).getText().toUpperCase());
+                    list.add(new AttributeHolder(mtNodeAttr, eAttributes, EMetaAccess.TRUE));
                     break;
                 case 3:
                     // definition e.g.:
                     // properties (Transient = true)
                     // properties (Transient = true, Access = private)
-                    eAttributes = EAttributePropertyMethod.valueOf(attrs.get(1).getText().toUpperCase());
+                    eAttributes = EAttributes.valueOf(attrs.get(1).getText().toUpperCase());
                     EMetaAccess access = EMetaAccess.INVALID;
                     if (attrs.get(2).getType() != INT){
                         access = EMetaAccess.valueOf(attrs.get(2).getText().toUpperCase());
@@ -90,18 +108,6 @@ public class TreeUtilsV2 {
     public static List<MTree.Node> searchForProperties(MTree.Node tree) {
         List<MTree.Node> properties = TreeUtilsV2.findNode(tree.getSubtree(), EQUALS);
         return properties;
-    }
-
-    public static boolean mTreeNodeHasAttributes(MTree.Node node) {
-        return mTreeNodeIsJavaNullNode(node.getLeft());
-    }
-
-    public static boolean mTreeNodeHasChildren(MTree.Node node) {
-        return mTreeNodeIsJavaNullNode(node.getRight());
-    }
-
-    public static boolean mTreeNodeIsJavaNullNode(MTree.Node node) {
-        return node.getType() == JAVA_NULL_NODE;
     }
 
     public static List<PropertyHolder> convertProperties(List<MTree.Node> properties) {
@@ -130,7 +136,7 @@ public class TreeUtilsV2 {
             // property is defined via new declaration method (e.g.: var double {validator1, validator2}
             if (prpdec.size() > 0) {
                 // using MTreeNode for easier access to property attributes
-                String str = MTreeNode.construct(prpdec.get(0)).attributeString();
+                String str = MTreeNode.construct(prpdec.get(0), false).attributeString();
 
                 // scanner is an cheap and easy way to extract name, type and validators
                 Scanner scanner = new Scanner(str);
@@ -151,22 +157,30 @@ public class TreeUtilsV2 {
         return propertyHolders;
     }
 
-    public static String stringForMTreeNodeType(MTree.NodeType type) {
-        return EMTreeNodeTypeString.valueOf(type.name()).getDisplayString();
+    public static List<MTree.Node> searchForMethods(MTree.Node tree) {
+        return new ArrayList<>(0);
+    }
+
+    public static List<MTree.Node> searchForFunctions(MTree.Node tree) {
+        return new ArrayList<>(0);
+    }
+
+    public static class ClassDefHolder {
+        private MTree.Node node;
     }
 
     public static class AttributeHolder {
         private MTree.Node node;
-        private EAttributePropertyMethod attribute;
+        private EAttributes attribute;
         private EMetaAccess access;
 
-        public AttributeHolder(MTree.Node node, EAttributePropertyMethod attribute, EMetaAccess access) {
+        public AttributeHolder(MTree.Node node, EAttributes attribute, EMetaAccess access) {
             this.node = node;
             this.attribute = attribute;
             this.access = access;
         }
 
-        public EAttributePropertyMethod getAttribute() {
+        public EAttributes getAttribute() {
             return attribute;
         }
 
