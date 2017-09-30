@@ -1,9 +1,12 @@
 package at.mep.meta;
 
 import at.mep.editor.tree.EAttributePropertyMethod;
+import at.mep.util.TreeUtilsV2;
 
 /** Created by Andreas Justin on 2016-09-12. */
 public class MetaProperty extends Meta {
+    private String type = "";
+    private String validators = "";
     private EMetaAccess getAccess = EMetaAccess.PUBLIC;
     private EMetaAccess setAccess = EMetaAccess.PUBLIC;
     protected String definingClass = "";
@@ -14,6 +17,22 @@ public class MetaProperty extends Meta {
     private boolean hasDefaults = false;
     private boolean hasSetter = false;
     private boolean hasGetter = false;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getValidators() {
+        return validators;
+    }
+
+    public void setValidators(String validators) {
+        this.validators = validators;
+    }
 
     public void setGetAccess(EMetaAccess getAccess) {
         this.getAccess = getAccess;
@@ -101,6 +120,16 @@ public class MetaProperty extends Meta {
 
     public boolean isHasGetter() {
         return hasGetter;
+    }
+
+    public void populate(String name, String type, String validators) {
+        this.name = name;
+        this.type = type;
+        this.validators = validators;
+    }
+
+    public void populate(TreeUtilsV2.PropertyHolder propertyHolder) {
+        populate(propertyHolder.getName(), propertyHolder.getType(), propertyHolder.getValidator());
     }
 
     @Override
