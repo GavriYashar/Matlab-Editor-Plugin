@@ -91,11 +91,15 @@ public class TreeUtilsV2 {
     }
 
     public static boolean mTreeNodeHasAttributes(MTree.Node node) {
-        return node.getLeft().getType() != JAVA_NULL_NODE;
+        return mTreeNodeIsJavaNullNode(node.getLeft());
     }
 
     public static boolean mTreeNodeHasChildren(MTree.Node node) {
-        return node.getRight().getType() != JAVA_NULL_NODE;
+        return mTreeNodeIsJavaNullNode(node.getRight());
+    }
+
+    public static boolean mTreeNodeIsJavaNullNode(MTree.Node node) {
+        return node.getType() == JAVA_NULL_NODE;
     }
 
     public static List<PropertyHolder> convertProperties(List<MTree.Node> properties) {
