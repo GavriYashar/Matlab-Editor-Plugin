@@ -136,18 +136,14 @@ public class MTreeWrapper {
         }
 
         private void createMetaProperties() {
-            for (MTree.Node prop : properties) {
+            for (TreeUtilsV2.PropertyHolder propertyHolder : propertyHolders) {
                 MetaProperty meta = new MetaProperty();
-                populateProperty(meta, prop);
+                for (TreeUtilsV2.AttributeHolder attributeHolder : attributeHolders) {
+                    meta.populate(attributeHolder);
+                }
+                meta.populate(propertyHolder);
                 metaProperties.add(meta);
             }
-        }
-
-        private void populateProperty(MetaProperty meta, MTree.Node prop) {
-            for (TreeUtilsV2.AttributeHolder attributeHolder : attributeHolders) {
-                meta.populate(attributeHolder);
-            }
-
         }
 
         public List<MTree.Node> getProperties() {
