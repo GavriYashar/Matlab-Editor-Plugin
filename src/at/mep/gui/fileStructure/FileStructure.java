@@ -43,9 +43,9 @@ public class FileStructure extends UndecoratedFrame {
         public void actionPerformed(ActionEvent e) {
             setVisible(false);
             if (jTree.getMaxSelectionRow() < 0) return;
-            Node node = (Node) jTree.getSelectionPath().getLastPathComponent();
-            if (node.hasNode()) {
-                EditorWrapper.goToLine(node.node().getStartLine(), false);
+            NodeFS nodeFS = (NodeFS) jTree.getSelectionPath().getLastPathComponent();
+            if (nodeFS.hasNode()) {
+                EditorWrapper.goToLine(nodeFS.node().getStartLine(), false);
             }
         }
     };
@@ -245,8 +245,8 @@ public class FileStructure extends UndecoratedFrame {
             public void valueChanged(TreeSelectionEvent e) {
                 jTFS.requestFocus();
                 if (jTree.getMaxSelectionRow() < 0) return;
-                Node node = (Node) jTree.getSelectionPath().getLastPathComponent();
-                jTextArea.setText(node.getDocumentation());
+                NodeFS nodeFS = (NodeFS) jTree.getSelectionPath().getLastPathComponent();
+                jTextArea.setText(nodeFS.getDocumentation());
                 moveBarsDocuScrollpane();
             }
         });
@@ -279,7 +279,7 @@ public class FileStructure extends UndecoratedFrame {
 
     /** for radio buttons */
     private void populate() {
-        Node root = new Node(EditorWrapper.getShortName());
+        NodeFS root = new NodeFS(EditorWrapper.getShortName());
         
         MTree.NodeType nodeType;
         if (sections.isSelected()) {
@@ -346,7 +346,7 @@ public class FileStructure extends UndecoratedFrame {
         jTFS.requestFocus();
     }
 
-    private void setTreeRoot(Node root, boolean filtered) {
+    private void setTreeRoot(NodeFS root, boolean filtered) {
         if (!filtered) {
             jTree.setOriginalRoot(root);
         }
