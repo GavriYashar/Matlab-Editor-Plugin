@@ -1,12 +1,14 @@
 package at.mep.util;
 
 import at.mep.editor.tree.EAttributePropertyMethod;
+import at.mep.editor.tree.MTreeNode;
 import at.mep.meta.EMetaAccess;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
 
@@ -114,7 +116,6 @@ public class TreeUtilsV2 {
             List<MTree.Node> atbase = TreeUtilsV2.findNode(prop, ATBASE);
             List<MTree.Node> prpdec = TreeUtilsV2.findNode(prop, PROPTYPEDECL);
 
-            // TODO CONTINUE: MTreeNode.attributesString line 114
             // name erkennen, und dann den rest
             if (atbase.size() == 0 && prpdec.size() == 0 && prop.size() == 2 && prop.get(1).getType() == ID) {
                 name = prop.get(1).getText();
@@ -124,12 +125,24 @@ public class TreeUtilsV2 {
                 type = atbase.get(0).getRight().getText();
             }
             if (prpdec.size() > 0) {
-                name = prpdec.get(0).getLeft().getText();
+                String str = MTreeNode.construct(prpdec.get(0)).attributeString();
+                Scanner scanner = new Scanner(str);
+                name = scanner.next();
+                str = str.replace(name, "");
+                if (scanner.hasNext()) {
+                    type = scanner.next();
+                    str = str.replace(type, "");
+                }
+                if (scanner.hasNext()) {
+                    str = StringUtils.trimStart(str);
+                    validator = str;
+                }
+
             }
 
             propertyHolders.add(new PropertyHolder(name, type, validator));
         }
-        return null;
+        return propertyHolders;
     }
 
     public static String stringForMTreeNodeType(MTree.NodeType type) {
