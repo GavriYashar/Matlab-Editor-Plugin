@@ -6,7 +6,6 @@ import com.mathworks.widgets.text.mcode.MTree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Created by z0032f1t on 02.08.2016.
@@ -14,11 +13,6 @@ import java.util.regex.Pattern;
  * Represents a NodeFS in JTree and also an Matlab MTree.NodeFS class.
  */
 public class NodeFS extends DefaultMutableTreeNode {
-    private static final Pattern staticFalse = Pattern.compile("(Static|Constant)\\s*=\\s*false");
-    private static final Pattern accessPrivate = Pattern.compile("Access\\s*=\\s*private");
-    private static final Pattern setAccessPrivate = Pattern.compile("SetAccess\\s*=\\s*private");
-    private static final Pattern getAccessPrivate = Pattern.compile("GetAccess\\s*=\\s*private");
-
     private MTree.Node node; // might not always be set, e.g.: First node is just the string of the filename
     private String nodeText = "DEFAULT NODE TEXT";
     private MTree.NodeType nodeType = MTree.NodeType.JAVA_NULL_NODE;
