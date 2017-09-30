@@ -65,7 +65,7 @@ public class TreeUtilsV2 {
                     // properties (Transient)
                     // properties (Transient, Access = private)
                     eAttributes = EAttributePropertyMethod.valueOf(attrs.get(1).getText().toUpperCase());
-                    list.add(new AttributeHolder(eAttributes, eAttributes.getDefaultAccess()));
+                    list.add(new AttributeHolder(mtNodeAttr, eAttributes, eAttributes.getDefaultAccess()));
                     break;
                 case 3:
                     // definition e.g.:
@@ -76,7 +76,7 @@ public class TreeUtilsV2 {
                     if (attrs.get(2).getType() != INT){
                         access = EMetaAccess.valueOf(attrs.get(2).getText().toUpperCase());
                     }
-                    list.add(new AttributeHolder(eAttributes, access));
+                    list.add(new AttributeHolder(mtNodeAttr, eAttributes, access));
                     break;
                 default:
                     throw new IllegalStateException(
@@ -116,7 +116,7 @@ public class TreeUtilsV2 {
             List<MTree.Node> atbase = TreeUtilsV2.findNode(prop, ATBASE);
             List<MTree.Node> prpdec = TreeUtilsV2.findNode(prop, PROPTYPEDECL);
 
-            // only name, no atbase definiton and nor declaration
+            // only name, no atbase definition and nor declaration
             if (atbase.size() == 0 && prpdec.size() == 0 && prop.size() == 2 && prop.get(1).getType() == ID) {
                 name = prop.get(1).getText();
             }
@@ -146,7 +146,7 @@ public class TreeUtilsV2 {
                 }
             }
 
-            propertyHolders.add(new PropertyHolder(name, type, validator));
+            propertyHolders.add(new PropertyHolder(mtNodeProp, name, type, validator));
         }
         return propertyHolders;
     }
@@ -156,10 +156,12 @@ public class TreeUtilsV2 {
     }
 
     public static class AttributeHolder {
+        private MTree.Node node;
         private EAttributePropertyMethod attribute;
         private EMetaAccess access;
 
-        public AttributeHolder(EAttributePropertyMethod attribute, EMetaAccess access) {
+        public AttributeHolder(MTree.Node node, EAttributePropertyMethod attribute, EMetaAccess access) {
+            this.node = node;
             this.attribute = attribute;
             this.access = access;
         }
@@ -177,11 +179,13 @@ public class TreeUtilsV2 {
     }
 
     public static class PropertyHolder {
+        private MTree.Node node;
         private String name = ": NAME NOT SET";
         private String type = ": TYPE NOT DEFINED";
         private String validator = ": VALIDATORS NOT DEFINED";
 
-        public PropertyHolder(String name, String type, String validator) {
+        public PropertyHolder(MTree.Node node, String name, String type, String validator) {
+            this.node = node;
             this.name = name;
             this.type = type;
             this.validator = validator;

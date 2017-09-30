@@ -73,7 +73,7 @@ public class Node extends DefaultMutableTreeNode {
         meta = p;
         node = mtNode;
 
-        GetAccessPrivate = p.getGetAccess() ;
+        GetAccessPrivate = p.getGetAccess();
         SetAccessPrivate = p.getSetAccess();
         isAbstract = p.isAbstract();
         isHidden = p.isHidden();
