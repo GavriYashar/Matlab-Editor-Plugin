@@ -116,16 +116,23 @@ public class TreeUtilsV2 {
             List<MTree.Node> atbase = TreeUtilsV2.findNode(prop, ATBASE);
             List<MTree.Node> prpdec = TreeUtilsV2.findNode(prop, PROPTYPEDECL);
 
-            // name erkennen, und dann den rest
+            // only name, no atbase definiton and nor declaration
             if (atbase.size() == 0 && prpdec.size() == 0 && prop.size() == 2 && prop.get(1).getType() == ID) {
                 name = prop.get(1).getText();
             }
+
+            // property is defined via "@" (legacy - undocumented)
             if (atbase.size() > 0) {
                 name = atbase.get(0).getLeft().getText();
-                type = atbase.get(0).getRight().getText();
+                type = "@" + atbase.get(0).getRight().getText();
             }
+
+            // property is defined via new declaration method (e.g.: var double {validator1, validator2}
             if (prpdec.size() > 0) {
+                // using MTreeNode for easier access to property attributes
                 String str = MTreeNode.construct(prpdec.get(0)).attributeString();
+
+                // scanner is an cheap and easy way to extract name, type and validators
                 Scanner scanner = new Scanner(str);
                 name = scanner.next();
                 str = str.replace(name, "");
@@ -137,7 +144,6 @@ public class TreeUtilsV2 {
                     str = StringUtils.trimStart(str);
                     validator = str;
                 }
-
             }
 
             propertyHolders.add(new PropertyHolder(name, type, validator));

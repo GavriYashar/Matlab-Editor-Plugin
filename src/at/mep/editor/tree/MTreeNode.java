@@ -38,6 +38,20 @@ public class MTreeNode {
 
 
     private static StringBuilder buildStringAttributes(StringBuilder stringBuilder, MTreeNode node) {
+        /* short summery how the code below works
+         *  1. has attribute?
+         *       true: go deeper, go to 1.
+         *       false: get nodeText (ID[name], LT[<], AND[&], ATBASE[@])
+         *  2. has Children?
+         *       true: go deeper, go to 1.
+         *       false: return;
+         *
+         *       name: can be the name of the class, property, or method
+         *          <: class is a subclass
+         *          &: class has more subclasses
+         *          @: property undocumented and legacy type definition
+         */
+
         if (node.hasAttributes()) {
             for (int i = 0; i < node.attributes.size(); i++) {
                 buildStringAttributes(stringBuilder, node.attributes.get(i));
