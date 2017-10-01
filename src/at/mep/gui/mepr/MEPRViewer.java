@@ -145,13 +145,7 @@ public class MEPRViewer extends UndecoratedFrame {
                 File file = new File(p + "\\MEPR_" + name + ".m");
 
                 InputStream stream = MEPRViewer.class.getResourceAsStream("/template.txt");
-                BufferedReader br = new BufferedReader(new InputStreamReader(stream));
-                String template = "";
-                try {
-                    template = FileUtils.readBufferedReaderToString(br, ETrim.TRAILING);
-                    br.close();
-                } catch (IOException ignored) {
-                }
+                String template = FileUtils.readInputStreamToString(stream);
 
                 Editor editor = EditorWrapper.getMatlabEditorApplication().newEditor(template);
                 try {
