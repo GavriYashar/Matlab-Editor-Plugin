@@ -1,6 +1,8 @@
 package at.mep.editor.tree;
 
-import at.mep.meta.*;
+import at.mep.meta.MetaClass;
+import at.mep.meta.MetaMethod;
+import at.mep.meta.MetaProperty;
 import at.mep.util.TreeUtilsV2;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
@@ -9,7 +11,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
+import static com.mathworks.widgets.text.mcode.MTree.NodeType.METHODS;
+import static com.mathworks.widgets.text.mcode.MTree.NodeType.PROPERTIES;
 
 /** Created by Andreas Justin on 2017-09-28. */
 public class MTreeWrapper {
@@ -86,8 +89,8 @@ public class MTreeWrapper {
 
     public static abstract class MTreeNodePropertyMethod {
         MTree.Node mtNode = null;
-        List<MTree.Node> attributes = new ArrayList<>(10);
-        List<TreeUtilsV2.AttributeHolder> attributeHolders = new ArrayList<>(10);
+        List<MTree.Node> attributes = new ArrayList<>(INITCAPACITY);
+        List<TreeUtilsV2.AttributeHolder> attributeHolders = new ArrayList<>(INITCAPACITY);
 
         public MTreeNodePropertyMethod(MTree.Node mtNode) {
             this.mtNode = mtNode;
@@ -112,8 +115,8 @@ public class MTreeWrapper {
 
     // since methods and properties work basically the same
     public static class MTreeNodeMethods extends MTreeNodePropertyMethod {
-        private List<MTree.Node> functions = new ArrayList<>(10);
-        private List<MetaMethod> metaMethods = new ArrayList<>(10);
+        private List<MTree.Node> functions = new ArrayList<>(INITCAPACITY);
+        private List<MetaMethod> metaMethods = new ArrayList<>(INITCAPACITY);
 
         public MTreeNodeMethods(MTree.Node mtNode) {
             super(mtNode);
@@ -125,9 +128,9 @@ public class MTreeWrapper {
     }
 
     static class MTreeNodeProperties extends MTreeNodePropertyMethod {
-        private List<MTree.Node> properties = new ArrayList<>(10);
-        private List<MetaProperty> metaProperties = new ArrayList<>(10);
-        List<TreeUtilsV2.PropertyHolder> propertyHolders = new ArrayList<>(10);
+        List<TreeUtilsV2.PropertyHolder> propertyHolders = new ArrayList<>(INITCAPACITY);
+        private List<MTree.Node> properties = new ArrayList<>(INITCAPACITY);
+        private List<MetaProperty> metaProperties = new ArrayList<>(INITCAPACITY);
 
         MTreeNodeProperties(MTree.Node mtNode) {
             super(mtNode);
