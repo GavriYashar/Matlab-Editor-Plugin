@@ -8,6 +8,7 @@ import com.mathworks.widgets.text.mcode.MTree;
 import org.apache.commons.lang.Validate;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,22 +16,26 @@ import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
 
 /** Created by Andreas Justin on 2017-09-29. */
 public class TreeUtilsV2 {
-    public static String mTreeNodeGetClassName(MTree.Node node) {
+    public static MTree.Node mTreeNodeGetClassName(MTree.Node node) {
         Validate.isTrue(node.getType() == CLASSDEF, node + " is not a ClassDef Node");
-        return node.getLeft().getRight().getText();
-    }
-
-    public static String mTreeNodeGetFunctionName(MTree.Node node) {
-        return node.getFunctionName().getText();
-    }
-
-    public static String mTreeNodeGetPropertyName(MTree.Node node) {
-        Validate.isTrue(node.getType() == EQUALS, node + " is not a Property (EUQLAS) Node");
-        MTree.Node n = node;
-        while (n.getType() != ID && n.getType() != JAVA_NULL_NODE) {
+        MTree.Node n = node.getLeft().getRight();
+        while (!EnumSet.of(ID, JAVA_NULL_NODE).contains(n.getType())) {
             n = n.getLeft();
         }
-        return n.getText();
+        return n;
+    }
+
+    public static MTree.Node mTreeNodeGetFunctionName(MTree.Node node) {
+        return node.getFunctionName();
+    }
+
+    public static MTree.Node mTreeNodeGetPropertyName(MTree.Node node) {
+        Validate.isTrue(node.getType() == EQUALS, node + " is not a Property (EUQLAS) Node");
+        MTree.Node n = node;
+        while (!EnumSet.of(ID, JAVA_NULL_NODE).contains(n.getType())) {
+            n = n.getLeft();
+        }
+        return n;
     }
 
 
@@ -56,7 +61,7 @@ public class TreeUtilsV2 {
     }
 
     public static List<MTree.Node> findNode(List<MTree.Node> nodes, MTree.NodeType nodeType) {
-        List<MTree.Node> list = new ArrayList<>(0);
+        List<MTree.Node> list = new ArrayList<>(nodes.size());
         for (MTree.Node node : nodes) {
             if (node.getType() == nodeType) {
                 list.add(node);
