@@ -5,6 +5,7 @@ import at.mep.editor.tree.MTreeNode;
 import at.mep.meta.EMetaAccess;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
+import org.apache.commons.lang.Validate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,25 @@ import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
 
 /** Created by Andreas Justin on 2017-09-29. */
 public class TreeUtilsV2 {
+    public static String mTreeNodeGetClassName(MTree.Node node) {
+        Validate.isTrue(node.getType() == CLASSDEF, node + " is not a ClassDef Node");
+        return node.getLeft().getRight().getText();
+    }
+
+    public static String mTreeNodeGetFunctionName(MTree.Node node) {
+        return node.getFunctionName().getText();
+    }
+
+    public static String mTreeNodeGetPropertyName(MTree.Node node) {
+        Validate.isTrue(node.getType() == EQUALS, node + " is not a Property (EUQLAS) Node");
+        MTree.Node n = node;
+        while (n.getType() != ID && n.getType() != JAVA_NULL_NODE) {
+            n = n.getLeft();
+        }
+        return n.getText();
+    }
+
+
     public static boolean mTreeNodeHasAttributes(MTree.Node node) {
         return mTreeNodeIsJavaNullNode(node.getLeft());
     }
