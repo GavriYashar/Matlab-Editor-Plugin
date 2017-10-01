@@ -39,7 +39,7 @@ public class Bookmarks {
         for (Editor editor : editors) {
             ((ExecutionArrowDisplay) editor.getExecutionArrowMargin()).clearBookmarks();
         }
-        bookmarkList = new ArrayList<>(10);
+        bookmarkList = new ArrayList<>(50);
     }
 
     public void toggleBookmarksForEditor(Editor editor) {
@@ -50,7 +50,7 @@ public class Bookmarks {
     }
 
     public List<Bookmark> getBookmarksForEditor(Editor editor) {
-        List<Bookmark> list = new ArrayList<>(10);
+        List<Bookmark> list = new ArrayList<>(bookmarkList.size());
         for (Bookmark bm : bookmarkList) {
             if (bm.equalLongName(editor.getLongName())) {
                 list.add(bm);
@@ -141,7 +141,7 @@ public class Bookmarks {
      */
     public void setEditorBookmarks(Editor editor) {
         if (editor == null || !editor.isOpen()) return;
-        List<Integer> lines = new ArrayList<>(10);
+        List<Integer> lines = new ArrayList<>(bookmarkList.size());
         for (Bookmark bookmark : bookmarkList) {
             if (bookmark.equalLongName(editor.getLongName())) lines.add(bookmark.getLineIndex());
         }

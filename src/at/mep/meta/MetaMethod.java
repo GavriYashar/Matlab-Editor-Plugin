@@ -12,8 +12,8 @@ public class MetaMethod extends Meta {
     protected boolean isStatic = false;
     protected boolean isAbstract = false;
     protected boolean isSealed = false;
-    protected List<String> inputNames = new ArrayList<>(5);
-    protected List<String> outputNames = new ArrayList<>(1);
+    protected List<String> inputNames = new ArrayList<>(10);
+    protected List<String> outputNames = new ArrayList<>(10);
 
 
     public MetaMethod() {

@@ -354,7 +354,7 @@ public class MEPRViewer extends UndecoratedFrame {
         String action = MEPR.getAction();
         if (!action.startsWith("%")) return;
 
-        List<MEPREntry> foundEntries = new ArrayList<>(10);
+        List<MEPREntry> foundEntries = new ArrayList<>(mepEntries.size());
 
         for (MEPREntry entry : mepEntries) {
             if (entry.getAction().toLowerCase().contains(action.toLowerCase().substring(1)))
