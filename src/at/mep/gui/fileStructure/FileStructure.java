@@ -318,29 +318,35 @@ public class FileStructure extends UndecoratedFrame {
     }
 
     public void setDefaultSettings() {
-        // preferred classes, if only functions or sections are available, radioButtons will be set accordingly
-        classes.setSelected(classes.isEnabled());
-        functions.setSelected(!classes.isEnabled() & !sections.isEnabled() & functions.isEnabled());
-        sections.setSelected(!classes.isEnabled() & sections.isEnabled() & !functions.isEnabled());
-
-        // (disable/enable) class RadioButton if the current file (is no/is) class
         MTree mTree = EditorWrapper.getMTree();
-        Tree<MTree.Node> nodeTree = mTree.findAsTree(MTree.NodeType.CLASSDEF);
-        classes.setEnabled(
-                (nodeTree.getChildCount(nodeTree.getRoot()) > 0) // is a valid CLASSDEF
-                && EditorWrapper.getFile().exists() // Untitled may hold classdef
-        );
+        switch (mTree.getFileType()) {
+            case ScriptFile:
+                classes.setEnabled(false);
+                functions.setEnabled(false);
+                sections.setEnabled(true);
 
-        nodeTree = EditorWrapper.getTreeFunction(activeEditor);
-        functions.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
+                sections.setSelected(true);
+                break;
+            case FunctionFile:
+                classes.setEnabled(false);
+                functions.setEnabled(true);
+                sections.setEnabled(true);
 
-        nodeTree = EditorWrapper.getTreeSection(activeEditor);
-        sections.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
+                functions.setSelected(true);
+                break;
+            case ClassDefinitionFile:
+                classes.setEnabled(true);
+                functions.setEnabled(true);
+                sections.setEnabled(true);
 
-        // preferred classes, if only functions or cells are available, radioButtons will be set accordingly
-        classes.setSelected(classes.isEnabled()); // classes preferred
-        functions.setSelected(!classes.isEnabled() & functions.isEnabled()); // functions before sections preferred
-        sections.setSelected(!classes.isEnabled() & sections.isEnabled() & !functions.isEnabled());
+                classes.setSelected(true);
+                break;
+            case Unknown:
+                classes.setEnabled(true);
+                functions.setEnabled(true);
+                sections.setEnabled(true);
+                break;
+        }
 
         // search field request focus after resetting Settings
         jTFS.requestFocus();
