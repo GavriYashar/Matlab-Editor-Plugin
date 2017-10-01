@@ -80,9 +80,6 @@ public class MFileTest{
             MFile mFile = MFile.construct(mTree_classExampleFile);
             List<MFile.ClassDef> classDefList = mFile.getClassDefs();
             Validate.isTrue(classDefList.size() == 1, "ClassExample: classdef has not been found (size() must be 1)");
-            Validate.isTrue(mFile.getFunctions().size() == 6, "ClassExample: mFile should have 6 functions");
-            Validate.isTrue(mFile.getCellTitles().size() == 3, "ClassExample: mFile should have 6 cell title");
-            Validate.isTrue(classDefList.size() == 1, "ClassExample: classdef has not been found (size() must be 1)");
 
             MFile.ClassDef classdef = classDefList.get(0);
             // check class definition
@@ -106,8 +103,8 @@ public class MFileTest{
                     Validate.isTrue(properties.getAttributes().get(0).getAttributeList().size() == 2, "ClassExample: attributes of properties not 2 PROPERTIES1.ATTRIBUTES.ATTR");
 
                     // check property names
-                    Validate.isTrue(properties.getPropertyList().size() == 5,  "ClassExample: property definition not 5 PROPERTIES1.EQUALS");
                     List<MFile.ClassDef.Properties.Property> propertyList = properties.getPropertyList();
+                    Validate.isTrue(propertyList.size() == 5,  "ClassExample: property definition not 5 PROPERTIES1.EQUALS");
 
                     Validate.isTrue(propertyList.get(0).getName().getText().equals("var1"), "ClassExample: property name is not parsed correctly: var1 PROPERTIES1");
                     Validate.isTrue(propertyList.get(1).getName().getText().equals("var2"), "ClassExample: property name is not parsed correctly: var2 PROPERTIES1");
@@ -131,20 +128,67 @@ public class MFileTest{
 
                 // methods check
                 {
+                    List<MFile.ClassDef.Method> methods = classdef.getMethod();
+                    Validate.isTrue(methods.size() == 3, "ClassExample: method definiton is not 3 METHODS");
+
+                    // check attributes of methods
+                    Validate.isTrue(methods.get(0).getAttributes().size() == 0, "ClassExample: method ATTRIBUTES is not 1 METHODS1.ATTRIBUTES");
+                    Validate.isTrue(methods.get(1).getAttributes().size() == 1, "ClassExample: method ATTRIBUTES is not 1 METHODS2.ATTRIBUTES");
+                    Validate.isTrue(methods.get(2).getAttributes().size() == 1, "ClassExample: method ATTRIBUTES is not 1 METHODS3.ATTRIBUTES");
+
+                    Validate.isTrue(methods.get(1).getAttributes().get(0).getAttributeList().size() == 2, "ClassExample: method ATTRIBUTES is not 2 METHODS2.ATTRIBUTES.ATTR");
+                    Validate.isTrue(methods.get(2).getAttributes().get(0).getAttributeList().size() == 2, "ClassExample: method ATTRIBUTES is not 2 METHODS3.ATTRIBUTES.ATTR");
+
+                    MFile.Attributes attributes = methods.get(1).getAttributes().get(0);
+                    Validate.isTrue(attributes.getAttributeList().get(0).getAttribute().getText().equals("Static"), "ClassExample: method ATTR is not Static METHODS2.ATTRIBUTES.ATTR1");
+                    Validate.isTrue(attributes.getAttributeList().get(0).getValue().get(0).getType() == MTree.NodeType.JAVA_NULL_NODE, "ClassExample: method ATTR is Static must not be set METHODS2.ATTRIBUTES.ATTR1");
+                    Validate.isTrue(attributes.getAttributeList().get(1).getAttribute().getText().equals("Hidden"), "ClassExample: method ATTR is not Static METHODS2.ATTRIBUTES.ATTR2");
+                    Validate.isTrue(attributes.getAttributeList().get(1).getValue().get(0).getType() == MTree.NodeType.JAVA_NULL_NODE, "ClassExample: method ATTR is Hidden must not be set METHODS2.ATTRIBUTES.ATTR2");
+
+                    attributes = methods.get(2).getAttributes().get(0);
+                    Validate.isTrue(attributes.getAttributeList().get(0).getAttribute().getText().equals("Static"), "ClassExample: method ATTR is not Static METHODS3.ATTRIBUTES.ATTR1");
+                    Validate.isTrue(attributes.getAttributeList().get(0).getValue().get(0).getText().equals("true"), "ClassExample: method ATTR is Static is not true METHODS3.ATTRIBUTES.ATTR1");
+                    Validate.isTrue(attributes.getAttributeList().get(1).getAttribute().getText().equals("Hidden"), "ClassExample: method ATTR is not Static METHODS3.ATTRIBUTES.ATTR2");
+                    Validate.isTrue(attributes.getAttributeList().get(1).getValue().get(0).getText().equals("false"), "ClassExample: method ATTR is Hidden is not false METHODS3.ATTRIBUTES.ATTR2");
                     // function check
                     {
+                        Validate.isTrue(classdef.getMethod().get(0).getFunctionList().size() == 4, "ClassExample: method has not 4 functions METHODS1.EQUALS");
+                        Validate.isTrue(classdef.getMethod().get(1).getFunctionList().size() == 1, "ClassExample: method has not 1 function METHODS2.EQUALS");
+                        Validate.isTrue(classdef.getMethod().get(2).getFunctionList().size() == 1, "ClassExample: method has not 1 function METHODS3.EQUALS");
 
+                        List<MFile.ClassDef.Method.Function> functions = classdef.getMethod().get(0).getFunctionList();
+                        Validate.isTrue(functions.get(0).getName().getText().equals("ClassExample"), "ClassExample: function name is not parsed correctly METHOD1.EQUALS1 ClassExample");
+                        Validate.isTrue(functions.get(1).getName().getText().equals("fNoATTR_InArg"), "ClassExample: function name is not parsed correctly METHOD1.EQUALS2 fNoATTR_InArg");
+                        Validate.isTrue(functions.get(2).getName().getText().equals("fNoATTR_InArgOutArg"), "ClassExample: function name is not parsed correctly METHOD1.EQUALS3 fNoATTR_InArgOutArg");
+                        Validate.isTrue(functions.get(3).getName().getText().equals("fNoATTR_InArgsOutArgs"), "ClassExample: function name is not parsed correctly METHOD1.EQUALS4 fNoATTR_InArgsOutArgs");
+
+                        Validate.isTrue(functions.get(0).getInArgs().size() == 0, "ClassExample: function should have 0 input arguments METHOD1.EQUALS1");
+                        Validate.isTrue(functions.get(1).getInArgs().size() == 1, "ClassExample: function should have 1 input arguments METHOD1.EQUALS2");
+                        Validate.isTrue(functions.get(2).getInArgs().size() == 1, "ClassExample: function should have 1 input arguments METHOD1.EQUALS3");
+                        Validate.isTrue(functions.get(3).getInArgs().size() == 3, "ClassExample: function should have 3 input arguments METHOD1.EQUALS4");
+
+                        Validate.isTrue(functions.get(0).getOutArgs().size() == 1, "ClassExample: function should have 1 output arguments METHOD1.EQUALS1");
+                        Validate.isTrue(functions.get(1).getOutArgs().size() == 0, "ClassExample: function should have 0 output arguments METHOD1.EQUALS2");
+                        Validate.isTrue(functions.get(2).getOutArgs().size() == 1, "ClassExample: function should have 1 output arguments METHOD1.EQUALS3");
+                        Validate.isTrue(functions.get(3).getOutArgs().size() == 2, "ClassExample: function should have 2 output arguments METHOD1.EQUALS4");
                     }
                 }
             }
 
-            // Cell Title check
+            // functions check
             {
-
+                // since it is basically the same as in methods, just check numbers
+                Validate.isTrue(mFile.getFunctions().size() == 6, "ClassExample: mFile should have 6 functions");
             }
 
-            throw new IllegalStateException("TODO: add tests");
+            // Cell Title check
+            {
+                List<MFile.CellTitle> cellTitles = mFile.getCellTitles();
+                Validate.isTrue(cellTitles.size() == 3, "ClassExample: mFile should have 3 cell title");
+                Validate.isTrue(cellTitles.get(0).getName().getText().equals("    %% CELL TITLE 1"), "ClassExample: CellTitle is not parsed correctly CELL_TITLE1");
+                Validate.isTrue(cellTitles.get(1).getName().getText().equals("    %% CELL TITLE 2"), "ClassExample: CellTitle is not parsed correctly CELL_TITLE2");
+                Validate.isTrue(cellTitles.get(2).getName().getText().equals("    %% CELL TITLE 3"), "ClassExample: CellTitle is not parsed correctly CELL_TITLE3");
+            }
         }
     }
-
 }
