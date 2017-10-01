@@ -1,4 +1,4 @@
-classdef (Abstract = false, Hidden, Sealed) ClassExample < handle
+classdef (Abstract = false, Hidden, Sealed) ClassExample < handle & someOtherClass1 & someOtherClass2
    % Some describing comments
 
     properties (Access = public, Transient = true)
@@ -13,6 +13,11 @@ classdef (Abstract = false, Hidden, Sealed) ClassExample < handle
         % var(1,1) double = 1
     end
 
+    properties (Access = {?someOtherClass1})
+        var6
+    end
+
+
     %{
         COMMENT BLOCK
         at.mep.editor.tree.MFileTest.runTest
@@ -22,7 +27,7 @@ classdef (Abstract = false, Hidden, Sealed) ClassExample < handle
     methods
     %% CELL TITLE 2
 
-        function obj = ExampleClass()
+        function obj = ClassExample()
             % some construction code
             obj.var1 = 1;
         end

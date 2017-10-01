@@ -1,0 +1,5 @@
+classdef ClassExampleNoAttributes
+
+
+end
+
