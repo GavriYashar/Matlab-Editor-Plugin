@@ -111,7 +111,7 @@ public class MTreeNode {
         MTree.Node attribute = mtNode.getLeft();
         while (attribute.getType() != MTree.NodeType.JAVA_NULL_NODE) {
             node.attributes.add(MTreeNode.construct(attribute, false));
-            attribute = attribute.getNext();
+            attribute = attribute.getNext(); // TODO: getListOfNextNodes
         }
 
         // Children
@@ -119,7 +119,7 @@ public class MTreeNode {
             MTree.Node child = mtNode.getRight();
             while (child.getType() != MTree.NodeType.JAVA_NULL_NODE) {
                 node.children.add(MTreeNode.construct(child, false));
-                child = child.getNext();
+                child = child.getNext(); // TODO: getListOfNextNodes
             }
         }
         return node;
