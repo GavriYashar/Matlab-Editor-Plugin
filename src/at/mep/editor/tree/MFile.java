@@ -38,6 +38,18 @@ public class MFile {
         return functions;
     }
 
+    public boolean hasClassDef() {
+        return classDefs.size() > 0;
+    }
+
+    public boolean hasCellTitles() {
+        return cellTitles.size() > 0;
+    }
+
+    public boolean hasFunctions() {
+        return functions.size() > 0;
+    }
+
     public static MFile construct(Editor editor) {
         MTree mTree = EditorWrapper.getMTreeFast(editor);
         MFile mFile = construct(mTree);
@@ -124,6 +136,10 @@ public class MFile {
             return attributeList;
         }
 
+        public boolean hasAttribute() {
+            return attributeList.size() > 0;
+        }
+
         public static List<Attributes> construct(List<MTree.Node> mtnAttributes) {
             List<Attributes> attributes = new ArrayList<>(mtnAttributes.size());
 
@@ -206,6 +222,10 @@ public class MFile {
         private List<Method> method = new ArrayList<>(0);
 
         private ClassDef() {
+        }
+
+        public boolean hasSuperClasses() {
+            return superclasses.size() > 0 && superclasses.get(0).getType() != JAVA_NULL_NODE;
         }
 
         public boolean hasAttributes() {
@@ -325,6 +345,14 @@ public class MFile {
                 Method.Function getter = new Method.Function();
 
                 private Property() {
+                }
+
+                public boolean hasDefinition() {
+                    return definition.getType() != JAVA_NULL_NODE;
+                }
+
+                public boolean hasValidators() {
+                    return validators.size() > 0 && validators.get(0).getType() != JAVA_NULL_NODE;
                 }
 
                 public static List<Property> construct(List<MTree.Node> mtnProperty) {
@@ -457,6 +485,14 @@ public class MFile {
                 private List<MTree.Node> inArgs = Arrays.asList(MTree.NULL_NODE);
 
                 private Function() {
+                }
+
+                public boolean hasOutArgs() {
+                    return outArgs.size() > 0 && outArgs.get(0).getType() != JAVA_NULL_NODE;
+                }
+
+                public boolean hasInArgs() {
+                    return inArgs.size() > 0 && inArgs.get(0).getType() != JAVA_NULL_NODE;
                 }
 
                 public boolean isGetter() {
