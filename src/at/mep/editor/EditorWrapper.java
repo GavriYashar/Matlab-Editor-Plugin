@@ -570,17 +570,17 @@ public class EditorWrapper {
     public static NodeFS getNodeClass(Editor editor) {
         NodeFS nodeFS = new NodeFS("No Class NodeFS: Or No Class");
         if (EditorWrapper.getFile(editor).exists()) {
-            nodeFS = TreeUtils.toFileStructureNodeClass(EditorWrapper.getMTreeFast(editor), EditorWrapper.getFullQualifiedClass(editor));
+            nodeFS = NodeFS.constructForClassDef(editor);
         }
         return nodeFS;
     }
 
     public static NodeFS getNodeFunction(Editor editor) {
-        return TreeUtils.toFileStructureNodeFunction(EditorWrapper.getTreeFunction(editor), EditorWrapper.getShortName());
+        return NodeFS.constructForFunctions(editor);
     }
 
     public static NodeFS getNodeSection(Editor editor) {
-        return TreeUtils.toFileStructureNodeSection(EditorWrapper.getTreeSection(editor), EditorWrapper.getShortName());
+        return NodeFS.constructForCellTitle(editor);
     }
 
     public static Tree<MTree.Node> getTreeFunction(Editor editor) {
