@@ -1,8 +1,7 @@
 package at.mep.meta;
 
-import com.mathworks.widgets.text.mcode.MTree;
-
-import java.util.List;
+import at.mep.editor.tree.EAttributes;
+import at.mep.util.TreeUtilsV2;
 
 /**
  * Created by Andreas Justin on 2016-09-13.
@@ -46,5 +45,13 @@ public abstract class Meta {
         return isHidden;
     }
 
-    public abstract void setAttributes(List<MTree.Node> attributes);
+    public void populate(TreeUtilsV2.AttributeHolder attributeHolder) {
+        populate(attributeHolder.getAttribute(), attributeHolder.getAccess());
+    }
+
+    public abstract void populate(EAttributes attribute, EMetaAccess access);
+
+    public void populate(EAttributes attribute) {
+        populate(attribute, attribute.getDefaultAccess());
+    }
 }

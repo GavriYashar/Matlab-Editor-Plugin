@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Get node Strings
- * a Node may look like the following
+ * a NodeFS may look like the following
  * lvl   node                                     description
  * 1     METHODS [12, 5] to [15, 7]               this is the whole method body
  * 2      ATTRIBUTES [12, 13] to [12, 36],        method attributes like static, private etc.

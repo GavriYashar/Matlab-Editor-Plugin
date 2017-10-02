@@ -24,22 +24,22 @@ class TreeRenderer extends DefaultTreeCellRenderer {
     public Component getTreeCellRendererComponent(
             JTree jTree, Object value, boolean sel, boolean exp, boolean leaf, int row, boolean hasFocus) {
         Component c = super.getTreeCellRendererComponent(jTree, value, sel, exp, leaf, row, hasFocus);
-        Node node = (Node) value;
-        String nodeStringU = node.nodeText();
+        NodeFS nodeFS = (NodeFS) value;
+        String nodeStringU = nodeFS.nodeText();
         String nodeStringL = nodeStringU.toLowerCase();
 
         if (row == 0 && nodeStringL.endsWith(".m")) {
             setIcon(EIconsFileStructure.MFILE.getIcon());
-        } else if (node.getEMetaNodeType() == EMetaNodeType.META_CLASS) {
+        } else if (nodeFS.getEMetaNodeType() == EMetaNodeType.META_CLASS) {
             // CLASS
             setIcon(EIconsFileStructure.CLASS.getIcon());
-        } else if (node.getEMetaNodeType() == EMetaNodeType.MATLAB
-                && node.getType() == MTree.NodeType.FUNCTION
-                || node.getEMetaNodeType() == EMetaNodeType.META_METHOD
-                || node.getEMetaNodeType() == EMetaNodeType.META_PROPERTY) {
+        } else if (nodeFS.getEMetaNodeType() == EMetaNodeType.MATLAB
+                && nodeFS.getType() == MTree.NodeType.FUNCTION
+                || nodeFS.getEMetaNodeType() == EMetaNodeType.META_METHOD
+                || nodeFS.getEMetaNodeType() == EMetaNodeType.META_PROPERTY) {
             // METHOD, FUNCTION, PROPERTY
-            setFunctionPropertyIcon(node);
-        } else if (node.getEMetaNodeType() == EMetaNodeType.MATLAB && node.getType() == MTree.NodeType.CELL_TITLE) {
+            setFunctionPropertyIcon(nodeFS);
+        } else if (nodeFS.getEMetaNodeType() == EMetaNodeType.MATLAB && nodeFS.getType() == MTree.NodeType.CELL_TITLE) {
             // SECTION
             setIcon(EIconsFileStructure.CELL.getIcon());
         }
@@ -48,12 +48,12 @@ class TreeRenderer extends DefaultTreeCellRenderer {
         return c;
     }
 
-    private void setFunctionPropertyIcon(Node node) {
+    private void setFunctionPropertyIcon(NodeFS nodeFS) {
         java.util.List<Icon> decorators = new ArrayList<>(2);
         java.util.List<Color> colors = new ArrayList<>(2);
         java.util.List<EIconDecorator> positions = new ArrayList<>(2);
 
-        switch (node.getAccess()) {
+        switch (nodeFS.getAccess()) {
             case INVALID: {
                 decorators.add(EIconsFileStructure.DECORATOR_INVALID.getIcon());
                 colors.add(INVALID_COLOR);
@@ -83,14 +83,14 @@ class TreeRenderer extends DefaultTreeCellRenderer {
             }
         }
 
-        if (node.isHidden()) {
+        if (nodeFS.isHidden()) {
             colors.add(HIDDEN_COLOR);
         } else {
             if (colors.size() < decorators.size()) {
                 colors.add(null);
             }
         }
-        if (node.isStatic()) {
+        if (nodeFS.isStatic()) {
             decorators.add(EIconsFileStructure.DECORATOR_STATIC.getIcon());
             colors.add(null);
             positions.add(EIconDecorator.SOUTH_WEST_INSIDE);
@@ -101,7 +101,7 @@ class TreeRenderer extends DefaultTreeCellRenderer {
         }
 
         Icon icon;
-        if (node.isProperty()) {
+        if (nodeFS.isProperty()) {
             icon = EIconsFileStructure.PROPERTY.getIcon(decorators, colors, positions);
         } else {
             icon = EIconsFileStructure.METHOD.getIcon(decorators, colors, positions);

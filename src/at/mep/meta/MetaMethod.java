@@ -1,6 +1,6 @@
 package at.mep.meta;
 
-import com.mathworks.widgets.text.mcode.MTree;
+import at.mep.editor.tree.EAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +12,8 @@ public class MetaMethod extends Meta {
     protected boolean isStatic = false;
     protected boolean isAbstract = false;
     protected boolean isSealed = false;
-    protected List<String> inputNames = new ArrayList<>(5);
-    protected List<String> outputNames = new ArrayList<>(1);
-
+    protected List<String> inputNames = new ArrayList<>(10);
+    protected List<String> outputNames = new ArrayList<>(10);
 
     public MetaMethod() {
     }
@@ -84,7 +83,7 @@ public class MetaMethod extends Meta {
     }
 
     @Override
-    public void setAttributes(List<MTree.Node> attributes) {
+    public void populate(EAttributes attribute, EMetaAccess access) {
         System.out.println("UH-OH not implemented");
     }
 }

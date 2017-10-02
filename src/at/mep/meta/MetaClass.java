@@ -1,6 +1,7 @@
 package at.mep.meta;
 
 import at.mep.Matlab;
+import at.mep.editor.tree.EAttributes;
 import at.mep.installer.Install;
 import com.mathworks.widgets.text.mcode.MTree;
 
@@ -209,7 +210,25 @@ public class MetaClass extends Meta {
     }
 
     @Override
-    public void setAttributes(List<MTree.Node> attributes) {
-        System.out.println("UH-OH not implemented");
+    public void populate(EAttributes attribute, EMetaAccess access) {
+        switch (attribute) {
+            case ABSTRACT:
+                isAbstract = access.convertBoolean();
+                break;
+            case ALLOWEDSUBCLASSES:
+                break;
+            case CONSTRUCTONLOAD:
+                break;
+            case HANDLECOMPATIBLE:
+                break;
+            case HIDDEN:
+                isHidden = access.convertBoolean();
+                break;
+            case INFERIORCLASSES:
+                break;
+            case SEALED:
+                isSealed = access.convertBoolean();
+                break;
+        }
     }
 }

@@ -17,35 +17,35 @@ class JTreeFilter extends JTree {
     private String filterText;
     private Pattern pattern;
     private boolean useRegex;
-    private Node originalRoot;
+    private NodeFS originalRoot;
 
     JTreeFilter() {
     }
 
-    void setOriginalRoot(Node originalRoot) {
+    void setOriginalRoot(NodeFS originalRoot) {
         this.originalRoot = originalRoot;
     }
 
-    Node filter(String filterText) {
+    NodeFS filter(String filterText) {
         this.filterText = filterText;
         this.pattern = null;
         useRegex = false;
         return filter();
     }
 
-    Node filter(Pattern pattern) {
+    NodeFS filter(Pattern pattern) {
         this.filterText = "";
         this.pattern = pattern;
         useRegex = true;
         return filter();
     }
 
-    private Node filter() {
-        Node filteredNode = deepCopyNode(originalRoot);
-        Enumeration<Node> e = filteredNode.depthFirstEnumeration();
-        List<Node> list = Collections.list(e);
+    private NodeFS filter() {
+        NodeFS filteredNodeFS = deepCopyNode(originalRoot);
+        Enumeration<NodeFS> e = filteredNodeFS.depthFirstEnumeration();
+        List<NodeFS> list = Collections.list(e);
         for (int i = list.size() - 1; i >= 0; i--) {
-            Node n = list.get(i);
+            NodeFS n = list.get(i);
             String str = n.nodeText();
             if (str.endsWith(".m")
                     || n.getType().equals(MTree.NodeType.CLASSDEF)
@@ -59,36 +59,36 @@ class JTreeFilter extends JTree {
                 n.removeFromParent();
             }
         }
-        return filteredNode;
+        return filteredNodeFS;
     }
 
-    private Node deepCopyNode(Node node) {
-        Node copiedNode;
-        if (node.getEMetaNodeType() == EMetaNodeType.MATLAB && node.hasNode()) {
-            copiedNode = new Node(node.node());
-        } else if (node.getEMetaNodeType() == EMetaNodeType.STRING) {
-            copiedNode = new Node(node.nodeText());
-        } else if (node.getEMetaNodeType() == EMetaNodeType.META_CLASS) {
-            copiedNode = new Node((MetaClass) node.getMeta(), node.node());
-        } else if (node.getEMetaNodeType() == EMetaNodeType.META_PROPERTY) {
-            copiedNode = new Node((MetaProperty) node.getMeta(), node.node());
-        } else if (node.getEMetaNodeType() == EMetaNodeType.META_METHOD) {
-            copiedNode = new Node((MetaMethod) node.getMeta(), node.node());
+    private NodeFS deepCopyNode(NodeFS nodeFS) {
+        NodeFS copiedNodeFS;
+        if (nodeFS.getEMetaNodeType() == EMetaNodeType.MATLAB && nodeFS.hasNode()) {
+            copiedNodeFS = new NodeFS(nodeFS.node());
+        } else if (nodeFS.getEMetaNodeType() == EMetaNodeType.STRING) {
+            copiedNodeFS = new NodeFS(nodeFS.nodeText());
+        } else if (nodeFS.getEMetaNodeType() == EMetaNodeType.META_CLASS) {
+            copiedNodeFS = new NodeFS((MetaClass) nodeFS.getMeta(), nodeFS.node());
+        } else if (nodeFS.getEMetaNodeType() == EMetaNodeType.META_PROPERTY) {
+            copiedNodeFS = new NodeFS((MetaProperty) nodeFS.getMeta(), nodeFS.node());
+        } else if (nodeFS.getEMetaNodeType() == EMetaNodeType.META_METHOD) {
+            copiedNodeFS = new NodeFS((MetaMethod) nodeFS.getMeta(), nodeFS.node());
         } else {
-            throw new IllegalArgumentException("unknown Node");
+            throw new IllegalArgumentException("unknown NodeFS");
         }
 
         // System.out.println(" ");
-        // for (int i= 0; i < node.getLevel(); i++) {
+        // for (int i= 0; i < nodeFS.getLevel(); i++) {
         //     System.out.print("\t");
         // }
-        int c = node.getChildCount();
+        int c = nodeFS.getChildCount();
         // System.out.print("child count: " + c);
         for (int i = 0; i < c; i++) {
-            // System.out.print("\t copying Node: " + node.nodeText());
-            copiedNode.add(deepCopyNode((Node) node.getChildAt(i)));
+            // System.out.print("\t copying NodeFS: " + nodeFS.nodeText());
+            copiedNodeFS.add(deepCopyNode((NodeFS) nodeFS.getChildAt(i)));
         }
-        return copiedNode;
+        return copiedNodeFS;
     }
 
     private List<List<MTree.Node>> deepCopyDocu(List<List<MTree.Node>> docu) {

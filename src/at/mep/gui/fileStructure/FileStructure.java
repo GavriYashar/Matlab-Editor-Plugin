@@ -43,9 +43,9 @@ public class FileStructure extends UndecoratedFrame {
         public void actionPerformed(ActionEvent e) {
             setVisible(false);
             if (jTree.getMaxSelectionRow() < 0) return;
-            Node node = (Node) jTree.getSelectionPath().getLastPathComponent();
-            if (node.hasNode()) {
-                EditorWrapper.goToLine(node.node().getStartLine(), false);
+            NodeFS nodeFS = (NodeFS) jTree.getSelectionPath().getLastPathComponent();
+            if (nodeFS.hasNode()) {
+                EditorWrapper.goToLine(nodeFS.node().getStartLine(), false);
             }
         }
     };
@@ -245,8 +245,8 @@ public class FileStructure extends UndecoratedFrame {
             public void valueChanged(TreeSelectionEvent e) {
                 jTFS.requestFocus();
                 if (jTree.getMaxSelectionRow() < 0) return;
-                Node node = (Node) jTree.getSelectionPath().getLastPathComponent();
-                jTextArea.setText(node.getDocumentation());
+                NodeFS nodeFS = (NodeFS) jTree.getSelectionPath().getLastPathComponent();
+                jTextArea.setText(nodeFS.getDocumentation());
                 moveBarsDocuScrollpane();
             }
         });
@@ -279,7 +279,7 @@ public class FileStructure extends UndecoratedFrame {
 
     /** for radio buttons */
     private void populate() {
-        Node root = new Node(EditorWrapper.getShortName());
+        NodeFS root = new NodeFS(EditorWrapper.getShortName());
         
         MTree.NodeType nodeType;
         if (sections.isSelected()) {
@@ -318,35 +318,41 @@ public class FileStructure extends UndecoratedFrame {
     }
 
     public void setDefaultSettings() {
-        // preferred classes, if only functions or sections are available, radioButtons will be set accordingly
-        classes.setSelected(classes.isEnabled());
-        functions.setSelected(!classes.isEnabled() & !sections.isEnabled() & functions.isEnabled());
-        sections.setSelected(!classes.isEnabled() & sections.isEnabled() & !functions.isEnabled());
-
-        // (disable/enable) class RadioButton if the current file (is no/is) class
         MTree mTree = EditorWrapper.getMTree();
-        Tree<MTree.Node> nodeTree = mTree.findAsTree(MTree.NodeType.CLASSDEF);
-        classes.setEnabled(
-                (nodeTree.getChildCount(nodeTree.getRoot()) > 0) // is a valid CLASSDEF
-                && EditorWrapper.getFile().exists() // Untitled may hold classdef
-        );
+        switch (mTree.getFileType()) {
+            case ScriptFile:
+                classes.setEnabled(false);
+                functions.setEnabled(false);
+                sections.setEnabled(true);
 
-        nodeTree = EditorWrapper.getTreeFunction(activeEditor);
-        functions.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
+                sections.setSelected(true);
+                break;
+            case FunctionFile:
+                classes.setEnabled(false);
+                functions.setEnabled(true);
+                sections.setEnabled(true);
 
-        nodeTree = EditorWrapper.getTreeSection(activeEditor);
-        sections.setEnabled((nodeTree.getChildCount(nodeTree.getRoot()) > 0));
+                functions.setSelected(true);
+                break;
+            case ClassDefinitionFile:
+                classes.setEnabled(true);
+                functions.setEnabled(true);
+                sections.setEnabled(true);
 
-        // preferred classes, if only functions or cells are available, radioButtons will be set accordingly
-        classes.setSelected(classes.isEnabled()); // classes preferred
-        functions.setSelected(!classes.isEnabled() & functions.isEnabled()); // functions before sections preferred
-        sections.setSelected(!classes.isEnabled() & sections.isEnabled() & !functions.isEnabled());
+                classes.setSelected(true);
+                break;
+            case Unknown:
+                classes.setEnabled(true);
+                functions.setEnabled(true);
+                sections.setEnabled(true);
+                break;
+        }
 
         // search field request focus after resetting Settings
         jTFS.requestFocus();
     }
 
-    private void setTreeRoot(Node root, boolean filtered) {
+    private void setTreeRoot(NodeFS root, boolean filtered) {
         if (!filtered) {
             jTree.setOriginalRoot(root);
         }
@@ -388,74 +394,3 @@ public class FileStructure extends UndecoratedFrame {
         }
     }
 }
-
-/*
-// ///////////////////////////
-// /////// UNUSED CODE ///////
-// ///////////////////////////
-
-private Node forClass(MTree mTree, MTree.Node classDef) {
-    Node classDefNode = new Node(classDef);
-
-    // TODO: properties
-    // current problem is identifying properties in a way that always works.
-    // properties have "ID" as type, but so does MetaProperty Attributes like
-    // <Constant, GetAccess..., private..., true ...>
-    // see "doc property attributes"
-    //
-    //    0 = {MTree$Node@13044} "PROPERTIES [5, 5] to [9, 7]"
-    //    1 = {MTree$Node@13058} "ATTRIBUTES [5, 16] to [6, 31]"
-    //    2 = {MTree$Node@13059} "ATTR [5, 26] to [0, 0]"
-    //    3 = {MTree$Node@13046} "ID (Constant) [5, 17] to [0, 0]"
-    //    4 = {MTree$Node@13060} "ID (true) [5, 28] to [0, 0]"
-    //    5 = {MTree$Node@13061} "ATTR [6, 23] to [0, 0]"
-    //    6 = {MTree$Node@13062} "ID (GetAccess) [6, 13] to [0, 0]"
-    //    7 = {MTree$Node@13063} "ID (public) [6, 25] to [0, 0]"
-    //    8 = {MTree$Node@13064} "EQUALS [7, 15] to [0, 0]"
-    //    9 = {MTree$Node@13065} "ID (prop1) [7, 9] to [0, 0]"
-    //
-// Tree<MTree.Node> propertyTree = mTree.findAsTree(MTree.EMetaNodeType.PROPERTIES);
-// classDefNode = fillClassNode(classDefNode, propertyTree, MTree.EMetaNodeType.ID);
-
-Tree<MTree.Node> methodsTree = mTree.findAsTree(MTree.NodeType.METHODS);
-    classDefNode = fillClassNode(classDefNode, methodsTree, MTree.NodeType.FUNCTION);
-            return classDefNode;
-            }
-
-private Node forClassGetTree(MTree mTree, MTree.Node classDef) {
-    Node classDefNode = new Node(classDef);
-
-    Tree<MTree.Node> propertyTree = mTree.findAsTree(MTree.NodeType.PROPERTIES);
-    Tree<MTree.Node> methodsTree = mTree.findAsTree(MTree.NodeType.METHODS);
-    for (int i = 0; i < methodsTree.getChildCount(methodsTree.getRoot()); i++) {
-    MTree.Node method = methodsTree.getChild(methodsTree.getRoot(), i);
-    Node methodNode = new Node(method);
-
-    List<MTree.Node> methodsSub = method.getSubtree();
-    for (MTree.Node methodSub : methodsSub) {
-    if (methodSub.getType() == MTree.NodeType.FUNCTION) {
-    methodNode.add(new Node(methodSub));
-    }
-    }
-    classDefNode.add(methodNode);
-    }
-    return classDefNode;
-    }
-
-private static Node fillClassNode(Node classDefNode, Tree<MTree.Node> tree, MTree.NodeType type) {
-for (int i = 0; i < tree.getChildCount(tree.getRoot()); i++) {
-MTree.Node typeNodes = tree.getChild(tree.getRoot(), i);
-List<MTree.Node> subs = typeNodes.getSubtree();
-for (MTree.Node sub : subs) {
-    if (sub.getType() == type) {
-        if (type == MTree.NodeType.ID
-                && (sub.getText().matches("(Constant|Static|true|false|GetAccess|SetAccess|Access|private|public)"))) {
-            continue;
-        }
-        classDefNode.add(new Node(sub));
-    }
-}
-}
-return classDefNode;
-}
- */

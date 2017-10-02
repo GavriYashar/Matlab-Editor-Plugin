@@ -6,26 +6,20 @@ import com.mathworks.widgets.text.mcode.MTree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Created by z0032f1t on 02.08.2016.
  * <p>
- * Represents a Node in JTree and also an Matlab MTree.Node class.
+ * Represents a NodeFS in JTree and also an Matlab MTree.NodeFS class.
  */
-public class Node extends DefaultMutableTreeNode {
-    private static final Pattern staticFalse = Pattern.compile("(Static|Constant)\\s*=\\s*false");
-    private static final Pattern accessPrivate = Pattern.compile("Access\\s*=\\s*private");
-    private static final Pattern setAccessPrivate = Pattern.compile("SetAccess\\s*=\\s*private");
-    private static final Pattern getAccessPrivate = Pattern.compile("GetAccess\\s*=\\s*private");
-
+public class NodeFS extends DefaultMutableTreeNode {
     private MTree.Node node; // might not always be set, e.g.: First node is just the string of the filename
     private String nodeText = "DEFAULT NODE TEXT";
     private MTree.NodeType nodeType = MTree.NodeType.JAVA_NULL_NODE;
     private EMetaNodeType eMetaNodeType = EMetaNodeType.INVALID;
     private Meta meta = null;
 
-    // custom Node properties for metaClass
+    // custom NodeFS properties for metaClass
     private boolean isStatic = false;  // same as constant
     private boolean isSealed = false;
     private boolean isAbstract = false;
@@ -43,7 +37,7 @@ public class Node extends DefaultMutableTreeNode {
     private String documentation = "";
     private String detailedDocumentation = "";
 
-    public Node(MTree.Node node) {
+    public NodeFS(MTree.Node node) {
         super(node);
         this.node = node;
         this.nodeText = NodeUtils.getTextFormattedForNode(node);
@@ -51,7 +45,7 @@ public class Node extends DefaultMutableTreeNode {
         eMetaNodeType = EMetaNodeType.MATLAB;
     }
 
-    public Node(MetaClass c, MTree.Node mtNode) {
+    public NodeFS(MetaClass c, MTree.Node mtNode) {
         eMetaNodeType = EMetaNodeType.META_CLASS;
         meta = c;
         node = mtNode;
@@ -68,12 +62,12 @@ public class Node extends DefaultMutableTreeNode {
         detailedDocumentation = c.getDetailedDescription();
     }
 
-    public Node(MetaProperty p, MTree.Node mtNode) {
+    public NodeFS(MetaProperty p, MTree.Node mtNode) {
         eMetaNodeType = EMetaNodeType.META_PROPERTY;
         meta = p;
         node = mtNode;
 
-        GetAccessPrivate = p.getGetAccess() ;
+        GetAccessPrivate = p.getGetAccess();
         SetAccessPrivate = p.getSetAccess();
         isAbstract = p.isAbstract();
         isHidden = p.isHidden();
@@ -100,7 +94,7 @@ public class Node extends DefaultMutableTreeNode {
         detailedDocumentation = p.getDetailedDescription();
     }
 
-    public Node(MetaMethod m, MTree.Node mtNode) {
+    public NodeFS(MetaMethod m, MTree.Node mtNode) {
         eMetaNodeType = EMetaNodeType.META_METHOD;
         meta = m;
         node = mtNode;
@@ -126,7 +120,7 @@ public class Node extends DefaultMutableTreeNode {
         detailedDocumentation = m.getDetailedDescription();
     }
 
-    public Node(String nodeText) {
+    public NodeFS(String nodeText) {
         eMetaNodeType = EMetaNodeType.STRING;
         this.nodeText = nodeText;
     }

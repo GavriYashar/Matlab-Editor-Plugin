@@ -1,6 +1,6 @@
 package at.mep.editor;
 
-import at.mep.gui.fileStructure.Node;
+import at.mep.gui.fileStructure.NodeFS;
 import at.mep.util.ComponentUtil;
 import at.mep.util.TreeUtils;
 import com.mathworks.matlab.api.editor.Editor;
@@ -30,14 +30,14 @@ public class EditorWrapper {
     private static MTree lastEditorMTree;
     private static MTree activeEditorMTree;
 
-    private static Node lastEditorClassNode;
-    private static Node activeEditorClassNode;
+    private static NodeFS lastEditorClassNodeFS;
+    private static NodeFS activeEditorClassNodeFS;
 
-    private static Node lastEditorFunctionNode;
-    private static Node activeEditorFunctionNode;
+    private static NodeFS lastEditorFunctionNodeFS;
+    private static NodeFS activeEditorFunctionNodeFS;
 
-    private static Node lastEditorSectionNode;
-    private static Node activeEditorSectionNode;
+    private static NodeFS lastEditorSectionNodeFS;
+    private static NodeFS activeEditorSectionNodeFS;
 
 
     /** if true textArray needs to be updated, fixing a huge performance issue */
@@ -96,64 +96,64 @@ public class EditorWrapper {
         return EditorWrapper.lastEditorMTree;
     }
 
-    public static Node getActiveEditorClassNode() {
+    public static NodeFS getActiveEditorClassNodeFS() {
         if (EditorWrapper.isActiveEditorDirty) {
             EditorWrapper.updateFieldsForActiveEditor();
         }
-        return EditorWrapper.activeEditorClassNode;
+        return EditorWrapper.activeEditorClassNodeFS;
     }
 
-    public static Node getLastEditorClassNode() {
+    public static NodeFS getLastEditorClassNodeFS() {
         if (EditorWrapper.isLastEditorDirty) {
             EditorWrapper.updateFieldsForLastEditor();
         }
-        return EditorWrapper.lastEditorClassNode;
+        return EditorWrapper.lastEditorClassNodeFS;
     }
 
-    public static Node getActiveEditorFunctionNode() {
+    public static NodeFS getActiveEditorFunctionNodeFS() {
         if (EditorWrapper.isActiveEditorDirty) {
             EditorWrapper.updateFieldsForActiveEditor();
         }
-        return EditorWrapper.activeEditorFunctionNode;
+        return EditorWrapper.activeEditorFunctionNodeFS;
     }
 
-    public static Node getLastEditorFunctionNode() {
+    public static NodeFS getLastEditorFunctionNodeFS() {
         if (EditorWrapper.isLastEditorDirty) {
             EditorWrapper.updateFieldsForLastEditor();
         }
-        return EditorWrapper.lastEditorFunctionNode;
+        return EditorWrapper.lastEditorFunctionNodeFS;
     }
 
-    public static Node getActiveEditorSectionNode() {
+    public static NodeFS getActiveEditorSectionNodeFS() {
         if (EditorWrapper.isActiveEditorDirty) {
             EditorWrapper.updateFieldsForActiveEditor();
         }
-        return EditorWrapper.activeEditorSectionNode;
+        return EditorWrapper.activeEditorSectionNodeFS;
     }
 
-    public static Node getLastEditorSectionNode() {
+    public static NodeFS getLastEditorSectionNodeFS() {
         if (EditorWrapper.isLastEditorDirty) {
             EditorWrapper.updateFieldsForLastEditor();
         }
-        return EditorWrapper.lastEditorSectionNode;
+        return EditorWrapper.lastEditorSectionNodeFS;
     }
 
     public static void updateFieldsForActiveEditor() {
         setIsActiveEditorDirty(false); // if not in first line, it will enter an endless loop
         EditorWrapper.activeEditorTextArray = EditorWrapper.getTextArray(EditorWrapper.getActiveEditor());
         EditorWrapper.activeEditorMTree = EditorWrapper.getMTree(EditorWrapper.getActiveEditor());
-        EditorWrapper.activeEditorClassNode = EditorWrapper.getNodeClass(EditorWrapper.getActiveEditor());
-        EditorWrapper.activeEditorFunctionNode = EditorWrapper.getNodeFunction(EditorWrapper.getActiveEditor());
-        EditorWrapper.activeEditorSectionNode = EditorWrapper.getNodeSection(EditorWrapper.getActiveEditor());
+        EditorWrapper.activeEditorClassNodeFS = EditorWrapper.getNodeClass(EditorWrapper.getActiveEditor());
+        EditorWrapper.activeEditorFunctionNodeFS = EditorWrapper.getNodeFunction(EditorWrapper.getActiveEditor());
+        EditorWrapper.activeEditorSectionNodeFS = EditorWrapper.getNodeSection(EditorWrapper.getActiveEditor());
     }
 
     public static void updateFieldsForLastEditor() {
         setIsLastEditorDirty(false); // if not in first line, it will enter an endless loop
         EditorWrapper.lastEditorTextArray = EditorWrapper.getTextArray(lastEditor);
         EditorWrapper.lastEditorMTree = EditorWrapper.getMTree(lastEditor);
-        EditorWrapper.lastEditorClassNode = EditorWrapper.getNodeClass(lastEditor);
-        EditorWrapper.lastEditorFunctionNode = EditorWrapper.getNodeFunction(lastEditor);
-        EditorWrapper.lastEditorSectionNode = EditorWrapper.getNodeSection(lastEditor);
+        EditorWrapper.lastEditorClassNodeFS = EditorWrapper.getNodeClass(lastEditor);
+        EditorWrapper.lastEditorFunctionNodeFS = EditorWrapper.getNodeFunction(lastEditor);
+        EditorWrapper.lastEditorSectionNodeFS = EditorWrapper.getNodeSection(lastEditor);
     }
 
     // ////////////////////////////////////////////////////////////////////////////
@@ -567,19 +567,19 @@ public class EditorWrapper {
         return MTree.parse(editor.getText());
     }
 
-    public static Node getNodeClass(Editor editor) {
-        Node node = new Node("No Class Node: Or No Class");
+    public static NodeFS getNodeClass(Editor editor) {
+        NodeFS nodeFS = new NodeFS("No Class NodeFS: Or No Class");
         if (EditorWrapper.getFile(editor).exists()) {
-            node = TreeUtils.toFileStructureNodeClass(EditorWrapper.getMTreeFast(editor), EditorWrapper.getFullQualifiedClass(editor));
+            nodeFS = TreeUtils.toFileStructureNodeClass(EditorWrapper.getMTreeFast(editor), EditorWrapper.getFullQualifiedClass(editor));
         }
-        return node;
+        return nodeFS;
     }
 
-    public static Node getNodeFunction(Editor editor) {
+    public static NodeFS getNodeFunction(Editor editor) {
         return TreeUtils.toFileStructureNodeFunction(EditorWrapper.getTreeFunction(editor), EditorWrapper.getShortName());
     }
 
-    public static Node getNodeSection(Editor editor) {
+    public static NodeFS getNodeSection(Editor editor) {
         return TreeUtils.toFileStructureNodeSection(EditorWrapper.getTreeSection(editor), EditorWrapper.getShortName());
     }
 
@@ -606,43 +606,43 @@ public class EditorWrapper {
         return mTree;
     }
 
-    public static Node getClassNodeFast(Editor editor) {
-        Node node;
+    public static NodeFS getClassNodeFast(Editor editor) {
+        NodeFS nodeFS;
         if (editor == gae()) {
-            node = EditorWrapper.getActiveEditorClassNode();
+            nodeFS = EditorWrapper.getActiveEditorClassNodeFS();
         } else if (editor == lastEditor) {
-            node = EditorWrapper.getLastEditorClassNode();
+            nodeFS = EditorWrapper.getLastEditorClassNodeFS();
         } else {
             EditorWrapper.setLastEditor(editor);
-            node = EditorWrapper.getLastEditorClassNode();
+            nodeFS = EditorWrapper.getLastEditorClassNodeFS();
         }
-        return node;
+        return nodeFS;
     }
 
-    public static Node getFunctionNodeFast(Editor editor) {
-        Node node;
+    public static NodeFS getFunctionNodeFast(Editor editor) {
+        NodeFS nodeFS;
         if (editor == gae()) {
-            node = EditorWrapper.getActiveEditorFunctionNode();
+            nodeFS = EditorWrapper.getActiveEditorFunctionNodeFS();
         } else if (editor == lastEditor) {
-            node = EditorWrapper.getLastEditorFunctionNode();
+            nodeFS = EditorWrapper.getLastEditorFunctionNodeFS();
         } else {
             EditorWrapper.setLastEditor(editor);
-            node = EditorWrapper.getLastEditorFunctionNode();
+            nodeFS = EditorWrapper.getLastEditorFunctionNodeFS();
         }
-        return node;
+        return nodeFS;
     }
 
-    public static Node getSectionNodeFast(Editor editor) {
-        Node node;
+    public static NodeFS getSectionNodeFast(Editor editor) {
+        NodeFS nodeFS;
         if (editor == gae()) {
-            node = EditorWrapper.getActiveEditorSectionNode();
+            nodeFS = EditorWrapper.getActiveEditorSectionNodeFS();
         } else if (editor == lastEditor) {
-            node = EditorWrapper.getLastEditorSectionNode();
+            nodeFS = EditorWrapper.getLastEditorSectionNodeFS();
         } else {
             EditorWrapper.setLastEditor(editor);
-            node = EditorWrapper.getLastEditorSectionNode();
+            nodeFS = EditorWrapper.getLastEditorSectionNodeFS();
         }
-        return node;
+        return nodeFS;
     }
 
 

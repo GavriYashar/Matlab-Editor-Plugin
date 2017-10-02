@@ -8,7 +8,9 @@ public enum EMetaAccess {
     PUBLIC(2),
     META(3),
     IMMUTABLE(4),
-    NONE(5); // e.g. Constant properties
+    NONE(5), // e.g. Constant properties
+    TRUE(6),
+    FALSE(7);
 
     private final int access;
 
@@ -18,5 +20,9 @@ public enum EMetaAccess {
 
     public int getAccess() {
         return access;
+    }
+
+    public boolean convertBoolean() {
+        return access == TRUE.access;
     }
 }

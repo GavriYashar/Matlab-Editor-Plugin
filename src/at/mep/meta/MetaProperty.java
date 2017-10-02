@@ -1,11 +1,12 @@
 package at.mep.meta;
 
-import com.mathworks.widgets.text.mcode.MTree;
-
-import java.util.List;
+import at.mep.editor.tree.EAttributes;
+import at.mep.util.TreeUtilsV2;
 
 /** Created by Andreas Justin on 2016-09-12. */
 public class MetaProperty extends Meta {
+    private String type = "";
+    private String validators = "";
     private EMetaAccess getAccess = EMetaAccess.PUBLIC;
     private EMetaAccess setAccess = EMetaAccess.PUBLIC;
     protected String definingClass = "";
@@ -16,6 +17,22 @@ public class MetaProperty extends Meta {
     private boolean hasDefaults = false;
     private boolean hasSetter = false;
     private boolean hasGetter = false;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getValidators() {
+        return validators;
+    }
+
+    public void setValidators(String validators) {
+        this.validators = validators;
+    }
 
     public void setGetAccess(EMetaAccess getAccess) {
         this.getAccess = getAccess;
@@ -105,8 +122,52 @@ public class MetaProperty extends Meta {
         return hasGetter;
     }
 
+    public void populate(String name, String type, String validators) {
+        this.name = name;
+        this.type = type;
+        this.validators = validators;
+    }
+
+    public void populate(TreeUtilsV2.PropertyHolder propertyHolder) {
+        populate(propertyHolder.getName(), propertyHolder.getType(), propertyHolder.getValidator());
+    }
+
     @Override
-    public void setAttributes(List<MTree.Node> attributes) {
-        System.out.println("UH-OH not implemented");
+    public void populate(EAttributes attribute, EMetaAccess access) {
+        switch (attribute) {
+            case ABORTSET:
+                break;
+            case ABSTRACT:
+                isAbstract = access.convertBoolean();
+                break;
+            case ACCESS:
+                getAccess = access;
+                setAccess = access;
+                break;
+            case CONSTANT:
+                isConstant = access.convertBoolean();
+                break;
+            case DEPENDENT:
+                isDependent = access.convertBoolean();
+                break;
+            case GETACCESS:
+                getAccess = access;
+                break;
+            case GETOBSERVABLE:
+                break;
+            case HIDDEN:
+                isHidden = access.convertBoolean();
+                break;
+            case NONCOPYABLE:
+                break;
+            case SETACCESS:
+                setAccess = access;
+                break;
+            case SETOBSERVABLE:
+                break;
+            case TRANSIENT:
+                isTransient = access.convertBoolean();
+                break;
+        }
     }
 }

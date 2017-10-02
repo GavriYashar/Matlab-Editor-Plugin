@@ -64,6 +64,17 @@ public class FileUtils {
         return s;
     }
 
+    public static String readInputStreamToString(InputStream stream ) {
+        BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+        String string = "";
+        try {
+            string = FileUtils.readBufferedReaderToString(br, ETrim.TRAILING);
+            br.close();
+        } catch (IOException ignored) {
+        }
+        return string;
+    }
+
     public static String readBufferedReaderToString(BufferedReader br, ETrim trim) throws IOException {
         String line;
         String s = "";
