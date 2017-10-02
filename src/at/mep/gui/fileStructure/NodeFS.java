@@ -265,6 +265,9 @@ public class NodeFS extends DefaultMutableTreeNode {
         MFile mFile = MFile.construct(editor);
         NodeFS root = new NodeFS(mFile.getName());
         MFile.ClassDef classDef = mFile.getClassDefs().get(0);
+        root.node = classDef.getNode();
+        root.nodeType = MTree.NodeType.CLASSDEF;
+        root.eMetaNodeType = EMetaNodeType.META_CLASS;
 
         // properties
         for (MFile.ClassDef.Properties properties : classDef.getProperties()) {
@@ -316,6 +319,7 @@ public class NodeFS extends DefaultMutableTreeNode {
                 }
                 NodeFS nodeFS = new NodeFS();
                 nodeFS.node = function.getNode();
+                nodeFS.nodeText = function.getFunctionString();
                 nodeFS.nodeType = MTree.NodeType.FUNCTION;
                 nodeFS.eMetaNodeType = EMetaNodeType.MATLAB;
                 root.add(nodeFS);
