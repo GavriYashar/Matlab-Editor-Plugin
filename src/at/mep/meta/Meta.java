@@ -11,7 +11,6 @@ public abstract class Meta {
     protected String description = "";
     protected String detailedDescription = "";
     protected boolean isHidden = false;
-    private List<MTree.Node> attributes;
 
     public void setName(String name) {
         this.name = name;
