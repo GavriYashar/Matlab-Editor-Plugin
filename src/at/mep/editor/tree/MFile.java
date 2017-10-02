@@ -14,11 +14,16 @@ import java.util.List;
 import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
 
 public class MFile {
+    private String name = "NAME NOT SET";
     private List<ClassDef> classDefs;
     private List<CellTitle> cellTitles;
     private List<ClassDef.Method.Function> functions;
 
     private MFile() {
+    }
+
+    public String getName() {
+        return name;
     }
 
     public List<ClassDef> getClassDefs() {
@@ -35,7 +40,12 @@ public class MFile {
 
     public static MFile construct(Editor editor) {
         MTree mTree = EditorWrapper.getMTreeFast(editor);
-        return construct(mTree);
+        MFile mFile = construct(mTree);
+
+        if (mFile.name.equals("NAME NOT SET")) {
+            mFile.name = EditorWrapper.getFullQualifiedClass(editor);
+        }
+        return mFile;
     }
 
     public static MFile construct(MTree mTree) {
@@ -191,11 +201,23 @@ public class MFile {
     public static class ClassDef {
         private MTree.Node name = MTree.NULL_NODE;
         private List<MTree.Node> superclasses = Arrays.asList(MTree.NULL_NODE);
-        private List<Attributes> attributes;
-        private List<Properties> properties;
-        private List<Method> method;
+        private List<Attributes> attributes = new ArrayList<>(0);
+        private List<Properties> properties = new ArrayList<>(0);
+        private List<Method> method = new ArrayList<>(0);
 
         private ClassDef() {
+        }
+
+        public boolean hasAttributes() {
+            return attributes.size() > 0;
+        }
+
+        public boolean hasProperties() {
+            return properties.size() > 0;
+        }
+
+        public boolean hasMethods() {
+            return method.size() > 0;
         }
 
         public MTree.Node getName() {
@@ -256,8 +278,8 @@ public class MFile {
         }
 
         public static class Properties {
-            private List<Attributes> attributes;
-            private List<Property> propertyList;
+            private List<Attributes> attributes = new ArrayList<>(0);
+            private List<Property> propertyList = new ArrayList<>(0);
 
             private Properties() {
             }
@@ -276,6 +298,14 @@ public class MFile {
                     properties.add(properties1);
                 }
                 return properties;
+            }
+
+            public boolean hasAttributes() {
+                return attributes.size() > 0;
+            }
+
+            public boolean hasProperty() {
+                return propertyList.size() > 0;
             }
 
             public List<Attributes> getAttributes() {
@@ -375,14 +405,26 @@ public class MFile {
                 public Method.Function getGetter() {
                     return getter;
                 }
+
+                public boolean hasGetter() {
+                    return getter.getName().getType() != JAVA_NULL_NODE;
+                }
+
+                public boolean hasSetter() {
+                    return setter.getName().getType() != JAVA_NULL_NODE;
+                }
             }
         }
 
         public static class Method {
-            private List<Attributes> attributes;
-            private List<Function> functionList;
+            private List<Attributes> attributes = new ArrayList<>(0);
+            private List<Function> functionList = new ArrayList<>(0);
 
             private Method() {
+            }
+
+            public boolean hasAttributes() {
+                return attributes.size() > 0;
             }
 
             public List<Attributes> getAttributes() {
@@ -446,8 +488,8 @@ public class MFile {
                             for (MTree.Node node : outArgs){
                                 string.append(node.getText()).append(", ");
                             }
-                            string.delete(string.length()-1, string.length());
-                            string.append("]");
+                            string.delete(string.length()-2, string.length());
+                            string.append("] = ");
                         }
                         string.append(getName().getText());
                         if ((inArgs.size() > 0 && inArgs.get(0).getType() != JAVA_NULL_NODE)) {
@@ -455,7 +497,7 @@ public class MFile {
                             for (MTree.Node node : inArgs){
                                 string.append(node.getText()).append(", ");
                             }
-                            string.delete(string.length()-1, string.length());
+                            string.delete(string.length()-2, string.length());
                             string.append(")");
                         }
                         functionString = string.toString();
