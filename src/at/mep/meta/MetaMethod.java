@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Created by Andreas Justin on 2016-09-12. */
+@Deprecated
 public class MetaMethod extends Meta {
     protected EAccess access = EAccess.PUBLIC;
     protected String definingClass = "";

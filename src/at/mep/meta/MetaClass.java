@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Created by Andreas Justin on 2016-09-12. */
+@Deprecated
 public class MetaClass extends Meta {
     protected boolean isSealed = false;
     protected boolean isAbstract = false;

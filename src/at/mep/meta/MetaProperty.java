@@ -4,6 +4,7 @@ import at.mep.editor.tree.EAttributes;
 import at.mep.util.TreeUtilsV2;
 
 /** Created by Andreas Justin on 2016-09-12. */
+@Deprecated
 public class MetaProperty extends Meta {
     private String type = "";
     private String validators = "";

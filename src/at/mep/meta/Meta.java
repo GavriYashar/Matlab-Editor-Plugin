@@ -6,6 +6,7 @@ import at.mep.util.TreeUtilsV2;
 /**
  * Created by Andreas Justin on 2016-09-13.
  */
+@Deprecated
 public abstract class Meta {
     protected String name = "";
     protected String description = "";
