@@ -1,12 +1,8 @@
 package at.mep.gui.fileStructure;
 
-import at.mep.meta.MetaClass;
-import at.mep.meta.MetaMethod;
-import at.mep.meta.MetaProperty;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -63,43 +59,11 @@ class JTreeFilter extends JTree {
     }
 
     private NodeFS deepCopyNode(NodeFS nodeFS) {
-        NodeFS copiedNodeFS;
-        if (nodeFS.getEMetaNodeType() == EMetaNodeType.MATLAB && nodeFS.hasNode()) {
-            copiedNodeFS = new NodeFS(nodeFS.node());
-        } else if (nodeFS.getEMetaNodeType() == EMetaNodeType.STRING) {
-            copiedNodeFS = new NodeFS(nodeFS.nodeText());
-        } else if (nodeFS.getEMetaNodeType() == EMetaNodeType.META_CLASS) {
-            copiedNodeFS = new NodeFS((MetaClass) nodeFS.getMeta(), nodeFS.node());
-        } else if (nodeFS.getEMetaNodeType() == EMetaNodeType.META_PROPERTY) {
-            copiedNodeFS = new NodeFS((MetaProperty) nodeFS.getMeta(), nodeFS.node());
-        } else if (nodeFS.getEMetaNodeType() == EMetaNodeType.META_METHOD) {
-            copiedNodeFS = new NodeFS((MetaMethod) nodeFS.getMeta(), nodeFS.node());
-        } else {
-            throw new IllegalArgumentException("unknown NodeFS");
-        }
-
-        // System.out.println(" ");
-        // for (int i= 0; i < nodeFS.getLevel(); i++) {
-        //     System.out.print("\t");
-        // }
+        NodeFS copiedNodeFS = new NodeFS(nodeFS);
         int c = nodeFS.getChildCount();
-        // System.out.print("child count: " + c);
         for (int i = 0; i < c; i++) {
-            // System.out.print("\t copying NodeFS: " + nodeFS.nodeText());
             copiedNodeFS.add(deepCopyNode((NodeFS) nodeFS.getChildAt(i)));
         }
         return copiedNodeFS;
-    }
-
-    private List<List<MTree.Node>> deepCopyDocu(List<List<MTree.Node>> docu) {
-        List<List<MTree.Node>> copiedDocu = new ArrayList<>(docu.size());
-        for (List<MTree.Node> comments : docu) {
-            List<MTree.Node> copiedComments = new ArrayList<>(comments.size());
-            for (MTree.Node node : comments) {
-                copiedComments.add(node);
-            }
-            copiedDocu.add(copiedComments);
-        }
-        return copiedDocu;
     }
 }

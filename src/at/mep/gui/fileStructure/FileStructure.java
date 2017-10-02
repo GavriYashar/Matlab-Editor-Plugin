@@ -75,6 +75,7 @@ public class FileStructure extends UndecoratedFrame {
         return INSTANCE;
     }
 
+
     private void setLayout() {
         setTitle("FileStructureViewer");
         int width = ScreenSize.getWidth();
@@ -280,7 +281,7 @@ public class FileStructure extends UndecoratedFrame {
     /** for radio buttons */
     private void populate() {
         NodeFS root = new NodeFS(EditorWrapper.getShortName());
-        
+
         MTree.NodeType nodeType;
         if (sections.isSelected()) {
             nodeType = MTree.NodeType.CELL_TITLE;
