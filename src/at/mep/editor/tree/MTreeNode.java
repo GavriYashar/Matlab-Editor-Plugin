@@ -12,6 +12,9 @@ import java.util.List;
 
 import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
 
+/**
+ * this is a helper class, for debugging purposes, so MTree is easier to understand
+ */
 public class MTreeNode {
     // mTree = at.mep.editor.EditorWrapper.getMTree();
     // mtn = at.mep.editor.tree.MTreeNode.construct(mTree);
