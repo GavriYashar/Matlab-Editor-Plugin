@@ -89,8 +89,8 @@ public class MFile {
         private CellTitle() {
         }
 
-        public MTree.Node getName() {
-            return name;
+        public MTree.Node getNode() {
+            return node;
         }
 
         public static List<CellTitle> construct(List<MTree.Node> mtnCellTitle) {
@@ -98,7 +98,7 @@ public class MFile {
 
             for (MTree.Node node : mtnCellTitle) {
                 CellTitle cellTitle = new CellTitle();
-                cellTitle.name = node;
+                cellTitle.node = node;
                 cellTitles.add(cellTitle);
             }
 
@@ -107,7 +107,7 @@ public class MFile {
 
         public String getTitleString() {
             if (titleString == null) {
-                titleString = StringUtils.trimStart(name.getText());
+                titleString = StringUtils.trimStart(node.getText());
                 titleString = StringUtils.trimEnd(titleString);
             }
             return titleString;
@@ -138,7 +138,7 @@ public class MFile {
         }
 
         public static class Attribute {
-            private MTree.Node attribute = MTree.NULL_NODE;
+            private MTree.Node node = MTree.NULL_NODE;
             private List<MTree.Node> value = Arrays.asList(MTree.NULL_NODE);
 
             private EAttributes attributeAsEAttribute = EAttributes.INVALID;
@@ -149,7 +149,7 @@ public class MFile {
 
             public EAttributes getAttributeAsEAttribute() {
                 if (attributeAsEAttribute == EAttributes.INVALID) {
-                    attributeAsEAttribute = EAttributes.valueOf(attribute.getText().toUpperCase());
+                    attributeAsEAttribute = EAttributes.valueOf(node.getText().toUpperCase());
                 }
                 return attributeAsEAttribute;
             }
@@ -167,8 +167,8 @@ public class MFile {
                 return accessAsEMetaAccess;
             }
 
-            public MTree.Node getAttribute() {
-                return attribute;
+            public MTree.Node getNode() {
+                return node;
             }
 
             public List<MTree.Node> getValue() {
@@ -180,7 +180,7 @@ public class MFile {
                 for (MTree.Node node : mtnAttribute) {
                     Attribute attribute = new Attribute();
 
-                    attribute.attribute = node.getLeft();
+                    attribute.node = node.getLeft();
 
                     switch (node.getRight().getType()) {
                         case ID:
@@ -199,7 +199,7 @@ public class MFile {
     }
 
     public static class ClassDef {
-        private MTree.Node name = MTree.NULL_NODE;
+        private MTree.Node node = MTree.NULL_NODE;
         private List<MTree.Node> superclasses = Arrays.asList(MTree.NULL_NODE);
         private List<Attributes> attributes = new ArrayList<>(0);
         private List<Properties> properties = new ArrayList<>(0);
@@ -220,8 +220,8 @@ public class MFile {
             return method.size() > 0;
         }
 
-        public MTree.Node getName() {
-            return name;
+        public MTree.Node getNode() {
+            return node;
         }
 
         public List<Attributes> getAttributes() {
@@ -246,7 +246,7 @@ public class MFile {
             for (MTree.Node node : mtnClassDef) {
                 ClassDef classDef = new ClassDef();
 
-                classDef.name = TreeUtilsV2.mTreeNodeGetClassName(node);
+                classDef.node = TreeUtilsV2.mTreeNodeGetClassName(node);
 
                 List<MTree.Node> superclasses = TreeUtilsV2.findNode(node.getLeft().getRight().getSubtree(), ID);
                 if (superclasses.size() > 1) {
@@ -317,7 +317,7 @@ public class MFile {
             }
 
             public static class Property {
-                MTree.Node name = MTree.NULL_NODE;
+                MTree.Node node = MTree.NULL_NODE;
                 MTree.Node definition = MTree.NULL_NODE;
                 List<MTree.Node> validators = Arrays.asList(MTree.NULL_NODE);
 
@@ -333,7 +333,7 @@ public class MFile {
                     for (MTree.Node node : mtnProperty) {
                         Property property = new Property();
 
-                        property.name = TreeUtilsV2.mTreeNodeGetPropertyName(node);
+                        property.node = TreeUtilsV2.mTreeNodeGetPropertyName(node);
 
                         switch (node.getLeft().getType()) {
                             case ATBASE:
@@ -367,9 +367,9 @@ public class MFile {
 
                     // set setters
                     for (Method.Function function : setterList) {
-                        String functionName = function.getName().getText();
+                        String functionName = function.getNode().getText();
                         for (Property property : propertyList) {
-                            if (functionName.endsWith(property.getName().getText())) {
+                            if (functionName.endsWith(property.getNode().getText())) {
                                 property.setter = function;
                             }
                         }
@@ -377,17 +377,17 @@ public class MFile {
 
                     // set getters
                     for (Method.Function function : getterList) {
-                        String functionName = function.getName().getText();
+                        String functionName = function.getNode().getText();
                         for (Property property : propertyList) {
-                            if (functionName.endsWith(property.getName().getText())) {
+                            if (functionName.endsWith(property.getNode().getText())) {
                                 property.getter = function;
                             }
                         }
                     }
                 }
 
-                public MTree.Node getName() {
-                    return name;
+                public MTree.Node getNode() {
+                    return node;
                 }
 
                 public MTree.Node getDefinition() {
@@ -407,11 +407,11 @@ public class MFile {
                 }
 
                 public boolean hasGetter() {
-                    return getter.getName().getType() != JAVA_NULL_NODE;
+                    return getter.getNode().getType() != JAVA_NULL_NODE;
                 }
 
                 public boolean hasSetter() {
-                    return setter.getName().getType() != JAVA_NULL_NODE;
+                    return setter.getNode().getType() != JAVA_NULL_NODE;
                 }
             }
         }
@@ -452,7 +452,7 @@ public class MFile {
 
             public static class Function {
                 private String functionString = null;
-                private MTree.Node name = MTree.NULL_NODE;
+                private MTree.Node node = MTree.NULL_NODE;
                 private List<MTree.Node> outArgs = Arrays.asList(MTree.NULL_NODE);
                 private List<MTree.Node> inArgs = Arrays.asList(MTree.NULL_NODE);
 
@@ -460,15 +460,15 @@ public class MFile {
                 }
 
                 public boolean isGetter() {
-                    return name.getText().startsWith("get.");
+                    return node.getText().startsWith("get.");
                 }
 
                 public boolean isSetter() {
-                    return name.getText().startsWith("set.");
+                    return node.getText().startsWith("set.");
                 }
 
-                public MTree.Node getName() {
-                    return name;
+                public MTree.Node getNode() {
+                    return node;
                 }
 
                 public List<MTree.Node> getOutArgs() {
@@ -491,7 +491,7 @@ public class MFile {
                             string.delete(string.length()-2, string.length());
                             string.append("] = ");
                         }
-                        string.append(getName().getText());
+                        string.append(getNode().getText());
                         if ((inArgs.size() > 0 && inArgs.get(0).getType() != JAVA_NULL_NODE)) {
                             string.append("(");
                             for (MTree.Node node : inArgs){
@@ -511,7 +511,7 @@ public class MFile {
                     for (MTree.Node node : mtnFunction) {
                         Function function = new Function();
 
-                        function.name = node.getFunctionName();
+                        function.node = node.getFunctionName();
                         function.outArgs = node.getOutputArguments();
                         function.inArgs = node.getInputArguments();
 

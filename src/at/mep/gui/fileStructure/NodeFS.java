@@ -236,7 +236,7 @@ public class NodeFS extends DefaultMutableTreeNode {
         NodeFS root = new NodeFS(mFile.getName());
         for (MFile.CellTitle cellTitle : mFile.getCellTitles()) {
             NodeFS nodeFS = new NodeFS();
-            nodeFS.node = cellTitle.getName();
+            nodeFS.node = cellTitle.getNode();
             nodeFS.nodeText = cellTitle.getTitleString();
             nodeFS.nodeType = MTree.NodeType.CELL_TITLE;
             nodeFS.eMetaNodeType = EMetaNodeType.MATLAB;
@@ -251,7 +251,7 @@ public class NodeFS extends DefaultMutableTreeNode {
         NodeFS root = new NodeFS(mFile.getName());
         for (MFile.ClassDef.Method.Function function : mFile.getFunctions()) {
             NodeFS nodeFS = new NodeFS();
-            nodeFS.node = function.getName();
+            nodeFS.node = function.getNode();
             nodeFS.nodeText = function.getFunctionString();
             nodeFS.nodeType = MTree.NodeType.FUNCTION;
             nodeFS.eMetaNodeType = EMetaNodeType.MATLAB;
@@ -276,15 +276,15 @@ public class NodeFS extends DefaultMutableTreeNode {
             for (MFile.ClassDef.Properties.Property property : properties.getPropertyList()) {
                 NodeFS nodeFS = new NodeFS();
 
-                nodeFS.node = property.getName();
-                nodeFS.nodeText = property.getName().getText();
+                nodeFS.node = property.getNode();
+                nodeFS.nodeText = property.getNode().getText();
                 nodeFS.nodeType = MTree.NodeType.EQUALS;
                 nodeFS.eMetaNodeType = EMetaNodeType.META_PROPERTY;
 
                 if (property.hasGetter()) {
                     NodeFS getter = new NodeFS();
-                    getter.node = property.getGetter().getName();
-                    getter.nodeText = property.getGetter().getName().getText();
+                    getter.node = property.getGetter().getNode();
+                    getter.nodeText = property.getGetter().getNode().getText();
                     getter.nodeType = MTree.NodeType.FUNCTION;
                     getter.eMetaNodeType = EMetaNodeType.MATLAB;
 
@@ -293,8 +293,8 @@ public class NodeFS extends DefaultMutableTreeNode {
 
                 if (property.hasSetter()) {
                     NodeFS setter = new NodeFS();
-                    setter.node = property.getSetter().getName();
-                    setter.nodeText = property.getSetter().getName().getText();
+                    setter.node = property.getSetter().getNode();
+                    setter.nodeText = property.getSetter().getNode().getText();
                     setter.nodeType = MTree.NodeType.FUNCTION;
                     setter.eMetaNodeType = EMetaNodeType.MATLAB;
 
