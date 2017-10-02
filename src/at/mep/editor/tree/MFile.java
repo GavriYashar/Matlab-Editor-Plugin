@@ -15,9 +15,9 @@ import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
 
 public class MFile {
     private String name = "NAME NOT SET";
-    private List<ClassDef> classDefs;
-    private List<CellTitle> cellTitles;
-    private List<ClassDef.Method.Function> functions;
+    private List<ClassDef> classDefs = new ArrayList<>(0);
+    private List<CellTitle> cellTitles = new ArrayList<>(0);
+    private List<ClassDef.Method.Function> functions = new ArrayList<>(0);
 
     private MFile() {
     }
@@ -83,8 +83,8 @@ public class MFile {
     }
 
     public static class CellTitle{
-        private String titleString = null;
-        private MTree.Node name = MTree.NULL_NODE;
+        private String titleString = "";
+        private MTree.Node node = MTree.NULL_NODE;
 
         private CellTitle() {
         }
@@ -115,7 +115,7 @@ public class MFile {
     }
 
     public static class Attributes {
-        private List<Attribute> attributeList;
+        private List<Attribute> attributeList = new ArrayList<>(0);
 
         private Attributes() {
         }
