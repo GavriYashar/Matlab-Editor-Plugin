@@ -1,6 +1,5 @@
 package at.mep.gui.fileStructure;
 
-import at.mep.editor.EditorWrapper;
 import at.mep.editor.tree.MFile;
 import at.mep.meta.*;
 import at.mep.util.NodeUtils;
@@ -306,7 +305,22 @@ public class NodeFS extends DefaultMutableTreeNode {
         }
         
         // functions
-
+        for (MFile.ClassDef.Method method : classDef.getMethod()) {
+            List<MFile.Attributes.Attribute> attributeList = null;
+            if (method.hasAttributes()) {
+                attributeList = method.getAttributes().get(0).getAttributeList();
+            }
+            for (MFile.ClassDef.Method.Function function : method.getFunctionList()) {
+                if (function.isGetter() || function.isSetter()) {
+                    continue;
+                }
+                NodeFS nodeFS = new NodeFS();
+                nodeFS.node = function.getNode();
+                nodeFS.nodeType = MTree.NodeType.FUNCTION;
+                nodeFS.eMetaNodeType = EMetaNodeType.MATLAB;
+                root.add(nodeFS);
+            }
+        }
         return root;
     }
 }
