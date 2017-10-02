@@ -112,6 +112,13 @@ public class MFileTest{
                     Validate.isTrue(propertyList.get(3).getName().getText().equals("var4"), "ClassExample: property name is not parsed correctly: var4 PROPERTIES1");
                     Validate.isTrue(propertyList.get(4).getName().getText().equals("var5"), "ClassExample: property name is not parsed correctly: var5 PROPERTIES1");
 
+                    // chek property type definition
+                    Validate.isTrue(properties.getPropertyList().get(0).getDefinition().getType() == MTree.NodeType.JAVA_NULL_NODE, "ClassExample: property type is not parsed correctly: var1 PROPERTIES1");
+                    Validate.isTrue(properties.getPropertyList().get(1).getDefinition().getType() == MTree.NodeType.JAVA_NULL_NODE, "ClassExample: property type is not parsed correctly: var2 PROPERTIES1");
+                    Validate.isTrue(properties.getPropertyList().get(2).getDefinition().getText().equals("double"), "ClassExample: property type is not parsed correctly: var3 PROPERTIES1");
+                    Validate.isTrue(properties.getPropertyList().get(3).getDefinition().getText().equals("double"), "ClassExample: property type is not parsed correctly: var4 PROPERTIES1");
+                    Validate.isTrue(properties.getPropertyList().get(4).getDefinition().getText().equals("double"), "ClassExample: property type is not parsed correctly: var5 PROPERTIES1");
+
                     properties = classdef.getProperties().get(1);
                     // check attributes of property
                     Validate.isTrue(properties.getAttributes().size() == 1, "ClassExample: attributes of properties not 1 PROPERTIES2.ATTRIBUTES");
@@ -124,6 +131,8 @@ public class MFileTest{
                     Validate.isTrue(properties.getPropertyList().size() == 1,  "ClassExample: property definition not 1 PROPERTIES2.EQUALS");
                     Validate.isTrue(properties.getPropertyList().get(0).getName().getText().equals("var6"), "ClassExample: property name is not parsed correctly: var6 PROPERTIES2");
 
+                    // check property type definition
+                    Validate.isTrue(properties.getPropertyList().get(0).getDefinition().getType() == MTree.NodeType.JAVA_NULL_NODE, "ClassExample: property type is not parsed correctly: var6 PROPERTIES2");
                 }
 
                 // methods check
