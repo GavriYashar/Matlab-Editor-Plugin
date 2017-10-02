@@ -518,27 +518,43 @@ public class MFile {
                 public String getFunctionString() {
                     if (functionString == null) {
                         StringBuilder string = new StringBuilder();
-
-                        if (outArgs.size() > 0 && outArgs.get(0).getType() != JAVA_NULL_NODE) {
-                            string.append("[");
-                            for (MTree.Node node : outArgs){
-                                string.append(node.getText()).append(", ");
-                            }
-                            string.delete(string.length()-2, string.length());
-                            string.append("] = ");
-                        }
+                        string.append(getOutArgsString());
                         string.append(getNode().getText());
-                        if ((inArgs.size() > 0 && inArgs.get(0).getType() != JAVA_NULL_NODE)) {
-                            string.append("(");
-                            for (MTree.Node node : inArgs){
-                                string.append(node.getText()).append(", ");
-                            }
-                            string.delete(string.length()-2, string.length());
-                            string.append(")");
-                        }
+                        string.append(getInArgsString());
                         functionString = string.toString();
                     }
                     return functionString;
+                }
+
+                public String getOutArgsString() {
+                    StringBuilder string = new StringBuilder();
+                    if (outArgs.size() > 0 && outArgs.get(0).getType() != JAVA_NULL_NODE) {
+                        string.append("[");
+                        for (MTree.Node node : outArgs){
+                            string.append(node.getText()).append(", ");
+                        }
+                        string.delete(string.length()-2, string.length());
+                        string.append("] = ");
+                    }
+                    return string.toString();
+                }
+
+                public String getInArgsString() {
+                    StringBuilder string = new StringBuilder();
+                    if ((inArgs.size() > 0 && inArgs.get(0).getType() != JAVA_NULL_NODE)) {
+                        string.append("(");
+                        for (MTree.Node node : inArgs){
+                            if (node.getType() == NOT) {
+                                string.append(TreeUtilsV2.stringForMTreeNodeType(node.getType()));
+                            } else {
+                                string.append(node.getText());
+                            }
+                            string.append(", ");
+                        }
+                        string.delete(string.length()-2, string.length());
+                        string.append(")");
+                    }
+                    return string.toString();
                 }
 
                 public static List<Function> construct(List<MTree.Node> mtnFunction) {
