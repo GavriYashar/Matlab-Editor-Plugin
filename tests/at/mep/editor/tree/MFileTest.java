@@ -104,13 +104,19 @@ public class MFileTest{
 
                     // check property names
                     List<MFile.ClassDef.Properties.Property> propertyList = properties.getPropertyList();
-                    Validate.isTrue(propertyList.size() == 5,  "ClassExample: property definition not 5 PROPERTIES1.EQUALS");
+                    Validate.isTrue(propertyList.size() == 6,  "ClassExample: property definition not 5 PROPERTIES1.EQUALS");
 
                     Validate.isTrue(propertyList.get(0).getName().getText().equals("var1"), "ClassExample: property name is not parsed correctly: var1 PROPERTIES1");
                     Validate.isTrue(propertyList.get(1).getName().getText().equals("var2"), "ClassExample: property name is not parsed correctly: var2 PROPERTIES1");
                     Validate.isTrue(propertyList.get(2).getName().getText().equals("var3"), "ClassExample: property name is not parsed correctly: var3 PROPERTIES1");
                     Validate.isTrue(propertyList.get(3).getName().getText().equals("var4"), "ClassExample: property name is not parsed correctly: var4 PROPERTIES1");
                     Validate.isTrue(propertyList.get(4).getName().getText().equals("var5"), "ClassExample: property name is not parsed correctly: var5 PROPERTIES1");
+                    Validate.isTrue(propertyList.get(5).getName().getText().equals("var6"), "ClassExample: property name is not parsed correctly: var6 PROPERTIES1");
+
+                    // chek properties getter and setter functions
+                    MFile.ClassDef.Properties.Property p = propertyList.get(0);
+                    Validate.isTrue(p.getGetter().getName().getText().equals("get.var1"));
+                    Validate.isTrue(p.getSetter().getName().getText().equals("set.var1"));
 
                     // chek property type definition
                     Validate.isTrue(properties.getPropertyList().get(0).getDefinition().getType() == MTree.NodeType.JAVA_NULL_NODE, "ClassExample: property type is not parsed correctly: var1 PROPERTIES1");
@@ -118,6 +124,12 @@ public class MFileTest{
                     Validate.isTrue(properties.getPropertyList().get(2).getDefinition().getText().equals("double"), "ClassExample: property type is not parsed correctly: var3 PROPERTIES1");
                     Validate.isTrue(properties.getPropertyList().get(3).getDefinition().getText().equals("double"), "ClassExample: property type is not parsed correctly: var4 PROPERTIES1");
                     Validate.isTrue(properties.getPropertyList().get(4).getDefinition().getText().equals("double"), "ClassExample: property type is not parsed correctly: var5 PROPERTIES1");
+                    Validate.isTrue(properties.getPropertyList().get(5).getDefinition().getText().equals("double"), "ClassExample: property type is not parsed correctly: var6 PROPERTIES1");
+
+                    // check validators
+                    Validate.isTrue(properties.getPropertyList().get(5).getValidators().size() == 2, "ClassExample: property validators are not parsed correctly: var6 PROPERTIES1.PROPTYPEDECL");
+                    Validate.isTrue(properties.getPropertyList().get(5).getValidators().get(0).getText().equals("mustBeReal"), "ClassExample: property validator is not parsed correctly expected mustBeReal: var6 PROPERTIES1.PROPTYPEDECL");
+                    Validate.isTrue(properties.getPropertyList().get(5).getValidators().get(1).getText().equals("mustBeFinite"), "ClassExample: property validator is not parsed correctly expected mustBeFinite: var6 PROPERTIES1.PROPTYPEDECL");
 
                     properties = classdef.getProperties().get(1);
                     // check attributes of property
@@ -129,7 +141,7 @@ public class MFileTest{
                     Validate.isTrue(attribute.getValue().get(0).getText().equals("someOtherClass1"), "ClassExample: properties Access must be {?someOtherClass1} PROPERTIES2.ATTRIBUTES.ATTR");
 
                     Validate.isTrue(properties.getPropertyList().size() == 1,  "ClassExample: property definition not 1 PROPERTIES2.EQUALS");
-                    Validate.isTrue(properties.getPropertyList().get(0).getName().getText().equals("var6"), "ClassExample: property name is not parsed correctly: var6 PROPERTIES2");
+                    Validate.isTrue(properties.getPropertyList().get(0).getName().getText().equals("var7"), "ClassExample: property name is not parsed correctly: var7 PROPERTIES2");
 
                     // check property type definition
                     Validate.isTrue(properties.getPropertyList().get(0).getDefinition().getType() == MTree.NodeType.JAVA_NULL_NODE, "ClassExample: property type is not parsed correctly: var6 PROPERTIES2");
@@ -161,25 +173,31 @@ public class MFileTest{
                     Validate.isTrue(attributes.getAttributeList().get(1).getValue().get(0).getText().equals("false"), "ClassExample: method ATTR is Hidden is not false METHODS3.ATTRIBUTES.ATTR2");
                     // function check
                     {
-                        Validate.isTrue(classdef.getMethod().get(0).getFunctionList().size() == 4, "ClassExample: method has not 4 functions METHODS1.EQUALS");
+                        Validate.isTrue(classdef.getMethod().get(0).getFunctionList().size() == 6, "ClassExample: method has not 6 functions METHODS1.EQUALS");
                         Validate.isTrue(classdef.getMethod().get(1).getFunctionList().size() == 1, "ClassExample: method has not 1 function METHODS2.EQUALS");
                         Validate.isTrue(classdef.getMethod().get(2).getFunctionList().size() == 1, "ClassExample: method has not 1 function METHODS3.EQUALS");
 
                         List<MFile.ClassDef.Method.Function> functions = classdef.getMethod().get(0).getFunctionList();
                         Validate.isTrue(functions.get(0).getName().getText().equals("ClassExample"), "ClassExample: function name is not parsed correctly METHOD1.EQUALS1 ClassExample");
-                        Validate.isTrue(functions.get(1).getName().getText().equals("fNoATTR_InArg"), "ClassExample: function name is not parsed correctly METHOD1.EQUALS2 fNoATTR_InArg");
-                        Validate.isTrue(functions.get(2).getName().getText().equals("fNoATTR_InArgOutArg"), "ClassExample: function name is not parsed correctly METHOD1.EQUALS3 fNoATTR_InArgOutArg");
-                        Validate.isTrue(functions.get(3).getName().getText().equals("fNoATTR_InArgsOutArgs"), "ClassExample: function name is not parsed correctly METHOD1.EQUALS4 fNoATTR_InArgsOutArgs");
+                        Validate.isTrue(functions.get(1).getName().getText().equals("get.var1"), "ClassExample: function name is not parsed correctly METHOD1.EQUALS2 fNoATTR_InArg");
+                        Validate.isTrue(functions.get(2).getName().getText().equals("set.var1"), "ClassExample: function name is not parsed correctly METHOD1.EQUALS3 fNoATTR_InArg");
+                        Validate.isTrue(functions.get(3).getName().getText().equals("fNoATTR_InArg"), "ClassExample: function name is not parsed correctly METHOD1.EQUALS4 fNoATTR_InArg");
+                        Validate.isTrue(functions.get(4).getName().getText().equals("fNoATTR_InArgOutArg"), "ClassExample: function name is not parsed correctly METHOD1.EQUALS5 fNoATTR_InArgOutArg");
+                        Validate.isTrue(functions.get(5).getName().getText().equals("fNoATTR_InArgsOutArgs"), "ClassExample: function name is not parsed correctly METHOD1.EQUALS6 fNoATTR_InArgsOutArgs");
 
                         Validate.isTrue(functions.get(0).getInArgs().size() == 0, "ClassExample: function should have 0 input arguments METHOD1.EQUALS1");
                         Validate.isTrue(functions.get(1).getInArgs().size() == 1, "ClassExample: function should have 1 input arguments METHOD1.EQUALS2");
-                        Validate.isTrue(functions.get(2).getInArgs().size() == 1, "ClassExample: function should have 1 input arguments METHOD1.EQUALS3");
-                        Validate.isTrue(functions.get(3).getInArgs().size() == 3, "ClassExample: function should have 3 input arguments METHOD1.EQUALS4");
+                        Validate.isTrue(functions.get(2).getInArgs().size() == 2, "ClassExample: function should have 2 input arguments METHOD1.EQUALS3");
+                        Validate.isTrue(functions.get(3).getInArgs().size() == 1, "ClassExample: function should have 1 input arguments METHOD1.EQUALS4");
+                        Validate.isTrue(functions.get(4).getInArgs().size() == 1, "ClassExample: function should have 1 input arguments METHOD1.EQUALS5");
+                        Validate.isTrue(functions.get(5).getInArgs().size() == 3, "ClassExample: function should have 3 input arguments METHOD1.EQUALS6");
 
                         Validate.isTrue(functions.get(0).getOutArgs().size() == 1, "ClassExample: function should have 1 output arguments METHOD1.EQUALS1");
-                        Validate.isTrue(functions.get(1).getOutArgs().size() == 0, "ClassExample: function should have 0 output arguments METHOD1.EQUALS2");
-                        Validate.isTrue(functions.get(2).getOutArgs().size() == 1, "ClassExample: function should have 1 output arguments METHOD1.EQUALS3");
-                        Validate.isTrue(functions.get(3).getOutArgs().size() == 2, "ClassExample: function should have 2 output arguments METHOD1.EQUALS4");
+                        Validate.isTrue(functions.get(1).getOutArgs().size() == 1, "ClassExample: function should have 1 output arguments METHOD1.EQUALS2");
+                        Validate.isTrue(functions.get(2).getOutArgs().size() == 0, "ClassExample: function should have 0 output arguments METHOD1.EQUALS3");
+                        Validate.isTrue(functions.get(3).getOutArgs().size() == 0, "ClassExample: function should have 0 output arguments METHOD1.EQUALS4");
+                        Validate.isTrue(functions.get(4).getOutArgs().size() == 1, "ClassExample: function should have 1 output arguments METHOD1.EQUALS5");
+                        Validate.isTrue(functions.get(5).getOutArgs().size() == 2, "ClassExample: function should have 2 output arguments METHOD1.EQUALS6");
                     }
                 }
             }
@@ -187,7 +205,7 @@ public class MFileTest{
             // functions check
             {
                 // since it is basically the same as in methods, just check numbers
-                Validate.isTrue(mFile.getFunctions().size() == 6, "ClassExample: mFile should have 6 functions");
+                Validate.isTrue(mFile.getFunctions().size() == 8, "ClassExample: mFile should have 6 functions");
             }
 
             // Cell Title check
