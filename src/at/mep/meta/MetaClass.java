@@ -55,7 +55,6 @@ public class MetaClass extends Meta {
                 + "     " + propVar + ".setHasGetter(~isempty(" + propVarP + ".GetMethod));\n"
 
                 // ACCESS
-                // TODO: fill list with meta classes propVarP.GetAccess/SetAccess
                 + "     " + "if iscell(" + propVarP + ".GetAccess)\n"
                 + "         " + propVar + ".setGetAccess(at.mep.meta.EAccess.META);\n"
                 + "     " +  "elseif ischar(" + propVarP + ".GetAccess) && strcmpi(" + propVarP + ".GetAccess, 'private')\n"
@@ -102,7 +101,6 @@ public class MetaClass extends Meta {
 
 
                 // ACCESS
-                // TODO: fill list with meta classes methVarM.Access
                 + "     " + "if iscell(" + methVarM + ".Access)\n"
                 + "         " + methVar + ".setAccess(at.mep.meta.EAccess.META);\n"
                 + "     " +  "elseif ischar(" + methVarM + ".Access) && strcmpi(" + methVarM + ".Access, 'private')\n"
