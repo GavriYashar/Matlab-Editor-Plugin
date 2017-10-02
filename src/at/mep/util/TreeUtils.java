@@ -49,7 +49,7 @@ public class TreeUtils {
         java.util.List<MTree.Node> propertyNodes = createNodesForClassDefPropNoOldDef(propertiesTree);
 
         // population of ClassDefNode
-        populateClassDefNodeWithProperties(classDefNodeFS, metaClass, methodNodes, propertyNodes);
+        populateClassDefNodeWithProperties(classDefNodeFS, metaClass, methodNodes, propertyDeclNodes);
         populateClassDefNodeWithMethods(classDefNodeFS, metaClass, methodNodes);
 
         return classDefNodeFS;
