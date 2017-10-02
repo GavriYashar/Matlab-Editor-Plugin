@@ -1,5 +1,6 @@
 package at.mep.editor.tree;
 
+import at.mep.Matlab;
 import at.mep.installer.Install;
 import at.mep.meta.EAccess;
 import at.mep.util.FileUtils;
@@ -21,12 +22,12 @@ import java.util.List;
 
 
 public class MFileTest{
-    File testLocation;
-    File classExampleFile;
-    File classExampleFileNoAttributes;
+    private File testLocation;
+    private File classExampleFile;
+    private File classExampleFileNoAttributes;
 
-    MTree mTree_classExampleFile;
-    MTree mTree_classExampleFileNoAttributes;
+    private MTree mTree_classExampleFile;
+    private MTree mTree_classExampleFileNoAttributes;
 
     public static void runTest() throws Exception {
         MFileTest mFileTest = new MFileTest();
@@ -133,9 +134,11 @@ public class MFileTest{
                     Validate.isTrue(properties.getPropertyList().get(5).getDefinition().getText().equals("double"), "ClassExample: property type is not parsed correctly: var6 PROPERTIES1");
 
                     // check validators
-                    Validate.isTrue(properties.getPropertyList().get(5).getValidators().size() == 2, "ClassExample: property validators are not parsed correctly: var6 PROPERTIES1.PROPTYPEDECL");
-                    Validate.isTrue(properties.getPropertyList().get(5).getValidators().get(0).getText().equals("mustBeReal"), "ClassExample: property validator is not parsed correctly expected mustBeReal: var6 PROPERTIES1.PROPTYPEDECL");
-                    Validate.isTrue(properties.getPropertyList().get(5).getValidators().get(1).getText().equals("mustBeFinite"), "ClassExample: property validator is not parsed correctly expected mustBeFinite: var6 PROPERTIES1.PROPTYPEDECL");
+                    if (!Matlab.verLessThan(Matlab.R2017a)) {
+                        Validate.isTrue(properties.getPropertyList().get(5).getValidators().size() == 2, "ClassExample: property validators are not parsed correctly: var6 PROPERTIES1.PROPTYPEDECL");
+                        Validate.isTrue(properties.getPropertyList().get(5).getValidators().get(0).getText().equals("mustBeReal"), "ClassExample: property validator is not parsed correctly expected mustBeReal: var6 PROPERTIES1.PROPTYPEDECL");
+                        Validate.isTrue(properties.getPropertyList().get(5).getValidators().get(1).getText().equals("mustBeFinite"), "ClassExample: property validator is not parsed correctly expected mustBeFinite: var6 PROPERTIES1.PROPTYPEDECL");
+                    }
 
                     properties = classdef.getProperties().get(1);
                     // check attributes of property

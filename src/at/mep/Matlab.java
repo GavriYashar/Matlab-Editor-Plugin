@@ -20,6 +20,10 @@ import java.util.regex.Pattern;
 
 /** Created by Andreas Justin on 2016-09-19. */
 public class Matlab {
+    public static final double R2016B = 9.1;
+    public static final double R2017a = 9.2; // ?
+    public static final double R2017b = 9.3; // ?
+
     private static Matlab INSTANCE = null;
 
     /** has this format: 9.1.0.441655 (R2016b) */
@@ -145,4 +149,5 @@ public class Matlab {
         String string = getMlDesktop().getMainFrame().getStatusBar().getText();
         return string != null && string.contains("Busy");
     }
+
 }
