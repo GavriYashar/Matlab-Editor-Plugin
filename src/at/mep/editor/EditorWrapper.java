@@ -2,7 +2,6 @@ package at.mep.editor;
 
 import at.mep.gui.fileStructure.NodeFS;
 import at.mep.util.ComponentUtil;
-import at.mep.util.TreeUtils;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.mde.editor.EditorSyntaxTextPane;
 import com.mathworks.mde.editor.MatlabEditorApplication;
