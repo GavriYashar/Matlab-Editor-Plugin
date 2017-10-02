@@ -237,7 +237,7 @@ public class MFile {
             public static class Property {
                 MTree.Node name = MTree.NULL_NODE;
                 MTree.Node definition = MTree.NULL_NODE;
-                MTree.Node validators = MTree.NULL_NODE;
+                List<MTree.Node> validators = Arrays.asList(MTree.NULL_NODE);
 
                 private Property() {
                 }
@@ -253,11 +253,10 @@ public class MFile {
                         switch (node.getLeft().getType()) {
                             case ATBASE:
                                 property.definition = node.getLeft().getRight();
-                                property.validators = MTree.NULL_NODE;
                                 break;
                             case PROPTYPEDECL:
                                 property.definition = node.getLeft().getRight().getLeft();
-                                property.validators = MTree.NULL_NODE;
+                                property.validators = TreeUtilsV2.findNode(node.getLeft().getRight().getRight().getSubtree(), ID);
                                 break;
                         }
 
@@ -274,7 +273,7 @@ public class MFile {
                     return definition;
                 }
 
-                public MTree.Node getValidators() {
+                public List<MTree.Node> getValidators() {
                     return validators;
                 }
             }
