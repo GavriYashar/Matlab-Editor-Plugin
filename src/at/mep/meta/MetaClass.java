@@ -3,6 +3,7 @@ package at.mep.meta;
 import at.mep.Matlab;
 import at.mep.editor.tree.EAttributes;
 import at.mep.installer.Install;
+import com.mathworks.widgets.text.mcode.MTree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -230,5 +231,4 @@ public class MetaClass extends Meta {
                 break;
         }
     }
-
 }

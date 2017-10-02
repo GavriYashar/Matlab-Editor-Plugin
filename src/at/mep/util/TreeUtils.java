@@ -37,8 +37,16 @@ public class TreeUtils {
         // creates Property Nodes for FileStructure
         // these are only properties with the new type definition e.g.:
         //    var string = "some string"
-        Tree<MTree.Node> propertiesTree = mTree.findAsTree(MTree.NodeType.PROPTYPEDECL);
-        java.util.List<MTree.Node> propertyNodes = createNodesForClassDef(propertiesTree, MTree.NodeType.PROPTYPEDECL);
+        Tree<MTree.Node> propertiesDeclTree = mTree.findAsTree(MTree.NodeType.PROPTYPEDECL);
+        java.util.List<MTree.Node> propertyDeclNodes = createNodesForClassDef(propertiesDeclTree, MTree.NodeType.PROPTYPEDECL);
+
+        // creates Property Nodes for FileStructure
+        // these are only properties with no or old type definition e.g.:
+        // var
+        // var = 1
+        // var@double = 1
+        Tree<MTree.Node> propertiesTree = mTree.findAsTree(MTree.NodeType.PROPERTIES);
+        java.util.List<MTree.Node> propertyNodes = createNodesForClassDefPropNoOldDef(propertiesTree);
 
         // population of ClassDefNode
         populateClassDefNodeWithProperties(classDefNodeFS, metaClass, methodNodes, propertyNodes);
@@ -66,6 +74,24 @@ public class TreeUtils {
             nodeFS.add(new NodeFS(subNode));
         }
         return nodeFS;
+    }
+
+    /**
+     * creates properties nodes for properties w/o type def or old type def e.g.:
+     * var
+     * var = 1
+     * var@double
+     * var@double = 1
+     * @param tree
+     * @return
+     */
+    private static java.util.List<MTree.Node> createNodesForClassDefPropNoOldDef(Tree<MTree.Node> tree) {
+        java.util.List<MTree.Node> nodes = new ArrayList<>(10);
+        for (int i = 0; i < tree.getChildCount(tree.getRoot()); i++) {
+            MTree.Node mtNode = tree.getChild(tree.getRoot(), i);
+            java.util.List<MTree.Node> propDefMTree = mtNode.getSubtree();
+        }
+        return nodes;
     }
 
     private static java.util.List<MTree.Node> createNodesForClassDef(Tree<MTree.Node> tree, MTree.NodeType nodeType) {

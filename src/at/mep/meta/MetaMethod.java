@@ -15,7 +15,6 @@ public class MetaMethod extends Meta {
     protected List<String> inputNames = new ArrayList<>(10);
     protected List<String> outputNames = new ArrayList<>(10);
 
-
     public MetaMethod() {
     }
 
