@@ -14,9 +14,16 @@ import java.util.List;
 import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
 
 public class MFile {
+    /** name of file (or full qualified name if class) */
     private String name = "NAME NOT SET";
+
+    /** list of class definition in file (matlab currently supports only one classdef)*/
     private List<ClassDef> classDefs = new ArrayList<>(0);
+
+    /** list of cell title in mfile */
     private List<CellTitle> cellTitles = new ArrayList<>(0);
+
+    /** list of all functions in mfile */
     private List<ClassDef.Method.Function> functions = new ArrayList<>(0);
 
     private MFile() {
@@ -94,8 +101,12 @@ public class MFile {
         return mFile;
     }
 
+    /** actual representation of MTree.NodeType.CELL_TITLE */
     public static class CellTitle{
+        /** trimmed string of cell title w/o %% */
         private String titleString = "";
+
+        /** Actual node to cell title (CELL_TITLE) */
         private MTree.Node node = MTree.NULL_NODE;
 
         private CellTitle() {
@@ -128,7 +139,10 @@ public class MFile {
         }
     }
 
+    /** an actual representation of MTree.NodeType.ATTRIBUTES, different to ATTR*/
     public static class Attributes {
+
+        /** list of ATTRIBUTES (afaik everythin only has one attributeS */
         private List<Attribute> attributeList = new ArrayList<>(0);
 
         private Attributes() {
@@ -155,11 +169,18 @@ public class MFile {
             return attributes;
         }
 
+        /** an actual representation of MTRee.NodeType.ATTR, actual attributes you're interested in */
         public static class Attribute {
+            /** actual node of attribute (ATTR) */
             private MTree.Node node = MTree.NULL_NODE;
+
+            /** list of actual nodes of attribute values like public, true, private etc... */
             private List<MTree.Node> value = Arrays.asList(MTree.NULL_NODE);
 
+            /** representation of attribute as enumeration */
             private EAttributes attributeAsEAttribute = EAttributes.INVALID;
+
+            /** representation of access as enumeration */
             private EAccess accessAsEAccess = EAccess.INVALID;
 
             private Attribute() {
@@ -216,11 +237,21 @@ public class MFile {
         }
     }
 
+    /** actual representation of MTree.NodeType.CLASSDEF */
     public static class ClassDef {
+        /** actual node of class definition (CLASSDEF) */
         private MTree.Node node = MTree.NULL_NODE;
+
+        /** list of actual nodes of all inherited classes (< bla & bla & ...) */
         private List<MTree.Node> superclasses = Arrays.asList(MTree.NULL_NODE);
+
+        /** list of attributes for classdef (size = 1) */
         private List<Attributes> attributes = new ArrayList<>(0);
+
+        /** list of properties for class */
         private List<Properties> properties = new ArrayList<>(0);
+
+        /** lsit of methods for class */
         private List<Method> method = new ArrayList<>(0);
 
         private ClassDef() {
@@ -299,8 +330,12 @@ public class MFile {
             return classDefs;
         }
 
+        /** actual representation of MTree.NodeType.PROPERTIES, different to EQUALS (Property) */
         public static class Properties {
+            /** list of attributes for properties (size = 1) */
             private List<Attributes> attributes = new ArrayList<>(0);
+
+            /** list of properties you're actually interested in */
             private List<Property> propertyList = new ArrayList<>(0);
 
             private Properties() {
@@ -338,13 +373,24 @@ public class MFile {
                 return propertyList;
             }
 
+            /** actual representation of MTree.NodeType.EQUALS, the kind of property you're actually interested in */
             public static class Property {
+                /** actual definition node of property (EQUALS) */
                 MTree.Node node = MTree.NULL_NODE;
+
+                /** actual definition node of property (child/attribute? of @ (ATBASE) or e.g. var double (PROPTYPEDECL) */
                 MTree.Node definition = MTree.NULL_NODE;
+
+                /** list of validator nodes, (at least R2017a?) e.g. var double {mustBeReal, mustBeFinite} */
                 List<MTree.Node> validators = Arrays.asList(MTree.NULL_NODE);
 
+                /** function for setter of property e.g. set.var */
                 Method.Function setter = new Method.Function();
+
+                /** function for getter of property e.g. get.var */
                 Method.Function getter = new Method.Function();
+
+                boolean isAtBase = false;
 
                 private Property() {
                 }
@@ -367,6 +413,7 @@ public class MFile {
 
                         switch (node.getLeft().getType()) {
                             case ATBASE:
+                                property.isAtBase = true;
                                 property.definition = node.getLeft().getRight();
                                 break;
                             case PROPTYPEDECL:
@@ -451,8 +498,12 @@ public class MFile {
             }
         }
 
+        /** actual representation of MTree.NodeType.METHODS, different to FUNCTION */
         public static class Method {
+            /** list of attributes (size = 1) */
             private List<Attributes> attributes = new ArrayList<>(0);
+
+            /** list of functions */
             private List<Function> functionList = new ArrayList<>(0);
 
             private Method() {
@@ -485,10 +536,18 @@ public class MFile {
                 return methods;
             }
 
+            /** actual representation of MTree.NodeType.FUNCTION */
             public static class Function {
+                /** string representation for file structure "[out1, out2] = function(in1, in2)" */
                 private String functionString = null;
+
+                /** actual node of Function (FUNCTION) */
                 private MTree.Node node = MTree.NULL_NODE;
+
+                /** list of nodes for output arguments */
                 private List<MTree.Node> outArgs = Arrays.asList(MTree.NULL_NODE);
+
+                /** list of nodes for input arguments */
                 private List<MTree.Node> inArgs = Arrays.asList(MTree.NULL_NODE);
 
                 private Function() {
@@ -522,10 +581,14 @@ public class MFile {
                     return inArgs;
                 }
 
+                /** string representation for file structure "[out1, out2] = function(in1, in2)" */
                 public String getFunctionString() {
                     if (functionString == null) {
                         StringBuilder string = new StringBuilder();
                         string.append(getOutArgsString());
+                        if (hasOutArgs()) {
+                            string.append(" = ");
+                        }
                         string.append(getNode().getText());
                         string.append(getInArgsString());
                         functionString = string.toString();
@@ -533,6 +596,7 @@ public class MFile {
                     return functionString;
                 }
 
+                /** string representation "[out1, out2]" */
                 public String getOutArgsString() {
                     StringBuilder string = new StringBuilder();
                     if (outArgs.size() > 0 && outArgs.get(0).getType() != JAVA_NULL_NODE) {
@@ -541,11 +605,12 @@ public class MFile {
                             string.append(node.getText()).append(", ");
                         }
                         string.delete(string.length()-2, string.length());
-                        string.append("] = ");
+                        string.append("]");
                     }
                     return string.toString();
                 }
 
+                /** string representation "(in1, in2)" */
                 public String getInArgsString() {
                     StringBuilder string = new StringBuilder();
                     if ((inArgs.size() > 0 && inArgs.get(0).getType() != JAVA_NULL_NODE)) {
