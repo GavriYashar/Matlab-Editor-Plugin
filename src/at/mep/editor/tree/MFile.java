@@ -111,6 +111,7 @@ public class MFile {
             for (MTree.Node node : mtnCellTitle) {
                 CellTitle cellTitle = new CellTitle();
                 cellTitle.node = node;
+                cellTitle.titleString = node.getText();
                 cellTitles.add(cellTitle);
             }
 
@@ -118,8 +119,9 @@ public class MFile {
         }
 
         public String getTitleString() {
-            if (titleString == null) {
-                titleString = StringUtils.trimStart(node.getText());
+            if (titleString != null) {
+                titleString = node.getText().replaceFirst("%%", "");
+                titleString = StringUtils.trimStart(titleString);
                 titleString = StringUtils.trimEnd(titleString);
             }
             return titleString;
