@@ -369,7 +369,12 @@ public class MFile {
                                 break;
                             case PROPTYPEDECL:
                                 property.definition = node.getLeft().getRight().getLeft();
-                                property.validators = TreeUtilsV2.findNode(node.getLeft().getRight().getRight().getSubtree(), ID);
+                                MTree.Node someNode = node.getLeft().getRight().getRight();
+                                if (someNode != null && someNode.getType() != JAVA_NULL_NODE) {
+                                    // TODO: need to check if this also exists in MATLAB R2017a (b) or only in R2016b or earlier versions
+                                    // Matlab.verLessThan(9.1)?
+                                    property.validators = TreeUtilsV2.findNode(someNode.getSubtree(), ID);
+                                }
                                 break;
                         }
 
