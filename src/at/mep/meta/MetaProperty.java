@@ -7,8 +7,8 @@ import at.mep.util.TreeUtilsV2;
 public class MetaProperty extends Meta {
     private String type = "";
     private String validators = "";
-    private EMetaAccess getAccess = EMetaAccess.PUBLIC;
-    private EMetaAccess setAccess = EMetaAccess.PUBLIC;
+    private EAccess getAccess = EAccess.PUBLIC;
+    private EAccess setAccess = EAccess.PUBLIC;
     protected String definingClass = "";
     private boolean isDependent = false;
     private boolean isConstant = false;
@@ -34,20 +34,20 @@ public class MetaProperty extends Meta {
         this.validators = validators;
     }
 
-    public void setGetAccess(EMetaAccess getAccess) {
+    public void setGetAccess(EAccess getAccess) {
         this.getAccess = getAccess;
     }
 
     public void setGetAccess(String getAccess) {
-        setGetAccess(EMetaAccess.valueOf(getAccess.toUpperCase()));
+        setGetAccess(EAccess.valueOf(getAccess.toUpperCase()));
     }
 
-    public void setSetAccess(EMetaAccess setAccess) {
+    public void setSetAccess(EAccess setAccess) {
         this.setAccess = setAccess;
     }
 
     public void setSetAccess(String setAccess) {
-        setSetAccess(EMetaAccess.valueOf(setAccess.toUpperCase()));
+        setSetAccess(EAccess.valueOf(setAccess.toUpperCase()));
     }
 
     public void setDefiningClass(String definingClass) {
@@ -82,11 +82,11 @@ public class MetaProperty extends Meta {
         this.hasGetter = hasGetter;
     }
 
-    public EMetaAccess getGetAccess() {
+    public EAccess getGetAccess() {
         return getAccess;
     }
 
-    public EMetaAccess getSetAccess() {
+    public EAccess getSetAccess() {
         return setAccess;
     }
 
@@ -133,7 +133,7 @@ public class MetaProperty extends Meta {
     }
 
     @Override
-    public void populate(EAttributes attribute, EMetaAccess access) {
+    public void populate(EAttributes attribute, EAccess access) {
         switch (attribute) {
             case ABORTSET:
                 break;

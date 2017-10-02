@@ -2,7 +2,7 @@ package at.mep.util;
 
 import at.mep.editor.tree.EAttributes;
 import at.mep.editor.tree.MTreeNode;
-import at.mep.meta.EMetaAccess;
+import at.mep.meta.EAccess;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
 import org.apache.commons.lang.Validate;
@@ -108,16 +108,16 @@ public class TreeUtilsV2 {
                     // properties (Transient)
                     // properties (Transient, Access = private)
                     eAttributes = EAttributes.valueOf(attrs.get(1).getText().toUpperCase());
-                    list.add(new AttributeHolder(mtNodeAttr, eAttributes, EMetaAccess.TRUE));
+                    list.add(new AttributeHolder(mtNodeAttr, eAttributes, EAccess.TRUE));
                     break;
                 case 3:
                     // definition e.g.:
                     // properties (Transient = true)
                     // properties (Transient = true, Access = private)
                     eAttributes = EAttributes.valueOf(attrs.get(1).getText().toUpperCase());
-                    EMetaAccess access = EMetaAccess.INVALID;
+                    EAccess access = EAccess.INVALID;
                     if (attrs.get(2).getType() != INT){
-                        access = EMetaAccess.valueOf(attrs.get(2).getText().toUpperCase());
+                        access = EAccess.valueOf(attrs.get(2).getText().toUpperCase());
                     }
                     list.add(new AttributeHolder(mtNodeAttr, eAttributes, access));
                     break;
@@ -197,9 +197,9 @@ public class TreeUtilsV2 {
     public static class AttributeHolder {
         private MTree.Node node;
         private EAttributes attribute;
-        private EMetaAccess access;
+        private EAccess access;
 
-        public AttributeHolder(MTree.Node node, EAttributes attribute, EMetaAccess access) {
+        public AttributeHolder(MTree.Node node, EAttributes attribute, EAccess access) {
             this.node = node;
             this.attribute = attribute;
             this.access = access;
@@ -209,7 +209,7 @@ public class TreeUtilsV2 {
             return attribute;
         }
 
-        public EMetaAccess getAccess() {
+        public EAccess getAccess() {
             if (access == null)
                 return attribute.getDefaultAccess();
 

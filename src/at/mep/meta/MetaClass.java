@@ -3,7 +3,6 @@ package at.mep.meta;
 import at.mep.Matlab;
 import at.mep.editor.tree.EAttributes;
 import at.mep.installer.Install;
-import com.mathworks.widgets.text.mcode.MTree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,30 +56,30 @@ public class MetaClass extends Meta {
                 // ACCESS
                 // TODO: fill list with meta classes propVarP.GetAccess/SetAccess
                 + "     " + "if iscell(" + propVarP + ".GetAccess)\n"
-                + "         " + propVar + ".setGetAccess(at.mep.meta.EMetaAccess.META);\n"
+                + "         " + propVar + ".setGetAccess(at.mep.meta.EAccess.META);\n"
                 + "     " +  "elseif ischar(" + propVarP + ".GetAccess) && strcmpi(" + propVarP + ".GetAccess, 'private')\n"
-                + "         " + propVar + ".setGetAccess(at.mep.meta.EMetaAccess.PRIVATE);\n"
+                + "         " + propVar + ".setGetAccess(at.mep.meta.EAccess.PRIVATE);\n"
                 + "     " +  "elseif ischar(" + propVarP + ".GetAccess) && strcmpi(" + propVarP + ".GetAccess, 'public')\n"
-                + "         " + propVar + ".setGetAccess(at.mep.meta.EMetaAccess.PUBLIC);\n"
+                + "         " + propVar + ".setGetAccess(at.mep.meta.EAccess.PUBLIC);\n"
                 + "     " +  "elseif ischar(" + propVarP + ".GetAccess) && strcmpi(" + propVarP + ".GetAccess, 'protected')\n"
-                + "         " + propVar + ".setGetAccess(at.mep.meta.EMetaAccess.PROTECTED);\n"
+                + "         " + propVar + ".setGetAccess(at.mep.meta.EAccess.PROTECTED);\n"
                 + "     " +  "elseif ischar(" + propVarP + ".GetAccess) && strcmpi(" + propVarP + ".GetAccess, 'immutable')\n"
-                + "         " + propVar + ".setGetAccess(at.mep.meta.EMetaAccess.IMMUTABLE);\n"
+                + "         " + propVar + ".setGetAccess(at.mep.meta.EAccess.IMMUTABLE);\n"
                 + "     " +  "else\n"
-                + "         " + propVar + ".setGetAccess(at.mep.meta.EMetaAccess.INVALID);\n"
+                + "         " + propVar + ".setGetAccess(at.mep.meta.EAccess.INVALID);\n"
                 + "     " +  "end\n"
                 + "     " +  "if iscell(" + propVarP + ".SetAccess)\n"
-                + "         " + propVar + ".setSetAccess(at.mep.meta.EMetaAccess.META);\n"
+                + "         " + propVar + ".setSetAccess(at.mep.meta.EAccess.META);\n"
                 + "     " +  "elseif ischar(" + propVarP + ".SetAccess) && strcmpi(" + propVarP + ".SetAccess, 'private')\n"
-                + "         " + propVar + ".setSetAccess(at.mep.meta.EMetaAccess.PRIVATE);\n"
+                + "         " + propVar + ".setSetAccess(at.mep.meta.EAccess.PRIVATE);\n"
                 + "     " +  "elseif ischar(" + propVarP + ".SetAccess) && strcmpi(" + propVarP + ".SetAccess, 'public')\n"
-                + "         " + propVar + ".setSetAccess(at.mep.meta.EMetaAccess.PUBLIC);\n"
+                + "         " + propVar + ".setSetAccess(at.mep.meta.EAccess.PUBLIC);\n"
                 + "     " +  "elseif ischar(" + propVarP + ".SetAccess) && strcmpi(" + propVarP + ".SetAccess, 'protected')\n"
-                + "         " + propVar + ".setSetAccess(at.mep.meta.EMetaAccess.PROTECTED);\n"
+                + "         " + propVar + ".setSetAccess(at.mep.meta.EAccess.PROTECTED);\n"
                 + "     " +  "elseif ischar(" + propVarP + ".SetAccess) && strcmpi(" + propVarP + ".SetAccess, 'immutable')\n"
-                + "         " + propVar + ".setSetAccess(at.mep.meta.EMetaAccess.IMMUTABLE);\n"
+                + "         " + propVar + ".setSetAccess(at.mep.meta.EAccess.IMMUTABLE);\n"
                 + "     " +  "else\n"
-                + "         " + propVar + ".setSetAccess(at.mep.meta.EMetaAccess.INVALID);\n"
+                + "         " + propVar + ".setSetAccess(at.mep.meta.EAccess.INVALID);\n"
                 + "     " +  "end\n"
 
                 + "     " + propVar + ".setDependent(" + propVarP + ".Dependent);\n"
@@ -104,15 +103,15 @@ public class MetaClass extends Meta {
                 // ACCESS
                 // TODO: fill list with meta classes methVarM.Access
                 + "     " + "if iscell(" + methVarM + ".Access)\n"
-                + "         " + methVar + ".setAccess(at.mep.meta.EMetaAccess.META);\n"
+                + "         " + methVar + ".setAccess(at.mep.meta.EAccess.META);\n"
                 + "     " +  "elseif ischar(" + methVarM + ".Access) && strcmpi(" + methVarM + ".Access, 'private')\n"
-                + "         " + methVar + ".setAccess(at.mep.meta.EMetaAccess.PRIVATE);\n"
+                + "         " + methVar + ".setAccess(at.mep.meta.EAccess.PRIVATE);\n"
                 + "     " +  "elseif ischar(" + methVarM + ".Access) && strcmpi(" + methVarM + ".Access, 'public')\n"
-                + "         " + methVar + ".setAccess(at.mep.meta.EMetaAccess.PUBLIC);\n"
+                + "         " + methVar + ".setAccess(at.mep.meta.EAccess.PUBLIC);\n"
                 + "     " +  "elseif ischar(" + methVarM + ".Access) && strcmpi(" + methVarM + ".Access, 'protected')\n"
-                + "         " + methVar + ".setAccess(at.mep.meta.EMetaAccess.PROTECTED);\n"
+                + "         " + methVar + ".setAccess(at.mep.meta.EAccess.PROTECTED);\n"
                 + "     " +  "else\n"
-                + "         " + methVar + ".setAccess(at.mep.meta.EMetaAccess.INVALID);\n"
+                + "         " + methVar + ".setAccess(at.mep.meta.EAccess.INVALID);\n"
                 + "     " +  "end\n"
 
                 + "     " + methVar + ".setStatic(" + methVarM + ".Static);\n"
@@ -210,7 +209,7 @@ public class MetaClass extends Meta {
     }
 
     @Override
-    public void populate(EAttributes attribute, EMetaAccess access) {
+    public void populate(EAttributes attribute, EAccess access) {
         switch (attribute) {
             case ABSTRACT:
                 isAbstract = access.convertBoolean();

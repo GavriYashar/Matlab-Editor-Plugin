@@ -31,10 +31,10 @@ public class NodeFS extends DefaultMutableTreeNode {
     private boolean isDependent = false;
     private boolean isTransient = false;
     private boolean isImmutable = false;
-    private EMetaAccess Access = EMetaAccess.PUBLIC;
+    private EAccess Access = EAccess.PUBLIC;
     private boolean isHidden = false;
-    private EMetaAccess GetAccessPrivate = EMetaAccess.PUBLIC;
-    private EMetaAccess SetAccessPrivate = EMetaAccess.PUBLIC;
+    private EAccess GetAccessPrivate = EAccess.PUBLIC;
+    private EAccess SetAccessPrivate = EAccess.PUBLIC;
     private boolean hasDefaults = false;
     private String documentation = "";
     private String detailedDocumentation = "";
@@ -202,7 +202,7 @@ public class NodeFS extends DefaultMutableTreeNode {
         return isStatic;
     }
 
-    public EMetaAccess getAccess() {
+    public EAccess getAccess() {
         return Access;
     }
 

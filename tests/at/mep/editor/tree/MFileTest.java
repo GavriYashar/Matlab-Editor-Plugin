@@ -1,7 +1,7 @@
 package at.mep.editor.tree;
 
 import at.mep.installer.Install;
-import at.mep.meta.EMetaAccess;
+import at.mep.meta.EAccess;
 import at.mep.util.FileUtils;
 import com.mathworks.widgets.text.mcode.MTree;
 import org.apache.commons.lang.Validate;
@@ -105,8 +105,8 @@ public class MFileTest{
 
                     Validate.isTrue(properties.getAttributes().get(0).getAttributeList().get(0).getAttributeAsEAttribute() == EAttributes.ACCESS, "ClassExample: attribute 1 of properties not Access PROPERTIES1.ATTRIBUTES.ATTR1");
                     Validate.isTrue(properties.getAttributes().get(0).getAttributeList().get(1).getAttributeAsEAttribute() == EAttributes.TRANSIENT, "ClassExample: attribute 1 of properties not Transient PROPERTIES1.ATTRIBUTES.ATTR2");
-                    Validate.isTrue(properties.getAttributes().get(0).getAttributeList().get(0).getAccessAsEMetaAccess() == EMetaAccess.PUBLIC, "ClassExample: Access not public PROPERTIES1.ATTRIBUTES.ATTR1");
-                    Validate.isTrue(properties.getAttributes().get(0).getAttributeList().get(1).getAccessAsEMetaAccess() == EMetaAccess.TRUE, "ClassExample: Transient not true PROPERTIES1.ATTRIBUTES.ATTR2");
+                    Validate.isTrue(properties.getAttributes().get(0).getAttributeList().get(0).getAccessAsEAccess() == EAccess.PUBLIC, "ClassExample: Access not public PROPERTIES1.ATTRIBUTES.ATTR1");
+                    Validate.isTrue(properties.getAttributes().get(0).getAttributeList().get(1).getAccessAsEAccess() == EAccess.TRUE, "ClassExample: Transient not true PROPERTIES1.ATTRIBUTES.ATTR2");
 
                     // check property names
                     List<MFile.ClassDef.Properties.Property> propertyList = properties.getPropertyList();
@@ -168,9 +168,9 @@ public class MFileTest{
 
                     MFile.Attributes attributes = methods.get(1).getAttributes().get(0);
                     Validate.isTrue(attributes.getAttributeList().get(0).getAttributeAsEAttribute() == EAttributes.STATIC, "ClassExample: method ATTR is not Static METHODS2.ATTRIBUTES.ATTR1");
-                    Validate.isTrue(attributes.getAttributeList().get(0).getAccessAsEMetaAccess() == EMetaAccess.INVALID, "ClassExample: method ATTR is Static must not be set METHODS2.ATTRIBUTES.ATTR1");
+                    Validate.isTrue(attributes.getAttributeList().get(0).getAccessAsEAccess() == EAccess.INVALID, "ClassExample: method ATTR is Static must not be set METHODS2.ATTRIBUTES.ATTR1");
                     Validate.isTrue(attributes.getAttributeList().get(1).getAttributeAsEAttribute() == EAttributes.HIDDEN, "ClassExample: method ATTR is not Static METHODS2.ATTRIBUTES.ATTR2");
-                    Validate.isTrue(attributes.getAttributeList().get(1).getAccessAsEMetaAccess() == EMetaAccess.INVALID, "ClassExample: method ATTR is Hidden must not be set METHODS2.ATTRIBUTES.ATTR2");
+                    Validate.isTrue(attributes.getAttributeList().get(1).getAccessAsEAccess() == EAccess.INVALID, "ClassExample: method ATTR is Hidden must not be set METHODS2.ATTRIBUTES.ATTR2");
 
                     attributes = methods.get(2).getAttributes().get(0);
                     Validate.isTrue(attributes.getAttributeList().get(0).getNode().getText().equals("Static"), "ClassExample: method ATTR is not Static METHODS3.ATTRIBUTES.ATTR1");

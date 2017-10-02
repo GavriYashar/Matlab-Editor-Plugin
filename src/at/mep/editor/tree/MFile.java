@@ -1,7 +1,7 @@
 package at.mep.editor.tree;
 
 import at.mep.editor.EditorWrapper;
-import at.mep.meta.EMetaAccess;
+import at.mep.meta.EAccess;
 import at.mep.util.StringUtils;
 import at.mep.util.TreeUtilsV2;
 import com.mathworks.matlab.api.editor.Editor;
@@ -158,7 +158,7 @@ public class MFile {
             private List<MTree.Node> value = Arrays.asList(MTree.NULL_NODE);
 
             private EAttributes attributeAsEAttribute = EAttributes.INVALID;
-            private EMetaAccess accessAsEMetaAccess = EMetaAccess.INVALID;
+            private EAccess accessAsEAccess = EAccess.INVALID;
 
             private Attribute() {
             }
@@ -170,17 +170,17 @@ public class MFile {
                 return attributeAsEAttribute;
             }
 
-            public EMetaAccess getAccessAsEMetaAccess() {
-                if (accessAsEMetaAccess == EMetaAccess.INVALID) {
+            public EAccess getAccessAsEAccess() {
+                if (accessAsEAccess == EAccess.INVALID) {
                     if (value.size() == 1 && value.get(0).getType() != JAVA_NULL_NODE) {
-                        accessAsEMetaAccess = EMetaAccess.valueOf(value.get(0).getText().toUpperCase());
+                        accessAsEAccess = EAccess.valueOf(value.get(0).getText().toUpperCase());
                     } else if (value.size() == 1 && value.get(0).getType() == JAVA_NULL_NODE) {
-                        accessAsEMetaAccess = EMetaAccess.INVALID;
+                        accessAsEAccess = EAccess.INVALID;
                     } else {
-                        accessAsEMetaAccess = EMetaAccess.META;
+                        accessAsEAccess = EAccess.META;
                     }
                 }
-                return accessAsEMetaAccess;
+                return accessAsEAccess;
             }
 
             public MTree.Node getNode() {

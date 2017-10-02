@@ -48,7 +48,7 @@ public abstract class Meta {
         populate(attributeHolder.getAttribute(), attributeHolder.getAccess());
     }
 
-    public abstract void populate(EAttributes attribute, EMetaAccess access);
+    public abstract void populate(EAttributes attribute, EAccess access);
 
     public void populate(EAttributes attribute) {
         populate(attribute, attribute.getDefaultAccess());
