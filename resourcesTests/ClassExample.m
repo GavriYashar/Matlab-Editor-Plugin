@@ -10,11 +10,11 @@ classdef (Abstract = false, Hidden, Sealed) ClassExample < handle & someOtherCla
         var3@double = 43125
         var4 double
         var5 double = 5666666
-        % var(1,1) double = 1
+        var6(1,3) double {mustBeReal, mustBeFinite} = [1,0,0]
     end
 
     properties (Access = {?someOtherClass1})
-        var6
+        var7
     end
 
 
@@ -30,6 +30,14 @@ classdef (Abstract = false, Hidden, Sealed) ClassExample < handle & someOtherCla
         function obj = ClassExample()
             % some construction code
             obj.var1 = 1;
+        end
+
+        function var1 = get.var1(obj)
+            var1 = obj.var1;
+        end
+
+        function set.var1(obj, var1)
+            obj.var1 = var1;
         end
 
         function fNoATTR_InArg(obj)
