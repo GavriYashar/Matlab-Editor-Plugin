@@ -198,6 +198,17 @@ public class MFile {
                 List<MTree.Node> mn = TreeUtilsV2.findNode(mtnClassDef.get(0).getRight().getListOfNextNodes(), MTree.NodeType.METHODS);
                 classDef.method = Method.construct(mn);
 
+                List<Method.Function> functions = new ArrayList<>(30);
+                List<Properties.Property> propertyList = new ArrayList<>(30);
+
+                for (Method method : classDef.getMethod()) {
+                    functions.addAll(method.getFunctionList());
+                }
+                for (Properties properties : classDef.getProperties()) {
+                    propertyList.addAll(properties.getPropertyList());
+                }
+                Properties.Property.populateWithSetterGetterFunctions(propertyList, functions);
+
                 classDefs.add(classDef);
             }
             return classDefs;
@@ -239,6 +250,9 @@ public class MFile {
                 MTree.Node definition = MTree.NULL_NODE;
                 List<MTree.Node> validators = Arrays.asList(MTree.NULL_NODE);
 
+                Method.Function setter = new Method.Function();
+                Method.Function getter = new Method.Function();
+
                 private Property() {
                 }
 
@@ -265,6 +279,42 @@ public class MFile {
                     return propertyList;
                 }
 
+                public static void populateWithSetterGetterFunctions(List<Property> propertyList, List<Method.Function> functions) {
+                    List<Method.Function> setterList = new ArrayList<>(functions.size());
+                    List<Method.Function> getterList = new ArrayList<>(functions.size());
+
+                    // filter functions that are actually getter or setters
+                    for (Method.Function function : functions) {
+                        if (function.isSetter()) {
+                            setterList.add(function);
+                            continue;
+                        }
+                        if (function.isGetter()) {
+                            getterList.add(function);
+                        }
+                    }
+
+                    // set setters
+                    for (Method.Function function : setterList) {
+                        String functionName = function.getName().getText();
+                        for (Property property : propertyList) {
+                            if (functionName.endsWith(property.getName().getText())) {
+                                property.setter = function;
+                            }
+                        }
+                    }
+
+                    // set getters
+                    for (Method.Function function : getterList) {
+                        String functionName = function.getName().getText();
+                        for (Property property : propertyList) {
+                            if (functionName.endsWith(property.getName().getText())) {
+                                property.getter = function;
+                            }
+                        }
+                    }
+                }
+
                 public MTree.Node getName() {
                     return name;
                 }
@@ -275,6 +325,14 @@ public class MFile {
 
                 public List<MTree.Node> getValidators() {
                     return validators;
+                }
+
+                public Method.Function getSetter() {
+                    return setter;
+                }
+
+                public Method.Function getGetter() {
+                    return getter;
                 }
             }
         }
@@ -315,6 +373,14 @@ public class MFile {
                 private List<MTree.Node> inArgs = Arrays.asList(MTree.NULL_NODE);
 
                 private Function() {
+                }
+
+                public boolean isGetter() {
+                    return name.getText().startsWith("get.");
+                }
+
+                public boolean isSetter() {
+                    return name.getText().startsWith("set.");
                 }
 
                 public MTree.Node getName() {
