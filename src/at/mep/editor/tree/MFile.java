@@ -1,7 +1,10 @@
 package at.mep.editor.tree;
 
+import at.mep.editor.EditorWrapper;
 import at.mep.meta.EMetaAccess;
+import at.mep.util.StringUtils;
 import at.mep.util.TreeUtilsV2;
+import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import java.util.ArrayList;
@@ -28,6 +31,11 @@ public class MFile {
 
     public List<ClassDef.Method.Function> getFunctions() {
         return functions;
+    }
+
+    public static MFile construct(Editor editor) {
+        MTree mTree = EditorWrapper.getMTreeFast(editor);
+        return construct(mTree);
     }
 
     public static MFile construct(MTree mTree) {
@@ -65,6 +73,7 @@ public class MFile {
     }
 
     public static class CellTitle{
+        private String titleString = null;
         private MTree.Node name = MTree.NULL_NODE;
 
         private CellTitle() {
@@ -84,6 +93,14 @@ public class MFile {
             }
 
             return cellTitles;
+        }
+
+        public String getTitleString() {
+            if (titleString == null) {
+                titleString = StringUtils.trimStart(name.getText());
+                titleString = StringUtils.trimEnd(titleString);
+            }
+            return titleString;
         }
     }
 
@@ -392,6 +409,7 @@ public class MFile {
             }
 
             public static class Function {
+                private String functionString = null;
                 private MTree.Node name = MTree.NULL_NODE;
                 private List<MTree.Node> outArgs = Arrays.asList(MTree.NULL_NODE);
                 private List<MTree.Node> inArgs = Arrays.asList(MTree.NULL_NODE);
@@ -417,6 +435,32 @@ public class MFile {
 
                 public List<MTree.Node> getInArgs() {
                     return inArgs;
+                }
+
+                public String getFunctionString() {
+                    if (functionString == null) {
+                        StringBuilder string = new StringBuilder();
+
+                        if (outArgs.size() > 0 && outArgs.get(0).getType() != JAVA_NULL_NODE) {
+                            string.append("[");
+                            for (MTree.Node node : outArgs){
+                                string.append(node.getText()).append(", ");
+                            }
+                            string.delete(string.length()-1, string.length());
+                            string.append("]");
+                        }
+                        string.append(getName().getText());
+                        if ((inArgs.size() > 0 && inArgs.get(0).getType() != JAVA_NULL_NODE)) {
+                            string.append("(");
+                            for (MTree.Node node : inArgs){
+                                string.append(node.getText()).append(", ");
+                            }
+                            string.delete(string.length()-1, string.length());
+                            string.append(")");
+                        }
+                        functionString = string.toString();
+                    }
+                    return functionString;
                 }
 
                 public static List<Function> construct(List<MTree.Node> mtnFunction) {
