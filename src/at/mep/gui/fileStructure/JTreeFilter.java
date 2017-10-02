@@ -4,6 +4,7 @@ import com.mathworks.widgets.text.mcode.MTree;
 
 import javax.swing.*;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -43,10 +44,7 @@ class JTreeFilter extends JTree {
         for (int i = list.size() - 1; i >= 0; i--) {
             NodeFS n = list.get(i);
             String str = n.nodeText();
-            if (str.endsWith(".m")
-                    || n.getType().equals(MTree.NodeType.CLASSDEF)
-                    || n.getType().equals(MTree.NodeType.METHODS)
-                    || n.getEMetaNodeType() == EMetaNodeType.META_CLASS) {
+            if (str.endsWith(".m") || EnumSet.of(MTree.NodeType.CLASSDEF, MTree.NodeType.METHODS).contains(n.getType())) {
                 continue;
             }
             if (!useRegex && !str.toLowerCase().contains(filterText.toLowerCase())) {

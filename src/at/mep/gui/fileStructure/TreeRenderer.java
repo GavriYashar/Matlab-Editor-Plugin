@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 /** Created by Andreas Justin on 2016 - 02 - 25. */
 class TreeRenderer extends DefaultTreeCellRenderer {
@@ -30,16 +31,13 @@ class TreeRenderer extends DefaultTreeCellRenderer {
 
         if (row == 0 && nodeStringL.endsWith(".m")) {
             setIcon(EIconsFileStructure.MFILE.getIcon());
-        } else if (nodeFS.getEMetaNodeType() == EMetaNodeType.META_CLASS) {
+        } else if (nodeFS.getType() == MTree.NodeType.CLASSDEF) {
             // CLASS
             setIcon(EIconsFileStructure.CLASS.getIcon());
-        } else if (nodeFS.getEMetaNodeType() == EMetaNodeType.MATLAB
-                && nodeFS.getType() == MTree.NodeType.FUNCTION
-                || nodeFS.getEMetaNodeType() == EMetaNodeType.META_METHOD
-                || nodeFS.getEMetaNodeType() == EMetaNodeType.META_PROPERTY) {
+        } else if (EnumSet.of(MTree.NodeType.FUNCTION, MTree.NodeType.EQUALS).contains(nodeFS.getType())) {
             // METHOD, FUNCTION, PROPERTY
             setFunctionPropertyIcon(nodeFS);
-        } else if (nodeFS.getEMetaNodeType() == EMetaNodeType.MATLAB && nodeFS.getType() == MTree.NodeType.CELL_TITLE) {
+        } else if (nodeFS.getType() == MTree.NodeType.CELL_TITLE) {
             // SECTION
             setIcon(EIconsFileStructure.CELL.getIcon());
         }

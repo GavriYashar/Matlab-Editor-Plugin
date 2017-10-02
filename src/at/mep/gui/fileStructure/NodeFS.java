@@ -18,7 +18,6 @@ public class NodeFS extends DefaultMutableTreeNode {
     private MTree.Node node; // might not always be set, e.g.: First node is just the string of the filename
     private String nodeText = "DEFAULT NODE TEXT";
     private MTree.NodeType nodeType = MTree.NodeType.JAVA_NULL_NODE;
-    private EMetaNodeType eMetaNodeType = EMetaNodeType.INVALID;
     private Meta meta = null;
 
     // custom NodeFS properties for metaClass
@@ -47,7 +46,6 @@ public class NodeFS extends DefaultMutableTreeNode {
         node = nodeFS.node;
         nodeText = nodeFS.nodeText;
         nodeType = nodeFS.nodeType;
-        eMetaNodeType = nodeFS.eMetaNodeType;
         meta = nodeFS.meta;
 
         isStatic = nodeFS.isStatic;
@@ -73,87 +71,11 @@ public class NodeFS extends DefaultMutableTreeNode {
         this.node = node;
         this.nodeText = NodeUtils.getTextFormattedForNode(node);
         this.nodeType = node.getType();
-        eMetaNodeType = EMetaNodeType.MATLAB;
-    }
-
-    public NodeFS(MetaClass c, MTree.Node mtNode) {
-        eMetaNodeType = EMetaNodeType.META_CLASS;
-        meta = c;
-        node = mtNode;
-
-        isSealed = c.isSealed();
-        isAbstract = c.isAbstract();
-        isHidden = c.isHidden();
-        isConstructOnlOad = c.isConstructOnLoad();
-        isHandleCompatible = c.isHandleCompatible();
-        isEnumeration = c.isEnumeration();
-
-        nodeText = c.getName();
-        documentation = c.getDescription();
-        detailedDocumentation = c.getDetailedDescription();
-    }
-
-    public NodeFS(MetaProperty p, MTree.Node mtNode) {
-        eMetaNodeType = EMetaNodeType.META_PROPERTY;
-        meta = p;
-        node = mtNode;
-
-        GetAccessPrivate = p.getGetAccess();
-        SetAccessPrivate = p.getSetAccess();
-        isAbstract = p.isAbstract();
-        isHidden = p.isHidden();
-        isDependent = p.isDependent();
-        isStatic = p.isConstant();
-        isTransient = p.isTransient();
-        hasDefaults = p.isHasDefaults();
-
-        switch (mtNode.getType()) {
-            case PROPTYPEDECL: {
-                nodeText = NodeUtils.stringForPrptyDeclNameWithTypeDef(mtNode);
-                // nodeText = p.getName();
-                break;
-            }
-            case FUNCTION: {
-                nodeText = mtNode.getFunctionName().getText();
-                break;
-            }
-            default: {
-                throw new IllegalArgumentException("mtNode has to be either PROPTYPEDECL or FUNCTION");
-            }
-        }
-        documentation = p.getDescription();
-        detailedDocumentation = p.getDetailedDescription();
-    }
-
-    public NodeFS(MetaMethod m, MTree.Node mtNode) {
-        eMetaNodeType = EMetaNodeType.META_METHOD;
-        meta = m;
-        node = mtNode;
-
-        Access = m.getAccess();
-        isStatic = m.isStatic();
-        isAbstract = m.isAbstract();
-        isHidden = m.isHidden();
-        isSealed = m.isSealed();
-
-        String s = "";
-        if (m.getOutputNames().size() > 0) {
-            s = m.getOutputNames().toString() + " = ";
-        }
-        s += m.getName() + "(";
-        if (m.getInputNames().size() > 0) {
-            String ins = m.getInputNames().toString();
-            s += ins.substring(1, ins.length() - 1);
-        }
-        s += ")";
-        nodeText = s;
-        documentation = m.getDescription();
-        detailedDocumentation = m.getDetailedDescription();
     }
 
     public NodeFS(String nodeText) {
-        eMetaNodeType = EMetaNodeType.STRING;
         this.nodeText = nodeText;
+        this.nodeType = MTree.NodeType.JAVA_NULL_NODE;
     }
 
     public MTree.Node node() {
@@ -162,10 +84,6 @@ public class NodeFS extends DefaultMutableTreeNode {
 
     public boolean hasNode() {
         return node != null;
-    }
-
-    public EMetaNodeType getEMetaNodeType() {
-        return eMetaNodeType;
     }
 
     public String nodeText() {
@@ -189,10 +107,7 @@ public class NodeFS extends DefaultMutableTreeNode {
     }
 
     public boolean isProperty() {
-        if (eMetaNodeType == EMetaNodeType.MATLAB && nodeType == MTree.NodeType.ID) {
-            return true;
-        }
-        return eMetaNodeType == EMetaNodeType.META_PROPERTY;
+        return nodeType == MTree.NodeType.EQUALS;
     }
 
     public boolean isStatic() {
@@ -215,8 +130,7 @@ public class NodeFS extends DefaultMutableTreeNode {
     }
 
     private String nodeDocumentation() {
-        if (!(getType() == MTree.NodeType.FUNCTION || getType() == MTree.NodeType.CLASSDEF
-                || getEMetaNodeType() == EMetaNodeType.META_CLASS || getEMetaNodeType() == EMetaNodeType.META_METHOD)) {
+        if (!(getType() == MTree.NodeType.FUNCTION || getType() == MTree.NodeType.CLASSDEF)) {
             return "";
         }
         List<MTree.Node> nodeList = NodeUtils.getDocumentationNodesForNode(node);
@@ -238,7 +152,6 @@ public class NodeFS extends DefaultMutableTreeNode {
             nodeFS.node = cellTitle.getNode();
             nodeFS.nodeText = cellTitle.getTitleString();
             nodeFS.nodeType = MTree.NodeType.CELL_TITLE;
-            nodeFS.eMetaNodeType = EMetaNodeType.MATLAB;
 
             root.add(nodeFS);
         }
@@ -253,7 +166,6 @@ public class NodeFS extends DefaultMutableTreeNode {
             nodeFS.node = function.getNode();
             nodeFS.nodeText = function.getFunctionString();
             nodeFS.nodeType = MTree.NodeType.FUNCTION;
-            nodeFS.eMetaNodeType = EMetaNodeType.MATLAB;
 
             root.add(nodeFS);
 
@@ -267,7 +179,6 @@ public class NodeFS extends DefaultMutableTreeNode {
         MFile.ClassDef classDef = mFile.getClassDefs().get(0);
         root.node = classDef.getNode();
         root.nodeType = MTree.NodeType.CLASSDEF;
-        root.eMetaNodeType = EMetaNodeType.META_CLASS;
 
         // properties
         for (MFile.ClassDef.Properties properties : classDef.getProperties()) {
@@ -281,14 +192,12 @@ public class NodeFS extends DefaultMutableTreeNode {
                 nodeFS.node = property.getNode();
                 nodeFS.nodeText = property.getNode().getText();
                 nodeFS.nodeType = MTree.NodeType.EQUALS;
-                nodeFS.eMetaNodeType = EMetaNodeType.META_PROPERTY;
 
                 if (property.hasGetter()) {
                     NodeFS getter = new NodeFS();
                     getter.node = property.getGetter().getNode();
                     getter.nodeText = property.getGetter().getNode().getText();
                     getter.nodeType = MTree.NodeType.FUNCTION;
-                    getter.eMetaNodeType = EMetaNodeType.MATLAB;
 
                     nodeFS.add(getter);
                 }
@@ -298,7 +207,6 @@ public class NodeFS extends DefaultMutableTreeNode {
                     setter.node = property.getSetter().getNode();
                     setter.nodeText = property.getSetter().getNode().getText();
                     setter.nodeType = MTree.NodeType.FUNCTION;
-                    setter.eMetaNodeType = EMetaNodeType.MATLAB;
 
                     nodeFS.add(setter);
                 }
@@ -321,7 +229,6 @@ public class NodeFS extends DefaultMutableTreeNode {
                 nodeFS.node = function.getNode();
                 nodeFS.nodeText = function.getFunctionString();
                 nodeFS.nodeType = MTree.NodeType.FUNCTION;
-                nodeFS.eMetaNodeType = EMetaNodeType.MATLAB;
                 root.add(nodeFS);
             }
         }
