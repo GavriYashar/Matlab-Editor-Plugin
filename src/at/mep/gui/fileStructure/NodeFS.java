@@ -18,7 +18,6 @@ public class NodeFS extends DefaultMutableTreeNode {
     private MTree.Node node; // might not always be set, e.g.: First node is just the string of the filename
     private String nodeText = "DEFAULT NODE TEXT";
     private MTree.NodeType nodeType = MTree.NodeType.JAVA_NULL_NODE;
-    private Meta meta = null;
 
     // custom NodeFS properties for metaClass
     private boolean isStatic = false;  // same as constant
@@ -46,7 +45,6 @@ public class NodeFS extends DefaultMutableTreeNode {
         node = nodeFS.node;
         nodeText = nodeFS.nodeText;
         nodeType = nodeFS.nodeType;
-        meta = nodeFS.meta;
 
         isStatic = nodeFS.isStatic;
         isSealed = nodeFS.isSealed;
@@ -64,13 +62,6 @@ public class NodeFS extends DefaultMutableTreeNode {
         hasDefaults = nodeFS.hasDefaults;
         documentation = nodeFS.documentation;
         detailedDocumentation = nodeFS.detailedDocumentation;
-    }
-
-    public NodeFS(MTree.Node node) {
-        super(node);
-        this.node = node;
-        this.nodeText = NodeUtils.getTextFormattedForNode(node);
-        this.nodeType = node.getType();
     }
 
     public NodeFS(String nodeText) {
@@ -119,10 +110,6 @@ public class NodeFS extends DefaultMutableTreeNode {
 
     public EAccess getAccess() {
         return Access;
-    }
-
-    public Meta getMeta() {
-        return meta;
     }
 
     public boolean isHidden() {
