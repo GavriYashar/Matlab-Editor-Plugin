@@ -6,6 +6,7 @@ import at.mep.editor.EditorWrapper;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -217,8 +218,11 @@ public final class NodeUtils {
      * these are matlabs documentation comments.
      */
     public static List<MTree.Node> getDocumentationNodesForNode(final MTree.Node node) {
-        if ( !(node.getType() == MTree.NodeType.FUNCTION || node.getType() == MTree.NodeType.CLASSDEF) ) {
-            throw new IllegalArgumentException("node has to be a MTree.NodeType.<FUNCTION|CLASSDEF>");
+        // if ( !(node.getType() == MTree.NodeType.FUNCTION || node.getType() == MTree.NodeType.CLASSDEF) ) {
+        //     throw new IllegalArgumentException("node has to be a MTree.NodeType.<FUNCTION|CLASSDEF>");
+        // }
+        if (node == null) {
+            return Arrays.asList(MTree.NULL_NODE);
         }
         int commentLine = node.getStartLine() + 1;
         List<MTree.Node> subtree = node.getSubtree();
