@@ -1,5 +1,6 @@
 package at.mep.editor.tree;
 
+import at.mep.meta.EMetaAccess;
 import at.mep.util.TreeUtilsV2;
 import com.mathworks.widgets.text.mcode.MTree;
 
@@ -113,7 +114,30 @@ public class MFile {
             private MTree.Node attribute = MTree.NULL_NODE;
             private List<MTree.Node> value = Arrays.asList(MTree.NULL_NODE);
 
+            private EAttributes attributeAsEAttribute = EAttributes.INVALID;
+            private EMetaAccess accessAsEMetaAccess = EMetaAccess.INVALID;
+
             private Attribute() {
+            }
+
+            public EAttributes getAttributeAsEAttribute() {
+                if (attributeAsEAttribute == EAttributes.INVALID) {
+                    attributeAsEAttribute = EAttributes.valueOf(attribute.getText().toUpperCase());
+                }
+                return attributeAsEAttribute;
+            }
+
+            public EMetaAccess getAccessAsEMetaAccess() {
+                if (accessAsEMetaAccess == EMetaAccess.INVALID) {
+                    if (value.size() == 1 && value.get(0).getType() != JAVA_NULL_NODE) {
+                        accessAsEMetaAccess = EMetaAccess.valueOf(value.get(0).getText().toUpperCase());
+                    } else if (value.size() == 1 && value.get(0).getType() == JAVA_NULL_NODE) {
+                        accessAsEMetaAccess = EMetaAccess.INVALID;
+                    } else {
+                        accessAsEMetaAccess = EMetaAccess.META;
+                    }
+                }
+                return accessAsEMetaAccess;
             }
 
             public MTree.Node getAttribute() {

@@ -4,6 +4,8 @@ import at.mep.meta.EMetaAccess;
 
 /** Created by Andreas Justin on 2017-09-29. */
 public enum EAttributes {
+    INVALID("Invalid", EMetaAccess.INVALID),
+    
     ABORTSET("AbortSet", EMetaAccess.FALSE),
     ABSTRACT("Abstract", EMetaAccess.FALSE),
     ACCESS("Access", EMetaAccess.PUBLIC),
@@ -24,7 +26,6 @@ public enum EAttributes {
     CONSTRUCTONLOAD("ConstructOnLoad", EMetaAccess.FALSE),
     HANDLECOMPATIBLE("HandleCompatible", EMetaAccess.FALSE),
     INFERIORCLASSES("InferiorClasses", EMetaAccess.META);
-    ;
 
     private final String stringMatlab;
     private final EMetaAccess defaultAccess;
