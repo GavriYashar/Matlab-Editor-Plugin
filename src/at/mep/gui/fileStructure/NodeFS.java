@@ -1,7 +1,10 @@
 package at.mep.gui.fileStructure;
 
+import at.mep.editor.EditorWrapper;
+import at.mep.editor.tree.MFile;
 import at.mep.meta.*;
 import at.mep.util.NodeUtils;
+import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -36,6 +39,35 @@ public class NodeFS extends DefaultMutableTreeNode {
     private boolean hasDefaults = false;
     private String documentation = "";
     private String detailedDocumentation = "";
+
+    private NodeFS() {
+
+    }
+
+    public NodeFS(NodeFS nodeFS) {
+        node = nodeFS.node;
+        nodeText = nodeFS.nodeText;
+        nodeType = nodeFS.nodeType;
+        eMetaNodeType = nodeFS.eMetaNodeType;
+        meta = nodeFS.meta;
+
+        isStatic = nodeFS.isStatic;
+        isSealed = nodeFS.isSealed;
+        isAbstract = nodeFS.isAbstract;
+        isConstructOnlOad = nodeFS.isConstructOnlOad;
+        isHandleCompatible = nodeFS.isHandleCompatible;
+        isEnumeration = nodeFS.isEnumeration;
+        isDependent = nodeFS.isDependent;
+        isTransient = nodeFS.isTransient;
+        isImmutable = nodeFS.isImmutable;
+        Access = nodeFS.Access;
+        isHidden = nodeFS.isHidden;
+        GetAccessPrivate = nodeFS.GetAccessPrivate;
+        SetAccessPrivate = nodeFS.SetAccessPrivate;
+        hasDefaults = nodeFS.hasDefaults;
+        documentation = nodeFS.documentation;
+        detailedDocumentation = nodeFS.detailedDocumentation;
+    }
 
     public NodeFS(MTree.Node node) {
         super(node);
@@ -197,5 +229,84 @@ public class NodeFS extends DefaultMutableTreeNode {
             s = s.substring(0, s.length() - 1);
         }
         return s;
+    }
+
+    public static NodeFS constructForCellTitle(Editor editor) {
+        MFile mFile = MFile.construct(editor);
+        NodeFS root = new NodeFS(mFile.getName());
+        for (MFile.CellTitle cellTitle : mFile.getCellTitles()) {
+            NodeFS nodeFS = new NodeFS();
+            nodeFS.node = cellTitle.getName();
+            nodeFS.nodeText = cellTitle.getTitleString();
+            nodeFS.nodeType = MTree.NodeType.CELL_TITLE;
+            nodeFS.eMetaNodeType = EMetaNodeType.MATLAB;
+
+            root.add(nodeFS);
+        }
+        return root;
+    }
+
+    public static NodeFS constructForFunctions(Editor editor) {
+        MFile mFile = MFile.construct(editor);
+        NodeFS root = new NodeFS(mFile.getName());
+        for (MFile.ClassDef.Method.Function function : mFile.getFunctions()) {
+            NodeFS nodeFS = new NodeFS();
+            nodeFS.node = function.getName();
+            nodeFS.nodeText = function.getFunctionString();
+            nodeFS.nodeType = MTree.NodeType.FUNCTION;
+            nodeFS.eMetaNodeType = EMetaNodeType.MATLAB;
+
+            root.add(nodeFS);
+
+        }
+        return root;
+    }
+
+    public static NodeFS constructForClassDef(Editor editor) {
+        MFile mFile = MFile.construct(editor);
+        NodeFS root = new NodeFS(mFile.getName());
+        MFile.ClassDef classDef = mFile.getClassDefs().get(0);
+
+        // properties
+        for (MFile.ClassDef.Properties properties : classDef.getProperties()) {
+            List<MFile.Attributes.Attribute> attributeList = null;
+            if (properties.hasAttributes()) {
+                attributeList = properties.getAttributes().get(0).getAttributeList();
+            }
+            for (MFile.ClassDef.Properties.Property property : properties.getPropertyList()) {
+                NodeFS nodeFS = new NodeFS();
+
+                nodeFS.node = property.getName();
+                nodeFS.nodeText = property.getName().getText();
+                nodeFS.nodeType = MTree.NodeType.EQUALS;
+                nodeFS.eMetaNodeType = EMetaNodeType.META_PROPERTY;
+
+                if (property.hasGetter()) {
+                    NodeFS getter = new NodeFS();
+                    getter.node = property.getGetter().getName();
+                    getter.nodeText = property.getGetter().getName().getText();
+                    getter.nodeType = MTree.NodeType.FUNCTION;
+                    getter.eMetaNodeType = EMetaNodeType.MATLAB;
+
+                    nodeFS.add(getter);
+                }
+
+                if (property.hasSetter()) {
+                    NodeFS setter = new NodeFS();
+                    setter.node = property.getSetter().getName();
+                    setter.nodeText = property.getSetter().getName().getText();
+                    setter.nodeType = MTree.NodeType.FUNCTION;
+                    setter.eMetaNodeType = EMetaNodeType.MATLAB;
+
+                    nodeFS.add(setter);
+                }
+
+                root.add(nodeFS);
+            }
+        }
+        
+        // functions
+
+        return root;
     }
 }
