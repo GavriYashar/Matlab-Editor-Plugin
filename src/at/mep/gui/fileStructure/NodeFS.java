@@ -261,7 +261,7 @@ public class NodeFS extends DefaultMutableTreeNode {
                 NodeFS nodeFS = new NodeFS();
 
                 nodeFS.node = property.getNode();
-                nodeFS.nodeText = property.getNode().getText();
+                nodeFS.nodeText = property.getPropertyString();
                 nodeFS.nodeType = MTree.NodeType.EQUALS;
 
                 if (properties.hasAttributes()) {

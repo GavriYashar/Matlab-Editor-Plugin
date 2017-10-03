@@ -378,6 +378,12 @@ public class MFile {
 
             /** actual representation of MTree.NodeType.EQUALS, the kind of property you're actually interested in */
             public static class Property {
+                /** returns property string with type declaration and validators incl ATBASE (@)
+                 * e.g.: var1 double {mustBeReal, mustBeFinite}
+                 *       var1@double
+                 */
+                String propertyString = null;
+
                 /** actual definition node of property (EQUALS) */
                 MTree.Node node = MTree.NULL_NODE;
 
@@ -404,6 +410,31 @@ public class MFile {
 
                 public boolean hasValidators() {
                     return validators.size() > 0 && validators.get(0).getType() != JAVA_NULL_NODE;
+                }
+
+                public String getPropertyString() {
+                    if (propertyString == null) {
+                        StringBuilder string = new StringBuilder(30);
+                        string.append(node.getText());
+                        if (hasDefinition()) {
+                            if (isAtBase) {
+                                string.append("@");
+                            } else {
+                                string.append(" ");
+                            }
+                            string.append(definition.getText());
+                        }
+                        if (hasValidators()) {
+                            string.append(" {");
+                            for (MTree.Node node : validators){
+                                string.append(node.getText()).append(", ");
+                            }
+                            string.delete(string.length()-2, string.length());
+                            string.append("}");
+                        }
+                        propertyString = string.toString();
+                    }
+                    return propertyString;
                 }
 
                 public static List<Property> construct(List<MTree.Node> mtnProperty) {
@@ -587,7 +618,7 @@ public class MFile {
                 /** string representation for file structure "[out1, out2] = function(in1, in2)" */
                 public String getFunctionString() {
                     if (functionString == null) {
-                        StringBuilder string = new StringBuilder();
+                        StringBuilder string = new StringBuilder(30);
                         string.append(getOutArgsString());
                         if (hasOutArgs()) {
                             string.append(" = ");
@@ -601,8 +632,8 @@ public class MFile {
 
                 /** string representation "[out1, out2]" */
                 public String getOutArgsString() {
-                    StringBuilder string = new StringBuilder();
-                    if (outArgs.size() > 0 && outArgs.get(0).getType() != JAVA_NULL_NODE) {
+                    StringBuilder string = new StringBuilder(30);
+                    if (hasOutArgs()) {
                         string.append("[");
                         for (MTree.Node node : outArgs){
                             string.append(node.getText()).append(", ");
@@ -615,8 +646,8 @@ public class MFile {
 
                 /** string representation "(in1, in2)" */
                 public String getInArgsString() {
-                    StringBuilder string = new StringBuilder();
-                    if ((inArgs.size() > 0 && inArgs.get(0).getType() != JAVA_NULL_NODE)) {
+                    StringBuilder string = new StringBuilder(30);
+                    if (hasInArgs()) {
                         string.append("(");
                         for (MTree.Node node : inArgs){
                             if (node.getType() == NOT) {
