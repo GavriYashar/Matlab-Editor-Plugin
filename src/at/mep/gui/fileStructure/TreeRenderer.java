@@ -11,9 +11,10 @@ import java.util.EnumSet;
 
 /** Created by Andreas Justin on 2016 - 02 - 25. */
 class TreeRenderer extends DefaultTreeCellRenderer {
-    private static final Color HIDDEN_COLOR = new Color(180, 100, 115);
-    private static final Color META_COLOR = new Color(100, 115, 180);
     private static final Color INVALID_COLOR = new Color(133, 133, 133);
+    private static final Color HIDDEN_COLOR = new Color(180, 100, 115);
+    private static final Color TRANSIENT_COLOR = new Color(180, 179, 172, 125);
+    private static final Color META_COLOR = new Color(100, 115, 180);
     // private DefaultTreeCellRenderer defaultRenderer = new DefaultTreeCellRenderer();
 
     TreeRenderer() {
@@ -88,6 +89,7 @@ class TreeRenderer extends DefaultTreeCellRenderer {
                 colors.add(null);
             }
         }
+
         if (nodeFS.isStatic()) {
             decorators.add(EIconsFileStructure.DECORATOR_STATIC.getIcon());
             colors.add(null);
@@ -100,9 +102,13 @@ class TreeRenderer extends DefaultTreeCellRenderer {
 
         Icon icon;
         if (nodeFS.isProperty()) {
-            icon = EIconsFileStructure.PROPERTY.getIcon(decorators, colors, positions);
+            if (nodeFS.isTransient()) {
+                icon = EIconsFileStructure.PROPERTY.getIcon(TRANSIENT_COLOR, decorators, colors, positions);
+            } else {
+                icon = EIconsFileStructure.PROPERTY.getIcon(null, decorators, colors, positions);
+            }
         } else {
-            icon = EIconsFileStructure.METHOD.getIcon(decorators, colors, positions);
+            icon = EIconsFileStructure.METHOD.getIcon(null, decorators, colors, positions);
         }
         setIcon(icon);
     }
