@@ -1,5 +1,6 @@
 package at.mep.gui.fileStructure;
 
+import at.mep.editor.tree.EAttributes;
 import at.mep.editor.tree.MFile;
 import at.mep.meta.*;
 import at.mep.util.NodeUtils;
@@ -7,6 +8,8 @@ import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -18,24 +21,29 @@ public class NodeFS extends DefaultMutableTreeNode {
     private MTree.Node node; // might not always be set, e.g.: First node is just the string of the filename
     private String nodeText = "DEFAULT NODE TEXT";
     private MTree.NodeType nodeType = MTree.NodeType.JAVA_NULL_NODE;
+    private List<EAttributes> attributes = new ArrayList<>(10);
+    private List<EAccess> accesses = new ArrayList<>(10);
 
-    // custom NodeFS properties for metaClass
-    private boolean isStatic = false;  // same as constant
-    private boolean isSealed = false;
-    private boolean isAbstract = false;
-    private boolean isConstructOnlOad = false;
-    private boolean isHandleCompatible = false;
-    private boolean isEnumeration = false;
-    private boolean isDependent = false;
-    private boolean isTransient = false;
-    private boolean isImmutable = false;
-    private EAccess Access = EAccess.PUBLIC;
-    private boolean isHidden = false;
-    private EAccess GetAccessPrivate = EAccess.PUBLIC;
-    private EAccess SetAccessPrivate = EAccess.PUBLIC;
-    private boolean hasDefaults = false;
     private String documentation = "";
     private String detailedDocumentation = "";
+
+    private EAccess access = EAttributes.ACCESS.getDefaultAccess();
+    private EAccess getAccess = EAttributes.GETACCESS.getDefaultAccess();
+    private EAccess setAccess = EAttributes.SETACCESS.getDefaultAccess();
+
+    private boolean isStatic = EAttributes.STATIC.getDefaultAccess().convertBoolean();  // same as constant
+    private boolean isSealed = EAttributes.SEALED.getDefaultAccess().convertBoolean();
+    private boolean isAbstract = EAttributes.ABSTRACT.getDefaultAccess().convertBoolean();
+    private boolean isConstructOnlOad = EAttributes.CONSTRUCTONLOAD.getDefaultAccess().convertBoolean();
+    private boolean isHandleCompatible = EAttributes.HANDLECOMPATIBLE.getDefaultAccess().convertBoolean();
+    private boolean isEnumeration = false;
+    private boolean isDependent = EAttributes.DEPENDENT.getDefaultAccess().convertBoolean();
+    private boolean isTransient = EAttributes.TRANSIENT.getDefaultAccess().convertBoolean();
+    private boolean isImmutable = false; // SetAccess = Immutable
+    private boolean isHidden = EAttributes.HIDDEN.getDefaultAccess().convertBoolean();
+
+    // custom NodeFS properties for metaClass
+    private boolean hasDefaults = false;
 
     private NodeFS() {
 
@@ -45,6 +53,15 @@ public class NodeFS extends DefaultMutableTreeNode {
         node = nodeFS.node;
         nodeText = nodeFS.nodeText;
         nodeType = nodeFS.nodeType;
+        attributes = nodeFS.attributes;
+        accesses = nodeFS.accesses;
+
+        documentation = nodeFS.documentation;
+        detailedDocumentation = nodeFS.detailedDocumentation;
+
+        access = nodeFS.access;
+        getAccess = nodeFS.getAccess;
+        setAccess = nodeFS.setAccess;
 
         isStatic = nodeFS.isStatic;
         isSealed = nodeFS.isSealed;
@@ -55,18 +72,86 @@ public class NodeFS extends DefaultMutableTreeNode {
         isDependent = nodeFS.isDependent;
         isTransient = nodeFS.isTransient;
         isImmutable = nodeFS.isImmutable;
-        Access = nodeFS.Access;
         isHidden = nodeFS.isHidden;
-        GetAccessPrivate = nodeFS.GetAccessPrivate;
-        SetAccessPrivate = nodeFS.SetAccessPrivate;
+
         hasDefaults = nodeFS.hasDefaults;
-        documentation = nodeFS.documentation;
-        detailedDocumentation = nodeFS.detailedDocumentation;
     }
 
     public NodeFS(String nodeText) {
         this.nodeText = nodeText;
         this.nodeType = MTree.NodeType.JAVA_NULL_NODE;
+    }
+
+    public void setAttributes(List<MFile.Attributes> attributesList) {
+        for (MFile.Attributes attributes1 : attributesList) {
+            for (MFile.Attributes.Attribute attribute : attributes1.getAttributeList()) {
+                attributes.add(attribute.getAttributeAsEAttribute());
+                accesses.add(attribute.getAccessAsEAccess());
+            }
+        }
+
+        for (int i = 0; i < attributes.size(); i++) {
+            switch (attributes.get(i)) {
+                case INVALID:
+                    break;
+                case ABORTSET:
+                    break;
+                case ABSTRACT:
+                    isAbstract = EnumSet.of(EAccess.TRUE, EAccess.INVALID).contains(accesses.get(i));
+                    break;
+                case ACCESS:
+                    access = accesses.get(i);
+                    if (access == EAccess.INVALID) {
+                        access = EAccess.PUBLIC;
+                    }
+                    break;
+                case CONSTANT:
+                    isStatic = EnumSet.of(EAccess.TRUE, EAccess.INVALID).contains(accesses.get(i));
+                    break;
+                case DEPENDENT:
+                    isDependent = EnumSet.of(EAccess.TRUE, EAccess.INVALID).contains(accesses.get(i));
+                    break;
+                case GETACCESS:
+                    getAccess = accesses.get(i);
+                    if (access == EAccess.INVALID) {
+                        access = EAccess.PUBLIC;
+                    }
+                    break;
+                case GETOBSERVABLE:
+                    break;
+                case HIDDEN:
+                    isHidden = EnumSet.of(EAccess.TRUE, EAccess.INVALID).contains(accesses.get(i));
+                    break;
+                case NONCOPYABLE:
+                    break;
+                case SETACCESS:
+                    setAccess = accesses.get(i);
+                    isImmutable = setAccess == EAccess.IMMUTABLE;
+                    if (access == EAccess.INVALID) {
+                        access = EAccess.PUBLIC;
+                    }
+                    break;
+                case SETOBSERVABLE:
+                    break;
+                case TRANSIENT:
+                    isTransient = EnumSet.of(EAccess.TRUE, EAccess.INVALID).contains(accesses.get(i));
+                    break;
+                case SEALED:
+                    isSealed = EnumSet.of(EAccess.TRUE, EAccess.INVALID).contains(accesses.get(i));
+                    break;
+                case STATIC:
+                    isStatic = EnumSet.of(EAccess.TRUE, EAccess.INVALID).contains(accesses.get(i));
+                    break;
+                case ALLOWEDSUBCLASSES:
+                    break;
+                case CONSTRUCTONLOAD:
+                    break;
+                case HANDLECOMPATIBLE:
+                    break;
+                case INFERIORCLASSES:
+                    break;
+            }
+        }
     }
 
     public MTree.Node node() {
@@ -109,7 +194,7 @@ public class NodeFS extends DefaultMutableTreeNode {
     }
 
     public EAccess getAccess() {
-        return Access;
+        return access;
     }
 
     public boolean isHidden() {
@@ -155,7 +240,6 @@ public class NodeFS extends DefaultMutableTreeNode {
             nodeFS.nodeType = MTree.NodeType.FUNCTION;
 
             root.add(nodeFS);
-
         }
         return root;
     }
@@ -169,16 +253,16 @@ public class NodeFS extends DefaultMutableTreeNode {
 
         // properties
         for (MFile.ClassDef.Properties properties : classDef.getProperties()) {
-            List<MFile.Attributes.Attribute> attributeList = null;
-            if (properties.hasAttributes()) {
-                attributeList = properties.getAttributes().get(0).getAttributeList();
-            }
             for (MFile.ClassDef.Properties.Property property : properties.getPropertyList()) {
                 NodeFS nodeFS = new NodeFS();
 
                 nodeFS.node = property.getNode();
                 nodeFS.nodeText = property.getNode().getText();
                 nodeFS.nodeType = MTree.NodeType.EQUALS;
+
+                if (properties.hasAttributes()) {
+                    nodeFS.setAttributes(properties.getAttributes());
+                }
 
                 if (property.hasGetter()) {
                     NodeFS getter = new NodeFS();
@@ -216,6 +300,9 @@ public class NodeFS extends DefaultMutableTreeNode {
                 nodeFS.node = function.getNode();
                 nodeFS.nodeText = function.getFunctionString();
                 nodeFS.nodeType = MTree.NodeType.FUNCTION;
+                if (method.hasAttributes()) {
+                    nodeFS.setAttributes(method.getAttributes());
+                }
                 root.add(nodeFS);
             }
         }
