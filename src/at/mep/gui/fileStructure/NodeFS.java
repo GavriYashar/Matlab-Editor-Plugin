@@ -154,6 +154,7 @@ public class NodeFS extends DefaultMutableTreeNode {
         }
     }
 
+
     public MTree.Node node() {
         return node;
     }
@@ -165,7 +166,6 @@ public class NodeFS extends DefaultMutableTreeNode {
     public String nodeText() {
         return nodeText;
     }
-
 
     public MTree.NodeType getType() {
         return nodeType;
@@ -182,6 +182,10 @@ public class NodeFS extends DefaultMutableTreeNode {
         return detailedDocumentation;
     }
 
+    public EAccess getAccess() {
+        return access;
+    }
+
     public boolean isProperty() {
         return nodeType == MTree.NodeType.EQUALS;
     }
@@ -193,12 +197,28 @@ public class NodeFS extends DefaultMutableTreeNode {
         return isStatic;
     }
 
-    public EAccess getAccess() {
-        return access;
-    }
-
     public boolean isHidden() {
         return isHidden;
+    }
+
+    public boolean isSealed() {
+        return isSealed;
+    }
+
+    public boolean isAbstract() {
+        return isAbstract;
+    }
+
+    public boolean isDependent() {
+        return isDependent;
+    }
+
+    public boolean isTransient() {
+        return isTransient;
+    }
+
+    public boolean isImmutable() {
+        return isImmutable;
     }
 
     private String nodeDocumentation() {
