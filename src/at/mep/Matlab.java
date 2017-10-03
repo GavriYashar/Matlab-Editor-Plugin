@@ -20,9 +20,13 @@ import java.util.regex.Pattern;
 
 /** Created by Andreas Justin on 2016-09-19. */
 public class Matlab {
-    public static final double R2016B = 9.1;
-    public static final double R2017a = 9.2; // ?
-    public static final double R2017b = 9.3; // ?
+    public static final double R2014b = 8.7;
+    public static final double R2015a = 8.8;
+    public static final double R2015b = 8.9;
+    public static final double R2016a = 9.0;
+    public static final double R2016b = 9.1;
+    public static final double R2017a = 9.2;
+    public static final double R2017b = 9.3;
 
     private static Matlab INSTANCE = null;
 
