@@ -45,18 +45,18 @@ public enum EIconsFileStructure {
 
     public Icon getIcon(EIconSetting setting) {
         int initCap = 0;
-        return getIcon(setting, new ArrayList<Icon>(initCap), new ArrayList<Color>(initCap), new ArrayList<EIconDecorator>(initCap));
+        return getIcon(setting, null, new ArrayList<Icon>(initCap), new ArrayList<Color>(initCap), new ArrayList<EIconDecorator>(initCap));
     }
 
     public Icon getIcon() {
         return getIcon(Settings.getFSIconSet());
     }
 
-    public Icon getIcon(@NotNull java.util.List<Icon> decorators, java.util.List<Color> decoratorColors, java.util.List<EIconDecorator> decoratorPositions) {
-        return getIcon(Settings.getFSIconSet(), decorators, decoratorColors, decoratorPositions);
+    public Icon getIcon(Color iconColor, @NotNull java.util.List<Icon> decorators, java.util.List<Color> decoratorColors, java.util.List<EIconDecorator> decoratorPositions) {
+        return getIcon(Settings.getFSIconSet(), iconColor, decorators, decoratorColors, decoratorPositions);
     }
 
-    public Icon getIcon(EIconSetting setting, @NotNull java.util.List<Icon> decorators, java.util.List<Color> decoratorColors, java.util.List<EIconDecorator> decoratorPositions) {
+    public Icon getIcon(EIconSetting setting, Color iconColor, @NotNull java.util.List<Icon> decorators, java.util.List<Color> decoratorColors, java.util.List<EIconDecorator> decoratorPositions) {
         Icon icon;
         switch (setting) {
             case INTELLIJ: {
@@ -79,6 +79,12 @@ public enum EIconsFileStructure {
             }
         }
 
+        // colorize icon
+        if (iconColor != null) {
+            icon = IconUtil.color(icon, iconColor);
+        }
+
+        // colorize each decorator
         if (decorators.size() > 0) {
             for (int i = 0; i < decorators.size(); i++) {
                 if (decoratorColors.size() > 0 && decoratorColors.get(i) != null) {
