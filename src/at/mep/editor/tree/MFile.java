@@ -9,6 +9,7 @@ import com.mathworks.widgets.text.mcode.MTree;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
 import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
@@ -102,7 +103,7 @@ public class MFile {
     }
 
     /** actual representation of MTree.NodeType.CELL_TITLE */
-    public static class CellTitle{
+    public static class CellTitle {
         /** trimmed string of cell title w/o %% */
         private String titleString = "";
 
@@ -142,7 +143,7 @@ public class MFile {
     /** an actual representation of MTree.NodeType.ATTRIBUTES, different to ATTR*/
     public static class Attributes {
 
-        /** list of ATTRIBUTES (afaik everythin only has one attributeS */
+        /** list of ATTRIBUTES (afaik everything only has one attributeS */
         private List<Attribute> attributeList = new ArrayList<>(0);
 
         private Attributes() {
@@ -155,6 +156,89 @@ public class MFile {
         public boolean hasAttribute() {
             return attributeList.size() > 0;
         }
+
+        /** returns EAccess for EAttributes */
+        public EAccess getEAccessFor(EAttributes eAttributes) {
+            for (int i = 0; i < attributeList.size(); i++) {
+                if (attributeList.get(i).getAttributeAsEAttribute() == eAttributes) {
+                    return attributeList.get(i).getAccessAsEAccess();
+                }
+            }
+            return EAccess.INVALID;
+        }
+
+        /**
+         * returns true on TRUE pr INVALID
+         * e.g.: methods (Static) is an INVALID EAccess but method is actually static
+         * */
+        private boolean isTrueInvalid(EAttributes eAttributes) {
+            return EnumSet.of(EAccess.TRUE, EAccess.INVALID).contains(getEAccessFor(eAttributes));
+        }
+
+        public boolean isAbortSet() {
+            return isTrueInvalid(EAttributes.ABORTSET);
+        }
+
+        public boolean isAbstract() {
+            return isTrueInvalid(EAttributes.ABSTRACT);
+        }
+
+        public boolean isAccess(EAccess eAccess) {
+            return getEAccessFor(EAttributes.ACCESS) == eAccess;
+        }
+
+        public boolean isConstant() {
+            return isTrueInvalid(EAttributes.CONSTANT);
+        }
+
+        public boolean isDependent() {
+            return isTrueInvalid(EAttributes.DEPENDENT);
+        }
+
+        public boolean isGetAccess(EAccess eAccess) {
+            return getEAccessFor(EAttributes.GETACCESS) == eAccess;
+        }
+
+        public boolean isSetAccess(EAccess eAccess) {
+            return getEAccessFor(EAttributes.SETACCESS) == eAccess;
+        }
+
+        public boolean isGetObservable() {
+            return isTrueInvalid(EAttributes.GETOBSERVABLE);
+        }
+
+        public boolean isSetObservable() {
+            return isTrueInvalid(EAttributes.SETOBSERVABLE);
+        }
+
+        public boolean isHidden() {
+            return isTrueInvalid(EAttributes.HIDDEN);
+        }
+
+        public boolean isNonCopyAble() {
+            return isTrueInvalid(EAttributes.NONCOPYABLE);
+        }
+
+        public boolean isTransient() {
+            return isTrueInvalid(EAttributes.TRANSIENT);
+        }
+
+        public boolean isSealed() {
+            return isTrueInvalid(EAttributes.SEALED);
+        }
+
+        public boolean isStatic() {
+            return isTrueInvalid(EAttributes.STATIC);
+        }
+
+        public boolean isConstructOnLoad() {
+            return isTrueInvalid(EAttributes.GETOBSERVABLE);
+        }
+
+        public boolean isHandleCompatible() {
+            return isTrueInvalid(EAttributes.HANDLECOMPATIBLE);
+        }
+
 
         public static List<Attributes> construct(List<MTree.Node> mtnAttributes) {
             List<Attributes> attributes = new ArrayList<>(mtnAttributes.size());
