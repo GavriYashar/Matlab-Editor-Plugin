@@ -195,12 +195,15 @@ public class MFile {
 
             public EAccess getAccessAsEAccess() {
                 if (accessAsEAccess == EAccess.INVALID) {
-                    if (value.size() == 1 && value.get(0).getType() != JAVA_NULL_NODE) {
-                        accessAsEAccess = EAccess.valueOf(value.get(0).getText().toUpperCase());
-                    } else if (value.size() == 1 && value.get(0).getType() == JAVA_NULL_NODE) {
+                    if (value.size() == 1 && value.get(0).getType() == JAVA_NULL_NODE) {
                         accessAsEAccess = EAccess.INVALID;
-                    } else {
-                        accessAsEAccess = EAccess.META;
+                    } else if (value.size() == 1 && value.get(0).getType() != JAVA_NULL_NODE) {
+                        if (EAccess.getNames().contains(value.get(0).getText().toUpperCase())) {
+                            accessAsEAccess = EAccess.valueOf(value.get(0).getText().toUpperCase());
+                        } else {
+                            accessAsEAccess = EAccess.META;
+                        }
+
                     }
                 }
                 return accessAsEAccess;
