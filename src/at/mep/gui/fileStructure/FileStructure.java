@@ -285,13 +285,13 @@ public class FileStructure extends UndecoratedFrame {
         MTree.NodeType nodeType;
         if (sections.isSelected()) {
             nodeType = MTree.NodeType.CELL_TITLE;
-            root = EditorWrapper.getSectionNodeFast(activeEditor);
+            root = NodeFS.constructForCellTitle(activeEditor);
         } else if (functions.isSelected()) {
             nodeType = MTree.NodeType.FUNCTION;
-            root = EditorWrapper.getFunctionNodeFast(activeEditor);
+            root = NodeFS.constructForFunctions(activeEditor);
         } else if (classes.isSelected()) {
             nodeType = MTree.NodeType.CLASSDEF;
-            root = EditorWrapper.getClassNodeFast(activeEditor);
+            root = NodeFS.constructForClassDef(activeEditor);
         } else {
             nodeType = MTree.NodeType.CELL_TITLE;
             sections.setSelected(true);

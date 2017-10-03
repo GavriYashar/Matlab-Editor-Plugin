@@ -247,6 +247,10 @@ public class NodeFS extends DefaultMutableTreeNode {
     public static NodeFS constructForClassDef(Editor editor) {
         MFile mFile = MFile.construct(editor);
         NodeFS root = new NodeFS(mFile.getName());
+        if (mFile.getClassDefs().size() < 1) {
+            // e.g. gets called when typing in matlab editor and insert a single "%"
+            return root;
+        }
         MFile.ClassDef classDef = mFile.getClassDefs().get(0);
         root.node = classDef.getNode();
         root.nodeType = MTree.NodeType.CLASSDEF;
@@ -289,9 +293,6 @@ public class NodeFS extends DefaultMutableTreeNode {
         // functions
         for (MFile.ClassDef.Method method : classDef.getMethod()) {
             List<MFile.Attributes.Attribute> attributeList = null;
-            if (method.hasAttributes()) {
-                attributeList = method.getAttributes().get(0).getAttributeList();
-            }
             for (MFile.ClassDef.Method.Function function : method.getFunctionList()) {
                 if (function.isGetter() || function.isSetter()) {
                     continue;
