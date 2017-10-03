@@ -25,11 +25,22 @@ public enum EIconsFileStructure {
     DECORATOR_PUBLIC("FileStructureSymbols/intellij/public.png", "FileStructureSymbols/eclipse/methpub_obj.png", ProjectIcon.PUBLIC_OVERLAY_11x11.getIcon()),
     DECORATOR_PRIVATE("FileStructureSymbols/intellij/private.png", "FileStructureSymbols/eclipse/methpri_obj.png", ProjectIcon.PRIVATE_OVERLAY_11x11.getIcon()),
     DECORATOR_PROTECTED("FileStructureSymbols/intellij/protected.png", "FileStructureSymbols/eclipse/methpro_obj.png", ProjectIcon.PROTECTED_OVERLAY_11x11.getIcon()),
-    DECORATOR_STATIC("FileStructureSymbols/intellij/staticMark.png", "FileStructureSymbols/eclipse/static_co.png", ProjectIcon.PROTECTED_OVERLAY_11x11.getIcon());
+    DECORATOR_STATIC("FileStructureSymbols/intellij/staticMark.png", "FileStructureSymbols/eclipse/static_co.png", ProjectIcon.PROTECTED_OVERLAY_11x11.getIcon()),
+
+    DECORATOR_SETPRIVGETPRIV("FileStructureSymbols/SetPrivGetPriv.png", "FileStructureSymbols/SetPrivGetPriv.png", "FileStructureSymbols/SetPrivGetPriv.png"),
+    DECORATOR_SETPRIVGETPUB("FileStructureSymbols/SetPrivGetPub.png", "FileStructureSymbols/SetPrivGetPub.png", "FileStructureSymbols/SetPrivGetPub.png"),
+    DECORATOR_SETPUBGETPRIV("FileStructureSymbols/SetPubGetPriv.png", "FileStructureSymbols/SetPubGetPriv.png", "FileStructureSymbols/SetPubGetPriv.png"),
+    DECORATOR_SETPUBGETPUB("FileStructureSymbols/SetPubGetPub.png", "FileStructureSymbols/SetPubGetPub.png", "FileStructureSymbols/SetPubGetPub.png");
 
     private final ImageIcon iconIJ;
     private final ImageIcon iconE;
     private final ImageIcon iconM;
+
+    EIconsFileStructure(String filenameIJ, String filenameE, String fileNameM) {
+        this.iconIJ = new ImageIcon(EIconsFileStructure.class.getResource("/icons/" + filenameIJ));
+        this.iconE = new ImageIcon(EIconsFileStructure.class.getResource("/icons/" + filenameE));
+        this.iconM = new ImageIcon(EIconsFileStructure.class.getResource("/icons/" + fileNameM));
+    }
 
     EIconsFileStructure(String filenameIJ, String filenameE, Icon matlab) {
         this.iconIJ = new ImageIcon(EIconsFileStructure.class.getResource("/icons/" + filenameIJ));
