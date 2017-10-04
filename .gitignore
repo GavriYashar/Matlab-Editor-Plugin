@@ -1,5 +1,6 @@
 .idea/
 META-INF/
+lib/
 out/
 test/
 matlab-editor-plugin.iml
