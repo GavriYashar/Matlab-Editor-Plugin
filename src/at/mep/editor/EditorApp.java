@@ -149,7 +149,7 @@ public class EditorApp {
                 for (KeyListener keyListener1 : keyListeners) {
                     if (keyListener1.toString().equals(KeyReleasedHandler.getKeyListener().toString())) {
                         editorSyntaxTextPane.removeKeyListener(keyListener1);
-                        // this will assure that the new keylistener is added and the previous one is removed
+                        // this will assure that the new key listener is added and the previous one is removed
                         // while matlab is still running and the .jar is replaced
                     }
                 }
@@ -219,39 +219,39 @@ public class EditorApp {
         //       "EMEPAction" Class
 
         // DEBUG
-        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_DEBUG.getKeyStroke(), "MEP_DEBUG");
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getDEBUG(), "MEP_DEBUG");
         editorSyntaxTextPane.getActionMap().put("MEP_DEBUG", EMEPAction.MEP_DEBUG.getAction());
 
         // CURRENT LINES
-        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_EXECUTE_CURRENT_LINE.getKeyStroke(), "MEP_EXECUTE_CURRENT_LINE");
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getExecuteCurrentLines(), "MEP_EXECUTE_CURRENT_LINE");
         editorSyntaxTextPane.getActionMap().put("MEP_EXECUTE_CURRENT_LINE", EMEPAction.MEP_EXECUTE_CURRENT_LINE.getAction());
 
-        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_DELETE_CURRENT_LINES.getKeyStroke(), "MEP_DELETE_CURRENT_LINES");
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getDeleteLines(), "MEP_DELETE_CURRENT_LINES");
         editorSyntaxTextPane.getActionMap().put("MEP_DELETE_CURRENT_LINES", EMEPAction.MEP_DELETE_CURRENT_LINES.getAction());
 
-        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION.getKeyStroke(), "MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION");
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getDuplicateLine(), "MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION");
         editorSyntaxTextPane.getActionMap().put("MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION", EMEPAction.MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION.getAction());
 
         // FILE STRUCTURE
-        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_SHOW_FILE_STRUCTURE.getKeyStroke(), "MEP_SHOW_FILE_STRUCTURE");
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getFileStructure(), "MEP_SHOW_FILE_STRUCTURE");
         editorSyntaxTextPane.getActionMap().put("MEP_SHOW_FILE_STRUCTURE", EMEPAction.MEP_SHOW_FILE_STRUCTURE.getAction());
 
         // CLIPBOARD
-        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_SHOW_COPY_CLIP_BOARD.getKeyStroke(), "MEP_SHOW_CLIP_BOARD_STACK_EDT");
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getClipboardStack(), "MEP_SHOW_CLIP_BOARD_STACK_EDT");
         editorSyntaxTextPane.getActionMap().put("MEP_SHOW_CLIP_BOARD_STACK_EDT", EMEPAction.MEP_SHOW_CLIP_BOARD_STACK_EDT.getAction());
 
-        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_COPY_CLIP_BOARD.getKeyStroke(), "MEP_COPY_CLIP_BOARD");
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getCopySelectedText(), "MEP_COPY_CLIP_BOARD");
         editorSyntaxTextPane.getActionMap().put("MEP_COPY_CLIP_BOARD", EMEPAction.MEP_COPY_CLIP_BOARD.getAction());
 
         // MEPR
-        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_MEPR_INSERT.getKeyStroke(), "MEP_MEPR_INSERT");
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getLiveTemplateViewer(), "MEP_MEPR_INSERT");
         editorSyntaxTextPane.getActionMap().put("MEP_MEPR_INSERT", EMEPAction.MEP_MEPR_INSERT.getAction());
 
-        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_MEPR_QUICK_SEARCH.getKeyStroke(), "MEP_MEPR_QUICK_SEARCH");
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getQuickSearch(), "MEP_MEPR_QUICK_SEARCH");
         editorSyntaxTextPane.getActionMap().put("MEP_MEPR_QUICK_SEARCH", EMEPAction.MEP_MEPR_QUICK_SEARCH.getAction());
 
         // BOOKMARKS
-        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_SHOW_BOOKMARKS.getKeyStroke(), "MEP_SHOW_BOOKMARKS");
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getBookmarkViewer(), "MEP_SHOW_BOOKMARKS");
         editorSyntaxTextPane.getActionMap().put("MEP_SHOW_BOOKMARKS", EMEPAction.MEP_SHOW_BOOKMARKS.getAction());
         // for some reason bookmarks don't work if editor is opened, while the others (actions) do
         editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_BOOKMARK.getKeyStroke(), "MEP_BOOKMARK");

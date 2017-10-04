@@ -1,5 +1,6 @@
 package at.mep;
 
+import at.mep.editor.CustomShortCutKey;
 import at.mep.editor.EMEPAction;
 import at.mep.editor.EMEPKeyStrokes;
 import at.mep.util.RunnableUtil;
@@ -15,10 +16,10 @@ public class CommandWindow {
         // CmdWin cmdWin = CmdWin.getInstance();
         // getXCmdWndView().addKeyListener(KeyReleasedHandler.getKeyListener());
 
-        getXCmdWndView().getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_DEBUG.getKeyStroke(), "MEP_DEBUG");
+        getXCmdWndView().getInputMap(WF).put(CustomShortCutKey.getDEBUG(), "MEP_DEBUG");
         getXCmdWndView().getActionMap().put("MEP_DEBUG", EMEPAction.MEP_DEBUG.getAction());
 
-        getXCmdWndView().getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_SHOW_COPY_CLIP_BOARD.getKeyStroke(), "MEP_SHOW_CLIP_BOARD_STACK_CMD");
+        getXCmdWndView().getInputMap(WF).put(CustomShortCutKey.getClipboardStack(), "MEP_SHOW_CLIP_BOARD_STACK_CMD");
         getXCmdWndView().getActionMap().put("MEP_SHOW_CLIP_BOARD_STACK_CMD", EMEPAction.MEP_SHOW_CLIP_BOARD_STACK_CMD.getAction());
 
         //// FIXME: 2016-10-12 cancels CTRL + C feature, so no more canceling execution

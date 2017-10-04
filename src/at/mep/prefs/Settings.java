@@ -1,12 +1,14 @@
 package at.mep.prefs;
 
 import at.mep.util.ColorUtils;
+import at.mep.util.KeyStrokeUtil;
 import com.mathworks.services.Prefs;
 import com.mathworks.services.settings.Setting;
 import com.mathworks.services.settings.SettingNotFoundException;
 import com.mathworks.services.settings.SettingPath;
 import com.mathworks.services.settings.SettingTypeException;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.util.Collections;
@@ -216,6 +218,10 @@ public class Settings {
             // throw new IllegalStateException("Settings:getFSIconSet  fs.iconSet is not defined in EIconSetting");
             return EIconSetting.DEFAULT;
         }
+    }
+
+    public static KeyStroke getPropertyKeyStroke(String key) {
+        return KeyStrokeUtil.getKeyStroke(getProperty(key));
     }
 }
 

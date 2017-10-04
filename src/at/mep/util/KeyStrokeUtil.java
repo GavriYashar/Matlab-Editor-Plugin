@@ -6,6 +6,7 @@ import at.mep.editor.EditorWrapper;
 import javax.swing.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.Field;
 import java.util.regex.Pattern;
 
 /**
@@ -95,6 +96,39 @@ public class KeyStrokeUtil {
     }
 
     public static KeyStroke getKeyStroke(int keyCode, boolean control, boolean shift, boolean alt, boolean released) {
+        return KeyStroke.getKeyStroke(getKeyText(keyCode, control, shift, alt, released));
+    }
+
+    public static KeyStroke getKeyStroke(String kbStringSetting) {
+        String[] keys = kbStringSetting.split("\\s*\\++\\s*");
+        boolean control = false;
+        boolean shift = false;
+        boolean alt = false;
+        boolean released = false;
+
+        int keyCode = Integer.MIN_VALUE;
+
+        for (String key : keys) {
+            switch (key.toUpperCase()) {
+                case "CONTROL":
+                    control = true;
+                    break;
+                case "SHIFT":
+                    shift = true;
+                    break;
+                case "ALT":
+                    alt = true;
+                    break;
+                default:
+                    try {
+                        Field vkField = KeyEvent.class.getField("VK_" + key.toUpperCase());
+                        keyCode = vkField.getInt(null);
+                    } catch (NoSuchFieldException | IllegalAccessException ignored) { }
+            }
+        }
+        if (keyCode == Integer.MIN_VALUE) {
+            throw new IllegalArgumentException("String '" + kbStringSetting + "' cannot be parsed make sure it is a valid VK_* string");
+        }
         return KeyStroke.getKeyStroke(getKeyText(keyCode, control, shift, alt, released));
     }
 

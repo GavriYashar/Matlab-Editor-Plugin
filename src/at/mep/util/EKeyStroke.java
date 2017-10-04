@@ -250,7 +250,7 @@ public enum EKeyStroke {
         }
         EKeyStroke ret = UNKNOWN;
         ret.setCommand("unknown command: \"" + command + "\"");
-        return null;
+        return ret;
     }
 
 }

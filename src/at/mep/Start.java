@@ -1,5 +1,6 @@
 package at.mep;
 
+import at.mep.editor.CustomShortCutKey;
 import at.mep.editor.EditorApp;
 import at.mep.editor.EditorWrapper;
 import at.mep.gui.bookmarks.Bookmarks;
@@ -32,6 +33,7 @@ public class Start {
         RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
 
         try {
+            CustomShortCutKey.reload();
             setEditorCallbacks();
             setCmdWinCallbacks();
             addPrefs();
