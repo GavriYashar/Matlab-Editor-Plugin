@@ -1,6 +1,5 @@
 package at.mep.editor.tree;
 
-import at.mep.meta.MetaProperty;
 import at.mep.util.StringUtils;
 import at.mep.util.TreeUtilsV2;
 import com.mathworks.widgets.text.mcode.MTree;
@@ -33,10 +32,6 @@ public class MTreeNode {
 
     private MTreeNode(MTree.Node mtNode) {
         this.mtNode = mtNode;
-    }
-
-    public void populate(MetaProperty metaProperty, MTreeNode node) {
-        List<MTree.Node> propBlock = node.getMtNode().getSubtree();
     }
 
 
