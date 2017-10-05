@@ -174,6 +174,10 @@ public class MFile {
         private boolean isTrueInvalid(EAttributes eAttributes) {
             return EnumSet.of(EAccess.TRUE, EAccess.INVALID).contains(getEAccessFor(eAttributes));
         }
+        
+        public boolean isTest() {
+            return isTrueInvalid(EAttributes.TEST);
+        }
 
         public boolean isAbortSet() {
             return isTrueInvalid(EAttributes.ABORTSET);
