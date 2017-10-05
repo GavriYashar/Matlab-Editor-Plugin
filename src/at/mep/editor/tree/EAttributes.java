@@ -6,6 +6,8 @@ import at.mep.meta.EAccess;
 public enum EAttributes {
     INVALID("Invalid", EAccess.INVALID),
     
+    TEST("Test", EAccess.FALSE),
+
     ABORTSET("AbortSet", EAccess.FALSE),
     ABSTRACT("Abstract", EAccess.FALSE),
     ACCESS("Access", EAccess.PUBLIC),
