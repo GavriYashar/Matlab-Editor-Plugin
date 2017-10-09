@@ -1,16 +1,15 @@
 package at.mep;
 
 import at.mep.installer.Install;
+import at.mep.meta.MetaClass;
 import at.mep.util.ComponentUtil;
 import com.mathworks.jmi.NativeMatlab;
 import com.mathworks.mde.cmdwin.XCmdWndView;
 import com.mathworks.mde.desk.MLDesktop;
 import com.mathworks.widgets.desk.DTRootPane;
-import matlabcontrol.MatlabConnectionException;
-import matlabcontrol.MatlabProxy;
-import matlabcontrol.MatlabProxyFactory;
-import matlabcontrol.MatlabProxyFactoryOptions;
+import matlabcontrol.*;
 
+import javax.management.ObjectName;
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
@@ -152,6 +151,14 @@ public class Matlab {
     public boolean isBusy() {
         String string = getMlDesktop().getMainFrame().getStatusBar().getText();
         return string != null && string.contains("Busy");
+    }
+
+    public static String[] which(String item) throws MatlabInvocationException {
+        String cmd = "MEP_WHICH = which('" + item + "','-all');";
+        getInstance().proxyHolder.get().eval(cmd);
+        String[] which = (String[]) Matlab.getInstance().proxyHolder.get().getVariable("MEP_WHICH");
+        Matlab.getInstance().proxyHolder.get().eval("clear MEP_WHICH");
+        return which;
     }
 
 }
