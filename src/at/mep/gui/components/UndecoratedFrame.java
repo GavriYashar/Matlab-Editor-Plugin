@@ -9,8 +9,6 @@ import java.awt.event.*;
 
 /** Created by Andreas Justin on 2016 - 02 - 24. */
 public class UndecoratedFrame extends JFrame {
-    private static boolean HIDE_WHEN_FOCUS_LOST = true; // only for debugging purposes;
-    
     private static final String CLOSE_ACTION = "closeAction";
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
     public final AbstractAction closeAction = new AbstractAction(CLOSE_ACTION) {
@@ -27,7 +25,7 @@ public class UndecoratedFrame extends JFrame {
 
         @Override
         public void windowLostFocus(WindowEvent e) {
-            setVisible(!HIDE_WHEN_FOCUS_LOST);
+            setVisible(false);
         }
     };
     private Point initialClick;
