@@ -28,6 +28,9 @@ import java.util.regex.PatternSyntaxException;
 public class FileStructure extends UndecoratedFrame {
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
     private static FileStructure INSTANCE;
+
+    /** should prevent on changing the state of inherited when opening file structure */
+    private static boolean wasHidden = true;
     private static Editor activeEditor;
     private static JTextFieldSearch jTFS;
     private static JTextArea jTextArea;
@@ -209,12 +212,17 @@ public class FileStructure extends UndecoratedFrame {
             }
         });
 
+        // TODO: use settings based Keyboard Shortcut
         KeyStroke ksF12 = KeyStroke.getKeyStroke("control released F12");
         getRootPane().getInputMap(IFW).put(ksF12, "CTRL + F12");
         getRootPane().getActionMap().put("CTRL + F12", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!inherited.isEnabled()) return;
+                if (wasHidden) {
+                    wasHidden = false;
+                    return;
+                }
                 inherited.setSelected(!inherited.isSelected());
                 populate();
             }
@@ -282,6 +290,11 @@ public class FileStructure extends UndecoratedFrame {
     private void populate() {
         NodeFS root = new NodeFS(EditorWrapper.getShortName());
 
+        if (inherited.isSelected()) {
+            // MFile.construct(activeEditor).getClassDefs().get(0).getSuperclasses().get(0)
+            System.out.println("populate Inherited");
+        }
+
         MTree.NodeType nodeType;
         if (sections.isSelected()) {
             nodeType = MTree.NodeType.CELL_TITLE;
@@ -297,8 +310,8 @@ public class FileStructure extends UndecoratedFrame {
             sections.setSelected(true);
         }
 
-        // inherited.setEnabled(classes.isSelected());
-        inherited.setEnabled(false);
+        inherited.setEnabled(classes.isSelected());
+        // inherited.setEnabled(false);
 
         MTree mTree = EditorWrapper.getMTreeFast(activeEditor);
         Tree<MTree.Node> nodeTree = mTree.findAsTree(nodeType);
@@ -373,6 +386,7 @@ public class FileStructure extends UndecoratedFrame {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (visible) {
+            wasHidden = true;
             jTextArea.setFont(new Font("Courier New", Font.PLAIN, Settings.getPropertyInt("fs.fontSizeDocu")));
             moveBarsDocuScrollpane();
         }
