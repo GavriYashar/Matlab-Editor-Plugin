@@ -1,11 +1,13 @@
 package at.mep.editor.tree;
 
+import at.mep.Matlab;
 import at.mep.editor.EditorWrapper;
 import at.mep.meta.EAccess;
 import at.mep.util.StringUtils;
 import at.mep.util.TreeUtilsV2;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.widgets.text.mcode.MTree;
+import matlabcontrol.MatlabInvocationException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -382,6 +384,30 @@ public class MFile {
 
         public List<MTree.Node> getSuperclasses() {
             return superclasses;
+        }
+
+        public List<MFile> getSuperclassesAsMFile() {
+            /*
+             * ea = at.mep.editor.EditorWrapper.gae()
+             * mf = at.mep.editor.tree.MFile.construct(ea)
+             * cd = mf.getClassDefs.get(0)
+             * cd.getSuperclassesAsMFile()
+             */
+            List<MFile> mFiles = new ArrayList<>(superclasses.size());
+            List<String> whichList = new ArrayList<>(5);
+            try {
+                for (MTree.Node node : superclasses) {
+                    String[] which = Matlab.which(node.getText());
+                    whichList.addAll(Arrays.asList(which));
+                }
+            } catch (MatlabInvocationException e) {
+                e.printStackTrace();
+            }
+            if (whichList.size() == 0) {
+                return mFiles;
+            }
+
+            return mFiles;
         }
 
         public static List<ClassDef> construct(List<MTree.Node> mtnClassDef) {
