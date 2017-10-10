@@ -19,6 +19,8 @@ import java.util.List;
  * Represents a NodeFS in JTree and also an Matlab MTree.NodeFS class.
  */
 public class NodeFS extends DefaultMutableTreeNode {
+    /* if a property is added make sure it is also set in the copy constructor */
+    
     private File file = null;
 
     private MTree.Node node; // might not always be set, e.g.: First node is just the string of the filename
@@ -53,6 +55,8 @@ public class NodeFS extends DefaultMutableTreeNode {
     }
 
     public NodeFS(NodeFS nodeFS) {
+        file = nodeFS.file;
+        
         node = nodeFS.node;
         nodeText = nodeFS.nodeText;
         nodeType = nodeFS.nodeType;
@@ -344,6 +348,7 @@ public class NodeFS extends DefaultMutableTreeNode {
                     getter.node = property.getGetter().getNode();
                     getter.nodeText = property.getGetter().getNode().getText();
                     getter.nodeType = MTree.NodeType.FUNCTION;
+                    getter.file = file;
 
                     nodeFS.add(getter);
                 }
@@ -353,6 +358,7 @@ public class NodeFS extends DefaultMutableTreeNode {
                     setter.node = property.getSetter().getNode();
                     setter.nodeText = property.getSetter().getNode().getText();
                     setter.nodeType = MTree.NodeType.FUNCTION;
+                    setter.file = file;
 
                     nodeFS.add(setter);
                 }
