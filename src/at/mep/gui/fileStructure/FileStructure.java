@@ -48,6 +48,9 @@ public class FileStructure extends UndecoratedFrame {
             if (jTree.getMaxSelectionRow() < 0) return;
             NodeFS nodeFS = (NodeFS) jTree.getSelectionPath().getLastPathComponent();
             if (nodeFS.hasNode()) {
+                if (nodeFS.isInherited()) {
+                    EditorWrapper.openEditor(nodeFS.getFile());
+                }
                 EditorWrapper.goToLine(nodeFS.node().getStartLine(), false);
             }
         }
@@ -227,6 +230,12 @@ public class FileStructure extends UndecoratedFrame {
                 populate();
             }
         });
+        inherited.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                populate();
+            }
+        });
 
         return panelSettings;
     }
@@ -290,10 +299,6 @@ public class FileStructure extends UndecoratedFrame {
     private void populate() {
         NodeFS root = new NodeFS(EditorWrapper.getShortName());
 
-        if (inherited.isSelected()) {
-            // MFile.construct(activeEditor).getClassDefs().get(0).getSuperclasses().get(0)
-            System.out.println("populate Inherited");
-        }
 
         MTree.NodeType nodeType;
         if (sections.isSelected()) {
@@ -304,7 +309,7 @@ public class FileStructure extends UndecoratedFrame {
             root = NodeFS.constructForFunctions(activeEditor);
         } else if (classes.isSelected()) {
             nodeType = MTree.NodeType.CLASSDEF;
-            root = NodeFS.constructForClassDef(activeEditor);
+            root = NodeFS.constructForClassDef(activeEditor, inherited.isSelected());
         } else {
             nodeType = MTree.NodeType.CELL_TITLE;
             sections.setSelected(true);
