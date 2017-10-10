@@ -1,12 +1,18 @@
 package at.mep.editor.tree;
 
+import at.mep.Matlab;
 import at.mep.editor.EditorWrapper;
 import at.mep.meta.EAccess;
+import at.mep.util.FileUtils;
 import at.mep.util.StringUtils;
 import at.mep.util.TreeUtilsV2;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.widgets.text.mcode.MTree;
+import matlabcontrol.MatlabInvocationException;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -15,6 +21,9 @@ import java.util.List;
 import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
 
 public class MFile {
+    /** file of .m file */
+    private File file = null;
+
     /** name of file (or full qualified name if class) */
     private String name = "NAME NOT SET";
 
@@ -28,6 +37,10 @@ public class MFile {
     private List<ClassDef.Method.Function> functions = new ArrayList<>(0);
 
     private MFile() {
+    }
+
+    public File getFile() {
+        return file;
     }
 
     public String getName() {
@@ -61,14 +74,15 @@ public class MFile {
     public static MFile construct(Editor editor) {
         MTree mTree = EditorWrapper.getMTreeFast(editor);
         MFile mFile = construct(mTree);
-
+        mFile.file = EditorWrapper.getFile(editor);
+        
         if (mFile.name.equals("NAME NOT SET")) {
             mFile.name = EditorWrapper.getFullQualifiedClass(editor);
         }
         return mFile;
     }
 
-    public static MFile construct(MTree mTree) {
+    static MFile construct(MTree mTree) {
         switch (mTree.getFileType()) {
             case ScriptFile:
                 return constructForCellTitles(mTree);
@@ -336,6 +350,9 @@ public class MFile {
         /** list of actual nodes of all inherited classes (< bla & bla & ...) */
         private List<MTree.Node> superclasses = Arrays.asList(MTree.NULL_NODE);
 
+        /** list of actual nodes of all inherited classes (< bla & bla & ...) */
+        private List<MFile> superclassesMFile = new ArrayList<>(0);
+
         /** list of attributes for classdef (size = 1) */
         private List<Attributes> attributes = new ArrayList<>(0);
 
@@ -384,6 +401,69 @@ public class MFile {
             return superclasses;
         }
 
+        public List<MFile> getSuperclassesMFile() {
+            return superclassesMFile;
+        }
+
+        /** returns all supeerclasses (including superclasses of superclasses) as a unique list */
+        public List<MFile> getSuperclassesMFileAll() {
+            List<MFile> mFiles = new ArrayList<>(10);
+            mFiles.addAll(superclassesMFile);
+            for (MFile mFile : superclassesMFile) {
+                for (ClassDef classDef : mFile.getClassDefs()) {
+                    mFiles.addAll(classDef.getSuperclassesMFileAll());
+                }
+            }
+            return mFiles;
+        }
+
+        private void constructSuperClassesMFile() {
+            /*
+             * ea = at.mep.editor.EditorWrapper.gae()
+             * mf = at.mep.editor.tree.MFile.construct(ea)
+             * cd = mf.getClassDefs.get(0)
+             * cd.getSuperclassesMFileAll()
+             */
+            List<MFile> mFiles = new ArrayList<>(superclasses.size());
+            List<String> whichList = new ArrayList<>(5);
+            try {
+                for (MTree.Node node : superclasses) {
+                    whichList.addAll(Matlab.which(node.getText()));
+                }
+            } catch (MatlabInvocationException e) {
+                e.printStackTrace();
+            }
+            if (whichList.size() == 0) {
+                return;
+            }
+
+            for (String string : whichList) {
+                if (!string.endsWith(".m")) {
+                    continue;
+                }
+
+                File file = new File(string);
+                if (!file.exists()) {
+                    continue;
+                }
+                try {
+                    String code = FileUtils.readFileToString(file);
+                    MTree tree = MTree.parse(code);
+                    MFile mFile = MFile.construct(tree);
+
+                    mFile.file = file;
+                    mFile.name = file.getName();
+                    
+                    mFiles.add(mFile);
+                } catch (IOException e) {
+                    System.out.println("file not found: " + file);
+                    e.printStackTrace();
+                }
+            }
+
+            superclassesMFile = mFiles;
+        }
+
         public static List<ClassDef> construct(List<MTree.Node> mtnClassDef) {
             List<ClassDef> classDefs = new ArrayList<>(mtnClassDef.size());
 
@@ -395,6 +475,7 @@ public class MFile {
                 List<MTree.Node> superclasses = TreeUtilsV2.findNode(node.getLeft().getRight().getSubtree(), ID);
                 if (superclasses.size() > 1) {
                     classDef.superclasses = superclasses.subList(1, superclasses.size());
+                    classDef.constructSuperClassesMFile();
                 }
 
                 classDef.attributes = Attributes.construct(node.getLeft().getLeft().getListOfNextNodes());

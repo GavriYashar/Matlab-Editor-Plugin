@@ -8,6 +8,7 @@ import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -18,6 +19,10 @@ import java.util.List;
  * Represents a NodeFS in JTree and also an Matlab MTree.NodeFS class.
  */
 public class NodeFS extends DefaultMutableTreeNode {
+    /* if a property is added make sure it is also set in the copy constructor */
+    
+    private File file = null;
+
     private MTree.Node node; // might not always be set, e.g.: First node is just the string of the filename
     private String nodeText = "DEFAULT NODE TEXT";
     private MTree.NodeType nodeType = MTree.NodeType.JAVA_NULL_NODE;
@@ -50,6 +55,8 @@ public class NodeFS extends DefaultMutableTreeNode {
     }
 
     public NodeFS(NodeFS nodeFS) {
+        file = nodeFS.file;
+        
         node = nodeFS.node;
         nodeText = nodeFS.nodeText;
         nodeType = nodeFS.nodeType;
@@ -80,6 +87,14 @@ public class NodeFS extends DefaultMutableTreeNode {
     public NodeFS(String nodeText) {
         this.nodeText = nodeText;
         this.nodeType = MTree.NodeType.JAVA_NULL_NODE;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public boolean isInherited() {
+        return file != null;
     }
 
     public void setAttributes(List<MFile.Attributes> attributesList) {
@@ -264,7 +279,7 @@ public class NodeFS extends DefaultMutableTreeNode {
         return root;
     }
 
-    public static NodeFS constructForClassDef(Editor editor) {
+    public static NodeFS constructForClassDef(Editor editor, boolean withInherited) {
         MFile mFile = MFile.construct(editor);
         NodeFS root = new NodeFS(mFile.getName());
         if (mFile.getClassDefs().size() < 1) {
@@ -275,14 +290,54 @@ public class NodeFS extends DefaultMutableTreeNode {
         root.node = classDef.getNode();
         root.nodeType = MTree.NodeType.CLASSDEF;
 
-        // properties
-        for (MFile.ClassDef.Properties properties : classDef.getProperties()) {
+        if (withInherited) {
+            List<MFile> mFilesCD = classDef.getSuperclassesMFileAll();
+
+            for (MFile mFileCD : mFilesCD) {
+                String suffix = " < " + mFileCD.getName();
+                if (suffix.endsWith(".m")){
+                    suffix = suffix.substring(0, suffix.length()-2);
+                }
+                populateProperties(root, mFileCD.getClassDefs().get(0).getProperties(), mFileCD.getFile(), suffix);
+                populateMethods(root, mFileCD.getClassDefs().get(0).getMethod(), mFileCD.getFile(), suffix);
+            }
+        }
+
+        populateProperties(root, classDef.getProperties(), null,"");
+        populateMethods(root, classDef.getMethod(), null, "");
+
+        return root;
+    }
+
+    private static void populateMethods(NodeFS root, List<MFile.ClassDef.Method> methodList, File file, String suffix) {
+        for (MFile.ClassDef.Method method : methodList) {
+            List<MFile.Attributes.Attribute> attributeList = null;
+            for (MFile.ClassDef.Method.Function function : method.getFunctionList()) {
+                if (function.isGetter() || function.isSetter()) {
+                    continue;
+                }
+                NodeFS nodeFS = new NodeFS();
+                nodeFS.node = function.getNode();
+                nodeFS.nodeText = function.getFunctionString() + suffix;
+                nodeFS.nodeType = MTree.NodeType.FUNCTION;
+                nodeFS.file = file;
+                if (method.hasAttributes()) {
+                    nodeFS.setAttributes(method.getAttributes());
+                }
+                root.add(nodeFS);
+            }
+        }
+    }
+
+    private static void populateProperties(NodeFS root, List<MFile.ClassDef.Properties> propertiesList, File file, String suffix) {
+        for (MFile.ClassDef.Properties properties : propertiesList) {
             for (MFile.ClassDef.Properties.Property property : properties.getPropertyList()) {
                 NodeFS nodeFS = new NodeFS();
 
                 nodeFS.node = property.getNode();
-                nodeFS.nodeText = property.getPropertyString();
+                nodeFS.nodeText = property.getPropertyString() + suffix;
                 nodeFS.nodeType = MTree.NodeType.EQUALS;
+                nodeFS.file = file;
 
                 if (properties.hasAttributes()) {
                     nodeFS.setAttributes(properties.getAttributes());
@@ -293,6 +348,7 @@ public class NodeFS extends DefaultMutableTreeNode {
                     getter.node = property.getGetter().getNode();
                     getter.nodeText = property.getGetter().getNode().getText();
                     getter.nodeType = MTree.NodeType.FUNCTION;
+                    getter.file = file;
 
                     nodeFS.add(getter);
                 }
@@ -302,6 +358,7 @@ public class NodeFS extends DefaultMutableTreeNode {
                     setter.node = property.getSetter().getNode();
                     setter.nodeText = property.getSetter().getNode().getText();
                     setter.nodeType = MTree.NodeType.FUNCTION;
+                    setter.file = file;
 
                     nodeFS.add(setter);
                 }
@@ -309,24 +366,5 @@ public class NodeFS extends DefaultMutableTreeNode {
                 root.add(nodeFS);
             }
         }
-        
-        // functions
-        for (MFile.ClassDef.Method method : classDef.getMethod()) {
-            List<MFile.Attributes.Attribute> attributeList = null;
-            for (MFile.ClassDef.Method.Function function : method.getFunctionList()) {
-                if (function.isGetter() || function.isSetter()) {
-                    continue;
-                }
-                NodeFS nodeFS = new NodeFS();
-                nodeFS.node = function.getNode();
-                nodeFS.nodeText = function.getFunctionString();
-                nodeFS.nodeType = MTree.NodeType.FUNCTION;
-                if (method.hasAttributes()) {
-                    nodeFS.setAttributes(method.getAttributes());
-                }
-                root.add(nodeFS);
-            }
-        }
-        return root;
     }
 }

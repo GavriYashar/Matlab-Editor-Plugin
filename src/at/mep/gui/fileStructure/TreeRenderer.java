@@ -44,6 +44,12 @@ class TreeRenderer extends DefaultTreeCellRenderer {
         }
         setText(nodeStringU);
         setFont(new Font("Courier New", Font.PLAIN, 11));
+        if (nodeFS.isInherited()) {
+            setForeground(new Color(100,100,100));
+        } else {
+            setForeground(new Color(0,0,0));
+        }
+
         return c;
     }
 

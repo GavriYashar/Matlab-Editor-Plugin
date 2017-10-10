@@ -28,6 +28,9 @@ import java.util.regex.PatternSyntaxException;
 public class FileStructure extends UndecoratedFrame {
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
     private static FileStructure INSTANCE;
+
+    /** should prevent on changing the state of inherited when opening file structure */
+    private static boolean wasHidden = true;
     private static Editor activeEditor;
     private static JTextFieldSearch jTFS;
     private static JTextArea jTextArea;
@@ -45,6 +48,9 @@ public class FileStructure extends UndecoratedFrame {
             if (jTree.getMaxSelectionRow() < 0) return;
             NodeFS nodeFS = (NodeFS) jTree.getSelectionPath().getLastPathComponent();
             if (nodeFS.hasNode()) {
+                if (nodeFS.isInherited()) {
+                    EditorWrapper.openEditor(nodeFS.getFile());
+                }
                 EditorWrapper.goToLine(nodeFS.node().getStartLine(), false);
             }
         }
@@ -209,13 +215,24 @@ public class FileStructure extends UndecoratedFrame {
             }
         });
 
+        // TODO: use settings based Keyboard Shortcut
         KeyStroke ksF12 = KeyStroke.getKeyStroke("control released F12");
         getRootPane().getInputMap(IFW).put(ksF12, "CTRL + F12");
         getRootPane().getActionMap().put("CTRL + F12", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!inherited.isEnabled()) return;
+                if (wasHidden) {
+                    wasHidden = false;
+                    return;
+                }
                 inherited.setSelected(!inherited.isSelected());
+                populate();
+            }
+        });
+        inherited.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
                 populate();
             }
         });
@@ -282,6 +299,7 @@ public class FileStructure extends UndecoratedFrame {
     private void populate() {
         NodeFS root = new NodeFS(EditorWrapper.getShortName());
 
+
         MTree.NodeType nodeType;
         if (sections.isSelected()) {
             nodeType = MTree.NodeType.CELL_TITLE;
@@ -291,14 +309,14 @@ public class FileStructure extends UndecoratedFrame {
             root = NodeFS.constructForFunctions(activeEditor);
         } else if (classes.isSelected()) {
             nodeType = MTree.NodeType.CLASSDEF;
-            root = NodeFS.constructForClassDef(activeEditor);
+            root = NodeFS.constructForClassDef(activeEditor, inherited.isSelected());
         } else {
             nodeType = MTree.NodeType.CELL_TITLE;
             sections.setSelected(true);
         }
 
-        // inherited.setEnabled(classes.isSelected());
-        inherited.setEnabled(false);
+        inherited.setEnabled(classes.isSelected());
+        // inherited.setEnabled(false);
 
         MTree mTree = EditorWrapper.getMTreeFast(activeEditor);
         Tree<MTree.Node> nodeTree = mTree.findAsTree(nodeType);
@@ -373,6 +391,7 @@ public class FileStructure extends UndecoratedFrame {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (visible) {
+            wasHidden = true;
             jTextArea.setFont(new Font("Courier New", Font.PLAIN, Settings.getPropertyInt("fs.fontSizeDocu")));
             moveBarsDocuScrollpane();
         }
