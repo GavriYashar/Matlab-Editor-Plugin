@@ -569,7 +569,7 @@ public class EditorWrapper {
     public static NodeFS getNodeClass(Editor editor) {
         NodeFS nodeFS = new NodeFS("No Class NodeFS: Or No Class");
         if (EditorWrapper.getFile(editor).exists()) {
-            nodeFS = NodeFS.constructForClassDef(editor);
+            nodeFS = NodeFS.constructForClassDef(editor, false);
         }
         return nodeFS;
     }
