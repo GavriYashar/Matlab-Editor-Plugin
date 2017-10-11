@@ -5,6 +5,7 @@ import at.mep.Matlab;
 import at.mep.debug.Debug;
 import at.mep.gui.AutoSwitcher;
 import at.mep.gui.bookmarks.Bookmarks;
+import at.mep.gui.recentlyClosed.RecentlyClosed;
 import at.mep.mepr.MEPR;
 import at.mep.prefs.Settings;
 import com.mathworks.matlab.api.editor.Editor;
@@ -95,6 +96,9 @@ public class EditorApp {
                     System.out.println("EditorApp: " + editor.getLongName() + " has been closed");
                 }
                 editors.remove(editor);
+                if (Settings.getPropertyBoolean("feature.enableRecentlyClosed")) {
+                    RecentlyClosed.addFile(EditorWrapper.getFile(editor));
+                }
             }
 
             @Override
@@ -236,6 +240,10 @@ public class EditorApp {
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getFileStructure(), "MEP_SHOW_FILE_STRUCTURE");
         editorSyntaxTextPane.getActionMap().put("MEP_SHOW_FILE_STRUCTURE", EMEPAction.MEP_SHOW_FILE_STRUCTURE.getAction());
 
+        // RECENTLY CLOSED
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getRecentlyClosed(), "MEP_SHOW_RECENTLY_CLOSED");
+        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_RECENTLY_CLOSED", EMEPAction.MEP_SHOW_RECENTLY_CLOSED.getAction());
+
         // CLIPBOARD
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getClipboardStack(), "MEP_SHOW_CLIP_BOARD_STACK_EDT");
         editorSyntaxTextPane.getActionMap().put("MEP_SHOW_CLIP_BOARD_STACK_EDT", EMEPAction.MEP_SHOW_CLIP_BOARD_STACK_EDT.getAction());
@@ -247,7 +255,7 @@ public class EditorApp {
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getLiveTemplateViewer(), "MEP_MEPR_INSERT");
         editorSyntaxTextPane.getActionMap().put("MEP_MEPR_INSERT", EMEPAction.MEP_MEPR_INSERT.getAction());
 
-        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getQuickSearch(), "MEP_MEPR_QUICK_SEARCH");
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getQuickSearchMepr(), "MEP_MEPR_QUICK_SEARCH");
         editorSyntaxTextPane.getActionMap().put("MEP_MEPR_QUICK_SEARCH", EMEPAction.MEP_MEPR_QUICK_SEARCH.getAction());
 
         // BOOKMARKS
