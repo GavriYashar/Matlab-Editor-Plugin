@@ -5,8 +5,13 @@ import at.mep.meta.EAccess;
 /** Created by Andreas Justin on 2017-09-29. */
 public enum EAttributes {
     INVALID("Invalid", EAccess.INVALID),
-    
+
+    // matlab.unittest.TestCase class
     TEST("Test", EAccess.FALSE),
+    TESTMETHODSETUP("TestMethodSetup", EAccess.FALSE),
+    TESTMETHODTEARDOWN("TestMethodTeardown", EAccess.FALSE),
+    TESTCLASSSETUP("TestClassSetup", EAccess.FALSE),
+    TESTCLASSTEARDOWN("TestClassTeardown", EAccess.FALSE),
 
     ABORTSET("AbortSet", EAccess.FALSE),
     ABSTRACT("Abstract", EAccess.FALSE),

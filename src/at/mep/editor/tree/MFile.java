@@ -189,7 +189,11 @@ public class MFile {
         }
         
         public boolean isTest() {
-            return isTrueInvalid(EAttributes.TEST);
+            return isTrueInvalid(EAttributes.TEST)
+                    || isTrueInvalid(EAttributes.TESTMETHODSETUP)
+                    || isTrueInvalid(EAttributes.TESTMETHODTEARDOWN)
+                    || isTrueInvalid(EAttributes.TESTCLASSSETUP)
+                    || isTrueInvalid(EAttributes.TESTCLASSTEARDOWN);
         }
 
         public boolean isAbortSet() {
