@@ -8,6 +8,7 @@ import at.mep.gui.clipboardStack.ClipboardStack;
 import at.mep.gui.clipboardStack.EClipboardParent;
 import at.mep.gui.fileStructure.FileStructure;
 import at.mep.gui.mepr.MEPRViewer;
+import at.mep.gui.recentlyClosed.RecentlyClosed;
 import at.mep.prefs.Settings;
 import at.mep.util.ClipboardUtil;
 import com.mathworks.matlab.api.editor.Editor;
@@ -40,6 +41,14 @@ public enum EMEPAction {
         public void actionPerformed(ActionEvent e) {
             if (!Settings.getPropertyBoolean("feature.enableFileStructure")) return;
             showFileStructure();
+        }
+    }),
+
+    MEP_SHOW_RECENTLY_CLOSED(new AbstractAction("MEP_SHOW_RECENTLY_CLOSED") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!Settings.getPropertyBoolean("feature.enableRecentlyClosed")) return;
+            showRecentlyClosed();
         }
     }),
 
@@ -156,6 +165,10 @@ public enum EMEPAction {
     private static void showFileStructure() {
         FileStructure.getInstance().populateTree();
         FileStructure.getInstance().showDialog();
+    }
+
+    private static void showRecentlyClosed() {
+        RecentlyClosed.getInstance().showDialog();
     }
 
     private static void showBookmarksViewer() {

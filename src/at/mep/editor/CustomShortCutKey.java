@@ -17,6 +17,7 @@ public class CustomShortCutKey {
     private static KeyStroke TOGGLE_BOOKMARK;
     private static KeyStroke BOOKMARK_VIEWER;
     private static KeyStroke QUICK_SEARCH_MEPR;
+    private static KeyStroke RECENTLY_CLOSED;
 
     public static void reload() {
         DEBUG = Settings.getPropertyKeyStroke("kb.DEBUG");
@@ -31,6 +32,7 @@ public class CustomShortCutKey {
         TOGGLE_BOOKMARK = Settings.getPropertyKeyStroke("kb.toggleBookmark");
         BOOKMARK_VIEWER = Settings.getPropertyKeyStroke("kb.bookmarkViewer");
         QUICK_SEARCH_MEPR = Settings.getPropertyKeyStroke("kb.quickSearch");
+        RECENTLY_CLOSED = Settings.getPropertyKeyStroke("kb.recentlyClosed");
     }
 
     public static KeyStroke getFileStructure() {
@@ -73,7 +75,11 @@ public class CustomShortCutKey {
         return DEBUG;
     }
 
-    public static KeyStroke getQuickSearch() {
+    public static KeyStroke getQuickSearchMepr() {
         return QUICK_SEARCH_MEPR;
+    }
+
+    public static KeyStroke getRecentlyClosed() {
+        return RECENTLY_CLOSED;
     }
 }
