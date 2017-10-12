@@ -27,7 +27,12 @@ public class Settings {
     private static String defaultSettingsName;
     private static boolean autoReload = false;
     private static long lastReload = System.currentTimeMillis();
+
+    /** throws the CTRL+F2 error only once until next startup */
     public static boolean issue57DisplayMessage = true;
+
+    /** throws the load error only once, and does not try to reload properties until next startup */
+    private static boolean hasThrownLoadError = false;
 
     static {
         internalProps = load(Settings.class.getResourceAsStream("/properties/Internal.properties"));
@@ -40,12 +45,19 @@ public class Settings {
             defaultProps = mergeProps(defaultProps, debugProps);
         }
 
-        customProps = load(customSettings);
-        defaultProps = mergeProps(defaultProps, load(defaultSettings));
-        customSettingsName = customSettings;
-        defaultSettingsName = defaultSettings;
-
-        autoReload = getPropertyBoolean("autoReloadProps");
+        try {
+            customProps = load(customSettings);
+            defaultProps = mergeProps(defaultProps, load(defaultSettings));
+            customSettingsName = customSettings;
+            defaultSettingsName = defaultSettings;
+            autoReload = getPropertyBoolean("autoReloadProps");
+        } catch (Exception e) {
+            if (!hasThrownLoadError) {
+                hasThrownLoadError = true;
+                e.printStackTrace();
+            }
+            autoReload = false;
+        }
     }
 
     public static void setCustomProps(final String key, final String val) {
