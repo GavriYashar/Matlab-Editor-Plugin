@@ -88,6 +88,9 @@ public class EditorApp {
                 setCallbacks();
                 Bookmarks.getInstance().setEditorBookmarks(editor);
                 Bookmarks.getInstance().enableBookmarksForMatlab(editor);
+                if (Settings.getPropertyBoolean("feature.enableRecentlyClosed")) {
+                    RecentlyClosed.remFile(EditorWrapper.getFile(editor));
+                }
             }
 
             @Override
