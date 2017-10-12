@@ -13,6 +13,9 @@ In short, it will mess around with Matlabs Editor:
 * **LiveTemplatesViewer**: <kbd>ALT</kbd> + <kbd>INSERT</kbd> view all created livetemplates
 * **Quicksearch Templates**: <kbd>CTRL</kbd> + <kbd>SPACE</kbd> quick searches live templates when writing an command (`%MYTEMPL` + <kbd>CTRL</kbd> + <kbd>SPACE</kbd> = `%MYTEMPLATE`)
 * **Execute Current Line**: <kbd>SHIFT</kbd> + <kbd>F9</kbd>
+* **Recently Closed Editor**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>T</kbd>
+
+* Shortcuts can be changed in `*.properties` file
 
 ## Setup
 [Follow this link](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Setup)
