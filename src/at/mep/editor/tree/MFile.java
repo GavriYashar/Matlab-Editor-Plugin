@@ -20,6 +20,9 @@ import java.util.List;
 import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
 
 public class MFile {
+    /** throws the EAttributes.valueOf() error only once, until next startup */
+    private static boolean hasThrownError_EAttributesValueOf = false;
+
     /** file of .m file */
     private File file = null;
 
@@ -293,7 +296,15 @@ public class MFile {
 
             public EAttributes getAttributeAsEAttribute() {
                 if (attributeAsEAttribute == EAttributes.INVALID) {
-                    attributeAsEAttribute = EAttributes.valueOf(node.getText().toUpperCase());
+                    try {
+                        attributeAsEAttribute = EAttributes.valueOf(node.getText().toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        if (!hasThrownError_EAttributesValueOf) {
+                            e.printStackTrace();
+                            hasThrownError_EAttributesValueOf = true;
+                        }
+                        attributeAsEAttribute = EAttributes.INVALID;
+                    }
                 }
                 return attributeAsEAttribute;
             }
