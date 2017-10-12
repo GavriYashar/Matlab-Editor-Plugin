@@ -49,6 +49,10 @@ public class RecentlyClosed extends UndecoratedFrame {
         fileList.add(file);
     }
 
+    public static void remFile(File file) {
+        fileList.remove(file);
+    }
+
     public void showDialog() {
         this.setVisible(true);
         this.setLocation(ScreenSize.getCenter(this.getSize()));
@@ -95,7 +99,7 @@ public class RecentlyClosed extends UndecoratedFrame {
                 List<Object> files = jList.getSelectedValuesList();
                 for (Object o : files) {
                     File file = (File) o;
-                    fileList.remove(file);
+                    remFile(file);
                 }
                 updateList();
             }
@@ -167,7 +171,7 @@ public class RecentlyClosed extends UndecoratedFrame {
         File file = (File) jList.getSelectedValue();
         if (file == null) return;
         EditorWrapper.openEditor(file);
-        fileList.remove(file);
+        remFile(file);
         setVisible(false);
     }
 }
