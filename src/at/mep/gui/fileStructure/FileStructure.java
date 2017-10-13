@@ -8,6 +8,7 @@ import at.mep.prefs.Settings;
 import at.mep.util.KeyStrokeUtil;
 import at.mep.util.RunnableUtil;
 import at.mep.util.ScreenSize;
+import at.mep.util.TreeUtilsV2;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.text.mcode.MTree;
@@ -338,7 +339,7 @@ public class FileStructure extends UndecoratedFrame {
 
     public void setDefaultSettings() {
         MTree mTree = EditorWrapper.getMTree();
-        switch (mTree.getFileType()) {
+        switch (TreeUtilsV2.getFileType(mTree)) {
             case ScriptFile:
                 classes.setEnabled(false);
                 functions.setEnabled(false);

@@ -85,7 +85,7 @@ public class MFile {
     }
 
     static MFile construct(MTree mTree) {
-        switch (mTree.getFileType()) {
+        switch (TreeUtilsV2.getFileType(mTree)) {
             case ScriptFile:
                 return constructForCellTitles(mTree);
             case FunctionFile:
