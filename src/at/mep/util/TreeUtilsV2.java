@@ -1,5 +1,6 @@
 package at.mep.util;
 
+import at.mep.Matlab;
 import at.mep.editor.tree.EAttributes;
 import at.mep.editor.tree.MTreeNode;
 import at.mep.meta.EAccess;
@@ -18,6 +19,17 @@ import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
 
 /** Created by Andreas Justin on 2017-09-29. */
 public class TreeUtilsV2 {
+    /** R2014a does not have MTree:getFileType */
+    public static enum FileType {
+        ScriptFile,
+        FunctionFile,
+        ClassDefinitionFile,
+        Unknown;
+
+        private FileType() {
+        }
+    }
+
     public static MTree.Node mTreeNodeGetClassName(MTree.Node node) {
         Validate.isTrue(node.getType() == CLASSDEF, node + " is not a ClassDef Node");
         MTree.Node n = node.getLeft().getRight();
@@ -38,6 +50,21 @@ public class TreeUtilsV2 {
             n = n.getLeft();
         }
         return n;
+    }
+
+    /** support for older version R2014a does not have a "getFileType()" */
+    public static TreeUtilsV2.FileType getFileType(MTree tree) {
+        if (Matlab.verLessThan(Matlab.R2016b)) {
+            if (tree.findAsList(CLASSDEF).size() > 0) {
+                return FileType.ClassDefinitionFile;
+            }
+            if (tree.findAsList(FUNCTION).size() > 0) {
+                return FileType.FunctionFile;
+            }
+            return FileType.ScriptFile;
+        } else {
+            return FileType.valueOf(tree.getFileType().toString());
+        }
     }
 
 
