@@ -144,7 +144,7 @@ public class Matlab {
 
     @SuppressWarnings("unused")
     public static boolean verLessThan(double ver) {
-        return verNumber < ver;
+        return getVerNumber() < ver;
     }
 
     @SuppressWarnings("WeakerAccess")
