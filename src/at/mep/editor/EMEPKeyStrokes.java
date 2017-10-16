@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 
 /** Created by Andreas Justin on 2016-10-12. */
+@Deprecated
 public enum EMEPKeyStrokes {
     KS_MEP_DEBUG(KeyStrokeUtil.getKeyStroke(KeyEvent.VK_E, true, true, false, false)),
 

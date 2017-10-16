@@ -264,8 +264,9 @@ public class EditorApp {
         // BOOKMARKS
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getBookmarkViewer(), "MEP_SHOW_BOOKMARKS");
         editorSyntaxTextPane.getActionMap().put("MEP_SHOW_BOOKMARKS", EMEPAction.MEP_SHOW_BOOKMARKS.getAction());
+
         // for some reason bookmarks don't work if editor is opened, while the others (actions) do
-        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_BOOKMARK.getKeyStroke(), "MEP_BOOKMARK");
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getToggleBookmark(), "MEP_BOOKMARK");
         editorSyntaxTextPane.getActionMap().put("MEP_BOOKMARK", EMEPAction.MEP_BOOKMARK.getAction());
     }
 
