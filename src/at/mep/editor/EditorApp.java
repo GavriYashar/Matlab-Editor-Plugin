@@ -23,6 +23,8 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -224,6 +226,44 @@ public class EditorApp {
         // NOTE: enable/disable feature cannot be checked here. the problem in the current design is, that matlab would
         //       need a restart after enabling features afterwards. that's why the features are checked in the
         //       "EMEPAction" Class
+
+        editorSyntaxTextPane.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                switch (e.getButton()) {
+                    case 4: {
+                        // forward
+                        System.out.println("mouse clicked backward " + e.getButton());
+                        break;
+                    }
+                    case 5: {
+                        // backward
+                        System.out.println("mouse clicked forward " + e.getButton());
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
 
         // DEBUG
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getDEBUG(), "MEP_DEBUG");
