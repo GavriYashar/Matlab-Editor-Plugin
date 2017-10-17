@@ -13,7 +13,6 @@ import com.mathworks.matlab.api.editor.EditorApplicationListener;
 import com.mathworks.matlab.api.editor.EditorEvent;
 import com.mathworks.matlab.api.editor.EditorEventListener;
 import com.mathworks.mde.editor.EditorSyntaxTextPane;
-import com.mathworks.widgets.desk.DTDocumentAccessor;
 import com.mathworks.widgets.editor.breakpoints.BreakpointView;
 import matlabcontrol.MatlabInvocationException;
 
@@ -155,9 +154,16 @@ public class EditorApp {
                     // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
                     if (editorEvent == EditorEvent.ACTIVATED
                             && (Settings.getPropertyBoolean("feature.enableAutoDetailViewer"))
-                                || Settings.getPropertyBoolean("feature.enableAutoCurrentFolder"))
-                            {
+                                || Settings.getPropertyBoolean("feature.enableAutoCurrentFolder")) {
+
                         AutoSwitcher.doYourThing();
+
+                        EditorWrapper.setDirtyIfLastEditorChanged(editor);
+                        EditorWrapper.setIsActiveEditorDirty(true);
+
+                        if (Debug.isDebugEnabled()) {
+                            System.out.println("event occurred");
+                        }
                     }
                 }
             });
