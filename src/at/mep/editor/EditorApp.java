@@ -13,6 +13,7 @@ import com.mathworks.matlab.api.editor.EditorApplicationListener;
 import com.mathworks.matlab.api.editor.EditorEvent;
 import com.mathworks.matlab.api.editor.EditorEventListener;
 import com.mathworks.mde.editor.EditorSyntaxTextPane;
+import com.mathworks.widgets.desk.DTDocumentAccessor;
 import com.mathworks.widgets.editor.breakpoints.BreakpointView;
 import matlabcontrol.MatlabInvocationException;
 
@@ -127,6 +128,9 @@ public class EditorApp {
     }
 
     public void setCallbacks() {
+        // EditorWrapper.getActiveEditor().addEventListener();
+        // even worse than DocumentListener
+
         List<Editor> openEditors = EditorWrapper.getOpenEditors();
         for (final Editor editor : openEditors) {
             EditorSyntaxTextPane editorSyntaxTextPane = EditorWrapper.getEditorSyntaxTextPane(editor);
@@ -134,6 +138,14 @@ public class EditorApp {
             addKeyStrokes(editorSyntaxTextPane);
             addCustomKeyStrokes(editorSyntaxTextPane);
             if (editors.contains(editor)) continue;
+
+            if (Debug.isDebugEnabled()) {
+                System.out.println("EditorApp:setCallbacks() " + editor.getShortName());
+            }
+
+            if (EditorWrapper.isFloating(editor)) {
+                // editor is not floating on startup, even though the window is already open
+            }
 
             editors.add(editor);
             AutoSwitcher.addCheckbox();
@@ -264,9 +276,8 @@ public class EditorApp {
         // BOOKMARKS
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getBookmarkViewer(), "MEP_SHOW_BOOKMARKS");
         editorSyntaxTextPane.getActionMap().put("MEP_SHOW_BOOKMARKS", EMEPAction.MEP_SHOW_BOOKMARKS.getAction());
-
         // for some reason bookmarks don't work if editor is opened, while the others (actions) do
-        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getToggleBookmark(), "MEP_BOOKMARK");
+        editorSyntaxTextPane.getInputMap(WF).put(EMEPKeyStrokes.KS_MEP_BOOKMARK.getKeyStroke(), "MEP_BOOKMARK");
         editorSyntaxTextPane.getActionMap().put("MEP_BOOKMARK", EMEPAction.MEP_BOOKMARK.getAction());
     }
 
