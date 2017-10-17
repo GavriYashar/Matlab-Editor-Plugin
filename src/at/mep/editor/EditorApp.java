@@ -27,6 +27,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /** Created by Andreas Justin on 2016 - 02 - 09. */
@@ -129,25 +130,52 @@ public class EditorApp {
     }
 
     public void setCallbacks() {
+        // EditorWrapper.getActiveEditor().addEventListener();
+        // even worse than DocumentListener
+
         List<Editor> openEditors = EditorWrapper.getOpenEditors();
         for (final Editor editor : openEditors) {
             EditorSyntaxTextPane editorSyntaxTextPane = EditorWrapper.getEditorSyntaxTextPane(editor);
             if (editorSyntaxTextPane == null) continue;
             addKeyStrokes(editorSyntaxTextPane);
             addCustomKeyStrokes(editorSyntaxTextPane);
-            if (editors.contains(editor)) continue;
+            if (editors.contains(editor)) {
+                // editor already has listeners, don't any new listeners
+                continue;
+            }
 
+            if (Debug.isDebugEnabled()) {
+                System.out.println("EditorApp:setCallbacks() " + editor.getShortName());
+            }
+
+            if (EditorWrapper.isFloating(editor)) {
+                // editor is not floating on startup, even though the window is already open
+            }
             editors.add(editor);
+
+            // AutoSwitcher
             AutoSwitcher.addCheckbox();
+
+            // Mouse Listener
+            addMouseListener(editorSyntaxTextPane);
+
+            // Editor event (AutoSwitcher)
             editor.addEventListener(new EditorEventListener() {
                 @Override
                 public void eventOccurred(EditorEvent editorEvent) {
                     // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
                     if (editorEvent == EditorEvent.ACTIVATED
                             && (Settings.getPropertyBoolean("feature.enableAutoDetailViewer"))
-                                || Settings.getPropertyBoolean("feature.enableAutoCurrentFolder"))
-                            {
+                                || Settings.getPropertyBoolean("feature.enableAutoCurrentFolder")) {
+
                         AutoSwitcher.doYourThing();
+
+                        EditorWrapper.setDirtyIfLastEditorChanged(editor);
+                        EditorWrapper.setIsActiveEditorDirty(true);
+
+                        if (Debug.isDebugEnabled()) {
+                            System.out.println("event occurred");
+                        }
                     }
                 }
             });
@@ -164,6 +192,8 @@ public class EditorApp {
                 }
                 editorSyntaxTextPane.addKeyListener(KeyReleasedHandler.getKeyListener());
             }
+
+            // document listener
             editorSyntaxTextPane.getDocument().addDocumentListener(new DocumentListener() {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
@@ -198,10 +228,63 @@ public class EditorApp {
             });
         }
 
+        // breakpointview color
         if (Settings.containsKey("bpColor")) {
             colorizeBreakpointView(Settings.getPropertyColor("bpColor"));
         } else {
             colorizeBreakpointView(ENABLED);
+        }
+    }
+
+    private void addDocumentListener() {
+
+    }
+
+    private void addMouseListener(EditorSyntaxTextPane editorSyntaxTextPane) {
+        editorSyntaxTextPane.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                switch (e.getButton()) {
+                    case 4: {
+                        // forward
+                        if (Debug.isDebugEnabled()) {
+                            System.out.println("mouse clicked backward " + e.getButton());
+                        }
+                        break;
+                    }
+                    case 5: {
+                        // backward
+                        if (Debug.isDebugEnabled()) {
+                            System.out.println("mouse clicked forward " + e.getButton());
+                        }
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+
+        class ClickHistory {
+            // private static LinkedList<>
+
         }
     }
 
@@ -226,44 +309,6 @@ public class EditorApp {
         // NOTE: enable/disable feature cannot be checked here. the problem in the current design is, that matlab would
         //       need a restart after enabling features afterwards. that's why the features are checked in the
         //       "EMEPAction" Class
-
-        editorSyntaxTextPane.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                switch (e.getButton()) {
-                    case 4: {
-                        // forward
-                        System.out.println("mouse clicked backward " + e.getButton());
-                        break;
-                    }
-                    case 5: {
-                        // backward
-                        System.out.println("mouse clicked forward " + e.getButton());
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        });
 
         // DEBUG
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getDEBUG(), "MEP_DEBUG");
@@ -304,7 +349,6 @@ public class EditorApp {
         // BOOKMARKS
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getBookmarkViewer(), "MEP_SHOW_BOOKMARKS");
         editorSyntaxTextPane.getActionMap().put("MEP_SHOW_BOOKMARKS", EMEPAction.MEP_SHOW_BOOKMARKS.getAction());
-
         // for some reason bookmarks don't work if editor is opened, while the others (actions) do
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getToggleBookmark(), "MEP_BOOKMARK");
         editorSyntaxTextPane.getActionMap().put("MEP_BOOKMARK", EMEPAction.MEP_BOOKMARK.getAction());
