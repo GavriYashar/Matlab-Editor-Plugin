@@ -1,5 +1,6 @@
 package at.mep.prefs;
 
+import at.mep.debug.Debug;
 import at.mep.util.ColorUtils;
 import at.mep.util.KeyStrokeUtil;
 import com.mathworks.services.Prefs;
@@ -18,7 +19,6 @@ import java.util.TreeSet;
 
 /** Created by Andreas Justin on 2016 - 02 - 07. */
 public class Settings {
-    public static boolean DEBUG = false;
     private static long RELOAD_TIME = 5000;
     private static Properties internalProps = new Properties();
     private static Properties customProps = new Properties();
@@ -40,7 +40,7 @@ public class Settings {
     }
 
     public static void loadSettings(String customSettings, String defaultSettings) {
-        if (Settings.DEBUG) {
+        if (Debug.isDebugEnabled()) {
             Properties debugProps = load(Settings.class.getResourceAsStream("/properties/DEBUG.properties"));
             defaultProps = mergeProps(defaultProps, debugProps);
         }
