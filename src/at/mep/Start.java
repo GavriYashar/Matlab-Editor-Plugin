@@ -8,6 +8,7 @@ import at.mep.installer.Install;
 import at.mep.prefs.Settings;
 import at.mep.util.RunnableUtil;
 import com.mathworks.mlwidgets.prefs.PrefsChanger;
+import com.mathworks.widgets.desk.DTDocumentAccessor;
 
 import javax.swing.*;
 import java.io.File;
@@ -108,6 +109,7 @@ public class Start {
     }
 
     private static void setEditorCallbacks() {
+        // DTDocumentAccessor.addListener();
         EditorApp.getInstance().setCallbacks();
     }
 
