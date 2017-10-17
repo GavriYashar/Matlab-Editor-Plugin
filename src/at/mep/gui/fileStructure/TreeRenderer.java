@@ -1,5 +1,6 @@
 package at.mep.gui.fileStructure;
 
+import at.mep.util.ColorUtils;
 import at.mep.util.EIconDecorator;
 import com.mathworks.widgets.text.mcode.MTree;
 
@@ -88,8 +89,10 @@ class TreeRenderer extends DefaultTreeCellRenderer {
             }
         }
 
-        if (nodeFS.isHidden()) {
+        if (nodeFS.isHidden() && colors.size() < decorators.size()) {
             colors.add(HIDDEN_COLOR);
+        } else if (nodeFS.isHidden() && colors.size() == 1) {
+            ColorUtils.mixColors(HIDDEN_COLOR, colors.get(0), 0.5f);
         } else {
             if (colors.size() < decorators.size()) {
                 colors.add(null);
@@ -103,7 +106,12 @@ class TreeRenderer extends DefaultTreeCellRenderer {
         }
 
         if (decorators.size() != colors.size() || decorators.size() != positions.size()) {
-            throw new IllegalStateException("size for icon does not match");
+            StringBuilder sb = new StringBuilder(200);
+            sb.append("TreeRenderer:DimensionMismatch ").append("nodeText: ").append(nodeFS.nodeText());
+            sb.append("\ndecorators size: ").append(decorators.size());
+            sb.append("\ncolors size: ").append(colors.size());
+            sb.append("\npositions size: ").append(positions.size());
+            System.out.println(sb.toString());
         }
 
         Icon icon;
