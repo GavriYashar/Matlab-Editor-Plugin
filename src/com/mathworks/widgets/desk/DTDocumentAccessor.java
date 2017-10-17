@@ -20,6 +20,8 @@ public class DTDocumentAccessor {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 System.out.println("item state changed " + EditorWrapper.getActiveEditor().getShortName());
+                System.out.println("isFloating: " + EditorWrapper.isFloating());
+                // once an editor is undocked the item state changed get's called and isFloating is true
             }
         });
 
