@@ -3,6 +3,7 @@ package at.mep.debug;
 import at.mep.editor.EditorApp;
 import at.mep.Matlab;
 import at.mep.editor.EditorWrapper;
+import at.mep.editor.tree.MFile;
 import at.mep.gui.bookmarks.Bookmarks;
 import com.mathworks.matlab.api.debug.BreakpointMargin;
 import com.mathworks.mde.editor.ExecutionArrowDisplay;
@@ -12,6 +13,10 @@ import matlabcontrol.MatlabInvocationException;
 
 /** Created by Andreas Justin on 2016-08-25. */
 public class Debug {
+    /**
+     * should always be false
+     * if needed enable in startup "at.mep.debug.Debug.setIsDebugEnabled(true)"
+     */
     private static boolean IS_DEBUG_ENABLED = false;
 
     public static void debug() {
@@ -30,6 +35,7 @@ public class Debug {
 
         try {
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "mTree", mTree);
+            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "mfile", MFile.construct(EditorWrapper.getActiveEditor()));
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "commentTree", commentTree);
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "functionTree", functionTree);
             Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "methodsTree", methodsTree);
