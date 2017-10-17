@@ -23,7 +23,7 @@ public enum EMEPAction {
     MEP_DEBUG(new AbstractAction("MEP_SHOW_FILE_STRUCTURE") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!Settings.DEBUG) return;
+            if (!Debug.isDebugEnabled()) return;
             Debug.assignObjectsToMatlab();
         }
     }),
