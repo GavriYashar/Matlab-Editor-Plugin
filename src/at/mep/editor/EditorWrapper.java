@@ -4,14 +4,17 @@ import at.mep.gui.fileStructure.NodeFS;
 import at.mep.util.ComponentUtil;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.mde.editor.EditorSyntaxTextPane;
+import com.mathworks.mde.editor.EditorViewClient;
 import com.mathworks.mde.editor.MatlabEditorApplication;
 import com.mathworks.util.tree.Tree;
+import com.mathworks.widgets.desk.DTSingleClientFrame;
 import com.mathworks.widgets.editor.breakpoints.BreakpointView;
 import com.mathworks.widgets.text.mcode.MTree;
 import com.mathworks.widgets.text.mcode.cell.CellUtils;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -156,6 +159,15 @@ public class EditorWrapper {
     }
 
     // ////////////////////////////////////////////////////////////////////////////
+
+    public static boolean isFloating(Editor editor) {
+        Component evc = gae().getComponent();
+        if (evc instanceof EditorViewClient) {
+            Component dtscf = ((EditorViewClient) evc).getTopLevelAncestor();
+            return dtscf instanceof DTSingleClientFrame;
+        }
+        return false;
+    }
 
     /** open editor of give java.io.File */
     public static Editor openEditor(File file) {
