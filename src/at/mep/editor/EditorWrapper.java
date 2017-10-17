@@ -160,6 +160,13 @@ public class EditorWrapper {
 
     // ////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * returns true if editor is floating (DTSingelClientFrame)
+     * 
+     * NOTE:
+     *  directly on startup, editor is never floating, TopLevelAncestor (TLA) is always MLMainFrame.
+     *  some time after startup a floating editors TLA is DTSingleClientFrame
+     */
     public static boolean isFloating(Editor editor) {
         Component evc = gae().getComponent();
         if (evc instanceof EditorViewClient) {
@@ -761,5 +768,9 @@ public class EditorWrapper {
 
     public static EditorSyntaxTextPane getEditorSyntaxTextPane() {
         return EditorWrapper.getEditorSyntaxTextPane(gae());
+    }
+
+    public static boolean isFloating() {
+        return EditorWrapper.isFloating(gae());
     }
 }
