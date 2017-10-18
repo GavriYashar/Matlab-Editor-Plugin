@@ -2,12 +2,13 @@
 
 In short, it will mess around with Matlabs Editor:
 
+* **Navigation History**: using the Mouse Forward and Backward button to navigate through location history
 * **Auto-Detail-Viewer**: updates the detailviewer of matlab if active editor has changed
 * **Auto-Switch-Current-Folder**: changes currentfolder if active editor has changed
 * **KeyPressListener**: executes custom Matlab functions on keypress passed in by the user beforehand
 * **ClipboardStack**: opened via <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>V</kbd>, stores the previous 10 strings copied to clipboard from Matlab.
 * **FileStructure**: opened via <kbd>CTRL</kbd> + <kbd>F12</kbd>, searching through functions and sections
-* **BookmarkViewer**: opened via <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>F2</kbd> (if <kbd>CTRL</kbd> + <kbd>F2</kbd> is default for bookmarks) View all bookmarks in every opened and closed editor. Stored and restored after closing and reopening an editor or Matlab
+* **BookmarkViewer**: opened via <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>F2</kbd> View all bookmarks in every opened and closed editor. Stored and restored after closing and reopening an editor or Matlab
 * **Duplicate line**:  <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>D</kbd>
 * **delete line**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>Y</kbd>
 * **LiveTemplatesViewer**: <kbd>ALT</kbd> + <kbd>INSERT</kbd> view all created livetemplates
