@@ -664,6 +664,9 @@ public class EditorWrapper {
         return nodeFS;
     }
 
+    public static boolean isopen(Editor editor) {
+        return editor.isOpen();
+    }
 
     // ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // //////// Basically the same methods, but will use active editor automatically /////////////////////////////
