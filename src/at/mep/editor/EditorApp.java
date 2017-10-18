@@ -94,6 +94,9 @@ public class EditorApp {
                 if (Settings.getPropertyBoolean("feature.enableRecentlyClosed")) {
                     RecentlyClosed.remFile(EditorWrapper.getFile(editor));
                 }
+                if (Settings.getPropertyBoolean("feature.enableClickHistory")) {
+                    ClickHistory.getINSTANCE().add(editor);
+                }
             }
 
             @Override
