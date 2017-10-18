@@ -384,8 +384,17 @@ public class EditorWrapper {
         editor.goToLine(line, select);
     }
 
-    public static void goToPositionAndHighlight(Editor editor, int start, int end) {
-        editor.goToPositionAndHighlight(start, end);
+    /**
+     *  selects in given editor from start to end position, if editor is not open it will open the editor.
+     *  returns same editor, or newly opened editor if editor was not open.
+     */
+    public static Editor goToPositionAndHighlight(Editor editor, int start, int end) {
+        Editor editorOpen = editor;
+        if (!EditorWrapper.isopen(editor)) {
+            editorOpen = EditorWrapper.openEditor(EditorWrapper.getFile(editor));
+        }
+        editorOpen.goToPositionAndHighlight(start, end);
+        return editorOpen;
     }
 
     /**
