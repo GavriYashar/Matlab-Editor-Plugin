@@ -177,6 +177,11 @@ public class EditorWrapper {
         return EditorWrapper.getMatlabEditorApplication().openEditor(file);
     }
 
+    /** reopen an editor */
+    public static Editor reopenEditor(Editor editor) {
+        return EditorWrapper.openEditor(EditorWrapper.getFile(editor));
+    }
+
     /** returns com.mathworks.mde.editor.MatlabEditorApplication */
     public static MatlabEditorApplication getMatlabEditorApplication() {
         return MatlabEditorApplication.getInstance();
@@ -391,7 +396,7 @@ public class EditorWrapper {
     public static Editor goToPositionAndHighlight(Editor editor, int start, int end) {
         Editor editorOpen = editor;
         if (!EditorWrapper.isopen(editor)) {
-            editorOpen = EditorWrapper.openEditor(EditorWrapper.getFile(editor));
+            editorOpen = EditorWrapper.reopenEditor(editor);
         }
         editorOpen.goToPositionAndHighlight(start, end);
         return editorOpen;
