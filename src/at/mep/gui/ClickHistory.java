@@ -19,6 +19,13 @@ public class ClickHistory {
 
     }
 
+    public static ClickHistory getINSTANCE() {
+        if (INSTANCE == null) {
+            INSTANCE = new ClickHistory();
+        }
+        return INSTANCE;
+    }
+
     public void add(Editor editor) {
         int pos = EditorWrapper.getCaretPosition(editor);
         CHPair chPair = new CHPair(editor, pos);
@@ -37,7 +44,7 @@ public class ClickHistory {
 
         // if currently on is somewhere in history, remove all history after currently on, then add CHPair
         if (currentlyOn + 1 < history.size()) {
-            history = history.subList(0,currentlyOn);
+            history = history.subList(0, currentlyOn);
             history.add(chPair);
             currentlyOn = history.size() - 1;
             return;
@@ -52,6 +59,9 @@ public class ClickHistory {
         if (currentlyOn < 0) {
             currentlyOn = 0;
         }
+        if (history.size() < 1) {
+            return;
+        }
         CHPair chPair = history.get(currentlyOn);
         EditorWrapper.bringToFront(chPair.editor);
         EditorWrapper.goToPositionAndHighlight(chPair.editor, chPair.pos, chPair.pos);
@@ -60,7 +70,7 @@ public class ClickHistory {
     public void locationNext() {
         currentlyOn += 1;
         if (currentlyOn >= history.size()) {
-            currentlyOn = history.size() -1;
+            currentlyOn = history.size() - 1;
         }
         CHPair chPair = history.get(currentlyOn);
         EditorWrapper.bringToFront(chPair.editor);
@@ -76,13 +86,6 @@ public class ClickHistory {
 
     public List<CHPair> getHistory() {
         return history;
-    }
-
-    public static ClickHistory getINSTANCE() {
-        if (INSTANCE == null) {
-            INSTANCE = new ClickHistory();
-        }
-        return INSTANCE;
     }
 
     private class CHPair {
