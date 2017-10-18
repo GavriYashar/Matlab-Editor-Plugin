@@ -149,7 +149,7 @@ public class EditorApp {
             }
 
             if (EditorWrapper.isFloating(editor)) {
-                // editor is not floating on startup, even though the window is already open
+                // System.out.println("floating");
             }
             editors.add(editor);
 
