@@ -4,6 +4,7 @@ import at.mep.KeyReleasedHandler;
 import at.mep.Matlab;
 import at.mep.debug.Debug;
 import at.mep.gui.AutoSwitcher;
+import at.mep.gui.ClickHistory;
 import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.gui.recentlyClosed.RecentlyClosed;
 import at.mep.mepr.MEPR;
@@ -23,6 +24,8 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -136,7 +139,10 @@ public class EditorApp {
             if (editorSyntaxTextPane == null) continue;
             addKeyStrokes(editorSyntaxTextPane);
             addCustomKeyStrokes(editorSyntaxTextPane);
-            if (editors.contains(editor)) continue;
+            if (editors.contains(editor)) {
+                // editor already has listeners, don't any new listeners
+                continue;
+            }
 
             if (Debug.isDebugEnabled()) {
                 System.out.println("EditorApp:setCallbacks() " + editor.getShortName());
@@ -145,9 +151,70 @@ public class EditorApp {
             if (EditorWrapper.isFloating(editor)) {
                 // editor is not floating on startup, even though the window is already open
             }
-
             editors.add(editor);
+
+            // AutoSwitcher
             AutoSwitcher.addCheckbox();
+
+            // Mouse Listener
+            editorSyntaxTextPane.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    // clicked doesn not get fired when mouse is moving
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    switch (e.getButton()) {
+                        case 1: {
+                            // left
+                            if (Debug.isDebugEnabled()) {
+                                System.out.println("mouse released left " + e.getButton());
+                            }
+                            if (Settings.getPropertyBoolean("feature.enableClickHistory")) {
+                                ClickHistory.getINSTANCE().add(editor);
+                            }
+                            break;
+                        }
+                        case 4: {
+                            // backward
+                            if (Debug.isDebugEnabled()) {
+                                System.out.println("mouse released backward " + e.getButton());
+                            }
+                            if (Settings.getPropertyBoolean("feature.enableClickHistory")) {
+                                ClickHistory.getINSTANCE().locationPrevious();
+                            }
+                            break;
+                        }
+                        case 5: {
+                            // forward
+                            if (Debug.isDebugEnabled()) {
+                                System.out.println("mouse released forward " + e.getButton());
+                            }
+                            if (Settings.getPropertyBoolean("feature.enableClickHistory")) {
+                                ClickHistory.getINSTANCE().locationNext();
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                }
+            });
+
+            // Editor event (AutoSwitcher)
             editor.addEventListener(new EditorEventListener() {
                 @Override
                 public void eventOccurred(EditorEvent editorEvent) {
@@ -174,12 +241,14 @@ public class EditorApp {
                 for (KeyListener keyListener1 : keyListeners) {
                     if (keyListener1.toString().equals(KeyReleasedHandler.getKeyListener().toString())) {
                         editorSyntaxTextPane.removeKeyListener(keyListener1);
-                        // this will assure that the new key listener is added and the previous one is removed
-                        // while matlab is still running and the .jar is replaced
+                       // this will assure that the new key listener is added and the previous one is removed
+                       // while matlab is still running and the .jar is replaced
                     }
                 }
                 editorSyntaxTextPane.addKeyListener(KeyReleasedHandler.getKeyListener());
             }
+
+            // document listener
             editorSyntaxTextPane.getDocument().addDocumentListener(new DocumentListener() {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
@@ -214,11 +283,16 @@ public class EditorApp {
             });
         }
 
+        // breakpointview color
         if (Settings.containsKey("bpColor")) {
             colorizeBreakpointView(Settings.getPropertyColor("bpColor"));
         } else {
             colorizeBreakpointView(ENABLED);
         }
+    }
+
+    private void addDocumentListener() {
+
     }
 
     private void addCustomKeyStrokes(EditorSyntaxTextPane editorSyntaxTextPane) {
@@ -282,7 +356,7 @@ public class EditorApp {
         // BOOKMARKS
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getBookmarkViewer(), "MEP_SHOW_BOOKMARKS");
         editorSyntaxTextPane.getActionMap().put("MEP_SHOW_BOOKMARKS", EMEPAction.MEP_SHOW_BOOKMARKS.getAction());
-        // for some reason bookmarks don't work if editor is opened, while the others (actions) do
+
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getToggleBookmark(), "MEP_BOOKMARK");
         editorSyntaxTextPane.getActionMap().put("MEP_BOOKMARK", EMEPAction.MEP_BOOKMARK.getAction());
     }

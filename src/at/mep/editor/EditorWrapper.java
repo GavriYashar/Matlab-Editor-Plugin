@@ -378,6 +378,11 @@ public class EditorWrapper {
         return ComponentUtil.getBreakPointViewForEditor(editor);
     }
 
+    /** sets given editor as active editor */
+    public static void bringToFront(Editor editor) {
+        editor.bringToFront();
+    }
+
     /** moves caret to given line of given editor. if select flag is true, the current line will be selected */
     public static void goToLine(Editor editor, int line, boolean select) {
         editor.goToLine(line, select);
