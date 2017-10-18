@@ -44,6 +44,12 @@ public class Bookmarks {
 
     public void toggleBookmarksForEditor(Editor editor) {
         List<Integer> lines = getList(editor);
+
+        // emulate matlab's toggle
+        ((ExecutionArrowDisplay) editor.getExecutionArrowMargin())
+                .toggleBookmark(EditorWrapper.getCurrentLine(editor) - 1);
+
+        // update bookmarkList
         for (int line : lines) {
             toggleBookmark(new Bookmark(editor, line));
         }
@@ -59,14 +65,13 @@ public class Bookmarks {
         return list;
     }
 
-    public void toggleBookmark(Bookmark bookmark) {
+    /** toggles bookmark state in bookMarkList */
+    private void toggleBookmark(Bookmark bookmark) {
         if (bookmarkList.contains(bookmark)) {
             bookmarkList.remove(bookmark);
-            // System.out.println("removed " + bookmark);
             return;
         }
         bookmarkList.add(bookmark);
-        // System.out.println("added " + bookmark);
     }
 
     /**
@@ -93,11 +98,11 @@ public class Bookmarks {
         removeBookmark(bookmark);
     }
 
-    public void removeBookmark(Bookmark bookmark) {
+    void removeBookmark(Bookmark bookmark) {
         bookmarkList.remove(bookmark);
     }
 
-    public void addBookmark(Bookmark bookmark) {
+    private void addBookmark(Bookmark bookmark) {
         bookmarkList.add(bookmark);
     }
 
@@ -148,6 +153,7 @@ public class Bookmarks {
         ((ExecutionArrowDisplay) editor.getExecutionArrowMargin()).setBookmarks(lines);
     }
 
+    /** saves all bookmarks to file */
     public void save() {
         Writer writer = null;
         try {
@@ -173,6 +179,7 @@ public class Bookmarks {
         }
     }
 
+    /** loads stored bookmark from file, and restores them in Matlab editor */
     public void load() {
         Properties bookmarks = new Properties();
         try {
