@@ -4,6 +4,7 @@ import at.mep.KeyReleasedHandler;
 import at.mep.Matlab;
 import at.mep.debug.Debug;
 import at.mep.gui.AutoSwitcher;
+import at.mep.gui.ClickHistory;
 import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.gui.recentlyClosed.RecentlyClosed;
 import at.mep.mepr.MEPR;
@@ -27,7 +28,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /** Created by Andreas Justin on 2016 - 02 - 09. */
@@ -157,7 +157,62 @@ public class EditorApp {
             AutoSwitcher.addCheckbox();
 
             // Mouse Listener
-            addMouseListener(editorSyntaxTextPane);
+            editorSyntaxTextPane.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    // clicked doesn not get fired when mouse is moving
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    switch (e.getButton()) {
+                        case 1: {
+                            // left
+                            if (Debug.isDebugEnabled()) {
+                                System.out.println("mouse released left " + e.getButton());
+                            }
+                            if (Settings.getPropertyBoolean("feature.enableClickHistory")) {
+                                ClickHistory.getINSTANCE().add(editor);
+                            }
+                            break;
+                        }
+                        case 4: {
+                            // backward
+                            if (Debug.isDebugEnabled()) {
+                                System.out.println("mouse released backward " + e.getButton());
+                            }
+                            if (Settings.getPropertyBoolean("feature.enableClickHistory")) {
+                                ClickHistory.getINSTANCE().locationPrevious();
+                            }
+                            break;
+                        }
+                        case 5: {
+                            // forward
+                            if (Debug.isDebugEnabled()) {
+                                System.out.println("mouse released forward " + e.getButton());
+                            }
+                            if (Settings.getPropertyBoolean("feature.enableClickHistory")) {
+                                ClickHistory.getINSTANCE().locationNext();
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                }
+            });
 
             // Editor event (AutoSwitcher)
             editor.addEventListener(new EditorEventListener() {
@@ -186,8 +241,8 @@ public class EditorApp {
                 for (KeyListener keyListener1 : keyListeners) {
                     if (keyListener1.toString().equals(KeyReleasedHandler.getKeyListener().toString())) {
                         editorSyntaxTextPane.removeKeyListener(keyListener1);
-                        // this will assure that the new key listener is added and the previous one is removed
-                        // while matlab is still running and the .jar is replaced
+                       // this will assure that the new key listener is added and the previous one is removed
+                       // while matlab is still running and the .jar is replaced
                     }
                 }
                 editorSyntaxTextPane.addKeyListener(KeyReleasedHandler.getKeyListener());
@@ -238,54 +293,6 @@ public class EditorApp {
 
     private void addDocumentListener() {
 
-    }
-
-    private void addMouseListener(EditorSyntaxTextPane editorSyntaxTextPane) {
-        editorSyntaxTextPane.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                switch (e.getButton()) {
-                    case 4: {
-                        // forward
-                        if (Debug.isDebugEnabled()) {
-                            System.out.println("mouse clicked backward " + e.getButton());
-                        }
-                        break;
-                    }
-                    case 5: {
-                        // backward
-                        if (Debug.isDebugEnabled()) {
-                            System.out.println("mouse clicked forward " + e.getButton());
-                        }
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-            }
-        });
-
-        class ClickHistory {
-            // private static LinkedList<>
-
-        }
     }
 
     private void addCustomKeyStrokes(EditorSyntaxTextPane editorSyntaxTextPane) {
@@ -349,7 +356,7 @@ public class EditorApp {
         // BOOKMARKS
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getBookmarkViewer(), "MEP_SHOW_BOOKMARKS");
         editorSyntaxTextPane.getActionMap().put("MEP_SHOW_BOOKMARKS", EMEPAction.MEP_SHOW_BOOKMARKS.getAction());
-        // for some reason bookmarks don't work if editor is opened, while the others (actions) do
+        
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getToggleBookmark(), "MEP_BOOKMARK");
         editorSyntaxTextPane.getActionMap().put("MEP_BOOKMARK", EMEPAction.MEP_BOOKMARK.getAction());
     }
