@@ -3,16 +3,16 @@
 In short, it will mess around with Matlabs Editor:
 
 * **Navigation History**: using the Mouse Forward and Backward button to navigate through location history
-* **Auto-Detail-Viewer**: updates the detailviewer of matlab if active editor has changed
-* **Auto-Switch-Current-Folder**: changes currentfolder if active editor has changed
-* **KeyPressListener**: executes custom Matlab functions on keypress passed in by the user beforehand
-* **ClipboardStack**: opened via <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>V</kbd>, stores the previous 10 strings copied to clipboard from Matlab.
-* **FileStructure**: opened via <kbd>CTRL</kbd> + <kbd>F12</kbd>, searching through functions and sections
-* **BookmarkViewer**: opened via <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>F2</kbd> View all bookmarks in every opened and closed editor. Stored and restored after closing and reopening an editor or Matlab
-* **Duplicate line**:  <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>D</kbd>
-* **delete line**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>Y</kbd>
-* **LiveTemplatesViewer**: <kbd>ALT</kbd> + <kbd>INSERT</kbd> view all created livetemplates
-* **Quicksearch Templates**: <kbd>CTRL</kbd> + <kbd>SPACE</kbd> quick searches live templates when writing an command (`%MYTEMPL` + <kbd>CTRL</kbd> + <kbd>SPACE</kbd> = `%MYTEMPLATE`)
+* **[Auto-Detail-Viewer](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#auto-detail-viewer)**: updates the detailviewer of matlab if active editor has changed
+* **[Auto-Switch-Current-Folder](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#auto-switch-current-folder)**: changes currentfolder if active editor has changed
+* **[KeyPressListener](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Setup#creating-custom-key-press-callbacks-in-editor)**: executes custom Matlab functions on keypress passed in by the user beforehand
+* **[ClipboardStack](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#clipboard-stack)**: opened via <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>V</kbd>, stores the previous 10 strings copied to clipboard from Matlab.
+* **[FileStructure](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#file-structure)**: opened via <kbd>CTRL</kbd> + <kbd>F12</kbd>, searching through functions and sections
+* **[BookmarkViewer](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#bookmarks)**: opened via <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>F2</kbd> View all bookmarks in every opened and closed editor. Stored and restored after closing and reopening an editor or Matlab
+* **[Duplicate line](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#duplicate-or-remove-current-line)**:  <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>D</kbd>
+* **[Delete line](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#duplicate-or-remove-current-line)**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>Y</kbd>
+* **[LiveTemplatesViewer](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Live-Templates)**: <kbd>ALT</kbd> + <kbd>INSERT</kbd> view all created livetemplates
+* **[Quicksearch Templates](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Live-Templates#quick-search)**: <kbd>CTRL</kbd> + <kbd>SPACE</kbd> quick searches live templates when writing an command (`%MYTEMPL` + <kbd>CTRL</kbd> + <kbd>SPACE</kbd> = `%MYTEMPLATE`)
 * **Execute Current Line**: <kbd>SHIFT</kbd> + <kbd>F9</kbd>
 * **Recently Closed Editor**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>T</kbd>
 
