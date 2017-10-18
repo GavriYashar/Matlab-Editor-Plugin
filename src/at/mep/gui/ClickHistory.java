@@ -64,7 +64,8 @@ public class ClickHistory {
         }
         CHPair chPair = history.get(currentlyOn);
         EditorWrapper.bringToFront(chPair.editor);
-        EditorWrapper.goToPositionAndHighlight(chPair.editor, chPair.pos, chPair.pos);
+        Editor editor = EditorWrapper.goToPositionAndHighlight(chPair.editor, chPair.pos, chPair.pos);
+        chPair.setEditor(editor);
     }
 
     public void locationNext() {
@@ -74,7 +75,8 @@ public class ClickHistory {
         }
         CHPair chPair = history.get(currentlyOn);
         EditorWrapper.bringToFront(chPair.editor);
-        EditorWrapper.goToPositionAndHighlight(chPair.editor, chPair.pos, chPair.pos);
+        Editor editor = EditorWrapper.goToPositionAndHighlight(chPair.editor, chPair.pos, chPair.pos);
+        chPair.setEditor(editor);
     }
 
     private void trimList() {
@@ -95,6 +97,10 @@ public class ClickHistory {
         public CHPair(Editor editor, int pos) {
             this.editor = editor;
             this.pos = pos;
+        }
+
+        public void setEditor(Editor editor) {
+            this.editor = editor;
         }
 
         public Editor getEditor() {
