@@ -2,7 +2,7 @@
 
 In short, it will mess around with Matlabs Editor:
 
-* **Navigation History**: using the Mouse Forward and Backward button to navigate through location history
+* **[Navigation History](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#navigation-history)**: using the Mouse Forward and Backward button to navigate through location history
 * **[Auto-Detail-Viewer](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#auto-detail-viewer)**: updates the detailviewer of matlab if active editor has changed
 * **[Auto-Switch-Current-Folder](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#auto-switch-current-folder)**: changes currentfolder if active editor has changed
 * **[KeyPressListener](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Setup#creating-custom-key-press-callbacks-in-editor)**: executes custom Matlab functions on keypress passed in by the user beforehand
@@ -13,8 +13,8 @@ In short, it will mess around with Matlabs Editor:
 * **[Delete line](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#duplicate-or-remove-current-line)**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>Y</kbd>
 * **[LiveTemplatesViewer](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Live-Templates)**: <kbd>ALT</kbd> + <kbd>INSERT</kbd> view all created livetemplates
 * **[Quicksearch Templates](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Live-Templates#quick-search)**: <kbd>CTRL</kbd> + <kbd>SPACE</kbd> quick searches live templates when writing an command (`%MYTEMPL` + <kbd>CTRL</kbd> + <kbd>SPACE</kbd> = `%MYTEMPLATE`)
-* **Execute Current Line**: <kbd>SHIFT</kbd> + <kbd>F9</kbd>
-* **Recently Closed Editor**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>T</kbd>
+* **[Execute Current Line](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#execute-current-lines)**: <kbd>SHIFT</kbd> + <kbd>F9</kbd>
+* **[Recently Closed Editor](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#recently-closed-editor)**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>T</kbd>
 
 * Shortcuts can be changed in `*.properties` file
 
