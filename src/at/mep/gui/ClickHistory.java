@@ -38,7 +38,7 @@ public class ClickHistory {
         // if currently on is the last index, add new CHPair
         if (currentlyOn + 1 == history.size()) {
             history.add(chPair);
-            currentlyOn = history.size() - 1;
+            resetCurrentlyOnToSize();
             return;
         }
 
@@ -46,7 +46,7 @@ public class ClickHistory {
         if (currentlyOn + 1 < history.size()) {
             history = history.subList(0, currentlyOn);
             history.add(chPair);
-            currentlyOn = history.size() - 1;
+            resetCurrentlyOnToSize();
             return;
         }
 
@@ -60,8 +60,10 @@ public class ClickHistory {
             currentlyOn = 0;
         }
         if (history.size() < 1) {
+            resetCurrentlyOnToSize();
             return;
         }
+        cleanupHistory();
         CHPair chPair = history.get(currentlyOn);
         EditorWrapper.bringToFront(chPair.editor);
         Editor editor = EditorWrapper.goToPositionAndHighlight(chPair.editor, chPair.pos, chPair.pos);
@@ -71,8 +73,9 @@ public class ClickHistory {
     public void locationNext() {
         currentlyOn += 1;
         if (currentlyOn >= history.size()) {
-            currentlyOn = history.size() - 1;
+            resetCurrentlyOnToSize();
         }
+        cleanupHistory();
         CHPair chPair = history.get(currentlyOn);
         EditorWrapper.bringToFront(chPair.editor);
         Editor editor = EditorWrapper.goToPositionAndHighlight(chPair.editor, chPair.pos, chPair.pos);
@@ -82,12 +85,24 @@ public class ClickHistory {
     private void trimList() {
         if (history.size() >= Settings.getPropertyInt("ch.sizeMax")) {
             history.remove(0);
-            currentlyOn -= 1;
+            resetCurrentlyOnToSize();
         }
     }
 
-    public List<CHPair> getHistory() {
-        return history;
+    private void cleanupHistory() {
+        for (int i = history.size()-1; i >= 0 ; i--) {
+            CHPair chPair = history.get(i);
+            if (!chPair.isValid()) {
+                history.remove(chPair);
+            }
+        }
+        if (currentlyOn >= history.size()) {
+            resetCurrentlyOnToSize();
+        }
+    }
+
+    public void resetCurrentlyOnToSize() {
+        currentlyOn = history.size() - 1;
     }
 
     private class CHPair {
@@ -105,6 +120,10 @@ public class ClickHistory {
 
         public Editor getEditor() {
             return editor;
+        }
+
+        public boolean isValid() {
+            return EditorWrapper.isopen(editor) || !EditorWrapper.getFile(editor).exists();
         }
 
         public int getPos() {
