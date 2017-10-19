@@ -152,7 +152,7 @@ public enum EMatlabKeyStrokesCommands {
 
     public static void setCustomKeyStrokes() {
         EMatlabKeyStrokesCommands[] list = EMatlabKeyStrokesCommands.values();
-        InputMap inputMap = EditorWrapper.getInputMap();
+        InputMap inputMap = EditorWrapper.getInputMap(EditorWrapper.getFirstNonLiveEditor());
         KeyStroke[] keyStrokes = inputMap.allKeys();
 
         for (EMatlabKeyStrokesCommands commands : list) {
