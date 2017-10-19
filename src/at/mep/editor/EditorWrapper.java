@@ -6,6 +6,9 @@ import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.mde.editor.EditorSyntaxTextPane;
 import com.mathworks.mde.editor.EditorViewClient;
 import com.mathworks.mde.editor.MatlabEditorApplication;
+import com.mathworks.mde.liveeditor.LiveEditor;
+import com.mathworks.mde.liveeditor.LiveEditorApplication;
+import com.mathworks.mde.liveeditor.LiveEditorClient;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.desk.DTSingleClientFrame;
 import com.mathworks.widgets.editor.breakpoints.BreakpointView;
@@ -201,9 +204,43 @@ public class EditorWrapper {
         return EditorWrapper.getActiveEditor();
     }
 
+    /** returns true if current editor is an LiveEditor */
+    public static boolean isActiveEditorLive() {
+        LiveEditorClient liveEditorClient = LiveEditorApplication.getLastActiveLiveEditorClient();
+        return liveEditorClient != null;
+    }
+
+    /** returns active LiveEditor. Check first if current editor is an LiveEditor with EditorWrapper.isActiveEditorLive() */
+    public static LiveEditor getActiveLiveEditor() {
+        return LiveEditorApplication.getLastActiveLiveEditorClient().getLiveEditor();
+    }
+
+    /**
+     * returns currently active Editor in Matlab.
+     * if no editor is open or an LiveScript is active, active editor would be null.
+     * tho prevent unwanted null pointer exceptions a new editor will be opened and returned instead
+     */
+    public static Editor getActiveEditorSafe() {
+        Editor editor = EditorWrapper.getActiveEditor();
+        if (editor == null) {
+            editor = EditorWrapper.getMatlabEditorApplication().newEditor(
+                    "MEP: Sorry!"
+            );
+        }
+        return editor;
+    }
     /** returns currently active Editor in Matlab */
     public static Editor getActiveEditor() {
-        return EditorApp.getInstance().getActiveEditor();
+        return EditorWrapper.getMatlabEditorApplication().getActiveEditor();
+    }
+
+    /** returns first non live editor, opens one if none exists */
+    public static Editor getFirstNonLiveEditor() {
+        List<Editor> editors = EditorWrapper.getOpenEditors();
+        if (editors.size() == 0) {
+            return EditorWrapper.getActiveEditorSafe();
+        }
+        return editors.get(0);
     }
 
     /** returns full qualified name of given editor */
@@ -691,6 +728,9 @@ public class EditorWrapper {
     }
 
     public static InputMap getInputMap() {
+        if (EditorWrapper.isActiveEditorLive()) {
+            return LiveEditorApplication.getLastActiveLiveEditorClient().getInputMap();
+        }
         return EditorWrapper.getInputMap(gae());
     }
 
@@ -717,6 +757,9 @@ public class EditorWrapper {
     }
 
     public static File getFile() {
+        if (EditorWrapper.isActiveEditorLive()) {
+            return new File(EditorWrapper.getActiveLiveEditor().getLongName());
+        }
         return EditorWrapper.getFile(gae());
     }
 
@@ -737,6 +780,9 @@ public class EditorWrapper {
     }
 
     public static String getShortName() {
+        if (EditorWrapper.isActiveEditorLive()) {
+            return EditorWrapper.getActiveLiveEditor().getShortName();
+        }
         return EditorWrapper.getShortName(gae());
     }
 
@@ -769,6 +815,9 @@ public class EditorWrapper {
     }
 
     public static String getLongName() {
+        if (EditorWrapper.isActiveEditorLive()) {
+            return EditorWrapper.getActiveLiveEditor().getLongName();
+        }
         return EditorWrapper.getLongName(gae());
     }
 
