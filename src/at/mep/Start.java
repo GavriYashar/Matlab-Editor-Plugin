@@ -28,7 +28,7 @@ public class Start {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                EditorWrapper.getActiveEditor();
+                EditorWrapper.getFirstNonLiveEditor();
             }
         };
         RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
