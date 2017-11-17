@@ -4,6 +4,7 @@ import at.mep.gui.fileStructure.NodeFS;
 import at.mep.util.ComponentUtil;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.mde.editor.EditorSyntaxTextPane;
+import com.mathworks.mde.editor.EditorView;
 import com.mathworks.mde.editor.EditorViewClient;
 import com.mathworks.mde.editor.MatlabEditorApplication;
 import com.mathworks.mde.liveeditor.LiveEditor;
@@ -414,6 +415,14 @@ public class EditorWrapper {
 
     public static BreakpointView.Background getBreakPointView(Editor editor) {
         return ComponentUtil.getBreakPointViewForEditor(editor);
+    }
+
+    public static EditorViewClient getEditorViewClient(Editor editor) {
+        return (EditorViewClient) editor.getComponent();
+    }
+
+    public static EditorView getEditorView(Editor editor) {
+        return EditorWrapper.getEditorViewClient(editor).getEditorView();
     }
 
     /** sets given editor as active editor */
@@ -835,6 +844,14 @@ public class EditorWrapper {
 
     public static EditorSyntaxTextPane getEditorSyntaxTextPane() {
         return EditorWrapper.getEditorSyntaxTextPane(gae());
+    }
+
+    public static EditorViewClient getEditorViewClient() {
+        return EditorWrapper.getEditorViewClient(gae());
+    }
+
+    public static EditorView getEditorView() {
+        return EditorWrapper.getEditorView(gae());
     }
 
     public static boolean isFloating() {
