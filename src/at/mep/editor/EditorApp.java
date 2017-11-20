@@ -6,6 +6,7 @@ import at.mep.debug.Debug;
 import at.mep.gui.AutoSwitcher;
 import at.mep.gui.ClickHistory;
 import at.mep.gui.bookmarks.Bookmarks;
+import at.mep.gui.ContextMenu;
 import at.mep.gui.recentlyClosed.RecentlyClosed;
 import at.mep.mepr.MEPR;
 import at.mep.prefs.Settings;
@@ -176,6 +177,22 @@ public class EditorApp {
                             if (Settings.getPropertyBoolean("feature.enableClickHistory")) {
                                 ClickHistory.getINSTANCE().add(editor);
                             }
+                            break;
+                        }
+                        case 2: {
+                            // middle
+                            if (Debug.isDebugEnabled()) {
+                                System.out.println("mouse released middle " + e.getButton());
+                            }
+                            break;
+                        }
+                        case 3: {
+                            // right
+                            if (Debug.isDebugEnabled()) {
+                                System.out.println("mouse released right " + e.getButton());
+                            }
+
+                            ContextMenu.contribute(editor);
                             break;
                         }
                         case 4: {
