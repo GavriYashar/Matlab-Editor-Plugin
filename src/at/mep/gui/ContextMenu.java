@@ -59,7 +59,13 @@ public class ContextMenu {
                 WorkspaceWrapper.vardiff(vars.get(0), vars.get(1));
             }
         });
-        jMenuItem.setText("VarDiff V1 <-> V2");
+        List<String> vars = WorkspaceWrapper.getSelectedVariables();
+        if (vars.size() != 2) {
+            jMenuItem.setText("VarDiff needs 2 variables");
+            jMenuItem.setEnabled(false);
+        } else {
+            jMenuItem.setText("VarDiff " + vars.get(0) + " <-> " + vars.get(1));
+        }
         cm.add(jMenuItem);
 
         cm.setVisible(true);
