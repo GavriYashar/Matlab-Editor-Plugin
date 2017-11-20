@@ -10,6 +10,7 @@ import com.mathworks.mde.editor.MatlabEditorApplication;
 import com.mathworks.mde.liveeditor.LiveEditor;
 import com.mathworks.mde.liveeditor.LiveEditorApplication;
 import com.mathworks.mde.liveeditor.LiveEditorClient;
+import com.mathworks.mwswing.MJPopupMenu;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.desk.DTSingleClientFrame;
 import com.mathworks.widgets.editor.breakpoints.BreakpointView;
@@ -423,6 +424,10 @@ public class EditorWrapper {
 
     public static EditorView getEditorView(Editor editor) {
         return EditorWrapper.getEditorViewClient(editor).getEditorView();
+    }
+
+    public static MJPopupMenu getContextMenu(Editor editor) {
+        return EditorWrapper.getEditorView(editor).getSyntaxTextPane().getContextMenu();
     }
 
     /** sets given editor as active editor */
@@ -852,6 +857,10 @@ public class EditorWrapper {
 
     public static EditorView getEditorView() {
         return EditorWrapper.getEditorView(gae());
+    }
+
+    public static MJPopupMenu getContextMenu() {
+        return EditorWrapper.getContextMenu(gae());
     }
 
     public static boolean isFloating() {
