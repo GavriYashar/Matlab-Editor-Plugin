@@ -3,11 +3,14 @@ package at.mep.util;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.mde.editor.EditorSyntaxTextPane;
 import com.mathworks.mde.explorer.Explorer;
+import com.mathworks.mde.workspace.WorkspaceBrowser;
+import com.mathworks.mlwidgets.workspace.WorkspaceTable;
 import com.mathworks.widgets.desk.DTTitleBar;
 import com.mathworks.widgets.editor.breakpoints.BreakpointView;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by Andreas Justin on 2016-08-31.
@@ -73,6 +76,17 @@ public class ComponentUtil {
             }
         }
         return editorSyntaxTextPane;
+    }
+
+    public static WorkspaceTable getWorkspaceTable() {
+        List<Component> workspaceTable = searchForComponentsRecursive(WorkspaceBrowser.getInstance(), "WorkspaceTable");
+        if (workspaceTable.size() > 1) {
+            System.out.println("Multiple Workspace table found");
+        }
+        if (workspaceTable.size() < 1) {
+            return null;
+        }
+        return (WorkspaceTable) workspaceTable.get(0);
     }
 
     public static DTTitleBar getCurrentFolderTitleBar() {
