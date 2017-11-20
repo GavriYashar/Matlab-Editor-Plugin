@@ -15,7 +15,7 @@ In short, it will mess around with Matlabs Editor:
 * **[Quicksearch Templates](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Live-Templates#quick-search)**: <kbd>CTRL</kbd> + <kbd>SPACE</kbd> quick searches live templates when writing an command (`%MYTEMPL` + <kbd>CTRL</kbd> + <kbd>SPACE</kbd> = `%MYTEMPLATE`)
 * **[Execute Current Line](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#execute-current-lines)**: <kbd>SHIFT</kbd> + <kbd>F9</kbd>
 * **[Recently Closed Editor](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#recently-closed-editor)**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>T</kbd>
-
+* **[VarDiff](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#vardiff)**: Compares two Variables in Workspace
 * Shortcuts can be changed in `*.properties` file
 
 ## Setup
