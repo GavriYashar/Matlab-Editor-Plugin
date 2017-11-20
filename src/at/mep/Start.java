@@ -7,8 +7,8 @@ import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.installer.Install;
 import at.mep.prefs.Settings;
 import at.mep.util.RunnableUtil;
+import at.mep.workspace.WorkspaceWrapper;
 import com.mathworks.mlwidgets.prefs.PrefsChanger;
-import com.mathworks.widgets.desk.DTDocumentAccessor;
 
 import javax.swing.*;
 import java.io.File;
@@ -37,6 +37,7 @@ public class Start {
             CustomShortCutKey.reload();
             setEditorCallbacks();
             setCmdWinCallbacks();
+            setWorkspaceWinCallbacks();
             addPrefs();
             EMatlabKeyStrokesCommands.setCustomKeyStrokes();
             Bookmarks.getInstance().load();
@@ -115,6 +116,10 @@ public class Start {
 
     private static void setCmdWinCallbacks() {
         CommandWindow.setCallbacks();
+    }
+
+    private static void setWorkspaceWinCallbacks() {
+        WorkspaceWrapper.setCallbacks();
     }
 
     private static void addPrefs() {
