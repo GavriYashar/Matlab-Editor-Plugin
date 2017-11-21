@@ -48,8 +48,12 @@ public class PrefsPanel extends MJPanel {
                     Settings.setPropertyBoolean(key, jcb1.isSelected());
                     break;
                 case INTEGER:
+                    JTextField jtf2 = (JTextField) c;
+                    Settings.setProperty(key, jtf2.getText());
                     break;
                 case STRING:
+                    JTextField jtf3 = (JTextField) c;
+                    Settings.setProperty(key, jtf3.getText());
                     break;
                 case STRING_DROPDOWN:
                     JComboBox jComboBox = (JComboBox) c;
@@ -109,6 +113,7 @@ public class PrefsPanel extends MJPanel {
 
         addFeatureSelector();
         addMEPProps();
+        addUserProps();
         if (Settings.getPropertyBoolean("isPublicUser")) {
             return;
         }
@@ -130,9 +135,13 @@ public class PrefsPanel extends MJPanel {
                 "feature.enableReplacements",
                 "feature.enableAutoDetailViewer",
                 "feature.enableAutoCurrentFolder",
-                "feature.enableExecuteCurrentLine"
+                "feature.enableExecuteCurrentLine",
+                "feature.enableRecentlyClosed",
+                "feature.enableClickHistory"
         };
         EPropertyType[] types = {EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
+                EPropertyType.BOOLEAN,
                 EPropertyType.BOOLEAN,
                 EPropertyType.BOOLEAN,
                 EPropertyType.BOOLEAN,
@@ -208,16 +217,38 @@ public class PrefsPanel extends MJPanel {
         String[] properties;
         EPropertyType[] types;
         properties = new String[]{"isPublicUser",
-                "verbose",
                 "autoReloadProps",
                 "bpColor",
-                "fs.iconSet"
+                "fs.iconSet",
+                "clipboardStack.size",
+                "ch.sizeMax"
         };
         types = new EPropertyType[]{EPropertyType.BOOLEAN,
                 EPropertyType.BOOLEAN,
-                EPropertyType.BOOLEAN,
                 EPropertyType.COLOR,
-                EPropertyType.STRING_DROPDOWN
+                EPropertyType.STRING_DROPDOWN,
+                EPropertyType.INTEGER,
+                EPropertyType.INTEGER
+        };
+        addPropsToPanel(ps, properties, types);
+
+        jp.add(ps);
+    }
+
+    private void addUserProps() {
+        JPanel ps = new JPanel();
+        ps.setLayout(new GridBagLayout());
+        ps.setBorder(BorderFactory.createTitledBorder("User"));
+
+        String[] properties = {"user.name",
+                "user.department",
+                "user.company",
+                "user.email"
+        };
+        EPropertyType[] types = {EPropertyType.STRING,
+                EPropertyType.STRING,
+                EPropertyType.STRING,
+                EPropertyType.STRING
         };
         addPropsToPanel(ps, properties, types);
 

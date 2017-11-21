@@ -3,8 +3,7 @@ package at.mep.prefs;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.io.File;
 import java.util.Arrays;
 
@@ -21,8 +20,10 @@ public class PrefsPanelUtil {
                 components[0] = getCheckBox(property);
                 break;
             case INTEGER:
+                components[0] = getIntegerField(property);
                 break;
             case STRING:
+                components[0] = getStringField(property);
                 break;
             case STRING_DROPDOWN:
                 components[0] = getDropDownString(property);
@@ -41,6 +42,52 @@ public class PrefsPanelUtil {
         String help = Settings.getProperty("help." + property);
         components[1] = new JLabel(help);
         return components;
+    }
+
+    private static Component getStringField(String property) {
+        final JTextField jtf = new JTextField(Settings.getProperty(property));
+        jtf.setName(property);
+        jtf.setEditable(true);
+        Dimension d = new Dimension(20,20);
+        jtf.setPreferredSize(d);
+        jtf.setMaximumSize(d);
+        return jtf;
+    }
+
+    private static JTextField getIntegerField(final String property) {
+        final JTextField jtf = new JTextField(Settings.getProperty(property));
+        jtf.setName(property);
+        jtf.setEditable(true);
+        Dimension d = new Dimension(20,20);
+        jtf.setPreferredSize(d);
+        jtf.setMaximumSize(d);
+        jtf.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // copy paste Code focusLost
+                boolean isInt = stringIsIntegerDialog(jtf.getText());
+                if (!isInt) {
+                    jtf.setText(Settings.getProperty(property + "Values"));
+                }
+            }
+        });
+        jtf.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                // copy paste Code actionPerformed
+                boolean isInt = stringIsIntegerDialog(jtf.getText());
+                if (!isInt) {
+                    jtf.setText(Settings.getProperty(property + "Values"));
+                }
+            }
+        });
+
+        return jtf;
     }
 
     private static JComboBox getDropDownString(String property) {
@@ -149,5 +196,20 @@ public class PrefsPanelUtil {
 
     private static JCheckBox getCheckBox(String name, boolean value) {
         return new JCheckBox(name, value);
+    }
+
+    private static boolean stringIsIntegerDialog(String string) {
+        try {
+            //noinspection ResultOfMethodCallIgnored
+            Integer.parseInt(string);
+            return true;
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(
+                    new JFrame(""),
+                    e.getMessage() + "\nplease set enter a valid integer format",
+                    "Invalid Integer Format",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        return false;
     }
 }
