@@ -7,9 +7,6 @@ import com.mathworks.mde.editor.EditorSyntaxTextPane;
 import com.mathworks.mde.editor.EditorView;
 import com.mathworks.mde.editor.EditorViewClient;
 import com.mathworks.mde.editor.MatlabEditorApplication;
-import com.mathworks.mde.liveeditor.LiveEditor;
-import com.mathworks.mde.liveeditor.LiveEditorApplication;
-import com.mathworks.mde.liveeditor.LiveEditorClient;
 import com.mathworks.mwswing.MJPopupMenu;
 import com.mathworks.util.tree.Tree;
 import com.mathworks.widgets.desk.DTSingleClientFrame;
@@ -208,13 +205,7 @@ public class EditorWrapper {
 
     /** returns true if current editor is an LiveEditor */
     public static boolean isActiveEditorLive() {
-        LiveEditorClient liveEditorClient = LiveEditorApplication.getLastActiveLiveEditorClient();
-        return liveEditorClient != null;
-    }
-
-    /** returns active LiveEditor. Check first if current editor is an LiveEditor with EditorWrapper.isActiveEditorLive() */
-    public static LiveEditor getActiveLiveEditor() {
-        return LiveEditorApplication.getLastActiveLiveEditorClient().getLiveEditor();
+        return LiveEditorWrapper.isActiveEditorLive();
     }
 
     /**
@@ -744,7 +735,7 @@ public class EditorWrapper {
 
     public static InputMap getInputMap() {
         if (EditorWrapper.isActiveEditorLive()) {
-            return LiveEditorApplication.getLastActiveLiveEditorClient().getInputMap();
+            return LiveEditorWrapper.getInputMap();
         }
         return EditorWrapper.getInputMap(gae());
     }
@@ -773,7 +764,7 @@ public class EditorWrapper {
 
     public static File getFile() {
         if (EditorWrapper.isActiveEditorLive()) {
-            return new File(EditorWrapper.getActiveLiveEditor().getLongName());
+            return new File(LiveEditorWrapper.getLongName());
         }
         return EditorWrapper.getFile(gae());
     }
@@ -796,7 +787,7 @@ public class EditorWrapper {
 
     public static String getShortName() {
         if (EditorWrapper.isActiveEditorLive()) {
-            return EditorWrapper.getActiveLiveEditor().getShortName();
+            return LiveEditorWrapper.getShortName();
         }
         return EditorWrapper.getShortName(gae());
     }
@@ -831,7 +822,7 @@ public class EditorWrapper {
 
     public static String getLongName() {
         if (EditorWrapper.isActiveEditorLive()) {
-            return EditorWrapper.getActiveLiveEditor().getLongName();
+            return LiveEditorWrapper.getLongName();
         }
         return EditorWrapper.getLongName(gae());
     }
