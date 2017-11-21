@@ -11,4 +11,4 @@ function txt = MEPV_AUTHORLONG(txt)
 %
 % See also
 
-txt = at.mep.prefs.Settings.getProperty('user.Name');
+txt = at.mep.prefs.Settings.getProperty('user.name');
