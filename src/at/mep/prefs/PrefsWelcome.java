@@ -10,10 +10,14 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /** Created by Andreas Justin on 2016-08-23. */
 public class PrefsWelcome extends MJPanel {
@@ -82,8 +86,42 @@ public class PrefsWelcome extends MJPanel {
         JPanel jp = new JPanel();
         jp.setLayout(new FlowLayout());
         jp.add(new JLabel("Check for newest releases:"));
-        JTextField jtf = new JTextField("https://github.com/GavriYashar/Matlab-Editor-Plugin/releases");
+
+        final JTextField jtf = new JTextField("https://github.com/GavriYashar/Matlab-Editor-Plugin/releases");
         jtf.setEditable(false);
+        jtf.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (Desktop.isDesktopSupported())                 {
+                    try {
+                        Desktop.getDesktop().browse(new URI(jtf.getText()));
+                    } catch (IOException | URISyntaxException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+
         jp.add(jtf);
 
         GridBagConstraints gbc = new GridBagConstraints();
