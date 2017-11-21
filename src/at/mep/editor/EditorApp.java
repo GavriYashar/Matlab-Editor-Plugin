@@ -52,6 +52,7 @@ public class EditorApp {
 
 
     /** adds a matlab function call to the matlab call stack */
+    @SuppressWarnings("unused") // is used from Matlab
     public static void addMatlabCallback(String string, KeyStroke keyStroke, String actionMapKey) throws Exception {
         if (!testMatlabCallback(string)) {
             throw new Exception("'" + string + "' is not a valid function");
@@ -66,7 +67,7 @@ public class EditorApp {
 
     /**
      * user can test if the passed string will actually be called as intended. will call the function w/o passing any
-     * input arguments
+     * input arguments. Make sure that passed function has a return statement at the beginning if no arguments are passed
      */
     private static boolean testMatlabCallback(String string) {
         try {
@@ -158,7 +159,7 @@ public class EditorApp {
             editorSyntaxTextPane.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    // clicked doesn not get fired when mouse is moving
+                    // clicked doesn't not get fired while mouse is moving
                 }
 
                 @Override
