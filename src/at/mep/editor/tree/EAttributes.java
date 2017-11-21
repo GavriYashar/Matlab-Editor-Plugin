@@ -2,7 +2,11 @@ package at.mep.editor.tree;
 
 import at.mep.meta.EAccess;
 
-/** Created by Andreas Justin on 2017-09-29. */
+/**
+ * Created by Andreas Justin on 2017-09-29.
+ *
+ * Enumeration of Attributes for Properties, Methods and Classdef
+ */
 public enum EAttributes {
     INVALID("Invalid", EAccess.INVALID),
 
