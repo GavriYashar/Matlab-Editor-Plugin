@@ -11,7 +11,4 @@ function txt = MEPV_AUTHORLONG(txt)
 %
 % See also
 
-expr = '\$\{AUTHORLONG\}';
-if ~isempty(regexp(txt,expr,'once'))
-    txt = regexprep(txt, expr, getenv('username'));
-end
+txt = at.mep.prefs.Settings.getProperty('user.Name');

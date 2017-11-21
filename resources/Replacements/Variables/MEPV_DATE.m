@@ -9,8 +9,5 @@ function txt = MEPV_DATE(txt)
 %% REVISIONS
 % V1.0 | 2014-06-11 | Andreas Justin    | Ersterstellung
 %
-% See also MESRV_DATUM
-expr = '\$\{(DATE|DATUM)\}';
-if ~isempty(regexp(txt,expr,'once'))
-    txt = regexprep(txt, expr, datestr(now,'yyyy-mm-dd'));
-end
+
+txt = datestr(now,'yyyy-mm-dd');

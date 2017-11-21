@@ -34,8 +34,8 @@ if ~isempty(m) && ~isempty(m{1})
         if strcmp(refNum,'1.0'); commentary = 'Creation'; end
     end
     fieldAuthor = blanks(19);
-    nameAuthor = getenv('username');
+    nameAuthor = MEPV_AUTHORLONG();
     fieldAuthor(1:numel(nameAuthor)) = nameAuthor;
-    newText = sprintf('%% V%s | %s | %s | %s\n%%', refNum, datestr(now,'yyyy-mm-dd'), fieldAuthor, commentary);
+    newText = sprintf('%% V%s | %s | %s | %s\n%%', refNum, MEPV_DATE(), fieldAuthor, commentary);
     txt = regexprep(txt, expr, newText);
 end

@@ -1,4 +1,4 @@
-function txt = MEPV_TIME(txt)
+function txt = MEPV_THIS(txt)
 % returns the package name of the class currently editing, or name of current m-File if it is no class
 %% VERSIONING
 %             Author: Andreas Justin
@@ -10,7 +10,4 @@ function txt = MEPV_TIME(txt)
 % V1.0 | 2015-04-30 | Andreas Justin      | Ersterstellung
 %
 % See also
-expr = '\$\{(THIS)\}';
-if ~isempty(regexp(txt,expr,'once'))
-    txt = char(at.mep.editor.EditorWrapper.getFullQualifiedClass());
-end
+txt = char(at.mep.editor.EditorWrapper.getFullQualifiedClass());
