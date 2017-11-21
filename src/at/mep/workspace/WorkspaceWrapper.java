@@ -86,6 +86,7 @@ public class WorkspaceWrapper {
     /** compares two variables in workspace using Matlab's comparison feature */
     public static void vardiff(String var1, String var2) {
         // http://de.mathworks.com/matlabcentral/fileexchange/64897-vardiff
+        // does work with M2014a
         VariableSource vs1 = new VariableSource(var1, "evalin('base','" + var1 + "')");
         VariableSource vs2 = new VariableSource(var2, "evalin('base','" + var2 + "')");
 
