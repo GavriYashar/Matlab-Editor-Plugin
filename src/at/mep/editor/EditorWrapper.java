@@ -426,6 +426,7 @@ public class EditorWrapper {
         return EditorWrapper.getEditorViewClient(editor).getEditorView();
     }
 
+    /** get's the context menu (popup menu / right click menu) of given editor */
     public static MJPopupMenu getContextMenu(Editor editor) {
         return EditorWrapper.getEditorView(editor).getSyntaxTextPane().getContextMenu();
     }

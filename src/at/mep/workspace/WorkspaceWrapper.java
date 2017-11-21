@@ -15,8 +15,14 @@ import java.util.List;
 
 /** Created by Andreas Justin on 2017-11-20. */
 public class WorkspaceWrapper {
+
+    /** adds specific MEP callbacks for Matlab's workspace */
     public static void setCallbacks() {
         final WorkspaceTable wst = ComponentUtil.getWorkspaceTable();
+
+        if (wst == null) {
+            return;
+        }
 
         wst.addMouseListener(new MouseListener() {
             @Override
@@ -63,6 +69,7 @@ public class WorkspaceWrapper {
         });
     }
 
+    /** returns a list of string of selected variables in workspace */
     public static List<String> getSelectedVariables() {
         List<String> vars = new ArrayList<>(0);
         WorkspaceTable wst = ComponentUtil.getWorkspaceTable();
@@ -76,6 +83,7 @@ public class WorkspaceWrapper {
         return Arrays.asList(wst.getVariableNames(ints));
     }
 
+    /** compares two variables in workspace using Matlab's comparison feature */
     public static void vardiff(String var1, String var2) {
         // http://de.mathworks.com/matlabcentral/fileexchange/64897-vardiff
         VariableSource vs1 = new VariableSource(var1, "evalin('base','" + var1 + "')");

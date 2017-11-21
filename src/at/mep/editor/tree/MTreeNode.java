@@ -12,7 +12,8 @@ import java.util.List;
 import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
 
 /**
- * this is a helper class, for debugging purposes, so MTree is easier to understand
+ * this is a helper class, for debugging purposes, so MTree is easier to understand.
+ * it will create an actual representation of matlabs MTree with an hierarchy that is easy to browse through
  */
 public class MTreeNode {
     // mTree = at.mep.editor.EditorWrapper.getMTree();

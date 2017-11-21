@@ -14,7 +14,11 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 
-/** Created by Andreas Justin on 2016-08-25. */
+/**
+ * Created by Andreas Justin on 2016-08-25.
+ *
+ * Starting point to run MEP from Matlab (e.g.: startup.m)
+ */
 public class Start {
     public static void start(String customSettings, String defaultSettings) {
         if (!Settings.getPropertyBoolean("feature.enableMEP")) return;
@@ -64,6 +68,7 @@ public class Start {
         }
     }
 
+    /** entry point if custom and default properties are in the same folder as MEP*.jar */
     public static void start() {
         if (!Settings.getPropertyBoolean("feature.enableMEP")) return;
         File customFile;
@@ -122,6 +127,7 @@ public class Start {
         WorkspaceWrapper.setCallbacks();
     }
 
+    /** will add MEPs preference panel to matlabs preference windo */
     private static void addPrefs() {
         try {
             PrefsChanger.addPrefs();
@@ -131,6 +137,7 @@ public class Start {
     }
 
     private static void addShortcut() {
+        // TODO
         String label = "MEP Help";
         String callback = "fprintf('MEP HELP')";
         String icon = "";

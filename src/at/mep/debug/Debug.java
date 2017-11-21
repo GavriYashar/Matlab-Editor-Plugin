@@ -23,6 +23,7 @@ public class Debug {
         System.out.println("yay");
     }
 
+    /** assigns various objects to Matlab's workspace */
     public static void assignObjectsToMatlab() {
         MTree mTree = MTree.parse(EditorWrapper.getText());
 

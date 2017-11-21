@@ -17,19 +17,34 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.TreeSet;
 
-/** Created by Andreas Justin on 2016 - 02 - 07. */
+/**
+ * Created by Andreas Justin on 2016 - 02 - 07.
+ *
+ * Manages settings for MEP.
+ * properties hierarchy:
+ *    1. custom properties: to manage single user preferences
+ *    2. default properties: to manage group preferences.
+ *    3. internal default properties (a quasi backup so MEP won't run in any issue regarding settings)
+ *
+ */
 public class Settings {
     private static long RELOAD_TIME = 5000;
+
+    /** properties that are required for documentation, and others. Users should not have easy access to these */
     private static Properties internalProps = new Properties();
+
+    /** properties a user can set/delete/change for his personal use */
     private static Properties customProps = new Properties();
+
+    /**
+     *  1. properties that are required to run MEP properly
+     *  2. properties a user can change for himself and/or group/department
+     */
     private static Properties defaultProps = new Properties();
     private static String customSettingsName;
     private static String defaultSettingsName;
     private static boolean autoReload = false;
     private static long lastReload = System.currentTimeMillis();
-
-    /** throws the CTRL+F2 error only once until next startup */
-    public static boolean issue57DisplayMessage = true;
 
     /** throws the load error only once, and does not try to reload properties until next startup */
     private static boolean hasThrownLoadError = false;

@@ -19,6 +19,22 @@ import java.util.List;
 
 import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
 
+/**
+ * Parses a ".m"-File in an hierarchical manner.
+ *
+ * e.g.: a class file
+ *
+ * classdef
+ *   attributes
+ *   superclasses
+ *   properties
+ *     attributes
+ *     property
+ *       attribute
+ *   methods
+ *     attributes
+ *     functions
+ */
 public class MFile {
     /** throws the EAttributes.valueOf() error only once, until next startup */
     private static boolean hasThrownError_EAttributesValueOf = false;
@@ -118,7 +134,7 @@ public class MFile {
         return mFile;
     }
 
-    /** actual representation of MTree.NodeType.CELL_TITLE */
+    /** actual representation of MTree.NodeType.CELL_TITLE. e.g.: "%% i'm a cell title" */
     public static class CellTitle {
         /** trimmed string of cell title w/o %% */
         private String titleString = "";
@@ -419,7 +435,7 @@ public class MFile {
             return superclassesMFile;
         }
 
-        /** returns all supeerclasses (including superclasses of superclasses) as a unique list */
+        /** returns all superclasses (including superclasses of superclasses) as a unique list */
         public List<MFile> getSuperclassesMFileAll() {
             List<MFile> mFiles = new ArrayList<>(10);
             mFiles.addAll(superclassesMFile);
