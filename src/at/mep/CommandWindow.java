@@ -2,7 +2,6 @@ package at.mep;
 
 import at.mep.editor.CustomShortCutKey;
 import at.mep.editor.EMEPAction;
-import at.mep.editor.EMEPKeyStrokes;
 import at.mep.util.RunnableUtil;
 import com.mathworks.mde.cmdwin.XCmdWndView;
 
