@@ -1,5 +1,6 @@
 package com.mathworks.mlwidgets.prefs;
 
+import at.mep.Start;
 import at.mep.installer.Install;
 import at.mep.prefs.PrefsWindow;
 import at.mep.prefs.Settings;
@@ -24,7 +25,7 @@ public class PrefsChanger extends PrefsDialog {
             }
             System.out.println();
             System.out.println("with this (below) you can still access a property editor, if you don't want to change this");
-            System.out.println("p = " + PrefsWindow.class.getName() + ".getInstance(); p.showDialog()");
+            System.out.println(Start.class.getName() + ".openPrefsPanel();");
             System.out.println();
             Settings.setPropertyBoolean("jar.isOnStaticPath", false);
         }
