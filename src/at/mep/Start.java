@@ -5,6 +5,7 @@ import at.mep.editor.EditorApp;
 import at.mep.editor.EditorWrapper;
 import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.installer.Install;
+import at.mep.prefs.PrefsWindow;
 import at.mep.prefs.Settings;
 import at.mep.util.RunnableUtil;
 import at.mep.workspace.WorkspaceWrapper;
@@ -80,6 +81,10 @@ public class Start {
         } catch (IOException ignored) {
         }
         start(null, null);
+    }
+
+    public static void openPrefsPanel() {
+        PrefsWindow.showDialog();
     }
 
     private static void setReplacementPath() {
