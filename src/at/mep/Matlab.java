@@ -26,6 +26,7 @@ public class Matlab {
     public static final double R2016b = 9.1;
     public static final double R2017a = 9.2;
     public static final double R2017b = 9.3;
+    public static final double R2018a = 9.4;
 
     private static Matlab INSTANCE = null;
 
