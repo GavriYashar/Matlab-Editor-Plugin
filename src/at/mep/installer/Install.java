@@ -80,6 +80,15 @@ public class Install {
             throw new IOException(e.toString());
         }
     }
+    
+    public static File getRecentlyClosedLastSessions() throws IOException {
+        try {
+            String folder = new File(Install.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent();
+            return new File(folder + "/RecentlyClosedLS.properties");
+        } catch (URISyntaxException e) {
+            throw new IOException(e.toString());
+        }
+    }
 
     public static void appendJCPT(File javaClassPathText, String s) throws IOException {
         FileUtils.appendFileText(javaClassPathText, s);
