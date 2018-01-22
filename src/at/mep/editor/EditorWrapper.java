@@ -482,7 +482,6 @@ public class EditorWrapper {
     public static void insertTextAtPos(Editor editor, String string, int pos) {
         EditorWrapper.setCaretPosition(editor, pos);
         editor.insertTextAtCaret(string);
-
     }
 
     /** will return all [ [start, stop], [start, stop] ...] positions of text found by expr */
@@ -790,6 +789,16 @@ public class EditorWrapper {
             return LiveEditorWrapper.getShortName();
         }
         return EditorWrapper.getShortName(gae());
+    }
+
+    public static int getCaretPosition() {
+        return EditorWrapper.getCaretPosition(gae());
+    }
+
+    public static void insertTextAtPos(String string, int pos) {
+        Editor editor = gae();
+        EditorWrapper.setCaretPosition(gae(), pos);
+        editor.insertTextAtCaret(string);
     }
 
     public static String getSelectedTxt() {
