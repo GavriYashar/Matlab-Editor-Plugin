@@ -15,14 +15,20 @@ import java.util.regex.Pattern;
 
 /** Created by Andreas Justin on 2016-09-06. */
 public class MEPR {
-    public static final Pattern actionPattern = Pattern.compile("%\\w+(\\([\\w\\.,]+\\))?");
+    /** defines a pattern so that %someMEPR('input')% works. Valid input characters are: \w+ . , ' " */
+    public static final Pattern actionPattern = Pattern.compile("%\\w+(\\([\\w\\.,'\"]+\\))?");
+
+    /** defines MEPR Comment Block pattern */
     public static final Pattern commentPatternBegin = Pattern.compile("%%.*MEPRBEGIN");
     public static final Pattern commentPatternEnd = Pattern.compile("%%.*MEPREND");
+
+    /** defines MEPR Function Handle Block pattern */
     public static final Pattern funcHandlPatternBegin = Pattern.compile("%%.*FUNCHANDLEBEGIN");
     public static final Pattern funcHandlPatternEnd = Pattern.compile("%%.*FUNCHANDLEEND");
     public static final Pattern funcHandlVar = Pattern.compile("\\$\\w+\\$");
     public static final Pattern funcHandlFunc = Pattern.compile("\\$\\{@[^${]+\\}\\$");
     public static final Pattern variablePattern = Pattern.compile("\\$\\{[^}]+\\}");
+    
     private static final MEPR INSTANCE = new MEPR();
     private static File repPath = new File(Settings.getProperty("path.mepr.rep"));
     private static File varPath = new File(Settings.getProperty("path.mepr.var"));
