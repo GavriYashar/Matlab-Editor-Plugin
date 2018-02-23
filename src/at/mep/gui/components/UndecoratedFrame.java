@@ -18,6 +18,7 @@ public class UndecoratedFrame extends JFrame {
         }
     };
 
+    private boolean hideWhenFocusLost = true;
     public final WindowFocusListener focusLostHide = new WindowFocusListener() {
         @Override
         public void windowGainedFocus(WindowEvent e) {
@@ -25,7 +26,9 @@ public class UndecoratedFrame extends JFrame {
 
         @Override
         public void windowLostFocus(WindowEvent e) {
-            setVisible(false);
+            if (hideWhenFocusLost){
+                setVisible(false);
+            }
         }
     };
     private Point initialClick;
@@ -115,5 +118,9 @@ public class UndecoratedFrame extends JFrame {
             g.setColor(getBackground().darker());
             g.fillPolygon(x, y, x.length);
         }
+    }
+
+    public void hideWhenFocusLost(boolean bool) {
+        hideWhenFocusLost = bool;
     }
 }

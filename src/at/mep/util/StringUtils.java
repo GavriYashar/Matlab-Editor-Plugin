@@ -4,6 +4,10 @@ package at.mep.util;
 public class StringUtils {
     private static final int WRONG_INDEX = -1;
 
+    public static String capitalizeStart(final String string) {
+        return string.length() == 0 ? string : string.substring(0, 1).toUpperCase() + string.substring(1);
+    }
+
     public static String stripEnd(final String string, final String strip) {
         int end = string.length();
         if (end == 0) return string;
