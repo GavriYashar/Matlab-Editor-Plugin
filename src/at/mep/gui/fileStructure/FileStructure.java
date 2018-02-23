@@ -41,6 +41,7 @@ public class FileStructure extends UndecoratedFrame {
     private static JRadioButton classes = new JRadioButton("Class", false);
     private static JCheckBox regex = new JCheckBox("<html>regex <font color=#8F8F8F>(CTRL + R)</font></html>");
     private static JCheckBox inherited = new JCheckBox("<html>inherited <font color=#8F8F8F>(CTRL + F12)</font></html>");
+    private static CMGenerate contextMenu = new CMGenerate();
     private JTreeFilter jTree;
     private AbstractAction enterAction = new AbstractAction() {
         @Override
@@ -254,8 +255,30 @@ public class FileStructure extends UndecoratedFrame {
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
-                if (e.getClickCount() > 1) {
+                if (e.getClickCount() > 1 && e.getButton() == 1) {
                     enterAction.actionPerformed(new ActionEvent(e, 0, null));
+                    hideWhenFocusLost(true);
+                }
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    // right click
+
+                    if (jTree.getSelectionPath() == null) {
+                        jTree.setSelectionRow(jTree.getRowForLocation(e.getX(), e.getY()));
+                    }
+
+                    NodeFS nodeFS = (NodeFS) jTree.getSelectionPath().getLastPathComponent();
+                    if (nodeFS.hasNode()) {
+                        if (nodeFS.isInherited() || !nodeFS.isProperty()) {
+                            return;
+                        }
+
+                        // TODO: nodeFS should have a method to just get the node itself so finding space is not necessary
+                        String property = nodeFS.nodeText();
+                        property = property.substring(0,property.indexOf(' '));
+                        contextMenu.modifyProperty(property);
+                        contextMenu.show(jTree, e.getX(), e.getY());
+                        hideWhenFocusLost(false);
+                    }
                 }
             }
         });
@@ -276,6 +299,7 @@ public class FileStructure extends UndecoratedFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 enterAction.actionPerformed(new ActionEvent(e, 0, null));
+                hideWhenFocusLost(true);
             }
         });
 
