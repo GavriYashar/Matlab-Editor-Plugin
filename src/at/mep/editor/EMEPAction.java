@@ -119,6 +119,22 @@ public enum EMEPAction {
         }
     }),
 
+    MEP_MOVE_CURRENT_LINE_UP(new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!Settings.getPropertyBoolean("feature.enableLineMovement")) return;
+            doMoveLineUp();
+        }
+    }),
+
+    MEP_MOVE_CURRENT_LINE_DOWN(new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!Settings.getPropertyBoolean("feature.enableLineMovement")) return;
+            doMoveLineDown();
+        }
+    }),
+
     MEP_MEPR_INSERT(new AbstractAction("MEP_MEPR_INSERT") {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -133,7 +149,8 @@ public enum EMEPAction {
             if (!Settings.getPropertyBoolean("feature.enableReplacements")) return;
             MEPRViewer.getInstance().quickSearch();
         }
-    });
+    })
+    ;
 
 
     private final AbstractAction action;
@@ -222,5 +239,13 @@ public enum EMEPAction {
             return;
         }
         action.actionPerformed(new ActionEvent(editorSyntaxTextPane, 0, null));
+    }
+
+    private static void doMoveLineUp() {
+        EditorWrapper.moveCurrentLinesUp(EditorWrapper.getActiveEditor());
+    }
+
+    private static void doMoveLineDown() {
+        EditorWrapper.moveCurrentLinesDown(EditorWrapper.getActiveEditor());
     }
 }

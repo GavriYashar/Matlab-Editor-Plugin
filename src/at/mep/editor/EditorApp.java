@@ -346,6 +346,12 @@ public class EditorApp {
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getDuplicateLine(), "MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION");
         editorSyntaxTextPane.getActionMap().put("MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION", EMEPAction.MEP_DUPLICATE_CURRENT_LINE_OR_SELECTION.getAction());
 
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getMoveLineUp(), "MEP_MOVE_CURRENT_LINE_UP");
+        editorSyntaxTextPane.getActionMap().put("MEP_MOVE_CURRENT_LINE_UP", EMEPAction.MEP_MOVE_CURRENT_LINE_UP.getAction());
+
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getMoveLineDown(), "MEP_MOVE_CURRENT_LINE_DOWN");
+        editorSyntaxTextPane.getActionMap().put("MEP_MOVE_CURRENT_LINE_DOWN", EMEPAction.MEP_MOVE_CURRENT_LINE_DOWN.getAction());
+
         // FILE STRUCTURE
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getFileStructure(), "MEP_SHOW_FILE_STRUCTURE");
         editorSyntaxTextPane.getActionMap().put("MEP_SHOW_FILE_STRUCTURE", EMEPAction.MEP_SHOW_FILE_STRUCTURE.getAction());
