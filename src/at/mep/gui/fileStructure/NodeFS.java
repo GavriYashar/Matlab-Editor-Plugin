@@ -305,8 +305,21 @@ public class NodeFS extends DefaultMutableTreeNode {
 
         populateProperties(root, classDef.getProperties(), null,"");
         populateMethods(root, classDef.getMethod(), null, "");
+        populateUtilityFunctions(root, classDef.getUtilityFunctions(), null, "");
 
         return root;
+    }
+
+    private static void populateUtilityFunctions(NodeFS root, List<MFile.ClassDef.Method.Function> functionList, File file, String suffix) {
+        for (MFile.ClassDef.Method.Function function : functionList) {
+            NodeFS nodeFS = new NodeFS();
+            nodeFS.node = function.getNode();
+            nodeFS.nodeText = function.getFunctionString() + suffix;
+            nodeFS.nodeType = MTree.NodeType.FUNCTION;
+            nodeFS.file = file;
+            // TODO: What attributes do utility function have?
+            root.add(nodeFS);
+        }
     }
 
     private static void populateMethods(NodeFS root, List<MFile.ClassDef.Method> methodList, File file, String suffix) {

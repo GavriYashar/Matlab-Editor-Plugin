@@ -389,8 +389,13 @@ public class MFile {
         /** list of properties for class */
         private List<Properties> properties = new ArrayList<>(0);
 
-        /** lsit of methods for class */
+        /** list of methods for class */
         private List<Method> method = new ArrayList<>(0);
+
+        /** list of "Class-Related Functions"
+         * https://de.mathworks.com/help/matlab/matlab_oop/specifying-methods-and-functions.html
+         */
+        private List<Method.Function> utilityFunctions = new ArrayList<>(0);
 
         private ClassDef() {
         }
@@ -425,6 +430,10 @@ public class MFile {
 
         public List<Method> getMethod() {
             return method;
+        }
+
+        public List<Method.Function> getUtilityFunctions() {
+            return utilityFunctions;
         }
 
         public List<MTree.Node> getSuperclasses() {
@@ -509,6 +518,9 @@ public class MFile {
                 }
 
                 classDef.attributes = Attributes.construct(node.getLeft().getLeft().getListOfNextNodes());
+
+                List<MTree.Node> uf = TreeUtilsV2.findNode(mtnClassDef.get(0).getListOfNextNodes(), MTree.NodeType.FUNCTION);
+                classDef.utilityFunctions = Method.Function.construct(uf);
 
                 List<MTree.Node> pn = TreeUtilsV2.findNode(mtnClassDef.get(0).getRight().getListOfNextNodes(), MTree.NodeType.PROPERTIES);
                 classDef.properties = Properties.construct(pn);
