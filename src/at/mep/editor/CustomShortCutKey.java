@@ -11,6 +11,8 @@ public class CustomShortCutKey {
     private static KeyStroke COPY_SELECTED_TEXT;
     private static KeyStroke CLIPBOARD_STACK;
     private static KeyStroke DUPLICATE_LINE;
+    private static KeyStroke MOVE_LINE_UP;
+    private static KeyStroke MOVE_LINE_DOWN;
     private static KeyStroke DELETE_LINES;
     private static KeyStroke LIVE_TEMPLATE_VIEWER;
     private static KeyStroke EXECUTE_CURRENT_LINES;
@@ -26,6 +28,8 @@ public class CustomShortCutKey {
         COPY_SELECTED_TEXT = Settings.getPropertyKeyStroke("kb.copySelectedText");
         CLIPBOARD_STACK = Settings.getPropertyKeyStroke("kb.clipboardStack");
         DUPLICATE_LINE = Settings.getPropertyKeyStroke("kb.duplicateLine");
+        MOVE_LINE_UP = Settings.getPropertyKeyStroke("kb.moveLineUp");
+        MOVE_LINE_DOWN = Settings.getPropertyKeyStroke("kb.moveLineDown");
         DELETE_LINES = Settings.getPropertyKeyStroke("kb.deleteLines");
         LIVE_TEMPLATE_VIEWER = Settings.getPropertyKeyStroke("kb.liveTemplateViewer");
         EXECUTE_CURRENT_LINES = Settings.getPropertyKeyStroke("kb.executeCurrentLine");
@@ -49,6 +53,14 @@ public class CustomShortCutKey {
 
     public static KeyStroke getDuplicateLine() {
         return DUPLICATE_LINE;
+    }
+
+    public static KeyStroke getMoveLineUp() {
+        return MOVE_LINE_UP;
+    }
+
+    public static KeyStroke getMoveLineDown() {
+        return MOVE_LINE_DOWN;
     }
 
     public static KeyStroke getDeleteLines() {
