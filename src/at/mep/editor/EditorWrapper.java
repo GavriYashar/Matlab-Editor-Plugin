@@ -473,6 +473,15 @@ public class EditorWrapper {
         editor.goToPositionAndHighlight(pos, pos);
     }
 
+    public static int numberOfLines(Editor editor) {
+        String[] strings = EditorWrapper.getTextArrayFast(editor);
+        return strings.length;
+    }
+
+    public static boolean isLastLine(Editor editor, int line) {
+        return line == EditorWrapper.numberOfLines(editor);
+    }
+
     /** selects given line of given editor */
     public static void selectLine(Editor editor, int line) {
         EditorWrapper.goToLine(editor, line, true);
@@ -552,9 +561,17 @@ public class EditorWrapper {
 
     /** returns current line index of caret of given editor */
     public static int[] getCurrentLinesStartEnd(Editor editor) {
-        int[] lcS = EditorWrapper.pos2lc(editor, EditorWrapper.getSelectionPositionStart(editor));
-        int[] lcE = EditorWrapper.pos2lc(editor, EditorWrapper.getSelectionPositionEnd(editor));
-        return new int[] {lcS[0], lcE[0]};
+        return new int[] {getCurrentLinesStart(editor), getCurrentLinesEnd(editor)};
+    }
+
+    public static int getCurrentLinesStart(Editor editor) {
+        int[] lc = EditorWrapper.pos2lc(editor, EditorWrapper.getSelectionPositionStart(editor));
+        return lc[0];
+    }
+
+    public static int getCurrentLinesEnd(Editor editor) {
+        int[] lc = EditorWrapper.pos2lc(editor, EditorWrapper.getSelectionPositionEnd(editor));
+        return lc[0];
     }
 
     /** returns text of current line of given editor */
@@ -604,7 +621,6 @@ public class EditorWrapper {
             EditorWrapper.setSelectedTxt(editor, selectedText);
             EditorWrapper.setSelectionPosition(editor, se[1], se[1] + se[1] - se[0]);
         }
-
     }
 
     /** duplicates current line of given editor */
@@ -621,16 +637,89 @@ public class EditorWrapper {
         EditorWrapper.goToLine(editor, line + 1, false);
     }
 
+    /**  moves current lines one line up */
+    public static void moveCurrentLinesUp(Editor editor) {
+        // move line above below selected lines
+        int[] se = EditorWrapper.getCurrentLinesStartEnd(editor);
+        int lineAbove = se[0] - 1;
+        if (lineAbove < 1) return;
+        String[] strings = EditorWrapper.getTextArrayFast(editor);
+        int anzStrings = se[1] - se[0] + 1 + 1;
+        List<String> strings2Insert = new ArrayList<>(anzStrings);
+        for (int i = 0; i < anzStrings; i++) {
+            strings2Insert.add(i, strings[lineAbove-1 + i]);
+        }
+        strings2Insert.add(strings2Insert.remove(0));
+
+        // replace new ordered text
+        int posS = EditorWrapper.lc2pos(editor, lineAbove, 0);
+        int posE = EditorWrapper.lc2pos(editor,lineAbove + anzStrings - 1, Integer.MAX_VALUE) + 1;
+        EditorWrapper.setSelectionPosition(editor, posS, posE);
+        EditorWrapper.setSelectedTxt(editor, String.join("", strings2Insert));
+
+        // select same lines as before
+        posS = EditorWrapper.lc2pos(editor, lineAbove, 0);
+        posE = EditorWrapper.lc2pos(editor,lineAbove + anzStrings - 2, Integer.MAX_VALUE);
+        EditorWrapper.setSelectionPosition(editor, posS, posE);
+    }
+
+    /**  moves current lines one line down */
+    public static void moveCurrentLinesDown(Editor editor) {
+        // move line below above selected lines
+        int[] se = EditorWrapper.getCurrentLinesStartEnd(editor);
+        int lineBelow = se[1] + 1;
+        if (lineBelow > EditorWrapper.numberOfLines(editor)) return;
+        String[] strings = EditorWrapper.getTextArrayFast(editor);
+        int anzStrings = se[1] - se[0] + 1 + 1;
+        List<String> strings2Insert = new ArrayList<>(anzStrings);
+        for (int i = 0; i < anzStrings; i++) {
+            strings2Insert.add(i, strings[se[0] - 1 + i]);
+        }
+        strings2Insert.add(0, strings2Insert.remove(strings2Insert.size()-1));
+
+        // replace new ordered text
+        int posS = EditorWrapper.lc2pos(editor, se[0], 0);
+        int posE = EditorWrapper.lc2pos(editor,se[0] + anzStrings - 1, Integer.MAX_VALUE) + 1;
+        EditorWrapper.setSelectionPosition(editor, posS, posE);
+        EditorWrapper.setSelectedTxt(editor, String.join("", strings2Insert));
+
+        // select same lines as before
+        posS = EditorWrapper.lc2pos(editor, se[0]+1, 0);
+        posE = EditorWrapper.lc2pos(editor,se[0]+1 + anzStrings - 2, Integer.MAX_VALUE);
+        EditorWrapper.setSelectionPosition(editor, posS, posE);
+    }
+
+
     /** returns text of entire line of given editor */
     public static String getTextByLine(Editor editor, int line) {
-        String[] strings;
-        if (editor == gae()) {
-            strings = getActiveEditorTextArray();
-        } else {
-            strings = EditorWrapper.getTextArray(editor);
-        }
+        String[] strings = EditorWrapper.getTextArrayFast(editor);
         if (line - 1 >= strings.length) return "";
         return strings[line - 1];
+    }
+
+    /** cuts out text of given line, removing this line completely (incl \n) */
+    public static String cutTextByLine(Editor editor, int line) {
+        // cut entire line.
+        // consider first last and single (first and last) line.
+        //   first: remove \n at after
+        //    last: remove \n at before
+        //  single: remove w/o \n
+        //  others: whatever
+        String string = getTextByLine(editor, line);
+        if (string.length() < 1) return string;
+
+        if (line >= 1 && line < EditorWrapper.numberOfLines(editor)) {
+            // considers first and others
+            editor.replaceText("", EditorWrapper.lc2pos(editor, line, 0), EditorWrapper.lc2pos(editor, line, Integer.MAX_VALUE) + 1);
+        } else if (line > 1 && line == EditorWrapper.numberOfLines(editor)) {
+            // considers last
+            editor.replaceText("", EditorWrapper.lc2pos(editor, line, 0) - 1, EditorWrapper.lc2pos(editor, line, Integer.MAX_VALUE));
+        } else {
+            // considers single
+            editor.replaceText("", EditorWrapper.lc2pos(editor, line, 0), EditorWrapper.lc2pos(editor, line, Integer.MAX_VALUE));
+        }
+
+        return string;
     }
 
     /** returns String[] of lines as int[] of given editor */
@@ -781,6 +870,14 @@ public class EditorWrapper {
 
     public static int[] getCurrentLinesStartEnd() {
         return EditorWrapper.getCurrentLinesStartEnd(gae());
+    }
+
+    public static int getCurrentLinesStart() {
+        return EditorWrapper.getCurrentLinesStart(gae());
+    }
+
+    public static int getCurrentLinesEnd() {
+        return EditorWrapper.getCurrentLinesEnd(gae());
     }
 
     public static String getCurrentLineText() {

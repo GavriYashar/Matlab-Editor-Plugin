@@ -242,10 +242,10 @@ public enum EMEPAction {
     }
 
     private static void doMoveLineUp() {
-        Debug.assignObjectToMatlab("currentlines", EditorWrapper.getCurrentLinesStartEnd());
+        EditorWrapper.moveCurrentLinesUp(EditorWrapper.getActiveEditor());
     }
 
     private static void doMoveLineDown() {
-        Debug.assignObjectToMatlab("currentlines", EditorWrapper.getCurrentLinesStartEnd());
+        EditorWrapper.moveCurrentLinesDown(EditorWrapper.getActiveEditor());
     }
 }
