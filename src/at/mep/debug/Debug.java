@@ -34,18 +34,22 @@ public class Debug {
         BreakpointMargin bpm = ea.getActiveEditor().getBreakpointMargin();
         ExecutionArrowDisplay ead = (ExecutionArrowDisplay) ea.getActiveEditor().getExecutionArrowMargin();
 
-        try {
-            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "mTree", mTree);
-            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "mfile", MFile.construct(EditorWrapper.getActiveEditor()));
-            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "commentTree", commentTree);
-            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "functionTree", functionTree);
-            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "methodsTree", methodsTree);
-            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "breakpointMargin", bpm);
-            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "executionArrowDisplay", ead);
-            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "mlDesktop", Matlab.getInstance().getMlDesktop());
+        assignObjectToMatlab("mTree", mTree);
+        assignObjectToMatlab("mfile", MFile.construct(EditorWrapper.getActiveEditor()));
+        assignObjectToMatlab("commentTree", commentTree);
+        assignObjectToMatlab("functionTree", functionTree);
+        assignObjectToMatlab("methodsTree", methodsTree);
+        assignObjectToMatlab("breakpointMargin", bpm);
+        assignObjectToMatlab("executionArrowDisplay", ead);
+        assignObjectToMatlab("mlDesktop", Matlab.getInstance().getMlDesktop());
 
-            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorApp", ea);
-            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "bookmarks", Bookmarks.getInstance());
+        assignObjectToMatlab("editorApp", ea);
+        assignObjectToMatlab("bookmarks", Bookmarks.getInstance());
+    }
+
+    public static void assignObjectToMatlab(String variableName, Object o) {
+        try {
+            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", variableName, o);
         } catch (MatlabInvocationException ignored) {
         }
     }
