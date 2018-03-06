@@ -550,6 +550,13 @@ public class EditorWrapper {
         return lc[0];
     }
 
+    /** returns current line index of caret of given editor */
+    public static int[] getCurrentLinesStartEnd(Editor editor) {
+        int[] lcS = EditorWrapper.pos2lc(editor, EditorWrapper.getSelectionPositionStart(editor));
+        int[] lcE = EditorWrapper.pos2lc(editor, EditorWrapper.getSelectionPositionEnd(editor));
+        return new int[] {lcS[0], lcE[0]};
+    }
+
     /** returns text of current line of given editor */
     public static String getCurrentLineText(Editor editor) {
         return EditorWrapper.getTextByLine(editor, EditorWrapper.getCurrentLine(editor));
@@ -770,6 +777,10 @@ public class EditorWrapper {
 
     public static int getCurrentLine() {
         return EditorWrapper.getCurrentLine(gae());
+    }
+
+    public static int[] getCurrentLinesStartEnd() {
+        return EditorWrapper.getCurrentLinesStartEnd(gae());
     }
 
     public static String getCurrentLineText() {
