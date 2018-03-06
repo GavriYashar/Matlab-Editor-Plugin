@@ -639,16 +639,22 @@ public class EditorWrapper {
 
     /**  moves current lines one line up */
     public static void moveCurrentLinesUp(Editor editor) {
-        // move line above below selected lines
+        // teh general idea is to move the line above below selected lines
+
+        // get line above
         int[] se = EditorWrapper.getCurrentLinesStartEnd(editor);
         int lineAbove = se[0] - 1;
         if (lineAbove < 1) return;
+
+        // get lines to move
         String[] strings = EditorWrapper.getTextArrayFast(editor);
         int anzStrings = se[1] - se[0] + 1 + 1;
         List<String> strings2Insert = new ArrayList<>(anzStrings);
         for (int i = 0; i < anzStrings; i++) {
             strings2Insert.add(i, strings[lineAbove-1 + i]);
         }
+
+        // move line above below others
         strings2Insert.add(strings2Insert.remove(0));
 
         // replace new ordered text
@@ -665,16 +671,22 @@ public class EditorWrapper {
 
     /**  moves current lines one line down */
     public static void moveCurrentLinesDown(Editor editor) {
-        // move line below above selected lines
+        // the general idea is to move the line below above selected lines
+
+        // get line below
         int[] se = EditorWrapper.getCurrentLinesStartEnd(editor);
         int lineBelow = se[1] + 1;
         if (lineBelow > EditorWrapper.numberOfLines(editor)) return;
+
+        // get lines to move
         String[] strings = EditorWrapper.getTextArrayFast(editor);
         int anzStrings = se[1] - se[0] + 1 + 1;
         List<String> strings2Insert = new ArrayList<>(anzStrings);
         for (int i = 0; i < anzStrings; i++) {
             strings2Insert.add(i, strings[se[0] - 1 + i]);
         }
+
+        // move line below before others
         strings2Insert.add(0, strings2Insert.remove(strings2Insert.size()-1));
 
         // replace new ordered text
@@ -688,7 +700,6 @@ public class EditorWrapper {
         posE = EditorWrapper.lc2pos(editor,se[0]+1 + anzStrings - 2, Integer.MAX_VALUE);
         EditorWrapper.setSelectionPosition(editor, posS, posE);
     }
-
 
     /** returns text of entire line of given editor */
     public static String getTextByLine(Editor editor, int line) {
