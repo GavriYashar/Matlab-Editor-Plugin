@@ -20,7 +20,7 @@ public class UtilTest {
         https://stackoverflow.com/questions/14596599/run-command-prompt-as-administrator
 
         https://stackoverflow.com/questions/16316950/java-junit-how-to-test-if-an-external-program-process-application-is-running
-         */
+        */
 
         String exeH = "G:\\Program Files\\MATLAB\\R2016b\\bin\\matlab.exe";
         String exeW = "D:\\Programme\\Matlab\\R2017a\\bin\\matlab.exe";
