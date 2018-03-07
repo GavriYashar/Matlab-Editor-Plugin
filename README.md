@@ -11,6 +11,8 @@ In short, it will mess around with Matlabs Editor:
 * **[BookmarkViewer](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#bookmarks)**: opened via <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>F2</kbd> View all bookmarks in every opened and closed editor. Stored and restored after closing and reopening an editor or Matlab
 * **[Duplicate line](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#duplicate-or-remove-current-line)**:  <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>D</kbd>
 * **[Delete line](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#duplicate-or-remove-current-line)**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>Y</kbd>
+* **[Moving current lines up](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#moving-current-lines-up-or-down)**: <kbd>ALT</kbd> + <kbd>SHIFT</kbd> + <kbd>ARROW UP</kbd>
+* **[Moving current lines down](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#moving-current-lines-up-or-down)**: <kbd>ALT</kbd> + <kbd>SHIFT</kbd> + <kbd>ARROW DOWN</kbd>
 * **[LiveTemplatesViewer](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Live-Templates)**: <kbd>ALT</kbd> + <kbd>INSERT</kbd> view all created livetemplates
 * **[Quicksearch Templates](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Live-Templates#quick-search)**: <kbd>CTRL</kbd> + <kbd>SPACE</kbd> quick searches live templates when writing an command (`%MYTEMPL` + <kbd>CTRL</kbd> + <kbd>SPACE</kbd> = `%MYTEMPLATE`)
 * **[Execute Current Line](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#execute-current-lines)**: <kbd>SHIFT</kbd> + <kbd>F9</kbd>
