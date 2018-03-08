@@ -2,6 +2,7 @@ package at.mep.editor;
 
 import at.mep.gui.fileStructure.NodeFS;
 import at.mep.util.ComponentUtil;
+import at.mep.util.FileUtils;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.mde.editor.EditorSyntaxTextPane;
 import com.mathworks.mde.editor.EditorView;
@@ -248,16 +249,7 @@ public class EditorWrapper {
 
     /** returns full class name of given editor, if MFile is a class, otherwise just the filename will be returned */
     public static String getFullQualifiedClass(Editor editor) {
-        String lName = EditorWrapper.getLongName(editor);
-        lName = lName.replace("\\", ".");
-        lName = lName.replace("/", ".");
-        int start = lName.indexOf("+");
-        if (start < 0) {
-            start = lName.indexOf(EditorWrapper.getShortName(editor));
-        }
-        lName = lName.substring(start);
-        lName = lName.replace("+", "");
-        return lName.substring(0, lName.length() - 2);
+        return FileUtils.fullyQualifiedName(EditorWrapper.getFile(editor));
     }
 
     public static InputMap getInputMap(Editor editor) {

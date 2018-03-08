@@ -18,6 +18,20 @@ import java.util.regex.Pattern;
 /** Created by Andreas Justin on 2016-08-23. */
 public class FileUtils {
 
+    public static String fullyQualifiedName(File file) {
+        String lName = file.getAbsolutePath();
+        int start = lName.indexOf("+");
+        if (start < 0) {
+            start = lName.lastIndexOf("\\");
+        }
+        if (start < 0) {
+            start = 0;
+        }
+        lName = lName.substring(start+1);
+        lName = lName.replace("\\", ".");
+        return lName.substring(0, lName.length() - 2);
+    }
+
     public static void copyFile(File source, File target) {
         copyFile(source.toPath(), target.toPath());
     }
@@ -99,6 +113,12 @@ public class FileUtils {
         Writer writer = new BufferedWriter(new FileWriter(source, true));
         writer.append(System.lineSeparator());
         writer.append(s);
+        writer.close();
+    }
+
+    public static void writeFileText(File source, String s) throws IOException {
+        Writer writer = new BufferedWriter(new FileWriter(source, true));
+        writer.write(s);
         writer.close();
     }
 
