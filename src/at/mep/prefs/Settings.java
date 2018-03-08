@@ -1,6 +1,7 @@
 package at.mep.prefs;
 
 import at.mep.debug.Debug;
+import at.mep.installer.Install;
 import at.mep.util.ColorUtils;
 import at.mep.util.KeyStrokeUtil;
 import com.mathworks.services.Prefs;
@@ -249,6 +250,32 @@ public class Settings {
 
     public static KeyStroke getPropertyKeyStroke(String key) {
         return KeyStrokeUtil.getKeyStroke(getProperty(key));
+    }
+
+    public static File getUserDirectory() {
+        String userDirectory = Settings.getProperty("user.directory");
+        File file = new File(userDirectory).getParentFile();
+        switch (userDirectory) {
+            case ("$MEPJar"): {
+                try {
+                    file = new File(Install.getJarFile().getParent());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case ("$CustomProps"): {
+                file = new File(customSettingsName).getParentFile();
+                break;
+            }
+            case ("$APPDATA"): {
+                break;
+            }
+            case ("$PREFDIR"): {
+                break;
+            }
+        }
+        return file;
     }
 }
 
