@@ -467,7 +467,7 @@ public class MFile {
             List<String> whichList = new ArrayList<>(5);
             try {
                 for (MTree.Node node : superclasses) {
-                    whichList.addAll(Matlab.which(node.getText()));
+                    whichList.addAll(Matlab.whichString(node.getText()));
                 }
             } catch (MatlabInvocationException e) {
                 e.printStackTrace();
