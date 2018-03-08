@@ -1,5 +1,6 @@
 package at.mep.installer;
 
+import at.mep.prefs.Settings;
 import at.mep.util.FileUtils;
 
 import javax.swing.*;
@@ -73,21 +74,13 @@ public class Install {
     }
 
     public static File getBookmarks() throws IOException {
-        try {
-            String folder = new File(Install.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent();
-            return new File(folder + "/Bookmarks.properties");
-        } catch (URISyntaxException e) {
-            throw new IOException(e.toString());
-        }
+        String folder = Settings.getUserDirectory().getName();
+        return new File(folder + "/Bookmarks.properties");
     }
     
     public static File getRecentlyClosedLastSessions() throws IOException {
-        try {
-            String folder = new File(Install.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent();
-            return new File(folder + "/RecentlyClosedLS.properties");
-        } catch (URISyntaxException e) {
-            throw new IOException(e.toString());
-        }
+        String folder = Settings.getUserDirectory().getName();
+        return new File(folder + "/RecentlyClosedLS.properties");
     }
 
     public static void appendJCPT(File javaClassPathText, String s) throws IOException {
