@@ -28,8 +28,10 @@ public class FileUtils {
             start = 0;
         }
         lName = lName.substring(start+1);
+        lName = lName.substring(0, lName.length() - 2);
         lName = lName.replace("\\", ".");
-        return lName.substring(0, lName.length() - 2);
+        lName = lName.replace("+", "");
+        return lName;
     }
 
     public static void copyFile(File source, File target) {
