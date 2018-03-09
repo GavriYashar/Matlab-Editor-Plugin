@@ -74,12 +74,12 @@ public class Install {
     }
 
     public static File getBookmarks() throws IOException {
-        String folder = Settings.getUserDirectory().getName();
+        String folder = Settings.getUserDirectory().getAbsolutePath();
         return new File(folder + "/Bookmarks.properties");
     }
     
     public static File getRecentlyClosedLastSessions() throws IOException {
-        String folder = Settings.getUserDirectory().getName();
+        String folder = Settings.getUserDirectory().getAbsolutePath();
         return new File(folder + "/RecentlyClosedLS.properties");
     }
 
