@@ -10,8 +10,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 
+
+/**
+ * This class should remove the necessity to call matlabs "which" function.
+ *
+ * Builds an index on first creation of classfiles ("+" in path).
+ * This index will be stored in Settings.getUserDirectory().
+ *
+ * update will be called on startup (after load).
+ *
+ * which will return files found in index.
+ * if a file is not found in index matlab's "which" will be called and teh return value will be stored in this index.
+ * if a file is not existing anymore in index, it will be removed from index and matlab's which will be called instead.
+ *
+ */
 public class MPath {
     private static final int INITIAL_CAPACITY = 100000;
     private static final MPath INSTANCE = new MPath();
@@ -39,26 +52,35 @@ public class MPath {
         load();
     }
 
+    /** which will return files found in index.
+     * if a file is not found in index matlab's "which" will be called and teh return value will be stored in this index.
+     * if a file is not existing anymore in index, it will be removed from index and matlab's which will be called instead.
+     */
     public List<File> which(String name) throws MatlabInvocationException {
         List<File> files = which_INDEX(name);
         if (files.size() == 0) {
-            List<String> strings = which_EVAL(name);
-            for (String string : strings) {
-                files.add(new File(string));
-            }
+            files.addAll(which_EVAL(name));
         }
         return files;
     }
 
-    private List<String> which_EVAL(String name) throws MatlabInvocationException {
-        List<String> files = new ArrayList<>(1);
+    /** Calls matlabs which function and will update index if necessary */
+    private List<File> which_EVAL(String name) throws MatlabInvocationException {
+        List<File> files = new ArrayList<>(1);
         String cmd = "MEP_WHICH = which('" + name + "','-all');";
         Matlab.getInstance().proxyHolder.get().eval(cmd);
         String[] which = (String[]) Matlab.getInstance().proxyHolder.get().getVariable("MEP_WHICH");
         Matlab.getInstance().proxyHolder.get().eval("clear MEP_WHICH");
+        for (String string : which) {
+            File file = new File(string);
+            files.add(file);
+            add(file);
+        }
+        store();
         return files;
     }
 
+    /** returns file if it is in index and valid otherwise it will return an array of length 0, and will remove non existing files */
     private List<File> which_INDEX(String name) {
         List<File> files = new ArrayList<>(1);
         for (int i = 0; i < mStringShort.size(); i++) {
@@ -66,10 +88,15 @@ public class MPath {
                 files.add(indexFiles.get(i));
             }
         }
+        for (File file : files) {
+            if (file.exists()) continue;
+            remove(file);
+            files.remove(file);
+        }
         return files;
     }
 
-
+    /** stores index in ascii format in Settings.getUserDirectory */
     public void store() {
         StringBuilder sbPaths = new StringBuilder(indexPath.size() * 50);
         for (String path : indexPath) {
@@ -133,7 +160,6 @@ public class MPath {
         mStringShort = new ArrayList<>(INITIAL_CAPACITY);
 
         update();
-        store();
     }
 
     /** adds only not added files from matlab search path to index */
@@ -149,22 +175,39 @@ public class MPath {
             indexPath.add(pathEntry.getDisplayValue());
             recursive(pathEntry.getCurrentlyResolvedPath());
         }
+        store();
         Matlab.getInstance().setStatusMessage("");
     }
 
-    private TreeSet<File> recursive(File file) {
-        File[] filesM = file.listFiles((dir, name) -> name.endsWith(".m"));
-        File[] filesD = file.listFiles(File::isDirectory);
-        TreeSet<File> files = new TreeSet<>();
-        for (File f : filesM) {
-            if (indexFiles.contains(f)) continue;
-            indexFiles.add(f);
-            mStringShort.add(FileUtils.fullyQualifiedName(f));
+    private void recursive(File file) {
+        // add class files
+        if (file.getAbsolutePath().contains("+")) {
+            File[] filesM = file.listFiles((dir, name) -> name.endsWith(".m"));
+            for (File f : filesM) {
+                add(f);
+            }
         }
+        
+        File[] filesD = file.listFiles(File::isDirectory);
         for (File f : filesD) {
             recursive(f);
         }
-        return files;
+    }
+
+    private void add(File file) {
+        if (indexFiles.contains(file)) return;
+        indexFiles.add(file);
+        mStringShort.add(FileUtils.fullyQualifiedName(file));
+    }
+
+    private void remove(File file) {
+        if (!indexFiles.contains(file)) return;
+        remove(indexFiles.indexOf(file));
+    }
+
+    private void remove(int i) {
+        indexFiles.remove(i);
+        mStringShort.remove(i);
     }
 
     public static MPath getInstance() {
