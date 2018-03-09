@@ -28,7 +28,13 @@ public class FileUtils {
             start = 0;
         }
         lName = lName.substring(start+1);
-        lName = lName.substring(0, lName.length() - 2);
+        if (lName.endsWith(".m")) {
+            // standard .m file
+            lName = lName.substring(0, lName.length() - 2);
+        } else if (lName.endsWith(")")) {
+            // builtin functions
+            lName = lName.substring(0, lName.length() - 1);
+        }
         lName = lName.replace("\\", ".");
         lName = lName.replace("+", "");
         return lName;
@@ -118,8 +124,9 @@ public class FileUtils {
         writer.close();
     }
 
+    /** writes and overwrites given string to file */
     public static void writeFileText(File source, String s) throws IOException {
-        Writer writer = new BufferedWriter(new FileWriter(source, true));
+        Writer writer = new FileWriter(source, false);
         writer.write(s);
         writer.close();
     }
