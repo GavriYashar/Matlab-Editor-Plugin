@@ -2,6 +2,7 @@ package at.mep.prefs;
 
 import at.mep.debug.Debug;
 import at.mep.installer.Install;
+import at.mep.path.EIndexingType;
 import at.mep.util.ColorUtils;
 import at.mep.util.KeyStrokeUtil;
 import com.mathworks.services.Prefs;
@@ -276,6 +277,10 @@ public class Settings {
             }
         }
         return file;
+    }
+
+    public static EIndexingType getFileIndexingType() {
+        return EIndexingType.valueOf(getProperty("path.indexingType"));
     }
 }
 
