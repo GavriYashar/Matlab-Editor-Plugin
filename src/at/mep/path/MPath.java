@@ -20,18 +20,17 @@ import java.util.List;
  * Builds an index on first creation of .m files depending on {@link EIndexingType}.
  * This index will be stored in Settings.getUserDirectory().
  *
- * update will be called on startup (after load).
+ * update cannot be done on startup, MatlabPath is not initialized at this state.
  *
- * which will return files found in index.
+ * "which" will return files found in index.
  * if a file is not found in index matlab's "which" will be called and the return value will be stored in this index.
- * if a file is not existing anymore in index, it will be removed from index and matlab's which will be called instead.
- *
+ * files not existing anymore on disk will be removed from index. Matlab's "which" will be called instead.
  */
 public class MPath {
     private static final int INITIAL_CAPACITY = 100000;
     private static final MPath INSTANCE = new MPath();
-    private static EIndexingType indexingType = EIndexingType.CLASSES;
-    private File mpIndexFile;
+    private static EIndexingType indexingType;
+    private static File indexStoredFile;
 
     /** all files that are visible in matlab */
     private List<File> indexFiles = new ArrayList<>(INITIAL_CAPACITY);
@@ -45,17 +44,25 @@ public class MPath {
     private List<String> mStringShort = new ArrayList<>(INITIAL_CAPACITY);
 
     private MPath() {
-        indexingType = Settings.getFileIndexingType();
-        if (indexingType == EIndexingType.NONE) {
+        if (getIndexingType() == EIndexingType.NONE) {
             return;
         }
-        File folder = Settings.getUserDirectory();
-        mpIndexFile = new File(folder + "/MPFile.index");
-        load();
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings("WeakerAccess")
+    public static File getIndexStoredFile() {
+        if (indexStoredFile == null) {
+            File folder = Settings.getUserDirectory();
+            indexStoredFile = new File(folder + "/MPFile.index");
+        }
+        return indexStoredFile;
+    }
+
+    @SuppressWarnings("WeakerAccess")
     public static EIndexingType getIndexingType() {
+        if (indexingType == null) {
+            indexingType = Settings.getFileIndexingType();
+        }
         return indexingType;
     }
 
@@ -64,13 +71,16 @@ public class MPath {
         MPath.indexingType = indexingType;
     }
 
-    /** which will return files found in index.
-     * if a file is not found in index matlab's "which" will be called and teh return value will be stored in this index.
-     * if a file is not existing anymore in index, it will be removed from index and matlab's which will be called instead.
+    /** "which" will return files found in index.
+     * if a file is not found in index matlab's "which" will be called instead and the return value will be stored in this index.
+     * files not existing anymore will be removed from index. Matlab's "which" will be called instead.
      */
     public List<File> which(String name) throws MatlabInvocationException {
         if (indexingType == EIndexingType.NONE) {
             return Matlab.which_EVAL(name);
+        }
+        if (indexFiles.size() == 0) {
+            reindexInBackground();
         }
         List<File> files = which_INDEX(name);
         if (Debug.isDebugEnabled()) {
@@ -137,18 +147,6 @@ public class MPath {
     }
 
     /** does a complete reindex of matlabs search paths*/
-    @SuppressWarnings("unused")
-    public void reIndexForeground() throws IllegalStateException {
-        if (indexingType == EIndexingType.NONE) return;
-
-        ifIsIndexingThrowError();
-        clearIndex();
-        if (indexingType == EIndexingType.DYNAMIC) {
-            return;
-        }
-        update();
-    }
-
     @SuppressWarnings("WeakerAccess")
     public void reindexInBackground() {
         if (indexingType == EIndexingType.NONE) return;
@@ -169,7 +167,7 @@ public class MPath {
         }
         for (MatlabPath.PathEntry pathEntry: pathEntries) {
             Matlab.getInstance().setStatusMessage(
-                    "busy indexing folders [" + pathEntries.indexOf(pathEntry) + "/" + pathEntries.size() + "]: "
+                    "indexing folders in background [" + pathEntries.indexOf(pathEntry) + "/" + pathEntries.size() + "]: "
                             + pathEntry.getDisplayValue());
 
             recursive(pathEntry.getCurrentlyResolvedPath());
@@ -230,7 +228,7 @@ public class MPath {
             sbFiles.append("\n");
         }
         try {
-            FileUtils.writeFileText(mpIndexFile, sbFiles.toString());
+            FileUtils.writeFileText(getIndexStoredFile(), sbFiles.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -242,16 +240,16 @@ public class MPath {
      */
     public void load() throws IllegalStateException {
         if (indexingType == EIndexingType.NONE) return;
-        if (!isIndexing() && !mpIndexFile.exists()) {
+        ifIsIndexingThrowError();
+        if (!isIndexing() && !getIndexStoredFile().exists()) {
             reindexInBackground();
             return;
         }
-        ifIsIndexingThrowError();
 
         Matlab.getInstance().setStatusMessage("loading index...");
         List<String> strings = new ArrayList<>(INITIAL_CAPACITY);
         try {
-            strings = FileUtils.readFileToStringList(mpIndexFile);
+            strings = FileUtils.readFileToStringList(getIndexStoredFile());
         } catch (IOException e) {
             e.printStackTrace();
         }
