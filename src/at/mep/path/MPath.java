@@ -11,7 +11,6 @@ import matlabcontrol.MatlabInvocationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -46,15 +45,21 @@ public class MPath {
     private List<String> mStringShort = new ArrayList<>(INITIAL_CAPACITY);
 
     private MPath() {
+        indexingType = Settings.getFileIndexingType();
+        if (indexingType == EIndexingType.NONE) {
+            return;
+        }
         File folder = Settings.getUserDirectory();
         mpIndexFile = new File(folder + "/MPFile.index");
         load();
     }
 
+    @SuppressWarnings("unused")
     public static EIndexingType getIndexingType() {
         return indexingType;
     }
 
+    @SuppressWarnings("unused")
     public static void setIndexingType(EIndexingType indexingType) {
         MPath.indexingType = indexingType;
     }
@@ -64,6 +69,9 @@ public class MPath {
      * if a file is not existing anymore in index, it will be removed from index and matlab's which will be called instead.
      */
     public List<File> which(String name) throws MatlabInvocationException {
+        if (indexingType == EIndexingType.NONE) {
+            return Matlab.which_EVAL(name);
+        }
         List<File> files = which_INDEX(name);
         if (Debug.isDebugEnabled()) {
             System.out.println("found " + name + " in index");
@@ -97,22 +105,27 @@ public class MPath {
                 files.add(indexFiles.get(i));
             }
         }
-        for (Iterator<File> iterator = files.iterator(); iterator.hasNext(); ) {
-            File file = iterator.next();
+        List<File> files4Removal = new ArrayList<>(0);
+        for (File file : files) {
             if (file.exists()) continue;
-            remove(file);
-            files.remove(file);
+            files4Removal.add(file);
         }
+        remove(files4Removal);
+        files.removeAll(files4Removal);
         return files;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public void clearIndex() {
+        if (indexingType == EIndexingType.NONE) return;
+
         ifIsIndexingThrowError();
         indexFiles = new ArrayList<>(INITIAL_CAPACITY);
         mStringShort = new ArrayList<>(INITIAL_CAPACITY);
         store();
     }
 
+    @SuppressWarnings("WeakerAccess")
     public boolean isIndexing() {
         return threadIndex != null && threadIndex.isAlive();
     }
@@ -124,7 +137,10 @@ public class MPath {
     }
 
     /** does a complete reindex of matlabs search paths*/
+    @SuppressWarnings("unused")
     public void reIndexForeground() throws IllegalStateException {
+        if (indexingType == EIndexingType.NONE) return;
+
         ifIsIndexingThrowError();
         clearIndex();
         if (indexingType == EIndexingType.DYNAMIC) {
@@ -132,15 +148,17 @@ public class MPath {
         }
         update();
     }
+
+    @SuppressWarnings("WeakerAccess")
     public void reindexInBackground() {
-        if (isIndexing()) {
-            return;
-        }
+        if (indexingType == EIndexingType.NONE) return;
+        if (isIndexing()) return;
+
         clearIndex();
         if (indexingType == EIndexingType.DYNAMIC) {
             return;
         }
-        threadIndex = RunnableUtil.runInNewThread(() -> update());
+        threadIndex = RunnableUtil.runInNewThread(this::update);
     }
 
     /** adds only not added files from matlab search path to index */
@@ -187,6 +205,12 @@ public class MPath {
         remove(indexFiles.indexOf(file));
     }
 
+    private void remove(List<File> files) {
+        for (File file : files) {
+            remove(file);
+        }
+    }
+
     private void remove(int i) {
         indexFiles.remove(i);
         mStringShort.remove(i);
@@ -197,7 +221,9 @@ public class MPath {
     }
 
     /** stores index in ascii format in Settings.getUserDirectory */
+    @SuppressWarnings("WeakerAccess")
     public void store() {
+        if (indexingType == EIndexingType.NONE) return;
         StringBuilder sbFiles = new StringBuilder(indexFiles.size() * 50);
         for (File file : indexFiles) {
             sbFiles.append(file.getAbsolutePath());
@@ -215,6 +241,7 @@ public class MPath {
      * make sure that adding paths dynamically at startup are done before, otherwise it'll not recognize all paths
      */
     public void load() throws IllegalStateException {
+        if (indexingType == EIndexingType.NONE) return;
         if (!isIndexing() && !mpIndexFile.exists()) {
             reindexInBackground();
             return;

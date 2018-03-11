@@ -7,6 +7,7 @@ package at.mep.path;
  * full: does a full scan for .m files in matlabs search path, index also gets updated as needed
  */
 public enum EIndexingType{
+    NONE (-1),
     DYNAMIC (0),
     CLASSES (1),
     FULL (2);

@@ -173,6 +173,15 @@ public class Matlab {
         return Arrays.asList(which);
     }
 
+    public static List<File> which_EVAL(String item) throws MatlabInvocationException {
+        List<String> strings = whichString_EVAL(item);
+        List<File> files = new ArrayList<>(strings.size());
+        for (String string : strings) {
+            files.add(new File(string));
+        }
+        return files;
+    }
+
     public static List<MatlabPath.PathEntry> path() {
         return com.mathworks.fileutils.MatlabPath.getPathEntries();
     }
