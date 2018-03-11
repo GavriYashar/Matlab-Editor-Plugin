@@ -14,6 +14,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
@@ -62,24 +63,18 @@ public class Matlab {
 
         try {
             //Request a proxy
-            factory.requestProxy(new MatlabProxyFactory.RequestCallback() {
-                @Override
-                public void proxyCreated(final MatlabProxy proxy) {
-                    proxyHolder.set(proxy);
-                    try {
-                        Matlab.getInstance().setStatusMessage("MEP Connected! Version: " + Install.getVersion());
-                    } catch (IOException e) {
-                        Matlab.getInstance().setStatusMessage("MEP Connected, but something went very, very, very wrong");
-                    }
-
-                    proxy.addDisconnectionListener(new MatlabProxy.DisconnectionListener() {
-                        @Override
-                        public void proxyDisconnected(MatlabProxy proxy) {
-                            Matlab.getInstance().setStatusMessage("MEP Disconnected!");
-                            proxyHolder.set(null);
-                        }
-                    });
+            factory.requestProxy(proxy -> {
+                proxyHolder.set(proxy);
+                try {
+                    Matlab.getInstance().setStatusMessage("MEP Connected! Version: " + Install.getVersion());
+                } catch (IOException e) {
+                    Matlab.getInstance().setStatusMessage("MEP Connected, but something went very, very, very wrong");
                 }
+
+                proxy.addDisconnectionListener(proxy1 -> {
+                    Matlab.getInstance().setStatusMessage("MEP Disconnected!");
+                    proxyHolder.set(null);
+                });
             });
         } catch (MatlabConnectionException ignored) {
         }
@@ -168,6 +163,14 @@ public class Matlab {
             strings.add(file.getAbsolutePath());
         }
         return strings;
+    }
+
+    public static List<String> whichString_EVAL(String item) throws MatlabInvocationException {
+        String cmd = "MEP_WHICH = which('" + item + "','-all');";
+        Matlab.getInstance().proxyHolder.get().eval(cmd);
+        String[] which = (String[]) Matlab.getInstance().proxyHolder.get().getVariable("MEP_WHICH");
+        Matlab.getInstance().proxyHolder.get().eval("clear MEP_WHICH");
+        return Arrays.asList(which);
     }
 
     public static List<MatlabPath.PathEntry> path() {
