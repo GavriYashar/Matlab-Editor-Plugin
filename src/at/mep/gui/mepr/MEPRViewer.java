@@ -21,7 +21,7 @@ import java.util.List;
 
 /** Created by Andreas Justin on 2016-09-20. */
 public class MEPRViewer extends UndecoratedFrame {
-    private static final Dimension dimension = new Dimension(600, 400);
+    private static Dimension dimension;
     private static MEPRViewer INSTANCE;
     private static JList<Object> jList;
     private static JTextFieldSearch jtfs;
@@ -50,12 +50,19 @@ public class MEPRViewer extends UndecoratedFrame {
     };
 
     private MEPRViewer() {
-        Runnable runnable = new Runnable() {
-            public void run() {
-                setLayout();
-            }
-        };
+        dimension = Settings.getPropertyDimension("dim.MEPRViewer");
+        Runnable runnable = this::setLayout;
         RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
+    }
+
+    @Override
+    protected void storeDimension(Dimension dimension) {
+        Settings.setPropertyDimension("dim.MEPRViewer", dimension);
+        try {
+            Settings.store();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static MEPRViewer getInstance() {
