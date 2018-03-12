@@ -4,6 +4,7 @@ import at.mep.editor.EditorWrapper;
 import at.mep.gui.components.JTextFieldSearch;
 import at.mep.gui.components.UndecoratedFrame;
 import at.mep.installer.Install;
+import at.mep.prefs.Settings;
 import at.mep.util.KeyStrokeUtil;
 import at.mep.util.RunnableUtil;
 import at.mep.util.ScreenSize;
@@ -22,7 +23,7 @@ public class RecentlyClosed extends UndecoratedFrame {
     private static final String ENTER_ACTION = "enterAction";
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
     private static RecentlyClosed INSTANCE;
-    private static Dimension dimension = new Dimension(600, 400);
+    private static Dimension dimension;
     private static JTabbedPane tabbedPane;
     private static JList<Object> jListTS;
     private static JList<Object> jListLS;
@@ -36,11 +37,8 @@ public class RecentlyClosed extends UndecoratedFrame {
     };
 
     private RecentlyClosed() {
-        Runnable runnable = new Runnable() {
-            public void run() {
-                setLayout();
-            }
-        };
+        dimension = Settings.getPropertyDimension("dim.recentlyClosedViewer");
+        Runnable runnable = this::setLayout;
         RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
         loadLastSessions();
     }
@@ -110,7 +108,17 @@ public class RecentlyClosed extends UndecoratedFrame {
             e.printStackTrace();
         }
     }
-    
+
+    @Override
+    protected void storeDimension(Dimension dimension) {
+        Settings.setPropertyDimension("dim.recentlyClosedViewer", dimension);
+        try {
+            Settings.store();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void addFile(File file) {
         if (!file.exists()) return;
         fileListTS.add(file);
