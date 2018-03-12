@@ -17,26 +17,35 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 /** Created by Andreas Justin on 2016 - 02 - 09. */
-public class ClipboardStack {
+public class ClipboardStack extends UndecoratedFrame {
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
     private static final String ENTER_ACTION = "ENTER";
     private static ClipboardStack INSTANCE;
-    private final UndecoratedFrame undecoratedFrame = new UndecoratedFrame();
     private JList<String> jList;
     private JTextArea jTextArea;
     private String[] strings = new String[Settings.getPropertyInt("clipboardStack.size")];
     private EClipboardParent eClipboardParent = EClipboardParent.INVALID;
 
     private ClipboardStack() {
-        Runnable runnable = new Runnable() {
-            public void run() {
-                create();
-                undecoratedFrame.setVisible(false);
-            }
+        Runnable runnable = () -> {
+            create();
+            setVisible(false);
         };
         RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
+    }
+
+    @Override
+    protected void storeDimension(Dimension dimension) {
+        Settings.setPropertyDimension("dim.clipboardStackViewer", dimension);
+        try {
+            Settings.store();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static ClipboardStack getInstance() {
@@ -61,22 +70,22 @@ public class ClipboardStack {
     }
 
     public void setVisible(boolean visible) {
-        undecoratedFrame.setVisible(visible);
+        super.setVisible(visible);
         if (jList.getSelectedIndex() < 0) {
             jList.setSelectedIndex(0);
         }
     }
 
     private void create() {
-        undecoratedFrame.setTitle("CliboardStack");
-        undecoratedFrame.setSize(300, 600);
-        undecoratedFrame.setResizable(true);
-        undecoratedFrame.setLocation(ScreenSize.getCenter(undecoratedFrame.getSize()));
-        undecoratedFrame.setLayout(new GridBagLayout());
+        setTitle("ClipboardStack");
+        setSize(Settings.getPropertyDimension("dim.clipboardStackViewer"));
+        setResizable(true);
+        setLocation(ScreenSize.getCenter(getSize()));
+        setLayout(new GridBagLayout());
 
         {
             jList = new JList<>();
-            jList.setBackground(undecoratedFrame.getBackground());
+            jList.setBackground(getBackground());
             jList.setCellRenderer(new ClipboardCellRenderer());
             JScrollPane jsp = new JScrollPane(jList);
 
@@ -86,7 +95,7 @@ public class ClipboardStack {
             gbc.weightx = 1;
             gbc.weighty = 0.5;
             gbc.fill = GridBagConstraints.BOTH;
-            undecoratedFrame.add(jsp, gbc);
+            add(jsp, gbc);
         }
 
         {
@@ -104,7 +113,7 @@ public class ClipboardStack {
             gbc.weightx = 1;
             gbc.weighty = 0.5;
             gbc.fill = GridBagConstraints.BOTH;
-            undecoratedFrame.add(scrollPane,gbc);
+            add(scrollPane,gbc);
         }
         jList.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0, 0), 10));
 
@@ -112,10 +121,10 @@ public class ClipboardStack {
     }
 
     private void addListeners() {
-        undecoratedFrame.addMouseListener(undecoratedFrame.mlClick);
-        undecoratedFrame.addMouseMotionListener(undecoratedFrame.mlMove);
-        jList.addMouseListener(undecoratedFrame.mlClick);
-        jList.addMouseMotionListener(undecoratedFrame.mlMove);
+        addMouseListener(mlClick);
+        addMouseMotionListener(mlMove);
+        jList.addMouseListener(mlClick);
+        jList.addMouseMotionListener(mlMove);
 
         MouseAdapter mlClick = new MouseAdapter() {
             @Override
