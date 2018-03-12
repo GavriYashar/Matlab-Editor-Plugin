@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 /** Created by Andreas Justin on 2016 - 02 - 24. */
-public class UndecoratedFrame extends JFrame {
+public abstract class UndecoratedFrame extends JFrame {
     private static final String CLOSE_ACTION = "closeAction";
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
     public final AbstractAction closeAction = new AbstractAction(CLOSE_ACTION) {
@@ -66,7 +66,9 @@ public class UndecoratedFrame extends JFrame {
                 if (newHeight < minSize.getHeight()) newHeight = (int) minSize.getHeight();
                 if (newHeight > maxSize.getHeight()) newHeight = (int) maxSize.getHeight();
 
-                setSize(newWidth, newHeight);
+                Dimension dimension = new Dimension(newWidth, newHeight);
+                setSize(dimension);
+                storeDimension(dimension);
             }
         }
 
@@ -102,6 +104,8 @@ public class UndecoratedFrame extends JFrame {
         // losing focus hiding window
         addWindowFocusListener(focusLostHide);
     }
+
+    protected abstract void storeDimension(Dimension dimension);
 
     @Override
     public void setResizable(boolean resizable) {
