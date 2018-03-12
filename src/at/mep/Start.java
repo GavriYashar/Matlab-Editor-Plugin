@@ -5,6 +5,7 @@ import at.mep.editor.EditorApp;
 import at.mep.editor.EditorWrapper;
 import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.installer.Install;
+import at.mep.path.MPath;
 import at.mep.prefs.PrefsWindow;
 import at.mep.prefs.Settings;
 import at.mep.util.RunnableUtil;
@@ -30,12 +31,7 @@ public class Start {
 
         // i don't get it. issue #56
         // now it froze on splash screen, an editor was open... i really don't get it.
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                EditorWrapper.getFirstNonLiveEditor();
-            }
-        };
+        Runnable runnable = EditorWrapper::getFirstNonLiveEditor;
         RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
 
         try {
@@ -49,6 +45,12 @@ public class Start {
             addShortcut();
             setReplacementPath();
             Settings.store();
+
+            // indexing here is unnecessary since no path is set in com.mathworks.fileutils.MatlabPath at this time
+            // indexing is done in background on first use
+               if (MPath.getIndexStoredFile().exists()) {
+                   MPath.getInstance().load();
+               }
         } catch (Exception | NoClassDefFoundError e) {
             try {
                 EditorApp.getInstance().removeCallbacks();
@@ -83,6 +85,7 @@ public class Start {
         start(null, null);
     }
 
+    @SuppressWarnings("unused")
     public static void openPrefsPanel() {
         PrefsWindow.showDialog();
     }
@@ -141,6 +144,7 @@ public class Start {
         }
     }
 
+    @SuppressWarnings({"unused", "SpellCheckingInspection"})
     private static void addShortcut() {
         // TODO
         String label = "MEP Help";

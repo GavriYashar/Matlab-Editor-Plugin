@@ -1,7 +1,9 @@
 package at.mep;
 
 import at.mep.installer.Install;
+import at.mep.path.MPath;
 import at.mep.util.ComponentUtil;
+import com.mathworks.fileutils.MatlabPath;
 import com.mathworks.jmi.NativeMatlab;
 import com.mathworks.mde.cmdwin.XCmdWndView;
 import com.mathworks.mde.desk.MLDesktop;
@@ -9,7 +11,9 @@ import com.mathworks.widgets.desk.DTRootPane;
 import matlabcontrol.*;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -59,24 +63,18 @@ public class Matlab {
 
         try {
             //Request a proxy
-            factory.requestProxy(new MatlabProxyFactory.RequestCallback() {
-                @Override
-                public void proxyCreated(final MatlabProxy proxy) {
-                    proxyHolder.set(proxy);
-                    try {
-                        Matlab.getInstance().setStatusMessage("MEP Connected! Version: " + Install.getVersion());
-                    } catch (IOException e) {
-                        Matlab.getInstance().setStatusMessage("MEP Connected, but something went very, very, very wrong");
-                    }
-
-                    proxy.addDisconnectionListener(new MatlabProxy.DisconnectionListener() {
-                        @Override
-                        public void proxyDisconnected(MatlabProxy proxy) {
-                            Matlab.getInstance().setStatusMessage("MEP Disconnected!");
-                            proxyHolder.set(null);
-                        }
-                    });
+            factory.requestProxy(proxy -> {
+                proxyHolder.set(proxy);
+                try {
+                    Matlab.getInstance().setStatusMessage("MEP Connected! Version: " + Install.getVersion());
+                } catch (IOException e) {
+                    Matlab.getInstance().setStatusMessage("MEP Connected, but something went very, very, very wrong");
                 }
+
+                proxy.addDisconnectionListener(proxy1 -> {
+                    Matlab.getInstance().setStatusMessage("MEP Disconnected!");
+                    proxyHolder.set(null);
+                });
             });
         } catch (MatlabConnectionException ignored) {
         }
@@ -154,12 +152,38 @@ public class Matlab {
         return string != null && string.contains("Busy");
     }
 
-    public static List<String> which(String item) throws MatlabInvocationException {
+    public static List<File> which(String item) throws MatlabInvocationException {
+        return MPath.getInstance().which(item);
+    }
+
+    public static List<String> whichString(String item) throws MatlabInvocationException {
+        List<String> strings = new ArrayList<>(1);
+        List<File> files = MPath.getInstance().which(item);
+        for (File file : files) {
+            strings.add(file.getAbsolutePath());
+        }
+        return strings;
+    }
+
+    public static List<String> whichString_EVAL(String item) throws MatlabInvocationException {
         String cmd = "MEP_WHICH = which('" + item + "','-all');";
-        getInstance().proxyHolder.get().eval(cmd);
+        Matlab.getInstance().proxyHolder.get().eval(cmd);
         String[] which = (String[]) Matlab.getInstance().proxyHolder.get().getVariable("MEP_WHICH");
         Matlab.getInstance().proxyHolder.get().eval("clear MEP_WHICH");
         return Arrays.asList(which);
+    }
+
+    public static List<File> which_EVAL(String item) throws MatlabInvocationException {
+        List<String> strings = whichString_EVAL(item);
+        List<File> files = new ArrayList<>(strings.size());
+        for (String string : strings) {
+            files.add(new File(string));
+        }
+        return files;
+    }
+
+    public static List<MatlabPath.PathEntry> path() {
+        return com.mathworks.fileutils.MatlabPath.getPathEntries();
     }
 
 }

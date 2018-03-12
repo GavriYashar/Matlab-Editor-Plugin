@@ -18,6 +18,28 @@ import java.util.regex.Pattern;
 /** Created by Andreas Justin on 2016-08-23. */
 public class FileUtils {
 
+    public static String fullyQualifiedName(File file) {
+        String lName = file.getAbsolutePath();
+        int start = lName.indexOf("+");
+        if (start < 0) {
+            start = lName.lastIndexOf("\\");
+        }
+        if (start < 0) {
+            start = 0;
+        }
+        lName = lName.substring(start+1);
+        if (lName.endsWith(".m")) {
+            // standard .m file
+            lName = lName.substring(0, lName.length() - 2);
+        } else if (lName.endsWith(")")) {
+            // builtin functions
+            lName = lName.substring(0, lName.length() - 1);
+        }
+        lName = lName.replace("\\", ".");
+        lName = lName.replace("+", "");
+        return lName;
+    }
+
     public static void copyFile(File source, File target) {
         copyFile(source.toPath(), target.toPath());
     }
@@ -99,6 +121,13 @@ public class FileUtils {
         Writer writer = new BufferedWriter(new FileWriter(source, true));
         writer.append(System.lineSeparator());
         writer.append(s);
+        writer.close();
+    }
+
+    /** writes and overwrites given string to file */
+    public static void writeFileText(File source, String s) throws IOException {
+        Writer writer = new FileWriter(source, false);
+        writer.write(s);
         writer.close();
     }
 
