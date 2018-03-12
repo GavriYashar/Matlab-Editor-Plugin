@@ -40,7 +40,7 @@ public class FileStructure extends UndecoratedFrame {
     private static JRadioButton sections = new JRadioButton("Sections", false);
     private static JRadioButton classes = new JRadioButton("Class", false);
     private static JCheckBox regex = new JCheckBox("<html>regex <font color=#8F8F8F>(CTRL + R)</font></html>");
-    private static JCheckBox inherited = new JCheckBox("<html>inherited <font color=#8F8F8F>(CTRL + F12)</font></html>");
+    private static JCheckBox inherited = new JCheckBox("<html>inherited <font color=#8F8F8F>($KEY)</font></html>");
     private static CMGenerate contextMenu = new CMGenerate();
     private JTreeFilter jTree;
     private AbstractAction enterAction = new AbstractAction() {
@@ -208,6 +208,10 @@ public class FileStructure extends UndecoratedFrame {
         functions.addActionListener(actionListener);
         classes.addActionListener(actionListener);
 
+        String txt = inherited.getText().replace("$KEY",Settings.getProperty("kb.fileStructure"));
+        txt = txt.replace("CONTROL", "CTRL");
+        inherited.setText(txt);
+
         KeyStroke ksR = KeyStroke.getKeyStroke("control released R");
         getRootPane().getInputMap(IFW).put(ksR, "CTRL + R");
         getRootPane().getActionMap().put("CTRL + R", new AbstractAction() {
@@ -218,9 +222,9 @@ public class FileStructure extends UndecoratedFrame {
         });
 
         // TODO: use settings based Keyboard Shortcut
-        KeyStroke ksF12 = KeyStroke.getKeyStroke("control released F12");
-        getRootPane().getInputMap(IFW).put(ksF12, "CTRL + F12");
-        getRootPane().getActionMap().put("CTRL + F12", new AbstractAction() {
+        KeyStroke ksFS = Settings.getPropertyKeyStroke("kb.fileStructure");
+        getRootPane().getInputMap(IFW).put(ksFS, Settings.getProperty("kb.fileStructure"));
+        getRootPane().getActionMap().put(Settings.getProperty("kb.fileStructure"), new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!inherited.isEnabled()) return;
