@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Andreas Justin on 2016 - 02 - 07.
@@ -146,6 +148,29 @@ public class Settings {
 
     public static void setPropertyBoolean(String key, boolean val) {
         setProperty(key, val ? "true" : "false");
+    }
+
+    public static Dimension getPropertyDimension(String key) {
+        String value = getProperty(key);
+
+        Pattern p = Pattern.compile("\\d+");
+        Matcher m = p.matcher(value);
+        if (!m.find()) {
+            throw new IllegalArgumentException("Property " + key + " is not a valid Dimension [width, height], instead " + value);
+        }
+        int width = Integer.parseInt(m.group());
+        if (!m.find()) {
+            throw new IllegalArgumentException("Property " + key + " is not a valid Dimension [width, height], instead " + value);
+        }
+        int height = Integer.parseInt(m.group());
+
+        return new Dimension(width, height);
+    }
+
+    public static void setPropertyDimension(String key, Dimension dimension) {
+        setProperty(key, "["
+                + (int) dimension.getWidth() + ", "
+                + (int) dimension.getHeight() + "]");
     }
 
     public static int getPropertyInt(String key) {
