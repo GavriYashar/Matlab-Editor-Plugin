@@ -19,6 +19,11 @@ public class PrefsWindow extends UndecoratedFrame {
         setLayout();
     }
 
+    @Override
+    protected void storeDimension(Dimension dimension) {
+        
+    }
+
     public static PrefsWindow getInstance() {
         return new PrefsWindow();
     }
