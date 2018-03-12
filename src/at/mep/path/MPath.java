@@ -221,6 +221,7 @@ public class MPath {
     /** stores index in ascii format in Settings.getUserDirectory */
     @SuppressWarnings("WeakerAccess")
     public void store() {
+        if (isIndexing()) return;
         if (indexingType == EIndexingType.NONE) return;
         StringBuilder sbFiles = new StringBuilder(indexFiles.size() * 50);
         for (File file : indexFiles) {
