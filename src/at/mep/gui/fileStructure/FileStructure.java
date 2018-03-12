@@ -89,7 +89,7 @@ public class FileStructure extends UndecoratedFrame {
         int width = ScreenSize.getWidth();
         int height = ScreenSize.getHeight();
 
-        setSize(500, 600);
+        setSize(Settings.getPropertyDimension("dim.fileStructureViewer"));
         setLocation(width / 2 - getWidth() / 2, height / 2 - getHeight() / 2);
 
         getRootPane().setLayout(new GridBagLayout());
@@ -134,6 +134,11 @@ public class FileStructure extends UndecoratedFrame {
         cDSP.fill = GridBagConstraints.BOTH;
         cDSP.insets = new Insets(5, 0, 0, 0);
         getRootPane().add(docuScrollPane, cDSP);
+    }
+
+    @Override
+    protected void storeDimension(Dimension dimension) {
+        Settings.setPropertyDimension("dim.fileStructureViewer", dimension);
     }
 
     private void createSearchField() {
