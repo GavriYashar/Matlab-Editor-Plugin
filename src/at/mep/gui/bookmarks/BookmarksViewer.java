@@ -2,6 +2,7 @@ package at.mep.gui.bookmarks;
 
 import at.mep.gui.components.JTextFieldSearch;
 import at.mep.gui.components.UndecoratedFrame;
+import at.mep.prefs.Settings;
 import at.mep.util.KeyStrokeUtil;
 import at.mep.util.RunnableUtil;
 import at.mep.util.ScreenSize;
@@ -11,6 +12,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 /** Created by Andreas Justin on 2016-08-25. */
 public class BookmarksViewer extends UndecoratedFrame {
@@ -18,7 +20,7 @@ public class BookmarksViewer extends UndecoratedFrame {
     private static final String ENTER_ACTION = "enterAction";
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
     private static BookmarksViewer INSTANCE;
-    private static Dimension dimension = new Dimension(600, 400);
+    private static Dimension dimension;
     private static Bookmarks bookmarks = Bookmarks.getInstance();
     private static JList<Object> jList;
     private static JButton jbRename;
@@ -30,11 +32,8 @@ public class BookmarksViewer extends UndecoratedFrame {
     };
 
     private BookmarksViewer() {
-        Runnable runnable = new Runnable() {
-            public void run() {
-                setLayout();
-            }
-        };
+        dimension = Settings.getPropertyDimension("dim.bookmarksViewer");
+        Runnable runnable = this::setLayout;
         RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
     }
 
@@ -64,6 +63,16 @@ public class BookmarksViewer extends UndecoratedFrame {
         addSearchBar();
         addToolBar();
         addViewPanel();
+    }
+
+    @Override
+    protected void storeDimension(Dimension dimension) {
+        Settings.setPropertyDimension("dim.bookmarksViewer", dimension);
+        try {
+            Settings.store();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void addSearchBar() {
