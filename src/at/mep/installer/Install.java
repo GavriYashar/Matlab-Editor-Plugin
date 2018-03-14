@@ -54,7 +54,7 @@ public class Install {
     public static File getDefaultPropertyFile() throws IOException {
         try {
             String folder = new File(Install.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent();
-            return new File(folder + "/DefaultProps.properties");
+            return new File(folder, "DefaultProps.properties");
         } catch (URISyntaxException e) {
             throw new IOException(e.toString());
         }
@@ -63,24 +63,24 @@ public class Install {
     public static File getCustomPropertyFile() throws IOException {
         try {
             String folder = new File(Install.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParent();
-            return new File(folder + "/CustomProps.properties");
+            return new File(folder, "CustomProps.properties");
         } catch (URISyntaxException e) {
             throw new IOException(e.toString());
         }
     }
 
     static File getJavaClassPathTxt() throws IOException {
-        return new File(System.getProperty("user.home") + "\\Documents\\MATLAB\\javaclasspath.txt");
+        return new File(System.getProperty("user.home") + File.separator + "Documents" + File.separator + "MATLAB" + File.separator + "javaclasspath.txt");
     }
 
     public static File getBookmarks() throws IOException {
         String folder = Settings.getUserDirectory().getAbsolutePath();
-        return new File(folder + "/Bookmarks.properties");
+        return new File(folder, "Bookmarks.properties");
     }
     
     public static File getRecentlyClosedLastSessions() throws IOException {
         String folder = Settings.getUserDirectory().getAbsolutePath();
-        return new File(folder + "/RecentlyClosedLS.properties");
+        return new File(folder, "RecentlyClosedLS.properties");
     }
 
     public static void appendJCPT(File javaClassPathText, String s) throws IOException {
