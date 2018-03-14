@@ -22,6 +22,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -139,6 +140,11 @@ public class FileStructure extends UndecoratedFrame {
     @Override
     protected void storeDimension(Dimension dimension) {
         Settings.setPropertyDimension("dim.fileStructureViewer", dimension);
+        try {
+            Settings.store();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createSearchField() {
