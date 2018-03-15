@@ -49,6 +49,9 @@ public class FileStructureDTClient extends DTClientBase {
                 }
                 EditorWrapper.goToLine(nodeFS.node().getStartLine(), false);
                 EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
+                if (getTopLevelAncestor() instanceof DTSingleClientFrame) {
+                    getTopLevelAncestor().setVisible(false);
+                }
             }
         }
     };
