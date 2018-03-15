@@ -7,6 +7,8 @@ import at.mep.gui.AutoSwitcher;
 import at.mep.gui.ClickHistory;
 import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.gui.ContextMenu;
+import at.mep.gui.fileStructure.FileStructure;
+import at.mep.gui.fileStructure.FileStructureDTClient;
 import at.mep.gui.recentlyClosed.RecentlyClosed;
 import at.mep.mepr.MEPR;
 import at.mep.prefs.Settings;
@@ -234,17 +236,22 @@ public class EditorApp {
                 @Override
                 public void eventOccurred(EditorEvent editorEvent) {
                     // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
-                    if (editorEvent == EditorEvent.ACTIVATED
-                            && (Settings.getPropertyBoolean("feature.enableAutoDetailViewer"))
+                    if (editorEvent == EditorEvent.ACTIVATED){
+                        if (Debug.isDebugEnabled()) {
+                            FileStructureDTClient.getInstance().populateTree();
+                        }
+                        
+                        if (Settings.getPropertyBoolean("feature.enableAutoDetailViewer")
                                 || Settings.getPropertyBoolean("feature.enableAutoCurrentFolder")) {
 
-                        AutoSwitcher.doYourThing();
+                            AutoSwitcher.doYourThing();
 
-                        EditorWrapper.setDirtyIfLastEditorChanged(editor);
-                        EditorWrapper.setIsActiveEditorDirty(true);
+                            EditorWrapper.setDirtyIfLastEditorChanged(editor);
+                            EditorWrapper.setIsActiveEditorDirty(true);
 
-                        if (Debug.isDebugEnabled()) {
-                            System.out.println("event occurred");
+                            if (Debug.isDebugEnabled()) {
+                                System.out.println("event occurred");
+                            }
                         }
                     }
                 }

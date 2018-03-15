@@ -7,6 +7,7 @@ import at.mep.gui.bookmarks.BookmarksViewer;
 import at.mep.gui.clipboardStack.ClipboardStack;
 import at.mep.gui.clipboardStack.EClipboardParent;
 import at.mep.gui.fileStructure.FileStructure;
+import at.mep.gui.fileStructure.FileStructureDTClient;
 import at.mep.gui.mepr.MEPRViewer;
 import at.mep.gui.recentlyClosed.RecentlyClosed;
 import at.mep.prefs.Settings;
@@ -179,8 +180,13 @@ public enum EMEPAction {
     }
 
     private static void showFileStructure() {
-        FileStructure.getInstance().populateTree();
-        FileStructure.getInstance().showDialog();
+        if (Debug.isDebugEnabled()) {
+            FileStructureDTClient.getInstance().populateTree();
+            FileStructureDTClient.getInstance().showDialog();
+        } else {
+            FileStructure.getInstance().populateTree();
+            FileStructure.getInstance().showDialog();
+        }
     }
 
     private static void showRecentlyClosed() {
