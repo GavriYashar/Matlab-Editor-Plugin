@@ -156,7 +156,7 @@ public class MPath {
         if (indexingType == EIndexingType.DYNAMIC) {
             return;
         }
-        threadIndex = RunnableUtil.runInNewThread(this::update);
+        threadIndex = RunnableUtil.runInNewThread(this::update, "MPath:reindexInBackground");
     }
 
     /** adds only not added files from matlab search path to index */

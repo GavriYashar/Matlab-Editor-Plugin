@@ -232,26 +232,21 @@ public class EditorApp {
             });
 
             // Editor event (AutoSwitcher)
-            editor.addEventListener(new EditorEventListener() {
-                @Override
-                public void eventOccurred(EditorEvent editorEvent) {
-                    // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
-                    if (editorEvent == EditorEvent.ACTIVATED){
+            editor.addEventListener(editorEvent -> {
+                // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
+                if (editorEvent == EditorEvent.ACTIVATED){
+                    FileStructureDTClient.getInstance().populateTree();
+
+                    if (Settings.getPropertyBoolean("feature.enableAutoDetailViewer")
+                            || Settings.getPropertyBoolean("feature.enableAutoCurrentFolder")) {
+
+                        AutoSwitcher.doYourThing();
+
+                        EditorWrapper.setDirtyIfLastEditorChanged(editor);
+                        EditorWrapper.setIsActiveEditorDirty(true);
+
                         if (Debug.isDebugEnabled()) {
-                            FileStructureDTClient.getInstance().populateTree();
-                        }
-                        
-                        if (Settings.getPropertyBoolean("feature.enableAutoDetailViewer")
-                                || Settings.getPropertyBoolean("feature.enableAutoCurrentFolder")) {
-
-                            AutoSwitcher.doYourThing();
-
-                            EditorWrapper.setDirtyIfLastEditorChanged(editor);
-                            EditorWrapper.setIsActiveEditorDirty(true);
-
-                            if (Debug.isDebugEnabled()) {
-                                System.out.println("event occurred");
-                            }
+                            System.out.println("event occurred");
                         }
                     }
                 }

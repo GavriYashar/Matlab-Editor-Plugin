@@ -18,8 +18,9 @@ public class RunnableUtil {
         }
     }
 
-    public static Thread runInNewThread(Runnable runnable) {
+    public static Thread runInNewThread(Runnable runnable, String name) {
         Thread thread = new Thread(runnable);
+        thread.setName(name);
         thread.start();
         return thread;
     }
