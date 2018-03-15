@@ -49,7 +49,7 @@ public class FileStructureDTClient extends DTClientBase {
                 }
                 EditorWrapper.goToLine(nodeFS.node().getStartLine(), false);
                 EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
-                if (getTopLevelAncestor() instanceof DTSingleClientFrame) {
+                if (isFloating()) {
                     getTopLevelAncestor().setVisible(false);
                 }
             }
@@ -84,6 +84,44 @@ public class FileStructureDTClient extends DTClientBase {
         return INSTANCE;
     }
 
+    public void showDialog() {
+        setVisible(true);
+        // ISSUE: #36
+        // findPattern(jTFS.getText()); // show last search (if activeEditor has not been changed @populate)
+        if (getTopLevelAncestor() == null) {
+            MLDesktop.getInstance().addClient(this, "FileStructure");
+        } else if (isFloating()) {
+            getTopLevelAncestor().setVisible(true);
+        }
+        jTFS.setText("");
+        jTFS.requestFocus();
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        if (visible) {
+            wasHidden = true;
+        }
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public void expandAll() {
+        for (int i = 0; i < jTree.getRowCount(); i++) {
+            jTree.expandRow(i);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public void collapseAll() {
+        for (int i = 0; i < jTree.getRowCount(); i++) {
+            jTree.collapseRow(i);
+        }
+    }
+
+    private boolean isFloating() {
+        return getTopLevelAncestor() instanceof DTSingleClientFrame;
+    }
 
     private void setLayout() {
         setName("FileStructureViewer");
@@ -179,7 +217,7 @@ public class FileStructureDTClient extends DTClientBase {
         jTFS.getActionMap().put("ESC", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (getTopLevelAncestor() instanceof DTSingleClientFrame) {
+                if (isFloating()) {
                     getTopLevelAncestor().setVisible(false);
                 }
                 EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
@@ -397,38 +435,4 @@ public class FileStructureDTClient extends DTClientBase {
         expandAll();
     }
 
-    public void showDialog() {
-        setVisible(true);
-        // ISSUE: #36
-        // findPattern(jTFS.getText()); // show last search (if activeEditor has not been changed @populate)
-        if (getTopLevelAncestor() == null) {
-            MLDesktop.getInstance().addClient(this, "FileStructure");
-        } else if (getTopLevelAncestor() instanceof DTSingleClientFrame) {
-            getTopLevelAncestor().setVisible(true);
-        }
-        jTFS.setText("");
-        jTFS.requestFocus();
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-        if (visible) {
-            wasHidden = true;
-        }
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public void expandAll() {
-        for (int i = 0; i < jTree.getRowCount(); i++) {
-            jTree.expandRow(i);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public void collapseAll() {
-        for (int i = 0; i < jTree.getRowCount(); i++) {
-            jTree.collapseRow(i);
-        }
-    }
 }
