@@ -25,7 +25,7 @@ import java.util.regex.PatternSyntaxException;
 /** Created by Andreas Justin on 2016 - 02 - 24. */
 public class FileStructureDTClient extends DTClientBase {
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
-    private static final FileStructureDTClient INSTANCE = new FileStructureDTClient();
+    private static FileStructureDTClient INSTANCE;
 
     /** should prevent on changing the state of inherited when opening file structure */
     private static boolean wasHidden = true;
@@ -50,7 +50,7 @@ public class FileStructureDTClient extends DTClientBase {
                 EditorWrapper.goToLine(nodeFS.node().getStartLine(), false);
                 EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
                 if (isFloating()) {
-                    getTopLevelAncestor().setVisible(false);
+                    setVisible(false);
                 }
             }
         }
@@ -68,19 +68,20 @@ public class FileStructureDTClient extends DTClientBase {
 
     @SuppressWarnings("WeakerAccess")
     public FileStructureDTClient() {
-        RunnableUtil.runInNewThread(() -> {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        // RunnableUtil.runInNewThread(() -> {
+        //     try {
+        //         Thread.sleep(10);
+        //     } catch (InterruptedException e) {
+        //         e.printStackTrace();
+        //     }
             setLayout();
             populateTree();
-        }, "FileStructure");
+        // }, "FileStructure");
 
     }
 
     public static FileStructureDTClient getInstance() {
+        if (INSTANCE == null) INSTANCE = new FileStructureDTClient();
         return INSTANCE;
     }
 
@@ -90,8 +91,6 @@ public class FileStructureDTClient extends DTClientBase {
         // findPattern(jTFS.getText()); // show last search (if activeEditor has not been changed @populate)
         if (getTopLevelAncestor() == null) {
             MLDesktop.getInstance().addClient(this, "FileStructure");
-        } else if (isFloating()) {
-            getTopLevelAncestor().setVisible(true);
         }
         jTFS.setText("");
         jTFS.requestFocus();
@@ -100,6 +99,9 @@ public class FileStructureDTClient extends DTClientBase {
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
+        if (isFloating()) {
+            getTopLevelAncestor().setVisible(visible);
+        }
         if (visible) {
             wasHidden = true;
         }
@@ -217,9 +219,7 @@ public class FileStructureDTClient extends DTClientBase {
         jTFS.getActionMap().put("ESC", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (isFloating()) {
-                    getTopLevelAncestor().setVisible(false);
-                }
+                setVisible(false);
                 EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
             }
         });
@@ -382,7 +382,7 @@ public class FileStructureDTClient extends DTClientBase {
 
     public void populateTree() {
         RunnableUtil.runInNewThread(() -> {
-            if (EditorWrapper.getActiveEditor() == null) return;
+            if (EditorWrapper.getActiveEditor() == null || INSTANCE == null) return;
             if (activeEditor != EditorWrapper.getActiveEditor()) {
                 jTFS.setText(""); // resetting search if activeEditor has been changed
                 activeEditor = EditorWrapper.getActiveEditor();
