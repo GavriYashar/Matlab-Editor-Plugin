@@ -31,6 +31,7 @@ public class MPath {
     private static final MPath INSTANCE = new MPath();
     private static EIndexingType indexingType;
     private static File indexStoredFile;
+    private static boolean isStoring = false;
 
     /** all files that are visible in matlab */
     private List<File> indexFiles = new ArrayList<>(INITIAL_CAPACITY);
@@ -228,10 +229,17 @@ public class MPath {
             sbFiles.append(file.getAbsolutePath());
             sbFiles.append("\n");
         }
-        try {
-            FileUtils.writeFileText(getIndexStoredFile(), sbFiles.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!isStoring) {
+            // TODO: if index is updated while storing runs, added files will get lost if store is not called again
+            RunnableUtil.runInNewThread(() -> {
+                try {
+                    isStoring = true;
+                    FileUtils.writeFileText(getIndexStoredFile(), sbFiles.toString());
+                    isStoring = false;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }, "MPath:store");
         }
     }
 
