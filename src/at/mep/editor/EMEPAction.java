@@ -180,8 +180,13 @@ public enum EMEPAction {
     }
 
     private static void showFileStructure() {
-        FileStructureDTClient.getInstance().populateTree();
-        FileStructureDTClient.getInstance().showDialog();
+        if (false) {
+            FileStructureDTClient.getInstance().populateTree();
+            FileStructureDTClient.getInstance().showDialog();
+        } else {
+            FileStructure.getInstance().populateTree();
+            FileStructure.getInstance().showDialog();
+        }
     }
 
     private static void showRecentlyClosed() {

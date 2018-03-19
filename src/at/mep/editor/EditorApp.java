@@ -233,7 +233,9 @@ public class EditorApp {
             editor.addEventListener(editorEvent -> {
                 // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
                 if (editorEvent == EditorEvent.ACTIVATED){
-                    FileStructureDTClient.getInstance().populateTree();
+                    if (false) {
+                        FileStructureDTClient.getInstance().populateTree();
+                    }
 
                     if (Settings.getPropertyBoolean("feature.enableAutoDetailViewer")
                             || Settings.getPropertyBoolean("feature.enableAutoCurrentFolder")) {
