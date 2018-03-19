@@ -9,6 +9,7 @@ public class CustomShortCutKey {
 
     private static KeyStroke FILE_STRUCTURE;
     private static KeyStroke COPY_SELECTED_TEXT;
+    private static KeyStroke CUT_SELECTED_TEXT;
     private static KeyStroke CLIPBOARD_STACK;
     private static KeyStroke DUPLICATE_LINE;
     private static KeyStroke MOVE_LINE_UP;
@@ -26,6 +27,7 @@ public class CustomShortCutKey {
 
         FILE_STRUCTURE = Settings.getPropertyKeyStroke("kb.fileStructure");
         COPY_SELECTED_TEXT = Settings.getPropertyKeyStroke("kb.copySelectedText");
+        CUT_SELECTED_TEXT = Settings.getPropertyKeyStroke("kb.cutSelectedText");
         CLIPBOARD_STACK = Settings.getPropertyKeyStroke("kb.clipboardStack");
         DUPLICATE_LINE = Settings.getPropertyKeyStroke("kb.duplicateLine");
         MOVE_LINE_UP = Settings.getPropertyKeyStroke("kb.moveLineUp");
@@ -45,6 +47,10 @@ public class CustomShortCutKey {
 
     public static KeyStroke getCopySelectedText() {
         return COPY_SELECTED_TEXT;
+    }
+
+    public static KeyStroke getCutSelectedText() {
+        return CUT_SELECTED_TEXT;
     }
 
     public static KeyStroke getClipboardStack() {

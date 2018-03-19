@@ -369,6 +369,9 @@ public class EditorApp {
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getCopySelectedText(), "MEP_COPY_CLIP_BOARD");
         editorSyntaxTextPane.getActionMap().put("MEP_COPY_CLIP_BOARD", EMEPAction.MEP_COPY_CLIP_BOARD.getAction());
 
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getCutSelectedText(), "MEP_CUT_CLIP_BOARD");
+        editorSyntaxTextPane.getActionMap().put("MEP_CUT_CLIP_BOARD", EMEPAction.MEP_CUT_CLIP_BOARD.getAction());
+
         // MEPR
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getLiveTemplateViewer(), "MEP_MEPR_INSERT");
         editorSyntaxTextPane.getActionMap().put("MEP_MEPR_INSERT", EMEPAction.MEP_MEPR_INSERT.getAction());

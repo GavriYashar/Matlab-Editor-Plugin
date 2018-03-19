@@ -80,6 +80,17 @@ public enum EMEPAction {
         }
     }),
 
+    MEP_CUT_CLIP_BOARD(new AbstractAction("MEP_CUT_CLIP_BOARD") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // ISSUE #52
+            // The problem of checking here is that the CTRL+X command is overwritten by MEP and this prevents everyone
+            // from cutting
+            // if (!Settings.getPropertyBoolean("feature.enableClipboardStack")) return;
+            doCutAction();
+        }
+    }),
+
     MEP_COPY_CLIP_BOARD_CMD(new AbstractAction("MEP_COPY_CLIP_BOARD_CMD") {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -201,6 +212,16 @@ public enum EMEPAction {
         String selText = EditorWrapper.getSelectedTxt();
         if (selText == null || selText.length() < 1) return;
         ClipboardUtil.addToClipboard(selText);
+        // Issue: #52
+        if (!Settings.getPropertyBoolean("feature.enableClipboardStack")) return;
+        ClipboardStack.getInstance().add(selText);
+    }
+
+    private static void doCutAction() {
+        String selText = EditorWrapper.getSelectedTxt();
+        if (selText == null || selText.length() < 1) return;
+        ClipboardUtil.addToClipboard(selText);
+        EditorWrapper.setSelectedTxt("");
         // Issue: #52
         if (!Settings.getPropertyBoolean("feature.enableClipboardStack")) return;
         ClipboardStack.getInstance().add(selText);
