@@ -153,12 +153,12 @@ public class Matlab {
     }
 
     public static List<File> which(String item) throws MatlabInvocationException {
-        return MPath.getInstance().which(item);
+        return MPath.which(item);
     }
 
     public static List<String> whichString(String item) throws MatlabInvocationException {
         List<String> strings = new ArrayList<>(1);
-        List<File> files = MPath.getInstance().which(item);
+        List<File> files = MPath.which(item);
         for (File file : files) {
             strings.add(file.getAbsolutePath());
         }

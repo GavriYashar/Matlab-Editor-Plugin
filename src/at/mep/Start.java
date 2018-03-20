@@ -49,7 +49,7 @@ public class Start {
             // indexing here is unnecessary since no path is set in com.mathworks.fileutils.MatlabPath at this time
             // indexing is done in background on first use
                if (MPath.getIndexStoredFile().exists()) {
-                   MPath.getInstance().load();
+                   MPath.load();
                }
         } catch (Exception | NoClassDefFoundError e) {
             try {
