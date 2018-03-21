@@ -7,7 +7,7 @@ import at.mep.gui.AutoSwitcher;
 import at.mep.gui.ClickHistory;
 import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.gui.ContextMenu;
-import at.mep.gui.fileStructure.FileStructureDTClient;
+import at.mep.gui.fileStructure.FileStructure;
 import at.mep.gui.recentlyClosed.RecentlyClosed;
 import at.mep.mepr.MEPR;
 import at.mep.prefs.Settings;
@@ -233,8 +233,8 @@ public class EditorApp {
             editor.addEventListener(editorEvent -> {
                 // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
                 if (editorEvent == EditorEvent.ACTIVATED){
-                    if (false) {
-                        FileStructureDTClient.getInstance().populateTree();
+                    if (Settings.getPropertyBoolean("feature.enableDockableWindows")) {
+                        FileStructure.getInstance().populateTree();
                     }
 
                     if (Settings.getPropertyBoolean("feature.enableAutoDetailViewer")

@@ -3,52 +3,45 @@ package at.mep.gui.fileStructure;
 
 import at.mep.editor.EditorWrapper;
 import at.mep.gui.components.JTextFieldSearch;
-import at.mep.gui.components.UndecoratedFrame;
 import at.mep.prefs.Settings;
 import at.mep.util.KeyStrokeUtil;
-import at.mep.util.RunnableUtil;
 import at.mep.util.ScreenSize;
 import at.mep.util.TreeUtilsV2;
 import com.mathworks.matlab.api.editor.Editor;
+import com.mathworks.mde.desk.MLDesktop;
 import com.mathworks.util.tree.Tree;
+import com.mathworks.widgets.desk.DTSingleClientFrame;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /** Created by Andreas Justin on 2016 - 02 - 24. */
-@Deprecated
-public class FileStructure extends UndecoratedFrame {
+public class FileStructure extends JPanel {
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
-    private static FileStructure INSTANCE;
+    private static FileStructure instance;
 
     /** should prevent on changing the state of inherited when opening file structure */
     private static boolean wasHidden = true;
     private static Editor activeEditor;
     private static JTextFieldSearch jTFS;
-    private static JTextArea jTextArea;
-    private static JScrollPane docuScrollPane;
     private static JRadioButton functions = new JRadioButton("Functions", true);
     private static JRadioButton sections = new JRadioButton("Sections", false);
     private static JRadioButton classes = new JRadioButton("Class", false);
-    private static JCheckBox regex = new JCheckBox("<html>regex <font color=#8F8F8F>(CTRL + R)</font></html>");
+    private static JCheckBox regex = new JCheckBox("<html>regex <font color=#8F8F8F>(CTRL + R)</font></html>", true);
     private static JCheckBox inherited = new JCheckBox("<html>inherited <font color=#8F8F8F>($KEY)</font></html>");
     private static CMGenerate contextMenu = new CMGenerate();
     private JTreeFilter jTree;
     private AbstractAction enterAction = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            setVisible(false);
             if (jTree.getMaxSelectionRow() < 0) return;
             NodeFS nodeFS = (NodeFS) jTree.getSelectionPath().getLastPathComponent();
             if (nodeFS.hasNode()) {
@@ -56,6 +49,10 @@ public class FileStructure extends UndecoratedFrame {
                     EditorWrapper.openEditor(nodeFS.getFile());
                 }
                 EditorWrapper.goToLine(nodeFS.node().getStartLine(), false);
+                EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
+                if (!isDockable() || isFloating()) {
+                    setVisible(false);
+                }
             }
         }
     };
@@ -70,31 +67,81 @@ public class FileStructure extends UndecoratedFrame {
         }
     };
 
+    @SuppressWarnings("WeakerAccess")
     public FileStructure() {
-        Runnable runnable = new Runnable() {
-            public void run() {
-                setLayout();
-            }
-        };
-        RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
+        // RunnableUtil.runInNewThread(() -> {
+        //     try {
+        //         Thread.sleep(10);
+        //     } catch (InterruptedException e) {
+        //         e.printStackTrace();
+        //     }
+            setLayout();
+            populateTree();
+        // }, "FileStructure");
+
     }
 
     public static FileStructure getInstance() {
-        if (INSTANCE != null) return INSTANCE;
-        INSTANCE = new FileStructure();
-        return INSTANCE;
+        if (instance == null) instance = new FileStructure();
+        return instance;
     }
 
+    public void showDialog() {
+        // ISSUE: #36
+        // findPattern(jTFS.getText()); // show last search (if activeEditor has not been changed @populate)
+        if (isDockable() && getTopLevelAncestor() == null) {
+            FileStructureDTClient.getInstance();
+            MLDesktop.getInstance().addClient(this, "FileStructure");
+        } else if (isDockable()) {
+            FileStructureDTClient.getInstance();
+        } else {
+            FileStructureUndecoratedFrame.getInstance();
+        }
+        setVisible(true);
+        jTFS.setText("");
+        jTFS.requestFocus();
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        if (isDockable() && isFloating()) {
+            getTopLevelAncestor().setVisible(visible);
+        } else if (isDockable()) {
+            FileStructureDTClient.getInstance().setVisible(true);
+        } else if (!isDockable()) {
+            FileStructureUndecoratedFrame.getInstance().setVisible(true);
+        }
+        if (visible) {
+            wasHidden = true;
+        }
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public void expandAll() {
+        for (int i = 0; i < jTree.getRowCount(); i++) {
+            jTree.expandRow(i);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public void collapseAll() {
+        for (int i = 0; i < jTree.getRowCount(); i++) {
+            jTree.collapseRow(i);
+        }
+    }
+
+    boolean isFloating() {
+        return getTopLevelAncestor() instanceof DTSingleClientFrame;
+    }
+
+    boolean isDockable() {
+        return Settings.getPropertyBoolean("feature.enableDockableWindows");
+    }
 
     private void setLayout() {
-        setTitle("FileStructureViewer");
-        int width = ScreenSize.getWidth();
-        int height = ScreenSize.getHeight();
-
-        setSize(Settings.getPropertyDimension("dim.fileStructureViewer"));
-        setLocation(width / 2 - getWidth() / 2, height / 2 - getHeight() / 2);
-
-        getRootPane().setLayout(new GridBagLayout());
+        setName("FileStructureViewer");
+        setLayout(new GridBagLayout());
 
         // creating search box
         createSearchField();
@@ -103,16 +150,17 @@ public class FileStructure extends UndecoratedFrame {
         cjtfs.gridx = 0;
         cjtfs.weightx = 1;
         cjtfs.fill = GridBagConstraints.BOTH;
-        getRootPane().add(jTFS, cjtfs);
+        add(jTFS, cjtfs);
 
         //creating radio buttons for selecting category
         JPanel panelSettings = createSettingsPanel();
         GridBagConstraints cSet = new GridBagConstraints();
         cSet.gridy = 1;
         cSet.gridx = 0;
+        cSet.weighty = 0.15;
         cSet.weightx = 1;
         cSet.fill = GridBagConstraints.BOTH;
-        getRootPane().add(panelSettings, cSet);
+        add(panelSettings, cSet);
 
         //create the jTree by passing in the root node
         JScrollPane scrollPaneTree = createTree();
@@ -122,30 +170,7 @@ public class FileStructure extends UndecoratedFrame {
         cSP.weighty = 1;
         cSP.weightx = cSet.weightx;
         cSP.fill = GridBagConstraints.BOTH;
-        getRootPane().add(scrollPaneTree, cSP);
-
-        //create the documentation viewer
-        jTextArea = new JTextArea();
-        jTextArea.setForeground(new Color(11, 134, 0));
-        docuScrollPane = new JScrollPane(jTextArea);
-        GridBagConstraints cDSP = new GridBagConstraints();
-        cDSP.gridy = 3;
-        cDSP.gridx = 0;
-        cDSP.weighty = 0.3;
-        cDSP.weightx = cSet.weightx;
-        cDSP.fill = GridBagConstraints.BOTH;
-        cDSP.insets = new Insets(5, 0, 0, 0);
-        getRootPane().add(docuScrollPane, cDSP);
-    }
-
-    @Override
-    protected void storeDimension(Dimension dimension) {
-        Settings.setPropertyDimension("dim.fileStructureViewer", dimension);
-        try {
-            Settings.store();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        add(scrollPaneTree, cSP);
     }
 
     private void createSearchField() {
@@ -167,6 +192,7 @@ public class FileStructure extends UndecoratedFrame {
         });
         KeyStroke ksU = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_UP);
         jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksU, "UP");
+        //noinspection Duplicates
         jTFS.getActionMap().put("UP", new AbstractAction("UP") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -181,6 +207,7 @@ public class FileStructure extends UndecoratedFrame {
 
         KeyStroke ksD = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_DOWN);
         jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksD, "DOWN");
+        //noinspection Duplicates
         jTFS.getActionMap().put("DOWN", new AbstractAction("DOWN") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -192,6 +219,16 @@ public class FileStructure extends UndecoratedFrame {
                     jTree.setSelectionRow(row + 1); // zero is top, so down means +1
                 }
                 jTree.scrollRowToVisible(jTree.getMaxSelectionRow());
+            }
+        });
+
+        KeyStroke ksESC = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ESCAPE);
+        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksESC, "ESC");
+        jTFS.getActionMap().put("ESC", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
             }
         });
     }
@@ -210,12 +247,7 @@ public class FileStructure extends UndecoratedFrame {
         panelSettings.add(inherited);
         panelSettings.add(regex);
 
-        ActionListener actionListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                populate();
-            }
-        };
+        ActionListener actionListener = e -> populate();
         sections.addActionListener(actionListener);
         functions.addActionListener(actionListener);
         classes.addActionListener(actionListener);
@@ -225,18 +257,17 @@ public class FileStructure extends UndecoratedFrame {
         inherited.setText(txt);
 
         KeyStroke ksR = KeyStroke.getKeyStroke("control released R");
-        getRootPane().getInputMap(IFW).put(ksR, "CTRL + R");
-        getRootPane().getActionMap().put("CTRL + R", new AbstractAction() {
+        getInputMap(IFW).put(ksR, "CTRL + R");
+        getActionMap().put("CTRL + R", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 regex.setSelected(!regex.isSelected());
             }
         });
 
-        // TODO: use settings based Keyboard Shortcut
         KeyStroke ksFS = Settings.getPropertyKeyStroke("kb.fileStructure");
-        getRootPane().getInputMap(IFW).put(ksFS, Settings.getProperty("kb.fileStructure"));
-        getRootPane().getActionMap().put(Settings.getProperty("kb.fileStructure"), new AbstractAction() {
+        getInputMap(IFW).put(ksFS, Settings.getProperty("kb.fileStructure"));
+        getActionMap().put(Settings.getProperty("kb.fileStructure"), new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!inherited.isEnabled()) return;
@@ -248,12 +279,7 @@ public class FileStructure extends UndecoratedFrame {
                 populate();
             }
         });
-        inherited.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                populate();
-            }
-        });
+        inherited.addItemListener(e -> populate());
 
         return panelSettings;
     }
@@ -265,15 +291,12 @@ public class FileStructure extends UndecoratedFrame {
         scrollPaneTree.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPaneTree.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-        jTree.addMouseListener(mlClick);
-        jTree.addMouseMotionListener(mlMove);
         jTree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
                 if (e.getClickCount() > 1 && e.getButton() == 1) {
                     enterAction.actionPerformed(new ActionEvent(e, 0, null));
-                    hideWhenFocusLost(true);
                 }
                 if (e.getButton() == MouseEvent.BUTTON3) {
                     // right click
@@ -293,19 +316,8 @@ public class FileStructure extends UndecoratedFrame {
                         property = property.substring(0,property.indexOf(' '));
                         contextMenu.modifyProperty(property);
                         contextMenu.show(jTree, e.getX(), e.getY());
-                        hideWhenFocusLost(false);
                     }
                 }
-            }
-        });
-        jTree.addTreeSelectionListener(new TreeSelectionListener() {
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                jTFS.requestFocus();
-                if (jTree.getMaxSelectionRow() < 0) return;
-                NodeFS nodeFS = (NodeFS) jTree.getSelectionPath().getLastPathComponent();
-                jTextArea.setText(nodeFS.getDocumentation());
-                moveBarsDocuScrollpane();
             }
         });
 
@@ -315,7 +327,6 @@ public class FileStructure extends UndecoratedFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 enterAction.actionPerformed(new ActionEvent(e, 0, null));
-                hideWhenFocusLost(true);
             }
         });
 
@@ -323,6 +334,7 @@ public class FileStructure extends UndecoratedFrame {
     }
 
     private void findPattern(String pattern) {
+        //noinspection Duplicates
         if (regex.isSelected()) {
             try {
                 Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
@@ -338,10 +350,18 @@ public class FileStructure extends UndecoratedFrame {
 
     /** for radio buttons */
     private void populate() {
-        NodeFS root = new NodeFS(EditorWrapper.getShortName());
+        String shortName;
+        try {
+            shortName = EditorWrapper.getShortName();
+        } catch (Exception e) {
+            e.getStackTrace();
+            return;
+        }
+        NodeFS root = new NodeFS(shortName);
 
 
         MTree.NodeType nodeType;
+        //noinspection Duplicates
         if (sections.isSelected()) {
             nodeType = MTree.NodeType.CELL_TITLE;
             root = NodeFS.constructForCellTitle(activeEditor);
@@ -369,6 +389,7 @@ public class FileStructure extends UndecoratedFrame {
     }
 
     public void populateTree() {
+        if (EditorWrapper.getActiveEditor() == null || instance == null) return;
         if (activeEditor != EditorWrapper.getActiveEditor()) {
             jTFS.setText(""); // resetting search if activeEditor has been changed
             activeEditor = EditorWrapper.getActiveEditor();
@@ -377,8 +398,10 @@ public class FileStructure extends UndecoratedFrame {
         populate();
     }
 
+    @SuppressWarnings("WeakerAccess")
     public void setDefaultSettings() {
         MTree mTree = EditorWrapper.getMTree();
+        //noinspection Duplicates
         switch (TreeUtilsV2.getFileType(mTree)) {
             case ScriptFile:
                 classes.setEnabled(false);
@@ -407,9 +430,6 @@ public class FileStructure extends UndecoratedFrame {
                 sections.setEnabled(true);
                 break;
         }
-
-        // search field request focus after resetting Settings
-        jTFS.requestFocus();
     }
 
     private void setTreeRoot(NodeFS root, boolean filtered) {
@@ -421,37 +441,4 @@ public class FileStructure extends UndecoratedFrame {
         expandAll();
     }
 
-    public void showDialog() {
-        setVisible(true);
-        // ISSUE: #36
-        // findPattern(jTFS.getText()); // show last search (if activeEditor has not been changed @populate)
-        jTFS.setText("");
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-        if (visible) {
-            wasHidden = true;
-            jTextArea.setFont(new Font("Courier New", Font.PLAIN, Settings.getPropertyInt("fs.fontSizeDocu")));
-            moveBarsDocuScrollpane();
-        }
-    }
-
-    private void moveBarsDocuScrollpane() {
-        docuScrollPane.getHorizontalScrollBar().setValue(docuScrollPane.getHorizontalScrollBar().getMinimum());
-        docuScrollPane.getVerticalScrollBar().setValue(docuScrollPane.getVerticalScrollBar().getMinimum());
-    }
-
-    public void expandAll() {
-        for (int i = 0; i < jTree.getRowCount(); i++) {
-            jTree.expandRow(i);
-        }
-    }
-
-    public void collapseAll() {
-        for (int i = 0; i < jTree.getRowCount(); i++) {
-            jTree.collapseRow(i);
-        }
-    }
 }
