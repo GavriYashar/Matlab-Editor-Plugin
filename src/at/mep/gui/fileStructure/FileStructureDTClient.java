@@ -6,6 +6,8 @@ import at.mep.util.ScreenSize;
 import com.mathworks.widgets.desk.DTClientBase;
 
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 /** Created by Andreas Justin on 2018 - 03 - 21. */
 public class FileStructureDTClient extends DTClientBase {
@@ -36,6 +38,21 @@ public class FileStructureDTClient extends DTClientBase {
             Point pos = new Point(sc.x - instance.getWidth()/2, sc.y - instance.getHeight()/2);
             instance.getTopLevelAncestor().setLocation(pos);
         }
+
+        instance.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (!FileStructure.getInstance().isFloating()) {
+                    // may be on sidebar (or in... or whatever), and does not get set visible otherwise
+                    FileStructure.getInstance().setVisible(true);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+
+            }
+        });
     }
 
 }
