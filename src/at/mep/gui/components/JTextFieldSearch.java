@@ -59,7 +59,7 @@ public class JTextFieldSearch extends JTextField {
         if (isRounded) {
             g1.setColor(getBackground());
             g1.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 25, 25);
-            repaint();
+            //repaint();
         }
         super.paintComponent(g1);
 
@@ -71,7 +71,7 @@ public class JTextFieldSearch extends JTextField {
             EIcons.SEARCH_15.getIcon().paintIcon(this, g, this.getWidth() - 21, 3);
             g2.drawString(" Search...", 7, 15);
             g2.dispose();
-            repaint();
+            //repaint();
         }
 
         // set listener for emptying the search bar on click to the right end of the field
