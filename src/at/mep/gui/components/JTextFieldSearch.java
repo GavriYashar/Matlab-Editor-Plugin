@@ -84,7 +84,7 @@ public class JTextFieldSearch extends JTextField {
     protected void paintBorder(Graphics g) {
         Graphics2D g1 = (Graphics2D) g.create();
         if (isRounded) {
-            g1.setColor(getBackground());
+            g1.setColor(getForeground());
             g1.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 25, 25);
         } else
             super.paintBorder(g1);
