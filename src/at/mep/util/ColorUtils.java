@@ -19,4 +19,11 @@ public class ColorUtils {
 
         return new Color(rgbResult[0], rgbResult[1], rgbResult[2]);
     }
+
+    public static Color complementary(Color color) {
+        return new Color(
+                255-(color.getRed()),
+                255-(color.getGreen()),
+                255-(color.getBlue()));
+    }
 }
