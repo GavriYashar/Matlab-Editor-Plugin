@@ -10,9 +10,13 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 /** Created by Andreas Justin on 2018 - 03 - 21. */
+@Deprecated
 public class FileStructureDTClient extends DTClientBase {
     private static FileStructureDTClient instance;
 
+    private FileStructureDTClient() {
+
+    }
     public static FileStructureDTClient getInstance() {
         if (instance == null){
             instance = new FileStructureDTClient();

@@ -4,13 +4,14 @@ package at.mep.gui.fileStructure;
 import at.mep.editor.EditorWrapper;
 import at.mep.gui.components.JTextFieldSearch;
 import at.mep.prefs.Settings;
+import at.mep.util.ColorUtils;
 import at.mep.util.KeyStrokeUtil;
-import at.mep.util.ScreenSize;
 import at.mep.util.TreeUtilsV2;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.mde.desk.MLDesktop;
+import com.mathworks.mde.desk.MLMainFrame;
 import com.mathworks.util.tree.Tree;
-import com.mathworks.widgets.desk.DTSingleClientFrame;
+import com.mathworks.widgets.desk.*;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import javax.swing.*;
@@ -43,6 +44,7 @@ public class FileStructure extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (jTree.getMaxSelectionRow() < 0) return;
+            jTFS.setText("");
             NodeFS nodeFS = (NodeFS) jTree.getSelectionPath().getLastPathComponent();
             if (nodeFS.hasNode()) {
                 if (nodeFS.isInherited()) {
@@ -54,6 +56,16 @@ public class FileStructure extends JPanel {
                     setVisible(false);
                 }
             }
+        }
+    };
+    private AbstractAction escAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            jTFS.setText("");
+            if (!isDockable() || isFloating()) {
+                setVisible(false);
+            }
+            EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
         }
     };
 
@@ -68,17 +80,19 @@ public class FileStructure extends JPanel {
     };
 
     @SuppressWarnings("WeakerAccess")
-    public FileStructure() {
-        // RunnableUtil.runInNewThread(() -> {
-        //     try {
-        //         Thread.sleep(10);
-        //     } catch (InterruptedException e) {
-        //         e.printStackTrace();
-        //     }
-            setLayout();
-            populateTree();
-        // }, "FileStructure");
+    private FileStructure() {
+        setLayout();
+        populateTree();
+        addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                jTFS.requestFocus();
+            }
 
+            @Override
+            public void focusLost(FocusEvent e) {
+            }
+        });
     }
 
     public static FileStructure getInstance() {
@@ -86,32 +100,57 @@ public class FileStructure extends JPanel {
         return instance;
     }
 
-    public void showDialog() {
-        // ISSUE: #36
-        // findPattern(jTFS.getText()); // show last search (if activeEditor has not been changed @populate)
-        if (isDockable() && getTopLevelAncestor() == null) {
-            FileStructureDTClient.getInstance();
-            MLDesktop.getInstance().addClient(this, "FileStructure");
+    private enum State {
+        INVALD, DOCKABLE_NEVER_SHOWN, FLOATING, DOCKED, UNDECORATED;
+    }
+    
+    public State getState() {
+        if (isDockable() && getParent() == null && getTopLevelAncestor() == null) {
+            // is dockable, but has never been shown, so add to desktop
+            return State.DOCKABLE_NEVER_SHOWN;
+        } else if (isDockable() && getTopLevelAncestor() instanceof MLMainFrame) {
+            // is dockable, and already added to matlab some session before
+            return State.DOCKED;
+        } else if (isDockable() && getTopLevelAncestor() instanceof DTSingleClientFrame) {
+            return State.FLOATING;
         } else if (isDockable()) {
-            FileStructureDTClient.getInstance();
+            // is dockable, and ?
+            return State.DOCKABLE_NEVER_SHOWN;
         } else {
-            FileStructureUndecoratedFrame.getInstance();
+            // use legacy undecorated frame floating around and hiding somewhere.
+            return State.UNDECORATED;
         }
+    }
+
+    public void showDialog() {
         setVisible(true);
         jTFS.setText("");
         jTFS.requestFocus();
+        // Component component = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+        // component.setBackground(ColorUtils.complementary(component.getBackground()));
     }
 
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        if (isDockable() && isFloating()) {
-            getTopLevelAncestor().setVisible(visible);
-        } else if (isDockable()) {
-            FileStructureDTClient.getInstance().setVisible(true);
-        } else if (!isDockable()) {
-            FileStructureUndecoratedFrame.getInstance().setVisible(true);
+
+        switch (getState()) {
+            case INVALD:
+                break;
+            case DOCKABLE_NEVER_SHOWN:
+                MLDesktop.getInstance().addClient(this, "FileStructure");
+                break;
+            case FLOATING:
+                getTopLevelAncestor().setVisible(visible);
+                break;
+            case DOCKED:
+                getParent().getParent().setVisible(true);
+                break;
+            case UNDECORATED:
+                FileStructureUndecoratedFrame.getInstance().setVisible(true);
+                break;
         }
+        
         if (visible) {
             wasHidden = true;
         }
@@ -224,13 +263,7 @@ public class FileStructure extends JPanel {
 
         KeyStroke ksESC = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ESCAPE);
         jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksESC, "ESC");
-        jTFS.getActionMap().put("ESC", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-                EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
-            }
-        });
+        jTFS.getActionMap().put("ESC", escAction);
     }
 
     private JPanel createSettingsPanel() {
@@ -442,3 +475,41 @@ public class FileStructure extends JPanel {
     }
 
 }
+
+
+/*
+
+// CREATION OF FLOATING MATLAB GUI
+DTClient dtc = new DTClient(MLDesktop.getInstance(), "var2", "FileStructure");
+DTSingleClientFrame dtscf;
+try {
+    Method createUndockedFrame = MLDesktop.getInstance().getClass().getDeclaredMethod(
+            "createUndockedFrame",
+            DTClient.class);
+
+    Method setClientShowing = Desktop.class.getDeclaredMethod(
+            "setClientShowing",
+            DTClient.class,
+            boolean.class,
+            DTLocation.class,
+            boolean.class);
+
+    Class dtFloatingLocationClass = Class.forName("com.mathworks.widgets.desk.DTFloatingLocation");
+    Constructor dtLocation = dtFloatingLocationClass.getDeclaredConstructor(boolean.class);
+
+    createUndockedFrame.setAccessible(true);
+    setClientShowing.setAccessible(true);
+    dtLocation.setAccessible(true);
+
+    dtscf = (DTSingleClientFrame) createUndockedFrame.invoke(MLDesktop.getInstance(), dtc);
+    DTOnTopWindow dtOnTopWindow = (DTOnTopWindow) setClientShowing.invoke(MLDesktop.getInstance(), dtc, true, dtLocation.newInstance(true), true);
+
+} catch (InstantiationException | ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+    e.printStackTrace();
+    return;
+}
+
+
+
+
+ */

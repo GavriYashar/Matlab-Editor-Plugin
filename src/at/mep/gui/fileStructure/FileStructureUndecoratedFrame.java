@@ -11,6 +11,9 @@ import java.io.IOException;
 public class FileStructureUndecoratedFrame extends UndecoratedFrame {
     private static FileStructureUndecoratedFrame instance;
 
+    private FileStructureUndecoratedFrame() {
+    }
+
     @Override
     protected void storeDimension(Dimension dimension) {
         Settings.setPropertyDimension("dim.fileStructureViewer", dimension);
