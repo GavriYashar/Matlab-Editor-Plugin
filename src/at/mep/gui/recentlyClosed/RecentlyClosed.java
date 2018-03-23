@@ -4,17 +4,22 @@ import at.mep.editor.EditorWrapper;
 import at.mep.gui.components.DockableFrame;
 import at.mep.gui.components.JTextFieldSearch;
 import at.mep.installer.Install;
+import at.mep.util.FileUtils;
 import at.mep.util.KeyStrokeUtil;
 import at.mep.util.ScreenSize;
 import com.mathworks.matlab.api.editor.Editor;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /** Created by Andreas Justin on 2017-10-11. */
 public class RecentlyClosed extends DockableFrame {
@@ -25,20 +30,56 @@ public class RecentlyClosed extends DockableFrame {
     private static JList<Object> jListLS;
     private static List<File> fileListTS = new ArrayList<>(20);
     private static List<File> fileListLS = new ArrayList<>(20);
+    private static JTextFieldSearch jTFS;
     private final AbstractAction enterAction = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
             selectFile();
-
             if (!isDockable() || isFloating()) {
                 setVisible(false);
             }
         }
     };
 
+    private AbstractAction updateAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            findPattern(jTFS.getText());
+            if (jListLS.getVisibleRowCount() > 1) {
+                jListLS.setSelectedIndex(1);
+            }
+            if (jListTS.getVisibleRowCount() > 1) {
+                jListTS.setSelectedIndex(1);
+            }
+        }
+    };
+
+    private AbstractAction escAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            jTFS.setText("");
+            if (!isDockable() || isFloating()) {
+                setVisible(false);
+            }
+            EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
+        }
+    };
+
     private RecentlyClosed() {
         setLayout();
         loadLastSessions();
+        addFocusListener(jTFS);
+        addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                updateList();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+
+            }
+        });
     }
 
     public static RecentlyClosed getInstance() {
@@ -139,15 +180,94 @@ public class RecentlyClosed extends DockableFrame {
 
     @SuppressWarnings("Duplicates")
     private void addSearchBar() {
-        JTextFieldSearch jtfs = new JTextFieldSearch(20);
-        jtfs.setEnabled(false);
+        jTFS = new JTextFieldSearch(20);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridy = 0;
         gbc.gridx = 0;
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 10, 0, 10);
-        add(jtfs, gbc);
+        add(jTFS, gbc);
+
+        jTFS.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateAction.actionPerformed(null);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateAction.actionPerformed(null);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+
+            }
+        });
+
+        KeyStroke ksU = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_UP);
+        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksU, "UP");
+        jTFS.getActionMap().put("UP", new AbstractAction("UP") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                {
+                    int row = jListLS.getSelectedIndex(); // single selection
+                    if (row < 0) {
+                        jListLS.setSelectedIndex(0);
+                    }
+                    jListLS.setSelectedIndex(row - 1); // zero is top, so up means -1
+                }
+                {
+                    int row = jListTS.getSelectedIndex(); // single selection
+                    if (row < 0) {
+                        jListTS.setSelectedIndex(0);
+                    }
+                    jListTS.setSelectedIndex(row - 1); // zero is top, so up means -1
+                }
+            }
+        });
+
+        KeyStroke ksD = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_DOWN);
+        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksD, "DOWN");
+        jTFS.getActionMap().put("DOWN", new AbstractAction("DOWN") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                {
+                    int row = jListLS.getSelectedIndex(); // single selection
+                    if (row < 0) {
+                        jListLS.setSelectedIndex(0);
+                    }
+                    if (fileListLS.size() - 1 > row) {
+                        jListLS.setSelectedIndex(row + 1); // zero is top, so down means +1
+                    }
+                }
+                {
+                    int row = jListTS.getSelectedIndex(); // single selection
+                    if (row < 0) {
+                        jListTS.setSelectedIndex(0);
+                    }
+                    if (fileListTS.size() - 1 > row) {
+                        jListTS.setSelectedIndex(row + 1); // zero is top, so down means +1
+                    }
+                }
+            }
+        });
+
+        KeyStroke ksESC = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ESCAPE);
+        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksESC, "ESC");
+        jTFS.getActionMap().put("ESC", escAction);
+    }
+
+    private void findPattern(String pattern) {
+        try {
+            Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+            jTFS.setForeground(null);
+            jListLS.setListData(FileUtils.filter(fileListLS, p).toArray());
+            jListTS.setListData(FileUtils.filter(fileListTS, p).toArray());
+        } catch (PatternSyntaxException e) {
+            jTFS.setForeground(Color.RED);
+        }
     }
 
     private void addToolBar() {
