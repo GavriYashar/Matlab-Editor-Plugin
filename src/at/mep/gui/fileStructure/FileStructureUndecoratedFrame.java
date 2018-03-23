@@ -12,6 +12,7 @@ public class FileStructureUndecoratedFrame extends UndecoratedFrame {
     private static FileStructureUndecoratedFrame instance;
 
     private FileStructureUndecoratedFrame() {
+        setLayout();
     }
 
     @Override
@@ -25,10 +26,7 @@ public class FileStructureUndecoratedFrame extends UndecoratedFrame {
     }
 
     public static FileStructureUndecoratedFrame getInstance() {
-        if (instance == null){
-            instance = new FileStructureUndecoratedFrame();
-            setLayout();
-        }
+        if (instance == null) instance = new FileStructureUndecoratedFrame();
         return instance;
     }
 

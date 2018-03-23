@@ -2,16 +2,13 @@ package at.mep.gui.fileStructure;
 
 
 import at.mep.editor.EditorWrapper;
+import at.mep.gui.components.DockableFrame;
 import at.mep.gui.components.JTextFieldSearch;
 import at.mep.prefs.Settings;
-import at.mep.util.ColorUtils;
 import at.mep.util.KeyStrokeUtil;
 import at.mep.util.TreeUtilsV2;
 import com.mathworks.matlab.api.editor.Editor;
-import com.mathworks.mde.desk.MLDesktop;
-import com.mathworks.mde.desk.MLMainFrame;
 import com.mathworks.util.tree.Tree;
-import com.mathworks.widgets.desk.*;
 import com.mathworks.widgets.text.mcode.MTree;
 
 import javax.swing.*;
@@ -25,7 +22,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /** Created by Andreas Justin on 2016 - 02 - 24. */
-public class FileStructure extends JPanel {
+public class FileStructure extends DockableFrame {
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
     private static FileStructure instance;
 
@@ -100,25 +97,11 @@ public class FileStructure extends JPanel {
         return instance;
     }
 
-    private enum State {
-        INVALD, DOCKABLE_NEVER_SHOWN, FLOATING, DOCKED, UNDECORATED;
-    }
-    
-    public State getState() {
-        if (isDockable() && getParent() == null && getTopLevelAncestor() == null) {
-            // is dockable, but has never been shown, so add to desktop
-            return State.DOCKABLE_NEVER_SHOWN;
-        } else if (isDockable() && getTopLevelAncestor() instanceof MLMainFrame) {
-            // is dockable, and already added to matlab some session before
-            return State.DOCKED;
-        } else if (isDockable() && getTopLevelAncestor() instanceof DTSingleClientFrame) {
-            return State.FLOATING;
-        } else if (isDockable()) {
-            // is dockable, and ?
-            return State.DOCKABLE_NEVER_SHOWN;
-        } else {
-            // use legacy undecorated frame floating around and hiding somewhere.
-            return State.UNDECORATED;
+    @Override
+    public void setVisible(boolean visible) {
+        setVisible(visible, EViewer.FILESTRUCTURE);
+        if (visible) {
+            wasHidden = true;
         }
     }
 
@@ -130,31 +113,6 @@ public class FileStructure extends JPanel {
         // component.setBackground(ColorUtils.complementary(component.getBackground()));
     }
 
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-
-        switch (getState()) {
-            case INVALD:
-                break;
-            case DOCKABLE_NEVER_SHOWN:
-                MLDesktop.getInstance().addClient(this, "FileStructure");
-                break;
-            case FLOATING:
-                getTopLevelAncestor().setVisible(visible);
-                break;
-            case DOCKED:
-                getParent().getParent().setVisible(true);
-                break;
-            case UNDECORATED:
-                FileStructureUndecoratedFrame.getInstance().setVisible(true);
-                break;
-        }
-        
-        if (visible) {
-            wasHidden = true;
-        }
-    }
 
     @SuppressWarnings("WeakerAccess")
     public void expandAll() {
@@ -168,14 +126,6 @@ public class FileStructure extends JPanel {
         for (int i = 0; i < jTree.getRowCount(); i++) {
             jTree.collapseRow(i);
         }
-    }
-
-    boolean isFloating() {
-        return getTopLevelAncestor() instanceof DTSingleClientFrame;
-    }
-
-    boolean isDockable() {
-        return Settings.getPropertyBoolean("feature.enableDockableWindows");
     }
 
     private void setLayout() {
@@ -231,7 +181,6 @@ public class FileStructure extends JPanel {
         });
         KeyStroke ksU = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_UP);
         jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksU, "UP");
-        //noinspection Duplicates
         jTFS.getActionMap().put("UP", new AbstractAction("UP") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -356,12 +305,7 @@ public class FileStructure extends JPanel {
 
         KeyStroke ksE = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ENTER);
         jTree.getInputMap(IFW).put(ksE, "ENTER");
-        jTree.getActionMap().put("ENTER", new AbstractAction("ENTER") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                enterAction.actionPerformed(new ActionEvent(e, 0, null));
-            }
-        });
+        jTree.getActionMap().put("ENTER", enterAction);
 
         return scrollPaneTree;
     }
@@ -391,7 +335,6 @@ public class FileStructure extends JPanel {
             return;
         }
         NodeFS root = new NodeFS(shortName);
-
 
         MTree.NodeType nodeType;
         //noinspection Duplicates
@@ -475,41 +418,3 @@ public class FileStructure extends JPanel {
     }
 
 }
-
-
-/*
-
-// CREATION OF FLOATING MATLAB GUI
-DTClient dtc = new DTClient(MLDesktop.getInstance(), "var2", "FileStructure");
-DTSingleClientFrame dtscf;
-try {
-    Method createUndockedFrame = MLDesktop.getInstance().getClass().getDeclaredMethod(
-            "createUndockedFrame",
-            DTClient.class);
-
-    Method setClientShowing = Desktop.class.getDeclaredMethod(
-            "setClientShowing",
-            DTClient.class,
-            boolean.class,
-            DTLocation.class,
-            boolean.class);
-
-    Class dtFloatingLocationClass = Class.forName("com.mathworks.widgets.desk.DTFloatingLocation");
-    Constructor dtLocation = dtFloatingLocationClass.getDeclaredConstructor(boolean.class);
-
-    createUndockedFrame.setAccessible(true);
-    setClientShowing.setAccessible(true);
-    dtLocation.setAccessible(true);
-
-    dtscf = (DTSingleClientFrame) createUndockedFrame.invoke(MLDesktop.getInstance(), dtc);
-    DTOnTopWindow dtOnTopWindow = (DTOnTopWindow) setClientShowing.invoke(MLDesktop.getInstance(), dtc, true, dtLocation.newInstance(true), true);
-
-} catch (InstantiationException | ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-    e.printStackTrace();
-    return;
-}
-
-
-
-
- */
