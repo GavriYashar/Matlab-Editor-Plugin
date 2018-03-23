@@ -23,7 +23,7 @@ import java.util.List;
 public class MEPRViewer extends DockableFrame {
     private static MEPRViewer instance;
     private static JList<Object> jList;
-    private static JTextFieldSearch jtfs;
+    private static JTextFieldSearch jTFS;
     private static java.util.List<MEPREntry> mepEntries;
     private static JComboBox<Object> jComboBox;
     private AbstractAction enterAction = new AbstractAction() {
@@ -44,7 +44,7 @@ public class MEPRViewer extends DockableFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             setJComboBoxAll();
-            findPattern(jtfs.getText());
+            findPattern(jTFS.getText());
             if (jList.getModel().getSize() > 1) {
                 jList.setSelectedIndex(0);
             }
@@ -54,16 +54,7 @@ public class MEPRViewer extends DockableFrame {
 
     private MEPRViewer() {
         setLayout();
-        addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                jtfs.requestFocus();
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-            }
-        });
+        addFocusListener(jTFS);
     }
 
     public static MEPRViewer getInstance() {
@@ -191,8 +182,8 @@ public class MEPRViewer extends DockableFrame {
     }
 
     private void addSearchBar(GridBagConstraints gbc) {
-        jtfs = new JTextFieldSearch(20);
-        jtfs.getDocument().addDocumentListener(new DocumentListener() {
+        jTFS = new JTextFieldSearch(20);
+        jTFS.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 updateAction.actionPerformed(null);
@@ -208,8 +199,8 @@ public class MEPRViewer extends DockableFrame {
             }
         });
         KeyStroke ksU = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_UP);
-        jtfs.getInputMap(JComponent.WHEN_FOCUSED).put(ksU, "UP");
-        jtfs.getActionMap().put("UP", new AbstractAction("UP") {
+        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksU, "UP");
+        jTFS.getActionMap().put("UP", new AbstractAction("UP") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = jList.getSelectedIndex(); // single selection
@@ -221,8 +212,8 @@ public class MEPRViewer extends DockableFrame {
         });
 
         KeyStroke ksD = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_DOWN);
-        jtfs.getInputMap(JComponent.WHEN_FOCUSED).put(ksD, "DOWN");
-        jtfs.getActionMap().put("DOWN", new AbstractAction("DOWN") {
+        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksD, "DOWN");
+        jTFS.getActionMap().put("DOWN", new AbstractAction("DOWN") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = jList.getSelectedIndex(); // single selection
@@ -236,10 +227,10 @@ public class MEPRViewer extends DockableFrame {
         });
 
         KeyStroke ksE = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ENTER);
-        jtfs.getInputMap(JComponent.WHEN_FOCUSED).put(ksE, "ENTER");
-        jtfs.getActionMap().put("ENTER", enterAction);
+        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksE, "ENTER");
+        jTFS.getActionMap().put("ENTER", enterAction);
 
-        add(jtfs, gbc);
+        add(jTFS, gbc);
     }
 
     private void addScrollPane(GridBagConstraints gbc) {
@@ -325,7 +316,7 @@ public class MEPRViewer extends DockableFrame {
         this.setVisible(true, EViewer.LIVE_TEMPLATES);
         this.setLocation(ScreenSize.getCenter(this.getSize()));
         updateList();
-        jtfs.setText("");
+        jTFS.setText("");
     }
 
     public void quickSearch() {

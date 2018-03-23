@@ -80,16 +80,7 @@ public class FileStructure extends DockableFrame {
     private FileStructure() {
         setLayout();
         populateTree();
-        addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                jTFS.requestFocus();
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-            }
-        });
+        addFocusListener(jTFS);
     }
 
     public static FileStructure getInstance() {

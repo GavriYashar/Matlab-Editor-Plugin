@@ -10,6 +10,8 @@ import com.mathworks.mde.desk.MLMainFrame;
 import com.mathworks.widgets.desk.DTSingleClientFrame;
 
 import javax.swing.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class DockableFrame extends JPanel {
     private enum EState {
@@ -52,6 +54,20 @@ public class DockableFrame extends JPanel {
 
     public boolean isFloating() {
         return getTopLevelAncestor() instanceof DTSingleClientFrame;
+    }
+
+    protected void addFocusListener(JComponent jComponent) {
+        addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                jComponent.requestFocus();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+
+            }
+        });
     }
 
     public void setVisible(boolean visible, EViewer eViewer) {
