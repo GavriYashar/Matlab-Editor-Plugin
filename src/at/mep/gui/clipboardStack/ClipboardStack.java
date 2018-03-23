@@ -6,12 +6,9 @@ import at.mep.gui.components.UndecoratedFrame;
 import at.mep.prefs.Settings;
 import at.mep.util.ClipboardUtil;
 import at.mep.util.KeyStrokeUtil;
-import at.mep.util.RunnableUtil;
 import at.mep.util.ScreenSize;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -22,19 +19,20 @@ import java.io.IOException;
 /** Created by Andreas Justin on 2016 - 02 - 09. */
 public class ClipboardStack extends UndecoratedFrame {
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
-    private static final String ENTER_ACTION = "ENTER";
-    private static ClipboardStack INSTANCE;
+    private static ClipboardStack instance;
     private JList<String> jList;
     private JTextArea jTextArea;
     private String[] strings = new String[Settings.getPropertyInt("clipboardStack.size")];
     private EClipboardParent eClipboardParent = EClipboardParent.INVALID;
+    private final AbstractAction enterAction = new AbstractAction("ENTER") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            insertSelectedText();
+        }
+    };
 
     private ClipboardStack() {
-        Runnable runnable = () -> {
-            create();
-            setVisible(false);
-        };
-        RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
+        setLayout();
     }
 
     @Override
@@ -49,9 +47,8 @@ public class ClipboardStack extends UndecoratedFrame {
     }
 
     public static ClipboardStack getInstance() {
-        if (INSTANCE != null) return INSTANCE;
-        INSTANCE = new ClipboardStack();
-        return INSTANCE;
+        if (instance == null) instance = new ClipboardStack();
+        return instance;
     }
 
     public void add(final String string) {
@@ -76,11 +73,13 @@ public class ClipboardStack extends UndecoratedFrame {
         }
     }
 
-    private void create() {
+    private void setLayout() {
         setTitle("ClipboardStack");
         setSize(Settings.getPropertyDimension("dim.clipboardStackViewer"));
         setResizable(true);
-        setLocation(ScreenSize.getCenter(getSize()));
+        Point sc = ScreenSize.getScreenCenterOfMouse();
+        Point pos = new Point(sc.x - getWidth()/2, sc.y - getHeight()/2);
+        setLocation(pos);
         setLayout(new GridBagLayout());
 
         {
@@ -137,25 +136,17 @@ public class ClipboardStack extends UndecoratedFrame {
         };
 
         // Text Selection listener
-        jList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int index = jList.getSelectedIndex();
-                if (index < 0) return;
-                jTextArea.setText(strings[index]);
-            }
+        jList.addListSelectionListener(e -> {
+            int index = jList.getSelectedIndex();
+            if (index < 0) return;
+            jTextArea.setText(strings[index]);
         });
 
         jList.addMouseListener(mlClick);
 
         KeyStroke ksU = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ENTER);
-        jList.getInputMap(IFW).put(ksU, ENTER_ACTION);
-        jList.getActionMap().put(ENTER_ACTION, new AbstractAction(ENTER_ACTION) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                insertSelectedText();
-            }
-        });
+        jList.getInputMap(IFW).put(ksU, "ENTER");
+        jList.getActionMap().put("ENTER", enterAction);
     }
 
     public void moveTextToPosition(int sourceIdx, int targetIdx) {

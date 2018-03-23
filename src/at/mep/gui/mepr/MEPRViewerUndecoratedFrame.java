@@ -1,23 +1,22 @@
-package at.mep.gui.fileStructure;
+package at.mep.gui.mepr;
 
 import at.mep.gui.components.UndecoratedFrame;
 import at.mep.prefs.Settings;
 import at.mep.util.ScreenSize;
-
 import java.awt.*;
 import java.io.IOException;
 
-/** Created by Andreas Justin on 2016 - 02 - 24. */
-public class FileStructureUndecoratedFrame extends UndecoratedFrame {
-    private static FileStructureUndecoratedFrame instance;
+/** Created by Andreas Justin on 2016-09-20. */
+public class MEPRViewerUndecoratedFrame extends UndecoratedFrame {
+    private static MEPRViewerUndecoratedFrame instance;
 
-    private FileStructureUndecoratedFrame() {
+    private MEPRViewerUndecoratedFrame() {
         setLayout();
     }
 
     @Override
     protected void storeDimension(Dimension dimension) {
-        Settings.setPropertyDimension("dim.fileStructureViewer", dimension);
+        Settings.setPropertyDimension("dim.MEPRViewer", dimension);
         try {
             Settings.store();
         } catch (IOException e) {
@@ -25,12 +24,12 @@ public class FileStructureUndecoratedFrame extends UndecoratedFrame {
         }
     }
 
-    public static FileStructureUndecoratedFrame getInstance() {
-        if (instance == null) instance = new FileStructureUndecoratedFrame();
+    public static MEPRViewerUndecoratedFrame getInstance() {
+        if (instance == null) instance = new MEPRViewerUndecoratedFrame();
         return instance;
     }
 
-    private static void setLayout() {
+    private void setLayout() {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridy = 0;
         gbc.gridx = 0;
@@ -38,10 +37,10 @@ public class FileStructureUndecoratedFrame extends UndecoratedFrame {
         gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
 
-        FileStructure fileStructure = FileStructure.getInstance();
+        MEPRViewer meprViewer = MEPRViewer.getInstance();
         instance.setLayout(new GridBagLayout());
-        instance.add(fileStructure, gbc);
-        instance.setSize(Settings.getPropertyDimension("dim.fileStructureViewer"));
+        instance.add(meprViewer, gbc);
+        instance.setSize(Settings.getPropertyDimension("dim.MEPRViewer"));
 
         Point sc = ScreenSize.getScreenCenterOfMouse();
         Point pos = new Point(sc.x - instance.getWidth()/2, sc.y - instance.getHeight()/2);

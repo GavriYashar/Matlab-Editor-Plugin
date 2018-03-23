@@ -2,8 +2,8 @@ package at.mep.gui.mepr;
 
 import at.mep.editor.EditorApp;
 import at.mep.editor.EditorWrapper;
+import at.mep.gui.components.DockableFrame;
 import at.mep.gui.components.JTextFieldSearch;
-import at.mep.gui.components.UndecoratedFrame;
 import at.mep.mepr.EMEPRAction;
 import at.mep.mepr.MEPR;
 import at.mep.prefs.Settings;
@@ -20,20 +20,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Created by Andreas Justin on 2016-09-20. */
-public class MEPRViewer extends UndecoratedFrame {
-    private static Dimension dimension;
-    private static MEPRViewer INSTANCE;
+public class MEPRViewer extends DockableFrame {
+    private static MEPRViewer instance;
     private static JList<Object> jList;
-    private static JTextFieldSearch jtfs;
+    private static JTextFieldSearch jTFS;
     private static java.util.List<MEPREntry> mepEntries;
     private static JComboBox<Object> jComboBox;
     private AbstractAction enterAction = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            setVisible(false);
             String action = "%" + ((MEPREntry) jList.getSelectedValue()).getAction();
             MEPR.prepareReplace(action, EMEPRAction.VIEWER);
             MEPR.doReplace();
+
+            EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
+            if (!isDockable() || isFloating()) {
+                setVisible(false);
+            }
         }
     };
 
@@ -41,7 +44,7 @@ public class MEPRViewer extends UndecoratedFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             setJComboBoxAll();
-            findPattern(jtfs.getText());
+            findPattern(jTFS.getText());
             if (jList.getModel().getSize() > 1) {
                 jList.setSelectedIndex(0);
             }
@@ -50,34 +53,19 @@ public class MEPRViewer extends UndecoratedFrame {
     };
 
     private MEPRViewer() {
-        dimension = Settings.getPropertyDimension("dim.MEPRViewer");
-        Runnable runnable = this::setLayout;
-        RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
-    }
-
-    @Override
-    protected void storeDimension(Dimension dimension) {
-        Settings.setPropertyDimension("dim.MEPRViewer", dimension);
-        try {
-            Settings.store();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        setLayout();
+        addFocusListener(jTFS);
     }
 
     public static MEPRViewer getInstance() {
-        if (INSTANCE == null) INSTANCE = new MEPRViewer();
-        return INSTANCE;
+        if (instance == null) instance = new MEPRViewer();
+        return instance;
     }
 
     private void setLayout() {
-        setTitle("MEPR Viewer");
-        setResizable(true);
-        setSize(dimension);
-        setPreferredSize(dimension);
-        rootPane.setLayout(new GridBagLayout());
+        setLayout(new GridBagLayout());
 
-        // searrch bar
+        // search bar
         GridBagConstraints gbcSB = new GridBagConstraints();
         gbcSB.gridy = 0;
         gbcSB.gridx = 0;
@@ -138,75 +126,64 @@ public class MEPRViewer extends UndecoratedFrame {
 
     private void addNewButton(GridBagConstraints gbc) {
         JButton insert = new JButton("New Action");
-        insert.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String p = Settings.getProperty("path.mepr.rep");
+        insert.addActionListener(e -> {
+            String p = Settings.getProperty("path.mepr.rep");
 
-                String name = JOptionPane.showInputDialog(
-                        new JFrame(),
-                        "Enter LiveTemplate name",
-                        "new Template",
-                        JOptionPane.QUESTION_MESSAGE);
-                if (name == null) return;
-                File file = new File(p + "\\MEPR_" + name + ".m");
+            String name = JOptionPane.showInputDialog(
+                    new JFrame(),
+                    "Enter LiveTemplate name",
+                    "new Template",
+                    JOptionPane.QUESTION_MESSAGE);
+            if (name == null) return;
+            File file = new File(p + "\\MEPR_" + name + ".m");
 
-                InputStream stream = MEPRViewer.class.getResourceAsStream("/template.txt");
-                String template = FileUtils.readInputStreamToString(stream);
+            InputStream stream = MEPRViewer.class.getResourceAsStream("/template.txt");
+            String template = FileUtils.readInputStreamToString(stream);
 
-                Editor editor = EditorWrapper.getMatlabEditorApplication().newEditor(template);
-                try {
-                    editor.saveAs(file.getPath());
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                    JOptionPane.showMessageDialog(
-                            new JFrame(""),
-                            e1.getMessage() + "\ncouldn't save file: " + file.getPath(),
-                            "invalid file",
-                            JOptionPane.ERROR_MESSAGE);
-                }
+            Editor editor = EditorWrapper.getMatlabEditorApplication().newEditor(template);
+            try {
+                editor.saveAs(file.getPath());
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                JOptionPane.showMessageDialog(
+                        new JFrame(""),
+                        e1.getMessage() + "\ncouldn't save file: " + file.getPath(),
+                        "invalid file",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
-        rootPane.add(insert, gbc);
+        add(insert, gbc);
     }
 
     private void addEditButton(GridBagConstraints gbc) {
         JButton insert = new JButton("Edit");
-        insert.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String p = Settings.getProperty("path.mepr.rep");
-                String action = ((MEPREntry) jList.getSelectedValue()).getAction();
+        insert.addActionListener(e -> {
+            String p = Settings.getProperty("path.mepr.rep");
+            String action = ((MEPREntry) jList.getSelectedValue()).getAction();
 
-                File file = new File(p + "\\MEPR_" + action + ".m");
-                if (file.exists()) {
-                    EditorApp.getInstance().openEditor(file);
-                } else {
-                    JOptionPane.showMessageDialog(
-                            new JFrame(""),
-                            "File does not exist: " + file.getPath(),
-                            "invalid file",
-                            JOptionPane.ERROR_MESSAGE);
-                }
+            File file = new File(p + "\\MEPR_" + action + ".m");
+            if (file.exists()) {
+                EditorApp.getInstance().openEditor(file);
+            } else {
+                JOptionPane.showMessageDialog(
+                        new JFrame(""),
+                        "File does not exist: " + file.getPath(),
+                        "invalid file",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
-        rootPane.add(insert, gbc);
+        add(insert, gbc);
     }
 
     private void addInsertButton(GridBagConstraints gbc) {
         JButton insert = new JButton("Insert");
-        insert.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                enterAction.actionPerformed(new ActionEvent(e, 0, null));
-            }
-        });
-        rootPane.add(insert, gbc);
+        insert.addActionListener(e -> enterAction.actionPerformed(new ActionEvent(e, 0, null)));
+        add(insert, gbc);
     }
 
     private void addSearchBar(GridBagConstraints gbc) {
-        jtfs = new JTextFieldSearch(20);
-        jtfs.getDocument().addDocumentListener(new DocumentListener() {
+        jTFS = new JTextFieldSearch(20);
+        jTFS.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 updateAction.actionPerformed(null);
@@ -222,8 +199,8 @@ public class MEPRViewer extends UndecoratedFrame {
             }
         });
         KeyStroke ksU = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_UP);
-        jtfs.getInputMap(JComponent.WHEN_FOCUSED).put(ksU, "UP");
-        jtfs.getActionMap().put("UP", new AbstractAction("UP") {
+        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksU, "UP");
+        jTFS.getActionMap().put("UP", new AbstractAction("UP") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = jList.getSelectedIndex(); // single selection
@@ -235,8 +212,8 @@ public class MEPRViewer extends UndecoratedFrame {
         });
 
         KeyStroke ksD = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_DOWN);
-        jtfs.getInputMap(JComponent.WHEN_FOCUSED).put(ksD, "DOWN");
-        jtfs.getActionMap().put("DOWN", new AbstractAction("DOWN") {
+        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksD, "DOWN");
+        jTFS.getActionMap().put("DOWN", new AbstractAction("DOWN") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = jList.getSelectedIndex(); // single selection
@@ -250,15 +227,10 @@ public class MEPRViewer extends UndecoratedFrame {
         });
 
         KeyStroke ksE = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ENTER);
-        jtfs.getInputMap(JComponent.WHEN_FOCUSED).put(ksE, "ENTER");
-        jtfs.getActionMap().put("ENTER", new AbstractAction("ENTER") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                enterAction.actionPerformed(new ActionEvent(e, 0, null));
-            }
-        });
+        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksE, "ENTER");
+        jTFS.getActionMap().put("ENTER", enterAction);
 
-        rootPane.add(jtfs, gbc);
+        add(jTFS, gbc);
     }
 
     private void addScrollPane(GridBagConstraints gbc) {
@@ -275,8 +247,6 @@ public class MEPRViewer extends UndecoratedFrame {
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-        jList.addMouseListener(mlClick);
-        jList.addMouseMotionListener(mlMove);
         jList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
@@ -287,7 +257,7 @@ public class MEPRViewer extends UndecoratedFrame {
             }
         });
 
-        rootPane.add(jsp, gbc);
+        add(jsp, gbc);
     }
 
     private void setJComboBoxAll() {
@@ -305,13 +275,8 @@ public class MEPRViewer extends UndecoratedFrame {
         entries.add(0, "all");
         jComboBox = new JComboBox<>(entries.toArray());
         setJComboBoxAll();
-        jComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                findTag((String) jComboBox.getSelectedItem());
-            }
-        });
-        rootPane.add(jComboBox, gbc);
+        jComboBox.addActionListener(e -> findTag((String) jComboBox.getSelectedItem()));
+        add(jComboBox, gbc);
     }
 
     private void findPattern(String pattern) {
@@ -348,12 +313,10 @@ public class MEPRViewer extends UndecoratedFrame {
     }
 
     public void showDialog() {
-        this.setVisible(true);
+        this.setVisible(true, EViewer.LIVE_TEMPLATES);
         this.setLocation(ScreenSize.getCenter(this.getSize()));
         updateList();
-        // ISSUE: #36
-        // findPattern(jtfs.getText()); // show last search (if editor has not been changed @populate)
-        jtfs.setText("");
+        jTFS.setText("");
     }
 
     public void quickSearch() {

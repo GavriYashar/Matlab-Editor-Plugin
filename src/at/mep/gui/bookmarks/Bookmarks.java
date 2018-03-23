@@ -13,6 +13,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 /** Created by Andreas Justin on 2016-08-25. */
 public class Bookmarks {
@@ -32,6 +33,16 @@ public class Bookmarks {
 
     public List<Bookmark> getBookmarkList() {
         return bookmarkList;
+    }
+
+    public List<Bookmark> filter(Pattern p) {
+        List<Bookmark> bookmarksFilter = new ArrayList<>(bookmarkList.size());
+        for (Bookmark bookmark : bookmarkList) {
+            if (p.matcher(bookmark.getName()).find() || p.matcher(bookmark.getLongName()).find()) {
+                bookmarksFilter.add(bookmark);
+            }
+        }
+        return bookmarksFilter;
     }
 
     public void clearBookmarks() {
