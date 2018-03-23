@@ -269,4 +269,14 @@ public class FileUtils {
         }
         return null;
     }
+
+    public static List<File> filter(List<File> files, Pattern p) {
+        List<File> listFilter = new ArrayList<>(files.size());
+        for (File file : files) {
+            if (p.matcher(file.getAbsolutePath()).find()) {
+                listFilter.add(file);
+            }
+        }
+        return listFilter;
+    }
 }
