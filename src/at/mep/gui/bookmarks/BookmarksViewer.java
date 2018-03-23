@@ -6,8 +6,12 @@ import at.mep.gui.components.JTextFieldSearch;
 import at.mep.util.KeyStrokeUtil;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /** Created by Andreas Justin on 2016-08-25. */
 public class BookmarksViewer extends DockableFrame {
@@ -15,6 +19,7 @@ public class BookmarksViewer extends DockableFrame {
     private static BookmarksViewer instance;
     private static Bookmarks bookmarks = Bookmarks.getInstance();
     private static JList<Object> jList;
+    private static JTextFieldSearch jTFS;
     private static JButton jbRename;
     private final AbstractAction enterAction = new AbstractAction() {
         @Override
@@ -23,6 +28,27 @@ public class BookmarksViewer extends DockableFrame {
             EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
             if (!isDockable() || isFloating()) {
                 setVisible(false);
+            }
+        }
+    };
+
+    private AbstractAction escAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            jTFS.setText("");
+            if (!isDockable() || isFloating()) {
+                setVisible(false);
+            }
+            EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
+        }
+    };
+
+    private AbstractAction updateAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            findPattern(jTFS.getText());
+            if (jList.getVisibleRowCount() > 1) {
+                jList.setSelectedIndex(1);
             }
         }
     };
@@ -48,22 +74,82 @@ public class BookmarksViewer extends DockableFrame {
     private void setLayout() {
         setLayout(new GridBagLayout());
 
-        addSearchBar();
+        createSearchField();
         addToolBar();
         addViewPanel();
+
+        addFocusListener(jTFS);
     }
 
     @SuppressWarnings("Duplicates")
-    private void addSearchBar() {
-        JTextFieldSearch jtfs = new JTextFieldSearch(20);
-        jtfs.setEnabled(false);
+    private void createSearchField() {
+        jTFS = new JTextFieldSearch(30);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridy = 0;
         gbc.gridx = 0;
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 10, 0, 10);
-        add(jtfs, gbc);
+        add(jTFS, gbc);
+
+        jTFS.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateAction.actionPerformed(null);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateAction.actionPerformed(null);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+
+            }
+        });
+
+        KeyStroke ksU = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_UP);
+        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksU, "UP");
+        jTFS.getActionMap().put("UP", new AbstractAction("UP") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = jList.getSelectedIndex(); // single selection
+                if (row < 0) {
+                    jList.setSelectedIndex(0);
+                }
+                jList.setSelectedIndex(row - 1); // zero is top, so up means -1
+            }
+        });
+
+        KeyStroke ksD = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_DOWN);
+        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksD, "DOWN");
+        jTFS.getActionMap().put("DOWN", new AbstractAction("DOWN") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = jList.getSelectedIndex(); // single selection
+                if (row < 0) {
+                    jList.setSelectedIndex(0);
+                }
+                if (bookmarks.getBookmarkList().size() - 1 > row) {
+                    jList.setSelectedIndex(row + 1); // zero is top, so down means +1
+                }
+            }
+        });
+
+        KeyStroke ksESC = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ESCAPE);
+        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksESC, "ESC");
+        jTFS.getActionMap().put("ESC", escAction);
+    }
+
+    private void findPattern(String pattern) {
+        try {
+            Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+            jTFS.setForeground(null);
+            jList.setListData(bookmarks.filter(p).toArray());
+        } catch (PatternSyntaxException e) {
+            jTFS.setForeground(Color.RED);
+        }
     }
 
     private void addToolBar() {
