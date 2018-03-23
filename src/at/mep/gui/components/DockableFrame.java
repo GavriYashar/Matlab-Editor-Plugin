@@ -2,8 +2,8 @@ package at.mep.gui.components;
 
 import at.mep.gui.bookmarks.BookmarksViewerUndecoratedFrame;
 import at.mep.gui.fileStructure.FileStructureUndecoratedFrame;
-import at.mep.gui.mepr.MEPRViewer;
 import at.mep.gui.mepr.MEPRViewerUndecoratedFrame;
+import at.mep.gui.recentlyClosed.RecentlyClosedUndecoratedFrame;
 import at.mep.prefs.Settings;
 import com.mathworks.mde.desk.MLDesktop;
 import com.mathworks.mde.desk.MLMainFrame;
@@ -29,9 +29,11 @@ public class DockableFrame extends JPanel {
     }
 
     public enum EViewer {
-        FILESTRUCTURE("FileStructure"),
+        FILE_STRUCTURE("FileStructure"),
         BOOKMARKS("BookmarksViewer"),
-        LIVETEMPLATES("LiveTemplates");
+        LIVE_TEMPLATES("LiveTemplates"),
+        RECENTLY_CLOSED("RecentlyClosed")
+        ;
 
         private final String text;
 
@@ -68,14 +70,17 @@ public class DockableFrame extends JPanel {
                 break;
             case UNDECORATED:
                 switch (eViewer) {
-                    case FILESTRUCTURE:
+                    case FILE_STRUCTURE:
                         FileStructureUndecoratedFrame.getInstance().setVisible(true);
                         break;
                     case BOOKMARKS:
                         BookmarksViewerUndecoratedFrame.getInstance().setVisible(true);
                         break;
-                    case LIVETEMPLATES:
+                    case LIVE_TEMPLATES:
                         MEPRViewerUndecoratedFrame.getInstance().setVisible(true);
+                        break;
+                    case RECENTLY_CLOSED:
+                        RecentlyClosedUndecoratedFrame.getInstance().setVisible(true);
                         break;
                 }
                 break;

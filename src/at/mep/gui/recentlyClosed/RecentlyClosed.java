@@ -1,12 +1,10 @@
 package at.mep.gui.recentlyClosed;
 
 import at.mep.editor.EditorWrapper;
+import at.mep.gui.components.DockableFrame;
 import at.mep.gui.components.JTextFieldSearch;
-import at.mep.gui.components.UndecoratedFrame;
 import at.mep.installer.Install;
-import at.mep.prefs.Settings;
 import at.mep.util.KeyStrokeUtil;
-import at.mep.util.RunnableUtil;
 import at.mep.util.ScreenSize;
 import com.mathworks.matlab.api.editor.Editor;
 
@@ -19,34 +17,33 @@ import java.util.List;
 import java.util.Properties;
 
 /** Created by Andreas Justin on 2017-10-11. */
-public class RecentlyClosed extends UndecoratedFrame {
-    private static final String ENTER_ACTION = "enterAction";
+public class RecentlyClosed extends DockableFrame {
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
-    private static RecentlyClosed INSTANCE;
-    private static Dimension dimension;
+    private static RecentlyClosed instance;
     private static JTabbedPane tabbedPane;
     private static JList<Object> jListTS;
     private static JList<Object> jListLS;
     private static List<File> fileListTS = new ArrayList<>(20);
     private static List<File> fileListLS = new ArrayList<>(20);
-    private final AbstractAction enterAction = new AbstractAction(ENTER_ACTION) {
+    private final AbstractAction enterAction = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
             selectFile();
+
+            if (!isDockable() || isFloating()) {
+                setVisible(false);
+            }
         }
     };
 
     private RecentlyClosed() {
-        dimension = Settings.getPropertyDimension("dim.recentlyClosedViewer");
-        Runnable runnable = this::setLayout;
-        RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
+        setLayout();
         loadLastSessions();
     }
 
     public static RecentlyClosed getInstance() {
-        if (INSTANCE != null) return INSTANCE;
-        INSTANCE = new RecentlyClosed();
-        return INSTANCE;
+        if (instance == null) instance = new RecentlyClosed();
+        return instance;
     }
 
     private static void loadLastSessions() {
@@ -63,7 +60,7 @@ public class RecentlyClosed extends UndecoratedFrame {
         }
 
         // reading props
-        int count = 0;
+        int count;
         try {
             count = Integer.parseInt(rcLS.getProperty("rcCount"));
         } catch (Exception ignored) {
@@ -88,7 +85,7 @@ public class RecentlyClosed extends UndecoratedFrame {
     }
 
     private static void saveLastSessions() {
-        Writer writer = null;
+        Writer writer;
         try {
             writer = new FileWriter(Install.getRecentlyClosedLastSessions(), false);
         } catch (IOException e) {
@@ -109,16 +106,6 @@ public class RecentlyClosed extends UndecoratedFrame {
         }
     }
 
-    @Override
-    protected void storeDimension(Dimension dimension) {
-        Settings.setPropertyDimension("dim.recentlyClosedViewer", dimension);
-        try {
-            Settings.store();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void addFile(File file) {
         if (!file.exists()) return;
         fileListTS.add(file);
@@ -132,7 +119,7 @@ public class RecentlyClosed extends UndecoratedFrame {
     }
 
     public void showDialog() {
-        this.setVisible(true);
+        this.setVisible(true, EViewer.RECENTLY_CLOSED);
         this.setLocation(ScreenSize.getCenter(this.getSize()));
         updateList();
     }
@@ -143,11 +130,7 @@ public class RecentlyClosed extends UndecoratedFrame {
     }
 
     private void setLayout() {
-        setTitle("Recently Closed");
-        setResizable(true);
-        setSize(dimension);
-        setPreferredSize(dimension);
-        rootPane.setLayout(new GridBagLayout());
+        setLayout(new GridBagLayout());
 
         addSearchBar();
         addToolBar();
@@ -164,7 +147,7 @@ public class RecentlyClosed extends UndecoratedFrame {
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 10, 0, 10);
-        rootPane.add(jtfs, gbc);
+        add(jtfs, gbc);
     }
 
     private void addToolBar() {
@@ -172,21 +155,18 @@ public class RecentlyClosed extends UndecoratedFrame {
         jp.setLayout(new BoxLayout(jp, BoxLayout.X_AXIS));
 
         JButton jbDelete = new JButton("Remove");
-        jbDelete.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                List<Object> files;
-                if (RecentlyClosed.tabbedPane.getSelectedIndex() == 0) {
-                    files = jListTS.getSelectedValuesList();
-                } else {
-                    files = jListLS.getSelectedValuesList();
-                }
-                for (Object o : files) {
-                    File file = (File) o;
-                    remFile(file);
-                }
-                updateList();
+        jbDelete.addActionListener(e -> {
+            List<Object> files;
+            if (RecentlyClosed.tabbedPane.getSelectedIndex() == 0) {
+                files = jListTS.getSelectedValuesList();
+            } else {
+                files = jListLS.getSelectedValuesList();
             }
+            for (Object o : files) {
+                File file = (File) o;
+                remFile(file);
+            }
+            updateList();
         });
         jp.add(jbDelete);
 
@@ -196,30 +176,14 @@ public class RecentlyClosed extends UndecoratedFrame {
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 10, 0, 10);
-        rootPane.add(jp, gbc);
+        add(jp, gbc);
     }
 
     private void addViewPanel() {
-        MouseListener ml = new MouseListener() {
+        MouseAdapter ml = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() > 1) selectFile();
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
             }
         };
         jListTS = new JList<>(fileListTS.toArray());
@@ -227,8 +191,6 @@ public class RecentlyClosed extends UndecoratedFrame {
         jListTS.setLayoutOrientation(JList.VERTICAL);
         jListTS.setVisibleRowCount(-1);
         jListTS.setCellRenderer(new DefaultListCellRenderer());
-        jListTS.addMouseListener(mlClick);
-        jListTS.addMouseMotionListener(mlMove);
         jListTS.addMouseListener(ml);
 
         jListLS = new JList<>(fileListTS.toArray());
@@ -236,13 +198,11 @@ public class RecentlyClosed extends UndecoratedFrame {
         jListLS.setLayoutOrientation(JList.VERTICAL);
         jListLS.setVisibleRowCount(-1);
         jListLS.setCellRenderer(new DefaultListCellRenderer());
-        jListLS.addMouseListener(mlClick);
-        jListLS.addMouseMotionListener(mlMove);
         jListLS.addMouseListener(ml);
 
         KeyStroke ks = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ENTER);
-        getRootPane().getInputMap(IFW).put(ks, ENTER_ACTION);
-        getRootPane().getActionMap().put(ENTER_ACTION, enterAction);
+        getInputMap(IFW).put(ks, "ENTER");
+        getActionMap().put("ENTER", enterAction);
 
         JScrollPane jspTS = new JScrollPane(jListTS);
         jspTS.getVerticalScrollBar().setUnitIncrement(20);
@@ -268,7 +228,7 @@ public class RecentlyClosed extends UndecoratedFrame {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(5, 10, 10, 10);
 
-        rootPane.add(tabbedPane, gbc);
+        add(tabbedPane, gbc);
     }
 
     private void selectFile() {
@@ -281,6 +241,5 @@ public class RecentlyClosed extends UndecoratedFrame {
         if (file == null) return;
         EditorWrapper.openEditor(file);
         remFile(file);
-        setVisible(false);
     }
 }

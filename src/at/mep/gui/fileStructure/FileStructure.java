@@ -99,7 +99,7 @@ public class FileStructure extends DockableFrame {
 
     @Override
     public void setVisible(boolean visible) {
-        setVisible(visible, EViewer.FILESTRUCTURE);
+        setVisible(visible, EViewer.FILE_STRUCTURE);
         if (visible) {
             wasHidden = true;
         }

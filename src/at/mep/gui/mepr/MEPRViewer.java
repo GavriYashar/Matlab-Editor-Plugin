@@ -4,7 +4,6 @@ import at.mep.editor.EditorApp;
 import at.mep.editor.EditorWrapper;
 import at.mep.gui.components.DockableFrame;
 import at.mep.gui.components.JTextFieldSearch;
-import at.mep.gui.components.UndecoratedFrame;
 import at.mep.mepr.EMEPRAction;
 import at.mep.mepr.MEPR;
 import at.mep.prefs.Settings;
@@ -323,7 +322,7 @@ public class MEPRViewer extends DockableFrame {
     }
 
     public void showDialog() {
-        this.setVisible(true, EViewer.LIVETEMPLATES);
+        this.setVisible(true, EViewer.LIVE_TEMPLATES);
         this.setLocation(ScreenSize.getCenter(this.getSize()));
         updateList();
         jtfs.setText("");
