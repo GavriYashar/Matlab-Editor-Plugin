@@ -1,51 +1,43 @@
 package at.mep.gui.bookmarks;
 
+import at.mep.editor.EditorWrapper;
+import at.mep.gui.components.DockableFrame;
 import at.mep.gui.components.JTextFieldSearch;
-import at.mep.gui.components.UndecoratedFrame;
-import at.mep.prefs.Settings;
 import at.mep.util.KeyStrokeUtil;
-import at.mep.util.RunnableUtil;
-import at.mep.util.ScreenSize;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 
 /** Created by Andreas Justin on 2016-08-25. */
-public class BookmarksViewer extends UndecoratedFrame {
-
-    private static final String ENTER_ACTION = "enterAction";
+public class BookmarksViewer extends DockableFrame {
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
-    private static BookmarksViewer INSTANCE;
-    private static Dimension dimension;
+    private static BookmarksViewer instance;
     private static Bookmarks bookmarks = Bookmarks.getInstance();
     private static JList<Object> jList;
     private static JButton jbRename;
-    private final AbstractAction enterAction = new AbstractAction(ENTER_ACTION) {
+    private final AbstractAction enterAction = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
             selectBookmark();
+            EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
+            if (!isDockable() || isFloating()) {
+                setVisible(false);
+            }
         }
     };
 
     private BookmarksViewer() {
-        dimension = Settings.getPropertyDimension("dim.bookmarksViewer");
-        Runnable runnable = this::setLayout;
-        RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
+        setLayout();
     }
 
     public static BookmarksViewer getInstance() {
-        if (INSTANCE != null) return INSTANCE;
-        INSTANCE = new BookmarksViewer();
-        return INSTANCE;
+        if (instance == null) instance = new BookmarksViewer();
+        return instance;
     }
 
     public void showDialog() {
-        this.setVisible(true);
-        this.setLocation(ScreenSize.getCenter(this.getSize()));
+        setVisible(true, EViewer.BOOKMARKS);
         updateList();
     }
 
@@ -54,27 +46,14 @@ public class BookmarksViewer extends UndecoratedFrame {
     }
 
     private void setLayout() {
-        setTitle("BookmarksViewer");
-        setResizable(true);
-        setSize(dimension);
-        setPreferredSize(dimension);
-        rootPane.setLayout(new GridBagLayout());
+        setLayout(new GridBagLayout());
 
         addSearchBar();
         addToolBar();
         addViewPanel();
     }
 
-    @Override
-    protected void storeDimension(Dimension dimension) {
-        Settings.setPropertyDimension("dim.bookmarksViewer", dimension);
-        try {
-            Settings.store();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+    @SuppressWarnings("Duplicates")
     private void addSearchBar() {
         JTextFieldSearch jtfs = new JTextFieldSearch(20);
         jtfs.setEnabled(false);
@@ -84,7 +63,7 @@ public class BookmarksViewer extends UndecoratedFrame {
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 10, 0, 10);
-        rootPane.add(jtfs, gbc);
+        add(jtfs, gbc);
     }
 
     private void addToolBar() {
@@ -92,35 +71,29 @@ public class BookmarksViewer extends UndecoratedFrame {
         jp.setLayout(new BoxLayout(jp, BoxLayout.X_AXIS));
 
         jbRename = new JButton("Rename");
-        jbRename.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Bookmark bookmark = (Bookmark) jList.getSelectedValue();
-                if (bookmark == null) return;
-                String name = JOptionPane.showInputDialog(
-                        new JFrame(),
-                        "Enter Short bookmark description",
-                        "Bookmark description",
-                        JOptionPane.QUESTION_MESSAGE);
-                if (name == null) return;
-                bookmark.setName(name);
-                updateList();
-            }
+        jbRename.addActionListener(e -> {
+            Bookmark bookmark = (Bookmark) jList.getSelectedValue();
+            if (bookmark == null) return;
+            String name = JOptionPane.showInputDialog(
+                    new JFrame(),
+                    "Enter Short bookmark description",
+                    "Bookmark description",
+                    JOptionPane.QUESTION_MESSAGE);
+            if (name == null) return;
+            bookmark.setName(name);
+            updateList();
         });
         jp.add(jbRename);
 
         JButton jbDelete = new JButton("Remove");
-        jbDelete.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                java.util.List<Object> bookmarkList = jList.getSelectedValuesList();
-                for (Object o : bookmarkList) {
-                    Bookmark bookmark = (Bookmark) o;
-                    Bookmarks.getInstance().removeBookmark(bookmark);
-                    Bookmarks.getInstance().setEditorBookmarks(bookmark.getEditor());
-                }
-                updateList();
+        jbDelete.addActionListener(e -> {
+            java.util.List<Object> bookmarkList = jList.getSelectedValuesList();
+            for (Object o : bookmarkList) {
+                Bookmark bookmark = (Bookmark) o;
+                Bookmarks.getInstance().removeBookmark(bookmark);
+                Bookmarks.getInstance().setEditorBookmarks(bookmark.getEditor());
             }
+            updateList();
         });
         jp.add(jbDelete);
 
@@ -130,7 +103,7 @@ public class BookmarksViewer extends UndecoratedFrame {
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 10, 0, 10);
-        rootPane.add(jp, gbc);
+        add(jp, gbc);
     }
 
     private void addViewPanel() {
@@ -139,41 +112,23 @@ public class BookmarksViewer extends UndecoratedFrame {
         jList.setLayoutOrientation(JList.VERTICAL);
         jList.setVisibleRowCount(-1);
         jList.setCellRenderer(new BookmarkCellRenderer());
-        jList.addMouseListener(mlClick);
-        jList.addMouseMotionListener(mlMove);
-        jList.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() > 1) selectBookmark();
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
+        jList.addListSelectionListener(e -> {
+            int[] indices = jList.getSelectedIndices();
+            jbRename.setEnabled(indices.length == 1);
+        });
+        jList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-            }
-        });
-        jList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int[] indices = jList.getSelectedIndices();
-                jbRename.setEnabled(indices.length == 1);
+                super.mouseReleased(e);
+                if (e.getClickCount() > 1 && e.getButton() == 1) {
+                    enterAction.actionPerformed(new ActionEvent(e, 0, null));
+                }
             }
         });
 
         KeyStroke ks = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ENTER);
-        getRootPane().getInputMap(IFW).put(ks, ENTER_ACTION);
-        getRootPane().getActionMap().put(ENTER_ACTION, enterAction);
+        getInputMap(IFW).put(ks, "ENTER");
+        getActionMap().put("ENTER", enterAction);
 
         JScrollPane jsp = new JScrollPane(jList);
         jsp.getVerticalScrollBar().setUnitIncrement(20);
@@ -189,13 +144,28 @@ public class BookmarksViewer extends UndecoratedFrame {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(5, 10, 10, 10);
 
-        rootPane.add(jsp, gbc);
+        add(jsp, gbc);
     }
 
     private void selectBookmark() {
         Bookmark bookmark = (Bookmark) jList.getSelectedValue();
         if (bookmark == null) return;
         bookmark.goTo();
-        setVisible(false);
     }
 }
+
+/*
+
+e = at.mep.editor.EditorWrapper.getEditorSyntaxTextPane
+i = e.getInputMap(0)
+a = e.getActionMap()
+
+ak = a.allKeys();
+ik = i.allKeys();
+for ii = 1:numel(ak)
+    aks(ii) = string(ak(ii));
+    ik(ii)
+end
+idx = aks == "MEP_SHOW_BOOKMARKS";
+ik(idx)
+ */
