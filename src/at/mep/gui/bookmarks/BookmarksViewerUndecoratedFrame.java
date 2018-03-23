@@ -41,7 +41,7 @@ public class BookmarksViewerUndecoratedFrame extends UndecoratedFrame {
         BookmarksViewer bookmarksViewer = BookmarksViewer.getInstance();
         instance.setLayout(new GridBagLayout());
         instance.add(bookmarksViewer, gbc);
-        instance.setSize(Settings.getPropertyDimension("dim.fileStructureViewer"));
+        instance.setSize(Settings.getPropertyDimension("dim.bookmarksViewer"));
 
         Point sc = ScreenSize.getScreenCenterOfMouse();
         Point pos = new Point(sc.x - instance.getWidth()/2, sc.y - instance.getHeight()/2);
