@@ -41,7 +41,6 @@ public class FileStructure extends DockableFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (jTree.getMaxSelectionRow() < 0) return;
-            jTFS.setText("");
             NodeFS nodeFS = (NodeFS) jTree.getSelectionPath().getLastPathComponent();
             if (nodeFS.hasNode()) {
                 if (nodeFS.isInherited()) {
@@ -50,6 +49,7 @@ public class FileStructure extends DockableFrame {
                 EditorWrapper.goToLine(nodeFS.node().getStartLine(), false);
                 escAction.actionPerformed(new ActionEvent(e, 0, null));
             }
+            jTFS.setText("");
         }
     };
 
