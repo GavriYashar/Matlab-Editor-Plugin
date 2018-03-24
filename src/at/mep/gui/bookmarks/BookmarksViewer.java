@@ -25,21 +25,7 @@ public class BookmarksViewer extends DockableFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             selectBookmark();
-            EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
-            if (!isDockable() || isFloating()) {
-                setVisible(false);
-            }
-        }
-    };
-
-    private AbstractAction escAction = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            jTFS.setText("");
-            if (!isDockable() || isFloating()) {
-                setVisible(false);
-            }
-            EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
+            escAction.actionPerformed(new ActionEvent(e, 0, null));
         }
     };
 
@@ -54,6 +40,7 @@ public class BookmarksViewer extends DockableFrame {
     };
 
     private BookmarksViewer() {
+        super(EViewer.BOOKMARKS);
         setLayout();
     }
 
@@ -63,7 +50,7 @@ public class BookmarksViewer extends DockableFrame {
     }
 
     public void showDialog() {
-        setVisible(true, EViewer.BOOKMARKS);
+        setVisible(true);
         updateList();
     }
 
@@ -137,9 +124,7 @@ public class BookmarksViewer extends DockableFrame {
             }
         });
 
-        KeyStroke ksESC = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ESCAPE);
-        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksESC, "ESC");
-        jTFS.getActionMap().put("ESC", escAction);
+        addEnterAction(jTFS, enterAction);
     }
 
     private void findPattern(String pattern) {

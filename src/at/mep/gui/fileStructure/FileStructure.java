@@ -48,21 +48,8 @@ public class FileStructure extends DockableFrame {
                     EditorWrapper.openEditor(nodeFS.getFile());
                 }
                 EditorWrapper.goToLine(nodeFS.node().getStartLine(), false);
-                EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
-                if (!isDockable() || isFloating()) {
-                    setVisible(false);
-                }
+                escAction.actionPerformed(new ActionEvent(e, 0, null));
             }
-        }
-    };
-    private AbstractAction escAction = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            jTFS.setText("");
-            if (!isDockable() || isFloating()) {
-                setVisible(false);
-            }
-            EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
         }
     };
 
@@ -78,6 +65,7 @@ public class FileStructure extends DockableFrame {
 
     @SuppressWarnings("WeakerAccess")
     private FileStructure() {
+        super(EViewer.FILE_STRUCTURE);
         setLayout();
         populateTree();
         addFocusListener(jTFS);
@@ -90,7 +78,7 @@ public class FileStructure extends DockableFrame {
 
     @Override
     public void setVisible(boolean visible) {
-        setVisible(visible, EViewer.FILE_STRUCTURE);
+        super.setVisible(visible);
         if (visible) {
             wasHidden = true;
         }
@@ -122,6 +110,10 @@ public class FileStructure extends DockableFrame {
     private void setLayout() {
         setName("FileStructureViewer");
         setLayout(new GridBagLayout());
+
+        KeyStroke ksENTER = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ENTER);
+        getInputMap(IFW).put(ksENTER, "ENTER");
+        getActionMap().put("ENTER", enterAction);
 
         // creating search box
         createSearchField();
@@ -201,9 +193,7 @@ public class FileStructure extends DockableFrame {
             }
         });
 
-        KeyStroke ksESC = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ESCAPE);
-        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksESC, "ESC");
-        jTFS.getActionMap().put("ESC", escAction);
+        addEnterAction(jTFS, enterAction);
     }
 
     private JPanel createSettingsPanel() {
@@ -293,11 +283,6 @@ public class FileStructure extends DockableFrame {
                 }
             }
         });
-
-        KeyStroke ksE = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ENTER);
-        jTree.getInputMap(IFW).put(ksE, "ENTER");
-        jTree.getActionMap().put("ENTER", enterAction);
-
         return scrollPaneTree;
     }
 
