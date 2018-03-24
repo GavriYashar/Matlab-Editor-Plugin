@@ -9,10 +9,7 @@ import com.mathworks.mde.editor.breakpoints.MatlabBreakpointUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 public class BreakpointViewer extends DockableFrame {
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
@@ -40,9 +37,13 @@ public class BreakpointViewer extends DockableFrame {
     }
 
     public void showDialog() {
-        jList.setListData(MatlabBreakpointUtils.getDebugger().getBreakpoints().toArray());
+        updateList();
         jList.requestFocus();
         setVisible(true);
+    }
+
+    public void updateList() {
+        jList.setListData(MatlabBreakpointUtils.getDebugger().getBreakpoints().toArray());
     }
 
     public static BreakpointViewer getInstance() {
@@ -53,6 +54,12 @@ public class BreakpointViewer extends DockableFrame {
     private void setLayout() {
         setLayout(new GridBagLayout());
         addFocusListener(jList);
+        addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                updateList();
+            }
+        });
 
         KeyStroke ksENTER = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ENTER);
         getInputMap(IFW).put(ksENTER, "ENTER");

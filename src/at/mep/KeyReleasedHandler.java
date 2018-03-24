@@ -7,6 +7,7 @@ import at.mep.util.KeyStrokeUtil;
 import com.mathworks.mde.cmdwin.XCmdWndView;
 import com.mathworks.mde.editor.EditorSyntaxTextPane;
 
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.regex.Matcher;
@@ -17,11 +18,7 @@ public class KeyReleasedHandler {
     private static String opEqString;
     private static Pattern opEqPattern = Pattern.compile("[\\+]"); // "[\\+\\-\\*/]"
     private static Pattern opEqLeftArgPattern = Pattern.compile("(\\s*)(.*?)(?=\\s*[\\+\\-\\*/]{2})");
-    private static final KeyListener keyListener = new KeyListener() {
-        @Override
-        public void keyTyped(KeyEvent e) {
-        }
-
+    private static final KeyListener keyListener = new KeyAdapter() {
         @Override
         public void keyPressed(KeyEvent e) {
             if (Matlab.getInstance().isBusy()) return;

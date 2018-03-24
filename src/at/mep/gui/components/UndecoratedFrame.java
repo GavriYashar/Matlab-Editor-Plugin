@@ -19,11 +19,7 @@ public abstract class UndecoratedFrame extends JFrame {
     };
 
     private boolean hideWhenFocusLost = true;
-    public final WindowFocusListener focusLostHide = new WindowFocusListener() {
-        @Override
-        public void windowGainedFocus(WindowEvent e) {
-        }
-
+    public final WindowFocusListener focusLostHide = new WindowAdapter() {
         @Override
         public void windowLostFocus(WindowEvent e) {
             if (hideWhenFocusLost){
@@ -35,6 +31,7 @@ public abstract class UndecoratedFrame extends JFrame {
     private Dimension initialDimension;
     // drag listener
     public final MouseAdapter mlClick = new MouseAdapter() {
+        @Override
         public void mousePressed(MouseEvent e) {
             initialClick = e.getPoint();
             initialDimension = getSize();

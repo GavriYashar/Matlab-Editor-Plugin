@@ -7,8 +7,8 @@ import com.mathworks.comparisons.source.impl.VariableSource;
 import com.mathworks.mlwidgets.workspace.WorkspaceTable;
 
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,17 +24,7 @@ public class WorkspaceWrapper {
             return;
         }
 
-        wst.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
+        wst.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
                 switch (e.getButton()) {
@@ -55,16 +45,6 @@ public class WorkspaceWrapper {
                         // forward
                         break;
                 }
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
             }
         });
     }

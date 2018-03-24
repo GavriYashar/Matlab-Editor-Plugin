@@ -23,10 +23,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -156,15 +153,10 @@ public class EditorApp {
             AutoSwitcher.addCheckbox();
 
             // Mouse Listener
-            editorSyntaxTextPane.addMouseListener(new MouseListener() {
+            editorSyntaxTextPane.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     // clicked doesn't not get fired while mouse is moving
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-
                 }
 
                 @Override
@@ -217,15 +209,6 @@ public class EditorApp {
                             break;
                         }
                     }
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
                 }
             });
 

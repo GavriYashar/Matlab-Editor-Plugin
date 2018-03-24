@@ -72,16 +72,13 @@ public class JPanelInstall extends JPanel {
             cJARPathBrowse.weightx = 0.1;
             cJARPathBrowse.insets = new Insets(0, 0, 0, 10);
             final JButton jb = new JButton("...");
-            jb.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                    int returnVal = fc.showOpenDialog(jb);
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        File file = fc.getSelectedFile();
-                        jtJAR.setText(file.toString());
-                        searchJars(file);
-                    }
+            jb.addActionListener(e -> {
+                fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int returnVal = fc.showOpenDialog(jb);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file12 = fc.getSelectedFile();
+                    jtJAR.setText(file12.toString());
+                    searchJars(file12);
                 }
             });
             add(jb, cJARPathBrowse);
@@ -121,22 +118,19 @@ public class JPanelInstall extends JPanel {
             cJCPPathBrowse.weightx = 0.1;
             cJCPPathBrowse.insets = new Insets(0, 0, 0, 10);
             final JButton jb = new JButton("...");
-            jb.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                    int returnVal = fc.showOpenDialog(jb);
+            jb.addActionListener(e -> {
+                fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                int returnVal = fc.showOpenDialog(jb);
 
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        File file = fc.getSelectedFile();
-                        if (file.getName().startsWith("javaclasspath")) {
-                            txtJCP = file;
-                        } else {
-                            txtJCP = null;
-                        }
-                        jtJCP.setText(file.toString());
-                        checkJCPPath();
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file13 = fc.getSelectedFile();
+                    if (file13.getName().startsWith("javaclasspath")) {
+                        txtJCP = file13;
+                    } else {
+                        txtJCP = null;
                     }
+                    jtJCP.setText(file13.toString());
+                    checkJCPPath();
                 }
             });
             add(jb, cJCPPathBrowse);
@@ -168,17 +162,14 @@ public class JPanelInstall extends JPanel {
             cIDPathBrowse.weightx = 0.1;
             cIDPathBrowse.insets = new Insets(0, 0, 0, 10);
             final JButton jb = new JButton("...");
-            jb.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                    int returnVal = fc.showOpenDialog(jb);
+            jb.addActionListener(e -> {
+                fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int returnVal = fc.showOpenDialog(jb);
 
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        File file = fc.getSelectedFile();
-                        id = new File(file.toString() + "\\MEP");
-                        jtID.setText(id.toString());
-                    }
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file1 = fc.getSelectedFile();
+                    id = new File(file1.toString() + "\\MEP");
+                    jtID.setText(id.toString());
                 }
             });
             add(jb, cIDPathBrowse);
@@ -232,12 +223,7 @@ public class JPanelInstall extends JPanel {
         JButton jbi = new JButton("Install");
         jp.add(jbi, cBI);
 
-        jbi.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                doInstall();
-            }
-        });
+        jbi.addActionListener(e -> doInstall());
 
         // // uninstall Button
         // GridBagConstraints cBU = new GridBagConstraints();
