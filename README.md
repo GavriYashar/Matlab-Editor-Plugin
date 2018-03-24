@@ -3,8 +3,8 @@
 In short, it will mess around with Matlabs Editor:
 
 * **[Navigation History](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#navigation-history)**: using the Mouse Forward and Backward button to navigate through location history
-* **[Auto-Detail-Viewer](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#auto-detail-viewer)**: updates the detailviewer of matlab if active editor has changed
-* **[Auto-Switch-Current-Folder](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#auto-switch-current-folder)**: changes currentfolder if active editor has changed
+* **[Auto-Detail-Viewer](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#auto-detail-viewer--switch-current-folder)**: updates the detailviewer of matlab if active editor has changed
+* **[Auto-Switch-Current-Folder](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#auto-detail-viewer--switch-current-folder)**: changes currentfolder if active editor has changed
 * **[KeyPressListener](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Setup#creating-custom-key-press-callbacks-in-editor)**: executes custom Matlab functions on keypress passed in by the user beforehand
 * **[ClipboardStack](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#clipboard-stack)**: opened via <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>V</kbd>, stores the previous 10 strings copied to clipboard from Matlab.
 * **[FileStructure](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#file-structure)**: opened via <kbd>CTRL</kbd> + <kbd>F12</kbd>, searching through functions and sections
@@ -19,6 +19,7 @@ In short, it will mess around with Matlabs Editor:
 * **[Recently Closed Editor](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#recently-closed-editor)**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>T</kbd>
 * **[VarDiff](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#vardiff)**: Compares two Variables in Workspace
 * Shortcuts can be changed in `*.properties` file
+* Windows are dockable
 
 ## Setup
 [Follow this link](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Setup)
