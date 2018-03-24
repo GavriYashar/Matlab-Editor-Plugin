@@ -36,10 +36,10 @@ public class DockableFrame extends JPanel {
 
     public enum EViewer {
         FILE_STRUCTURE("FileStructure"),
-        BOOKMARKS("BookmarksViewer"),
+        BOOKMARKS("Bookmarks"),
         LIVE_TEMPLATES("LiveTemplates"),
         RECENTLY_CLOSED("RecentlyClosed"),
-        BREAKPOINTS("BreakPointViewer")
+        BREAKPOINTS("BreakPoints")
         ;
 
         private final String text;
