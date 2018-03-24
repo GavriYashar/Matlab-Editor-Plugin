@@ -109,7 +109,7 @@ public class PrefsPanelUtil {
         Dimension d = new Dimension(20,20);
         jtf.setPreferredSize(d);
         jtf.setMaximumSize(d);
-        jtf.addMouseListener(new MouseListener() {
+        jtf.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -118,26 +118,6 @@ public class PrefsPanelUtil {
                     File file = fc.getSelectedFile();
                     jtf.setText(file.toString());
                 }
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
             }
         });
 
@@ -151,7 +131,7 @@ public class PrefsPanelUtil {
         jp.setSize(dimension);
         jp.setBorder(new LineBorder(new Color(0x505050), 1));
         jp.setBackground(Settings.getPropertyColor(property));
-        jp.addMouseListener(new MouseListener() {
+        jp.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Color color = JColorChooser.showDialog(null, "Choose color for Breakpoint Bar", Settings.getPropertyColor(property));
@@ -159,26 +139,6 @@ public class PrefsPanelUtil {
                     return;
                 }
                 jp.setBackground(color);
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
             }
         });
         return jp;

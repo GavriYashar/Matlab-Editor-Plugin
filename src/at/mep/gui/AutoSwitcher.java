@@ -69,23 +69,20 @@ public class AutoSwitcher {
         } else {
             jCBDetailViewer.setIcon(EIcons.DETAIL_VIEWER_I.getIcon());
         }
-        jCBDetailViewer.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                String val = "false";
-                if (jCBDetailViewer.isSelected()) {
-                    val = "true";
-                    jCBDetailViewer.setIcon(EIcons.DETAIL_VIEWER_A.getIcon());
-                    doYourThing();
-                } else {
-                    jCBDetailViewer.setIcon(EIcons.DETAIL_VIEWER_I.getIcon());
-                }
-                Settings.setProperty("feature.enableAutoDetailViewer", val);
-                try {
-                    Settings.store();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+        jCBDetailViewer.addChangeListener(e -> {
+            String val = "false";
+            if (jCBDetailViewer.isSelected()) {
+                val = "true";
+                jCBDetailViewer.setIcon(EIcons.DETAIL_VIEWER_A.getIcon());
+                doYourThing();
+            } else {
+                jCBDetailViewer.setIcon(EIcons.DETAIL_VIEWER_I.getIcon());
+            }
+            Settings.setProperty("feature.enableAutoDetailViewer", val);
+            try {
+                Settings.store();
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
         });
 
@@ -95,23 +92,20 @@ public class AutoSwitcher {
         } else {
             jCBSwitchFolder.setIcon(EIcons.GO_TO_FOLDER_I.getIcon());
         }
-        jCBSwitchFolder.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                String val = "false";
-                if (jCBSwitchFolder.isSelected()) {
-                    val = "true";
-                    jCBSwitchFolder.setIcon(EIcons.GO_TO_FOLDER_A.getIcon());
-                    doYourThing();
-                } else {
-                    jCBSwitchFolder.setIcon(EIcons.GO_TO_FOLDER_I.getIcon());
-                }
-                Settings.setProperty("feature.enableAutoCurrentFolder", val);
-                try {
-                    Settings.store();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+        jCBSwitchFolder.addChangeListener(e -> {
+            String val = "false";
+            if (jCBSwitchFolder.isSelected()) {
+                val = "true";
+                jCBSwitchFolder.setIcon(EIcons.GO_TO_FOLDER_A.getIcon());
+                doYourThing();
+            } else {
+                jCBSwitchFolder.setIcon(EIcons.GO_TO_FOLDER_I.getIcon());
+            }
+            Settings.setProperty("feature.enableAutoCurrentFolder", val);
+            try {
+                Settings.store();
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
         });
     }

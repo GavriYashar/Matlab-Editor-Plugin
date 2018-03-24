@@ -4,6 +4,7 @@ import at.mep.CommandWindow;
 import at.mep.debug.Debug;
 import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.gui.bookmarks.BookmarksViewer;
+import at.mep.gui.breakpointviewer.BreakpointViewer;
 import at.mep.gui.clipboardStack.ClipboardStack;
 import at.mep.gui.clipboardStack.EClipboardParent;
 import at.mep.gui.fileStructure.FileStructure;
@@ -114,6 +115,14 @@ public enum EMEPAction {
         }
     }),
 
+    MEP_SHOW_BREAKPOINTS(new AbstractAction("MEP_SHOW_BREAKPOINTS") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!Settings.getPropertyBoolean("feature.enableBreakpointsViewer")) return;
+            showBreakpointsViewer();
+        }
+    }),
+
     MEP_DELETE_CURRENT_LINES(new AbstractAction("MEP_DELETE_CURRENT_LINE") {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -200,6 +209,10 @@ public enum EMEPAction {
 
     private static void showBookmarksViewer() {
         BookmarksViewer.getInstance().showDialog();
+    }
+
+    private static void showBreakpointsViewer() {
+        BreakpointViewer.getInstance().showDialog();
     }
 
     private static void doCopyAction() {

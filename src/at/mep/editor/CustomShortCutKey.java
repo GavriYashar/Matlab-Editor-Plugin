@@ -19,6 +19,7 @@ public class CustomShortCutKey {
     private static KeyStroke EXECUTE_CURRENT_LINES;
     private static KeyStroke TOGGLE_BOOKMARK;
     private static KeyStroke BOOKMARK_VIEWER;
+    private static KeyStroke BREAKPOINT_VIEWER;
     private static KeyStroke QUICK_SEARCH_MEPR;
     private static KeyStroke RECENTLY_CLOSED;
 
@@ -37,6 +38,7 @@ public class CustomShortCutKey {
         EXECUTE_CURRENT_LINES = Settings.getPropertyKeyStroke("kb.executeCurrentLine");
         TOGGLE_BOOKMARK = Settings.getPropertyKeyStroke("kb.toggleBookmark");
         BOOKMARK_VIEWER = Settings.getPropertyKeyStroke("kb.bookmarkViewer");
+        BREAKPOINT_VIEWER = Settings.getPropertyKeyStroke("kb.breakpointViewer");
         QUICK_SEARCH_MEPR = Settings.getPropertyKeyStroke("kb.quickSearch");
         RECENTLY_CLOSED = Settings.getPropertyKeyStroke("kb.recentlyClosed");
     }
@@ -87,6 +89,10 @@ public class CustomShortCutKey {
 
     public static KeyStroke getBookmarkViewer() {
         return BOOKMARK_VIEWER;
+    }
+
+    public static KeyStroke getBreakpointViewer() {
+        return BREAKPOINT_VIEWER;
     }
 
     public static KeyStroke getDEBUG() {

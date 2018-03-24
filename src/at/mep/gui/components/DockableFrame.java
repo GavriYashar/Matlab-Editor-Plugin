@@ -12,10 +12,7 @@ import com.mathworks.mde.desk.MLMainFrame;
 import com.mathworks.widgets.desk.DTSingleClientFrame;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
 public class DockableFrame extends JPanel {
     private enum EState {
@@ -39,7 +36,7 @@ public class DockableFrame extends JPanel {
         BOOKMARKS("Bookmarks"),
         LIVE_TEMPLATES("LiveTemplates"),
         RECENTLY_CLOSED("RecentlyClosed"),
-        BREAKPOINTS("BreakPoints")
+        BREAKPOINTS("Breakpoints")
         ;
 
         private final String text;
@@ -95,15 +92,10 @@ public class DockableFrame extends JPanel {
     }
 
     protected void addFocusListener(JComponent jComponent) {
-        addFocusListener(new FocusListener() {
+        addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
                 jComponent.requestFocus();
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-
             }
         });
     }

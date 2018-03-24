@@ -397,8 +397,8 @@ public class EditorWrapper {
         return ComponentUtil.getEditorSyntaxTextPaneForEditor(editor);
     }
 
-    public static BreakpointView.Background getBreakPointView(Editor editor) {
-        return ComponentUtil.getBreakPointViewForEditor(editor);
+    public static BreakpointView.Background getBreakpointView(Editor editor) {
+        return ComponentUtil.getBreakpointViewForEditor(editor);
     }
 
     public static EditorViewClient getEditorViewClient(Editor editor) {
