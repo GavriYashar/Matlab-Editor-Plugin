@@ -41,6 +41,7 @@ public class BreakPointViewer extends DockableFrame {
 
     public void showDialog() {
         jList.setListData(MatlabBreakpointUtils.getDebugger().getBreakpoints().toArray());
+        jList.requestFocus();
         setVisible(true);
     }
 

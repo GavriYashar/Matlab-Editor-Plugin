@@ -385,6 +385,10 @@ public class EditorApp {
 
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getToggleBookmark(), "MEP_BOOKMARK");
         editorSyntaxTextPane.getActionMap().put("MEP_BOOKMARK", EMEPAction.MEP_BOOKMARK.getAction());
+
+        // BREAKPOINTS
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getBreakpointViewer(), "MEP_SHOW_BREAKPOINTS");
+        editorSyntaxTextPane.getActionMap().put("MEP_SHOW_BREAKPOINTS", EMEPAction.MEP_SHOW_BREAKPOINTS.getAction());
     }
 
     public void removeCallbacks() {
