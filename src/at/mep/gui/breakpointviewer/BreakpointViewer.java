@@ -6,6 +6,7 @@ import at.mep.util.KeyStrokeUtil;
 import com.mathworks.matlab.api.editor.Editor;
 import com.mathworks.mde.editor.breakpoints.MatlabBreakpoint;
 import com.mathworks.mde.editor.breakpoints.MatlabBreakpointUtils;
+import com.mathworks.widgets.glazedlists.DisposableList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,7 +44,7 @@ public class BreakpointViewer extends DockableFrame {
     }
 
     public void updateList() {
-        jList.setListData(MatlabBreakpointUtils.getDebugger().getBreakpoints().toArray());
+        jList.setListData(getBreakpoints().toArray());
     }
 
     public static BreakpointViewer getInstance() {
@@ -53,23 +54,28 @@ public class BreakpointViewer extends DockableFrame {
 
     private void setLayout() {
         setLayout(new GridBagLayout());
-        addFocusListener(jList);
-        addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                updateList();
-            }
-        });
 
         KeyStroke ksENTER = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ENTER);
         getInputMap(IFW).put(ksENTER, "ENTER");
         getActionMap().put("ENTER", enterAction);
 
         createList();
+
+        jList.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                jList.requestFocus();
+                updateList();
+            }
+        });
+    }
+
+    public DisposableList<MatlabBreakpoint> getBreakpoints() {
+        return MatlabBreakpointUtils.getDebugger().getBreakpoints();
     }
 
     private void createList() {
-        jList = new JList<>(MatlabBreakpointUtils.getDebugger().getBreakpoints().toArray());
+        jList = new JList<>(getBreakpoints().toArray());
         jList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jList.setLayoutOrientation(JList.VERTICAL);
         jList.setVisibleRowCount(-1);
@@ -78,8 +84,12 @@ public class BreakpointViewer extends DockableFrame {
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
-                if (e.getClickCount() > 1 && e.getButton() == 1) {
+                if (e.getClickCount() > 1 && e.getButton() == MouseEvent.BUTTON1) {
                     enterAction.actionPerformed(new ActionEvent(e, 0, null));
+                }
+                if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
+                    // MatlabBreakpoint breakpoint = getBreakpoints().get(jList.getSelectedIndex());
+                    // MatlabBreakpointUtils.getDebugger().setBreakpoint();
                 }
             }
         });
