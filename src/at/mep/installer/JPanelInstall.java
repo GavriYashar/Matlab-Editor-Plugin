@@ -176,7 +176,7 @@ public class JPanelInstall extends JPanel {
 
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
                         File file = fc.getSelectedFile();
-                        id = new File(file.toString() + "\\MEP");
+                        id = new File(file.toString() + File.separator + "MEP");
                         jtID.setText(id.toString());
                     }
                 }
@@ -345,20 +345,20 @@ public class JPanelInstall extends JPanel {
     private void copyFiles() {
         {
             // copy MEP
-            File f = new File(id + "\\" + jarMEP.getName());
+            File f = new File(id + File.separator + jarMEP.getName());
             FileUtils.copyFile(jarMEP, f);
             jarMEPID = f;
         }
         {
             // copy matconsolectl
-            File f = new File(id + "\\" + jarMCTL.getName());
+            File f = new File(id + File.separator + jarMCTL.getName());
             FileUtils.copyFile(jarMCTL, f);
             jarMCTLID = f;
         }
         {
             // copy props
-            File ft1 = new File(id.getPath() + "\\" + "DefaultProps.properties");
-            File ft2 = new File(id.getPath() + "\\" + "CustomProps.properties");
+            File ft1 = new File(id.getPath() + File.separator + "DefaultProps.properties");
+            File ft2 = new File(id.getPath() + File.separator + "CustomProps.properties");
 
             try {
                 FileUtils.exportResource("/properties/DefaultProps.properties", ft1);
