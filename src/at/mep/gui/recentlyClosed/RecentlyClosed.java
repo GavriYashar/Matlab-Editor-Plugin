@@ -35,9 +35,7 @@ public class RecentlyClosed extends DockableFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             selectFile();
-            if (!isDockable() || isFloating()) {
-                setVisible(false);
-            }
+            escAction.actionPerformed(new ActionEvent(e, 0, null));
         }
     };
 
@@ -54,18 +52,8 @@ public class RecentlyClosed extends DockableFrame {
         }
     };
 
-    private AbstractAction escAction = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            jTFS.setText("");
-            if (!isDockable() || isFloating()) {
-                setVisible(false);
-            }
-            EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
-        }
-    };
-
     private RecentlyClosed() {
+        super(EViewer.RECENTLY_CLOSED);
         setLayout();
         loadLastSessions();
         addFocusListener(jTFS);
@@ -160,7 +148,7 @@ public class RecentlyClosed extends DockableFrame {
     }
 
     public void showDialog() {
-        this.setVisible(true, EViewer.RECENTLY_CLOSED);
+        this.setVisible(true);
         this.setLocation(ScreenSize.getCenter(this.getSize()));
         updateList();
     }
@@ -254,9 +242,7 @@ public class RecentlyClosed extends DockableFrame {
             }
         });
 
-        KeyStroke ksESC = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ESCAPE);
-        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksESC, "ESC");
-        jTFS.getActionMap().put("ESC", escAction);
+        addEnterAction(jTFS, enterAction);
     }
 
     private void findPattern(String pattern) {

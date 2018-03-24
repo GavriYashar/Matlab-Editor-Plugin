@@ -1,17 +1,21 @@
 package at.mep.gui.components;
 
+import at.mep.editor.EditorWrapper;
 import at.mep.gui.bookmarks.BookmarksViewerUndecoratedFrame;
 import at.mep.gui.fileStructure.FileStructureUndecoratedFrame;
 import at.mep.gui.mepr.MEPRViewerUndecoratedFrame;
 import at.mep.gui.recentlyClosed.RecentlyClosedUndecoratedFrame;
 import at.mep.prefs.Settings;
+import at.mep.util.KeyStrokeUtil;
 import com.mathworks.mde.desk.MLDesktop;
 import com.mathworks.mde.desk.MLMainFrame;
 import com.mathworks.widgets.desk.DTSingleClientFrame;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 
 public class DockableFrame extends JPanel {
     private enum EState {
@@ -34,7 +38,8 @@ public class DockableFrame extends JPanel {
         FILE_STRUCTURE("FileStructure"),
         BOOKMARKS("BookmarksViewer"),
         LIVE_TEMPLATES("LiveTemplates"),
-        RECENTLY_CLOSED("RecentlyClosed")
+        RECENTLY_CLOSED("RecentlyClosed"),
+        BREAKPOINTS("BreakPointViewer")
         ;
 
         private final String text;
@@ -45,6 +50,39 @@ public class DockableFrame extends JPanel {
 
         public String getText() {
             return text;
+        }
+    }
+
+    private EViewer viewer;
+    protected final AbstractAction escAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+        if (!isDockable() || isFloating()) {
+            setVisible(false);
+        }
+        EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
+        }
+    };
+
+    public DockableFrame(EViewer eViewer) {
+        this.viewer = eViewer;
+
+        KeyStroke ksESC = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ESCAPE);
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(ksESC, "ESCAPE");
+        getActionMap().put("ESCAPE", escAction);
+    }
+
+    public EState getEState() {
+        if (isDockable() && getParent() == null && getTopLevelAncestor() == null) {
+            return EState.DOCKABLE_NEVER_SHOWN;
+        } else if (isDockable() && getTopLevelAncestor() instanceof MLMainFrame) {
+            return EState.DOCKED;
+        } else if (isDockable() && getTopLevelAncestor() instanceof DTSingleClientFrame) {
+            return EState.FLOATING;
+        } else if (isDockable()) {
+            return EState.DOCKABLE_NEVER_SHOWN;
+        } else {
+            return EState.UNDECORATED;
         }
     }
 
@@ -70,50 +108,43 @@ public class DockableFrame extends JPanel {
         });
     }
 
-    public void setVisible(boolean visible, EViewer eViewer) {
+    protected void addEnterAction(JComponent jComponent, AbstractAction enterAction) {
+        KeyStroke ksENTER = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ENTER);
+        jComponent.getInputMap(JComponent.WHEN_FOCUSED).put(ksENTER, "ENTER");
+        jComponent.getActionMap().put("ENTER", enterAction);
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
         super.setVisible(visible);
         switch (getEState()) {
             case INVALID:
                 break;
             case DOCKABLE_NEVER_SHOWN:
-                MLDesktop.getInstance().addClient(this, eViewer.getText());
+                MLDesktop.getInstance().addClient(this, viewer.getText());
                 break;
             case FLOATING:
                 getTopLevelAncestor().setVisible(visible);
                 break;
             case DOCKED:
-                getParent().getParent().setVisible(true);
+                getParent().getParent().setVisible(visible);
                 break;
             case UNDECORATED:
-                switch (eViewer) {
+                switch (viewer) {
                     case FILE_STRUCTURE:
-                        FileStructureUndecoratedFrame.getInstance().setVisible(true);
+                        FileStructureUndecoratedFrame.getInstance().setVisible(visible);
                         break;
                     case BOOKMARKS:
-                        BookmarksViewerUndecoratedFrame.getInstance().setVisible(true);
+                        BookmarksViewerUndecoratedFrame.getInstance().setVisible(visible);
                         break;
                     case LIVE_TEMPLATES:
-                        MEPRViewerUndecoratedFrame.getInstance().setVisible(true);
+                        MEPRViewerUndecoratedFrame.getInstance().setVisible(visible);
                         break;
                     case RECENTLY_CLOSED:
-                        RecentlyClosedUndecoratedFrame.getInstance().setVisible(true);
+                        RecentlyClosedUndecoratedFrame.getInstance().setVisible(visible);
                         break;
                 }
                 break;
-        }
-    }
-
-    public EState getEState() {
-        if (isDockable() && getParent() == null && getTopLevelAncestor() == null) {
-            return EState.DOCKABLE_NEVER_SHOWN;
-        } else if (isDockable() && getTopLevelAncestor() instanceof MLMainFrame) {
-            return EState.DOCKED;
-        } else if (isDockable() && getTopLevelAncestor() instanceof DTSingleClientFrame) {
-            return EState.FLOATING;
-        } else if (isDockable()) {
-            return EState.DOCKABLE_NEVER_SHOWN;
-        } else {
-            return EState.UNDECORATED;
         }
     }
 }

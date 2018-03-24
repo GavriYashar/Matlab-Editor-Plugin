@@ -33,10 +33,7 @@ public class MEPRViewer extends DockableFrame {
             MEPR.prepareReplace(action, EMEPRAction.VIEWER);
             MEPR.doReplace();
 
-            EditorWrapper.getActiveEditor().getTextComponent().requestFocus();
-            if (!isDockable() || isFloating()) {
-                setVisible(false);
-            }
+            escAction.actionPerformed(new ActionEvent(e, 0, null));
         }
     };
 
@@ -53,6 +50,7 @@ public class MEPRViewer extends DockableFrame {
     };
 
     private MEPRViewer() {
+        super(EViewer.LIVE_TEMPLATES);
         setLayout();
         addFocusListener(jTFS);
     }
@@ -226,9 +224,7 @@ public class MEPRViewer extends DockableFrame {
             }
         });
 
-        KeyStroke ksE = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ENTER);
-        jTFS.getInputMap(JComponent.WHEN_FOCUSED).put(ksE, "ENTER");
-        jTFS.getActionMap().put("ENTER", enterAction);
+        addEnterAction(jTFS, enterAction);
 
         add(jTFS, gbc);
     }
@@ -313,7 +309,7 @@ public class MEPRViewer extends DockableFrame {
     }
 
     public void showDialog() {
-        this.setVisible(true, EViewer.LIVE_TEMPLATES);
+        this.setVisible(true);
         this.setLocation(ScreenSize.getCenter(this.getSize()));
         updateList();
         jTFS.setText("");
