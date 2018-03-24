@@ -11,7 +11,7 @@ import java.awt.*;
 /**
  * Created by Andreas Justin on 2018-24-03.
  */
-public class BreakPointCellRenderer extends DefaultListCellRenderer {
+public class BreakpointCellRenderer extends DefaultListCellRenderer {
     static Color fg;
     static Color bg;
     static Color fgLineNS;
@@ -19,7 +19,7 @@ public class BreakPointCellRenderer extends DefaultListCellRenderer {
     static Color fgLineS;
     static Color fgConditionS;
 
-    public BreakPointCellRenderer() {
+    public BreakpointCellRenderer() {
         fg = getForeground();
         bg = getBackground();
         float[] hsb = Color.RGBtoHSB(bg.getRed(), bg.getGreen(), bg.getBlue(), null);
@@ -38,15 +38,17 @@ public class BreakPointCellRenderer extends DefaultListCellRenderer {
         Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (fgLineS == null && isSelected) setSelectionColors(getBackground());
         MatlabBreakpoint breakpoint = (MatlabBreakpoint) value;
-        String s = "";
-        s += "<HTML>";
-        s += FileUtils.fullyQualifiedName(breakpoint.getFile());
-        s += "<font color=" + (isSelected ? ColorUtils.colorToHex(fgLineS) : ColorUtils.colorToHex(fgLineNS)) + ">"
-            + ": " + breakpoint.getOneBasedLineNumber() + "</font>";
-        s += "<font color=" + (isSelected ? ColorUtils.colorToHex(fgConditionS) : ColorUtils.colorToHex(fgConditionNS)) + ">"
-                + " (" + breakpoint.getExpression() + ") </font > ";
-        s += "</HTML>";
 
+        String s = "<HTML>$FQN: $@$LINE $EXPR<HTML>";
+        s = s.replace("$FQN", FileUtils.fullyQualifiedName(breakpoint.getFile()));
+        s = s.replace("$@", breakpoint.isAnonymous() ? "@" : "");
+        s = s.replace("$LINE", "<font color="
+                + (isSelected ? ColorUtils.colorToHex(fgLineS) : ColorUtils.colorToHex(fgLineNS)) + ">"
+                + breakpoint.getOneBasedLineNumber() + "</font>");
+        s = s.replace("$EXPR", breakpoint.hasExpression() ?
+                "<font color=" + (isSelected ? ColorUtils.colorToHex(fgConditionS) : ColorUtils.colorToHex(fgConditionNS)) + ">"
+                        + " (" + breakpoint.getExpression() + ") </font > "
+                : "");
         setText(s);
         return c;
     }

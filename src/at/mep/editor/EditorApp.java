@@ -403,7 +403,7 @@ public class EditorApp {
     public void colorizeBreakpointView(Color color) {
         List<Editor> openEditors = EditorWrapper.getMatlabEditorApplication().getOpenEditors();
         for (Editor editor : openEditors) {
-            BreakpointView.Background breakpointView = EditorWrapper.getBreakPointView(editor);
+            BreakpointView.Background breakpointView = EditorWrapper.getBreakpointView(editor);
             if (breakpointView != null) breakpointView.setBackground(color);
         }
     }

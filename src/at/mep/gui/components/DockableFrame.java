@@ -39,7 +39,7 @@ public class DockableFrame extends JPanel {
         BOOKMARKS("Bookmarks"),
         LIVE_TEMPLATES("LiveTemplates"),
         RECENTLY_CLOSED("RecentlyClosed"),
-        BREAKPOINTS("BreakPoints")
+        BREAKPOINTS("Breakpoints")
         ;
 
         private final String text;

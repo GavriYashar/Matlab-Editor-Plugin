@@ -14,9 +14,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class BreakPointViewer extends DockableFrame {
+public class BreakpointViewer extends DockableFrame {
     private static final int IFW = JComponent.WHEN_IN_FOCUSED_WINDOW;
-    private static BreakPointViewer instance;
+    private static BreakpointViewer instance;
     private static JList<Object> jList;
 
     private final AbstractAction enterAction = new AbstractAction() {
@@ -27,7 +27,7 @@ public class BreakPointViewer extends DockableFrame {
         }
     };
 
-    private BreakPointViewer() {
+    private BreakpointViewer() {
         super(EViewer.BREAKPOINTS);
         setLayout();
     }
@@ -45,13 +45,14 @@ public class BreakPointViewer extends DockableFrame {
         setVisible(true);
     }
 
-    public static BreakPointViewer getInstance() {
-        if (instance == null) instance = new BreakPointViewer();
+    public static BreakpointViewer getInstance() {
+        if (instance == null) instance = new BreakpointViewer();
         return instance;
     }
 
     private void setLayout() {
         setLayout(new GridBagLayout());
+        addFocusListener(jList);
 
         KeyStroke ksENTER = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ENTER);
         getInputMap(IFW).put(ksENTER, "ENTER");
@@ -65,7 +66,7 @@ public class BreakPointViewer extends DockableFrame {
         jList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jList.setLayoutOrientation(JList.VERTICAL);
         jList.setVisibleRowCount(-1);
-        jList.setCellRenderer(new BreakPointCellRenderer());
+        jList.setCellRenderer(new BreakpointCellRenderer());
         jList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {

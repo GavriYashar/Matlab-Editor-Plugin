@@ -4,7 +4,7 @@ import at.mep.CommandWindow;
 import at.mep.debug.Debug;
 import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.gui.bookmarks.BookmarksViewer;
-import at.mep.gui.breakpointviewer.BreakPointViewer;
+import at.mep.gui.breakpointviewer.BreakpointViewer;
 import at.mep.gui.clipboardStack.ClipboardStack;
 import at.mep.gui.clipboardStack.EClipboardParent;
 import at.mep.gui.fileStructure.FileStructure;
@@ -212,7 +212,7 @@ public enum EMEPAction {
     }
 
     private static void showBreakpointsViewer() {
-        BreakPointViewer.getInstance().showDialog();
+        BreakpointViewer.getInstance().showDialog();
     }
 
     private static void doCopyAction() {

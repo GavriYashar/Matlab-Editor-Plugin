@@ -54,16 +54,16 @@ public class ComponentUtil {
         return foundComponents;
     }
 
-    public static BreakpointView.Background getBreakPointViewForEditor(Editor editor) {
+    public static BreakpointView.Background getBreakpointViewForEditor(Editor editor) {
         Component component = editor.getTextComponent().getParent().getParent();
-        java.util.List<Component> breakPointViews = ComponentUtil.searchForComponentsRecursive(component, "BreakpointView");
-        if (breakPointViews.size() > 1) {
+        java.util.List<Component> breakpointViews = ComponentUtil.searchForComponentsRecursive(component, "BreakpointView");
+        if (breakpointViews.size() > 1) {
             System.out.println("Multiple BreakpointView found for editor \"" + editor.getLongName() + "\"");
         }
-        if (breakPointViews.size() < 1) {
+        if (breakpointViews.size() < 1) {
             return null;
         }
-        return (BreakpointView.Background) breakPointViews.get(0);
+        return (BreakpointView.Background) breakpointViews.get(0);
     }
 
     public static EditorSyntaxTextPane getEditorSyntaxTextPaneForEditor(Editor editor) {
