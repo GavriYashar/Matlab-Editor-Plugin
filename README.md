@@ -1,6 +1,6 @@
 ## Welcome to the Matlab-Editor-Plugin [wiki](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki)!
 
-In short, it will mess around with Matlab's Editor. Here's a short feature summary:
+In short, it will mess around with Matlab's Editor.
 ### Edit Code
 * **[ClipboardStack](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#clipboard-stack)**: opened via <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>V</kbd>, stores the previous 10 strings copied to clipboard from Matlab.
 * **[Duplicate line](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#duplicate-or-remove-current-line)**:  <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>D</kbd>
