@@ -238,17 +238,17 @@ public class Settings {
     public static String getMatlabCustomFolderPath() throws SettingNotFoundException, SettingTypeException {
         // com.mathworks.mlwidgets.prefs.GeneralPrefsPanel
         SettingPath settingPath = new SettingPath("matlab", "workingfolder");
-        Setting setting = new Setting(settingPath, String.class, "CustomFolderPath");
-        return (String) setting.get();
+        Setting<String> setting = new Setting<String>(settingPath, String.class, "CustomFolderPath");
+        return setting.get();
     }
 
     public static File getJavaClassPathText() throws IOException {
         File file = null;
         for (int i = 0; i < 1; i++) {
             if (i == 0) {
-                file = new File(System.getProperty("user.home") + "\\Documents\\MATLAB\\javaclasspath.txt");
+                file = new File(System.getProperty("user.home"), "Documents/MATLAB/javaclasspath.txt");
             } else if (i == 1) {
-                file = new File(Prefs.getPropertyDirectory() + "\\javaclasspath.txt");
+                file = new File(Prefs.getPropertyDirectory(), "javaclasspath.txt");
             } else if (i == 2) {
                 try {
                     file = new File(Settings.getMatlabCustomFolderPath());
