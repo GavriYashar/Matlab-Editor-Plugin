@@ -133,7 +133,7 @@ public class MEPRViewer extends DockableFrame {
                     "new Template",
                     JOptionPane.QUESTION_MESSAGE);
             if (name == null) return;
-            File file = new File(p + "\\MEPR_" + name + ".m");
+            File file = new File(p, "MEPR_" + name + ".m");
 
             InputStream stream = MEPRViewer.class.getResourceAsStream("/template.txt");
             String template = FileUtils.readInputStreamToString(stream);
@@ -159,7 +159,7 @@ public class MEPRViewer extends DockableFrame {
             String p = Settings.getProperty("path.mepr.rep");
             String action = ((MEPREntry) jList.getSelectedValue()).getAction();
 
-            File file = new File(p + "\\MEPR_" + action + ".m");
+            File file = new File(p, "MEPR_" + action + ".m");
             if (file.exists()) {
                 EditorApp.getInstance().openEditor(file);
             } else {

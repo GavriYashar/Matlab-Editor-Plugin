@@ -188,16 +188,14 @@ public class PrefsPanel extends MJPanel {
         ps.setLayout(new GridBagLayout());
         ps.setBorder(BorderFactory.createTitledBorder("Other"));
 
-        String[] properties = {"AutoLoadShortcuts",
-                "EnableStartup",
-                "EnableMethodsView",
+        String[] properties = {"startup.autoLoadShortcuts",
+                "startup.enable",
                 "UseLDS",
                 "showQuotes",
                 "FreeCommander",
                 "DefaultFigureGraphicsSmoothing"
         };
         EPropertyType[] types = {EPropertyType.BOOLEAN,
-                EPropertyType.BOOLEAN,
                 EPropertyType.BOOLEAN,
                 EPropertyType.BOOLEAN,
                 EPropertyType.BOOLEAN,
@@ -261,11 +259,9 @@ public class PrefsPanel extends MJPanel {
         ps.setBorder(BorderFactory.createTitledBorder("LoadMessDaten"));
 
         String[] properties = {"LoadMessDaten_Shortener",
-                "LoadMessDaten_NoExprManipulate",
                 "LoadMessDaten_EnableSimpleView"
         };
         EPropertyType[] types = {EPropertyType.BOOLEAN,
-                EPropertyType.BOOLEAN,
                 EPropertyType.BOOLEAN
         };
         addPropsToPanel(ps, properties, types);

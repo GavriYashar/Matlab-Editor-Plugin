@@ -22,7 +22,7 @@ public class FileUtils {
         String lName = file.getAbsolutePath();
         int start = lName.indexOf("+");
         if (start < 0) {
-            start = lName.lastIndexOf("\\");
+            start = lName.lastIndexOf(File.separator);
         }
         if (start < 0) {
             start = 0;
@@ -35,7 +35,7 @@ public class FileUtils {
             // builtin functions
             lName = lName.substring(0, lName.length() - 1);
         }
-        lName = lName.replace("\\", ".");
+        lName = lName.replace(File.separator, ".");
         lName = lName.replace("+", "");
         return lName;
     }

@@ -95,8 +95,8 @@ public class Start {
                 && Settings.getProperty("path.mepr.rep").length() > 1)
             return;
         try {
-            File fileRep = new File(Install.getJarFile().getParentFile().getPath() + "\\Replacements");
-            File fileVar = new File(Install.getJarFile().getParentFile().getPath() + "\\Replacements\\Variables");
+            File fileRep = new File(Install.getJarFile().getParentFile().getPath(), "Replacements");
+            File fileVar = new File(fileRep, "Variables");
             if (!fileRep.exists() || !fileVar.exists()) {
                 System.out.println(
                         "Live Templates has been disabled for one or both following reasons:"
@@ -135,7 +135,7 @@ public class Start {
         WorkspaceWrapper.setCallbacks();
     }
 
-    /** will add MEPs preference panel to matlabs preference windo */
+    /** will add MEPs preference panel to Matlab's preference window */
     private static void addPrefs() {
         try {
             PrefsChanger.addPrefs();
