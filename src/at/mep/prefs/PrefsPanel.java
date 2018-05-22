@@ -188,16 +188,14 @@ public class PrefsPanel extends MJPanel {
         ps.setLayout(new GridBagLayout());
         ps.setBorder(BorderFactory.createTitledBorder("Other"));
 
-        String[] properties = {"AutoLoadShortcuts",
-                "EnableStartup",
-                "EnableMethodsView",
+        String[] properties = {"startup.autoLoadShortcuts",
+                "startup.enable",
                 "UseLDS",
                 "showQuotes",
                 "FreeCommander",
                 "DefaultFigureGraphicsSmoothing"
         };
         EPropertyType[] types = {EPropertyType.BOOLEAN,
-                EPropertyType.BOOLEAN,
                 EPropertyType.BOOLEAN,
                 EPropertyType.BOOLEAN,
                 EPropertyType.BOOLEAN,
