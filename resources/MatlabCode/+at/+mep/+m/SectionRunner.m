@@ -7,6 +7,12 @@ classdef SectionRunner < handle
 %
 %% TODO
 %  [] - manipulate variables for any sections
+%       possible solution is just to remove variables in sections and assign them 
+%       just before the desired section needs to be evaluated e.g.:
+%       nMess = 1:3;
+%       nCh = 5;
+%       sr.runSectionByTag("doSomeMagic")
+%   
 %
 %% VERSIONING
 %             Author: Andreas Justin
@@ -22,7 +28,7 @@ classdef SectionRunner < handle
 %
 %% EXAMPLES
 %{
-% >•< >•< >•< >•< >•< >•< >•< >•< >•< >•< >•< >•<
+% >â€¢< >â€¢< >â€¢< >â€¢< >â€¢< >â€¢< >â€¢< >â€¢< >â€¢< >â€¢< >â€¢< >â€¢<
 % create a new script, save is not needed
 % insert the following lines:
 %% hallo ($tag1)
@@ -39,7 +45,7 @@ c = 2;
 fprintf("asfddasdfasdfasd\n");
 %% aaa
 
-% >•< >•< >•< >•< >•< >•< >•< >•< >•< >•< >•< >•<
+% >â€¢< >â€¢< >â€¢< >â€¢< >â€¢< >â€¢< >â€¢< >â€¢< >â€¢< >â€¢< >â€¢< >â€¢<
 % execute this inside your script, NOTE: active editor
 ae = at.mep.editor.EditorWrapper.getActiveEditor();
 sr = at.mep.m.SectionRunner(ae);
@@ -81,17 +87,27 @@ methods (Access = public)
         obj.addToCommandLine = value;
     end
     
-    function runSectionByTag(obj, tag)
+    function line = getLineSectionByTag(obj, tag)
         line = obj.sectionTitleLines(obj.sectionTitle.contains("($" + tag + ")"));
-        obj.runSectionByLine(line);
+    end
+    function runSectionByTag(obj, tag)
+        obj.runSectionByLine(obj.getLineSectionByTag(tag));
+    end
+    function jumpToSectionyByTag(obj, tag)
+        obj.jumpToSectionByLine(obj.getLineSectionByTag(tag));
     end
     
-    function runSectionByTitle(obj, title)
+    function line = getLineSectionByTitle(obj, title)
         if ~title.endsWith(newline)
             title = title + newline();
         end
         line = obj.sectionTitleLines(obj.sectionTitle == title);
-        obj.runSectionByLine(line);
+    end
+    function runSectionByTitle(obj, title)
+        obj.runSectionByLine(obj.getLineSectionByTitle(title));
+    end
+    function jumpToSectionByTitle(obj, title)
+        obj.jumpToSectionByLine(obj.getLineSectionByTitle(title))
     end
     
     function runSectionByLine(obj, line)
@@ -107,6 +123,12 @@ methods (Access = public)
             com.mathworks.mlservices.MLCommandHistoryServices.add(cmd);
         end
         evalin("base", cmd);
+    end
+    function jumpToSectionByLine(obj, line)
+        if numel(line) ~= 1
+            error("mep:InvalidArgument", "line must be a scalar")
+        end
+        at.mep.editor.EditorWrapper.goToLine(obj.editor, line, false);
     end
 end
 end
