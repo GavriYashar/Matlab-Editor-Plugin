@@ -279,14 +279,19 @@ public enum EMEPAction {
         // if inside of block comment, jump to next line that is inside
         int line = lcEnd[0]+1;
         boolean inBlock = false;
-        while ((inBlock || EditorWrapper.getTextByLine(line).trim().startsWith("%"))
-                && !EditorWrapper.isLastLine(editor, line) ) {
-            if (EditorWrapper.getTextByLine(line).trim().startsWith("%{")) {
+        String strL = EditorWrapper.getTextByLine(line).trim();
+        while ((inBlock
+                || strL.equals("") // skip empty lines
+                || strL.startsWith("%")) // skip comments
+                && !EditorWrapper.isLastLine(editor, line) // until last line
+        ) {
+            if (strL.startsWith("%{")) {
                 inBlock = true;
-            } else if (EditorWrapper.getTextByLine(line).trim().startsWith("%}")) {
+            } else if (strL.trim().startsWith("%}")) {
                 inBlock = false;
             }
             line++;
+            strL = EditorWrapper.getTextByLine(line).trim();
         }
         EditorWrapper.goToLine(editor, line, false);
     }
