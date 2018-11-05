@@ -79,9 +79,16 @@ public class MPath {
      * if a file is not found in index matlab's "which" will be called instead and the return value will be stored in this index.
      * files not existing anymore will be removed from index. Matlab's "which" will be called instead.
      */
-    public static List<File> which(String name) throws MatlabInvocationException {
+    public static List<File> which(String name) {
         if (getIndexingType() == EIndexingType.NONE) {
-            return Matlab.which_EVAL(name);
+            try {
+                return Matlab.which_EVAL(name);
+            } catch (MatlabInvocationException e) {
+                if (Debug.isDebugEnabled()) {
+                    e.printStackTrace();
+                }
+                return new ArrayList<>(0);
+            }
         }
         if (indexFiles.size() == 0) {
             reindexInBackground();
@@ -97,9 +104,17 @@ public class MPath {
     }
 
     /** Calls matlabs which function and will update index if necessary */
-    private static List<File> which_EVAL(String name) throws MatlabInvocationException {
+    private static List<File> which_EVAL(String name) {
         List<File> files = new ArrayList<>(1);
-        List<String> which = Matlab.whichString_EVAL(name);
+        List<String> which;
+        try {
+            which = Matlab.whichString_EVAL(name);
+        } catch (MatlabInvocationException e) {
+            if (Debug.isDebugEnabled()) {
+                e.printStackTrace();
+            }
+            return new ArrayList<>(0);
+        }
         for (String string : which) {
             File file = new File(string);
             files.add(file);
