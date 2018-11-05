@@ -6,7 +6,7 @@
 % V1.0 | ${DATE} | ${AUTHORLONG} | Creation
 %% MEPREND
 %% FUNCHANDLEBEGIN
-$VAR_1$ ${@()questdlg('question?)','title','answer1','answer2','answer3')}
+$VAR_1$ ${@()questdlg('question?','title','answer1','answer2','answer3','answer3')}
 %% FUNCHANDLEEND
 
 %% custom variables inside this live templates

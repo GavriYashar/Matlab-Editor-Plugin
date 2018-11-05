@@ -36,7 +36,8 @@ public enum EAttributes {
     ALLOWEDSUBCLASSES("AllowedSubClasses", EAccess.META),
     CONSTRUCTONLOAD("ConstructOnLoad", EAccess.FALSE),
     HANDLECOMPATIBLE("HandleCompatible", EAccess.FALSE),
-    INFERIORCLASSES("InferiorClasses", EAccess.META);
+    INFERIORCLASSES("InferiorClasses", EAccess.META),
+    LEARNABLE("Learnable", EAccess.FALSE); // nnet.layer.Layer
 
     private final String stringMatlab;
     private final EAccess defaultAccess;

@@ -1,6 +1,7 @@
 package at.mep.editor.tree;
 
 import at.mep.Matlab;
+import at.mep.debug.Debug;
 import at.mep.editor.EditorWrapper;
 import at.mep.meta.EAccess;
 import at.mep.util.FileUtils;
@@ -36,9 +37,6 @@ import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
  *     functions
  */
 public class MFile {
-    /** throws the EAttributes.valueOf() error only once, until next startup */
-    private static boolean hasThrownError_EAttributesValueOf = false;
-
     /** file of .m file */
     private File file = null;
 
@@ -279,6 +277,8 @@ public class MFile {
             return isTrueInvalid(EAttributes.HANDLECOMPATIBLE);
         }
 
+        public boolean isLearnable() { return isTrueInvalid(EAttributes.LEARNABLE); }
+
 
         public static List<Attributes> construct(List<MTree.Node> mtnAttributes) {
             List<Attributes> attributes = new ArrayList<>(mtnAttributes.size());
@@ -315,9 +315,8 @@ public class MFile {
                     try {
                         attributeAsEAttribute = EAttributes.valueOf(node.getText().toUpperCase());
                     } catch (IllegalArgumentException e) {
-                        if (!hasThrownError_EAttributesValueOf) {
+                        if (Debug.isDebugEnabled()) {
                             e.printStackTrace();
-                            hasThrownError_EAttributesValueOf = true;
                         }
                         attributeAsEAttribute = EAttributes.INVALID;
                     }

@@ -46,6 +46,7 @@ public class NodeFS extends DefaultMutableTreeNode {
     private boolean isTransient = EAttributes.TRANSIENT.getDefaultAccess().convertBoolean();
     private boolean isImmutable = false; // SetAccess = Immutable
     private boolean isHidden = EAttributes.HIDDEN.getDefaultAccess().convertBoolean();
+    private boolean isLearnable = EAttributes.LEARNABLE.getDefaultAccess().convertBoolean();
 
     // custom NodeFS properties for metaClass
     private boolean hasDefaults = false;
@@ -80,6 +81,7 @@ public class NodeFS extends DefaultMutableTreeNode {
         isTransient = nodeFS.isTransient;
         isImmutable = nodeFS.isImmutable;
         isHidden = nodeFS.isHidden;
+        isLearnable = nodeFS.isLearnable;
 
         hasDefaults = nodeFS.hasDefaults;
     }
@@ -165,6 +167,9 @@ public class NodeFS extends DefaultMutableTreeNode {
                     break;
                 case INFERIORCLASSES:
                     break;
+                case LEARNABLE:
+                    isLearnable = EnumSet.of(EAccess.TRUE, EAccess.INVALID).contains(accesses.get(i));
+                    break;
             }
         }
     }
@@ -214,6 +219,10 @@ public class NodeFS extends DefaultMutableTreeNode {
 
     public boolean isHidden() {
         return isHidden;
+    }
+
+    public boolean isLearnable() {
+        return isLearnable;
     }
 
     public boolean isSealed() {

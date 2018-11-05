@@ -1,5 +1,6 @@
 package at.mep;
 
+import at.mep.debug.Debug;
 import at.mep.editor.CustomShortCutKey;
 import at.mep.editor.EditorApp;
 import at.mep.editor.EditorWrapper;
@@ -35,12 +36,41 @@ public class Start {
         RunnableUtil.invokeInDispatchThreadIfNeeded(runnable);
 
         try {
+            System.out.println();
+            System.out.print("Initializing MEP: ");
+            if (Debug.isDebugEnabled()) {
+                System.out.println("Reloading custom Shortcuts");
+            }
             CustomShortCutKey.reload();
+
+            if (Debug.isDebugEnabled()) {
+                System.out.println("Setting Editor Callbacks");
+            }
             setEditorCallbacks();
+
+            if (Debug.isDebugEnabled()) {
+                System.out.println("Setting Command Window Callbacks");
+            }
             setCmdWinCallbacks();
+
+            if (Debug.isDebugEnabled()) {
+                System.out.println("Setting Workspace Window Callbacks");
+            }
             setWorkspaceWinCallbacks();
+
+            if (Debug.isDebugEnabled()) {
+                System.out.println("Adding Preferences");
+            }
             addPrefs();
+
+            if (Debug.isDebugEnabled()) {
+                System.out.println("Setting Custom Keystrokes");
+            }
             EMatlabKeyStrokesCommands.setCustomKeyStrokes();
+
+            if (Debug.isDebugEnabled()) {
+                System.out.println("Loading Bookmarks");
+            }
             Bookmarks.getInstance().load();
             addShortcut();
             setReplacementPath();
@@ -48,9 +78,11 @@ public class Start {
 
             // indexing here is unnecessary since no path is set in com.mathworks.fileutils.MatlabPath at this time
             // indexing is done in background on first use
-               if (MPath.getIndexStoredFile().exists()) {
-                   MPath.load();
-               }
+            if (MPath.getIndexStoredFile().exists()) {
+                MPath.load();
+            }
+            System.out.print("done");
+            System.out.println();
         } catch (Exception | NoClassDefFoundError e) {
             try {
                 EditorApp.getInstance().removeCallbacks();
@@ -62,9 +94,9 @@ public class Start {
                 JOptionPane.showMessageDialog(
                         new JFrame(""),
                         stackTraceElements[i].getClassName() + "\n\n"
-                        + stackTraceElements[i].getFileName() + "\n\n"
-                        + stackTraceElements[i].getMethodName() + "\n\n"
-                        + stackTraceElements[i].getLineNumber(),
+                                + stackTraceElements[i].getFileName() + "\n\n"
+                                + stackTraceElements[i].getMethodName() + "\n\n"
+                                + stackTraceElements[i].getLineNumber(),
                         "something went wrong, very very wrong",
                         JOptionPane.ERROR_MESSAGE);
             }
