@@ -164,9 +164,6 @@ public class EditorApp {
                     switch (e.getButton()) {
                         case 1: {
                             // left
-                            if (Debug.isDebugEnabled()) {
-                                System.out.println("mouse released left " + e.getButton());
-                            }
                             if (Settings.getPropertyBoolean("feature.enableClickHistory")) {
                                 ClickHistory.getINSTANCE().add(editor);
                             }
@@ -174,25 +171,15 @@ public class EditorApp {
                         }
                         case 2: {
                             // middle
-                            if (Debug.isDebugEnabled()) {
-                                System.out.println("mouse released middle " + e.getButton());
-                            }
                             break;
                         }
                         case 3: {
                             // right
-                            if (Debug.isDebugEnabled()) {
-                                System.out.println("mouse released right " + e.getButton());
-                            }
-
                             ContextMenu.contribute(editor);
                             break;
                         }
                         case 4: {
                             // backward
-                            if (Debug.isDebugEnabled()) {
-                                System.out.println("mouse released backward " + e.getButton());
-                            }
                             if (Settings.getPropertyBoolean("feature.enableClickHistory")) {
                                 ClickHistory.getINSTANCE().locationPrevious();
                             }
@@ -200,9 +187,6 @@ public class EditorApp {
                         }
                         case 5: {
                             // forward
-                            if (Debug.isDebugEnabled()) {
-                                System.out.println("mouse released forward " + e.getButton());
-                            }
                             if (Settings.getPropertyBoolean("feature.enableClickHistory")) {
                                 ClickHistory.getINSTANCE().locationNext();
                             }
