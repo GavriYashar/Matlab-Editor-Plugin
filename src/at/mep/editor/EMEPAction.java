@@ -273,6 +273,22 @@ public enum EMEPAction {
             return;
         }
         action.actionPerformed(new ActionEvent(editorSyntaxTextPane, 0, null));
+
+        // select next line afterwards that is not a comment
+        // if outside of block comment jump to next line that is outside
+        // if inside of block comment, jump to next line that is inside
+        int line = lcEnd[0]+1;
+        boolean inBlock = false;
+        while ((inBlock || EditorWrapper.getTextByLine(line).trim().startsWith("%"))
+                && !EditorWrapper.isLastLine(editor, line) ) {
+            if (EditorWrapper.getTextByLine(line).trim().startsWith("%{")) {
+                inBlock = true;
+            } else if (EditorWrapper.getTextByLine(line).trim().startsWith("%}")) {
+                inBlock = false;
+            }
+            line++;
+        }
+        EditorWrapper.goToLine(editor, line, false);
     }
 
     private static void doMoveLineUp() {
