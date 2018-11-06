@@ -274,17 +274,25 @@ public enum EMEPAction {
         }
         action.actionPerformed(new ActionEvent(editorSyntaxTextPane, 0, null));
 
-        // select next line afterwards that is not a comment
+        // select next line afterwards that is not a comment nor an empty line
         // if outside of block comment jump to next line that is outside
         // if inside of block comment, jump to next line that is inside
         int line = lcEnd[0]+1;
         boolean inBlock = false;
-        while ((inBlock || EditorWrapper.getTextByLine(line).trim().startsWith("%"))
-                && !EditorWrapper.isLastLine(editor, line) ) {
-            if (EditorWrapper.getTextByLine(line).trim().startsWith("%{")) {
+        while (true)  {
+            String strL = EditorWrapper.getTextByLine(line).trim();
+            if (strL.startsWith("%{")) {
                 inBlock = true;
-            } else if (EditorWrapper.getTextByLine(line).trim().startsWith("%}")) {
+            } else if (strL.startsWith("%}")) {
                 inBlock = false;
+            }
+            boolean again = inBlock;
+            again |= strL.equals(""); // skip empty lines
+            again |= strL.startsWith("%"); // skip comment
+            again &= line < EditorWrapper.numberOfLines(editor); // until last line
+
+            if (!again) {
+                break;
             }
             line++;
         }
