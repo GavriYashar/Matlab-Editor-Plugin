@@ -1,15 +1,14 @@
 package at.mep.prefs;
 
-import at.mep.debug.Debug;
 import at.mep.installer.Install;
 import at.mep.path.MPath;
 import at.mep.util.ColorUtils;
 import at.mep.util.KeyStrokeUtil;
-import com.mathworks.services.Prefs;
-import com.mathworks.services.settings.Setting;
-import com.mathworks.services.settings.SettingNotFoundException;
-import com.mathworks.services.settings.SettingPath;
-import com.mathworks.services.settings.SettingTypeException;
+// import com.mathworks.services.Prefs;
+// import com.mathworks.services.settings.Setting;
+// import com.mathworks.services.settings.SettingNotFoundException;
+// import com.mathworks.services.settings.SettingPath;
+// import com.mathworks.services.settings.SettingTypeException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -59,11 +58,6 @@ public class Settings {
     }
 
     public static void loadSettings(String customSettings, String defaultSettings) {
-        if (Debug.isDebugEnabled()) {
-            Properties debugProps = load(Settings.class.getResourceAsStream("/properties/DEBUG.properties"));
-            defaultProps = mergeProps(defaultProps, debugProps);
-        }
-
         try {
             customProps = load(customSettings);
             defaultProps = mergeProps(defaultProps, load(defaultSettings));
@@ -235,26 +229,26 @@ public class Settings {
         return p;
     }
 
-    public static String getMatlabCustomFolderPath() throws SettingNotFoundException, SettingTypeException {
+    // public static String getMatlabCustomFolderPath() throws SettingNotFoundException, SettingTypeException {
         // com.mathworks.mlwidgets.prefs.GeneralPrefsPanel
-        SettingPath settingPath = new SettingPath("matlab", "workingfolder");
-        Setting<String> setting = new Setting<String>(settingPath, String.class, "CustomFolderPath");
-        return setting.get();
-    }
+        // SettingPath settingPath = new SettingPath("matlab", "workingfolder");
+        // Setting<String> setting = new Setting<String>(settingPath, String.class, "CustomFolderPath");
+        // return setting.get();
+    // }
 
     public static File getJavaClassPathText() throws IOException {
         File file = null;
         for (int i = 0; i < 1; i++) {
             if (i == 0) {
-                file = new File(System.getProperty("user.home"), "Documents/MATLAB/javaclasspath.txt");
+                file = new File(System.getProperty("user.home"), "Documents" + File.separator + "MATLAB" + File.separator +"javaclasspath.txt");
             } else if (i == 1) {
-                file = new File(Prefs.getPropertyDirectory(), "javaclasspath.txt");
+                // file = new File(Prefs.getPropertyDirectory(), "javaclasspath.txt");
             } else if (i == 2) {
-                try {
-                    file = new File(Settings.getMatlabCustomFolderPath());
-                } catch (SettingNotFoundException | SettingTypeException ignored) {
-                    file = null;
-                }
+                // try {
+                //     file = new File(Settings.getMatlabCustomFolderPath());
+                // } catch (SettingNotFoundException | SettingTypeException ignored) {
+                //     file = null;
+                // }
                 if (file != null && file.exists()) break;
             }
             if (file == null) {
