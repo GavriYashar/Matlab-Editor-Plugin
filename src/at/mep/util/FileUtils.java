@@ -40,6 +40,13 @@ public class FileUtils {
         return lName;
     }
 
+    public static String getExtension(File file) {
+        int extensionPos = file.getAbsolutePath().lastIndexOf(".");
+        int lastSeparator = file.getAbsolutePath().lastIndexOf(File.separator);
+        int index = lastSeparator > extensionPos ? -1 : extensionPos;
+        return index == -1 ? "" : file.getAbsolutePath().substring(index + 1);
+    }
+
     public static void copyFile(File source, File target) {
         copyFile(source.toPath(), target.toPath());
     }

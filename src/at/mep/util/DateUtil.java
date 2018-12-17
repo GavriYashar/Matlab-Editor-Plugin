@@ -22,4 +22,8 @@ public class DateUtil {
         dateObj.setTime(millis);
         return df.format(dateObj);
     }
+
+    public static String getCurrentDate(String format) {
+        return getCurrentDate(new SimpleDateFormat(format));
+    }
 }
