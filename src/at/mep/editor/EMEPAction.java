@@ -10,6 +10,7 @@ import at.mep.gui.clipboardStack.EClipboardParent;
 import at.mep.gui.fileStructure.FileStructure;
 import at.mep.gui.mepr.MEPRViewer;
 import at.mep.gui.recentlyClosed.RecentlyClosed;
+import at.mep.localhistory.LocalHistory;
 import at.mep.prefs.Settings;
 import at.mep.util.ClipboardUtil;
 import com.mathworks.matlab.api.editor.Editor;
@@ -174,13 +175,8 @@ public enum EMEPAction {
     MEP_SAVE(new AbstractAction("MEP_SAVE") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            try {
-                EditorWrapper.getActiveEditor().save();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-            if (!Settings.getPropertyBoolean("feature.enableFileHistory")) return;
             System.out.println("SAVE EVENT");
+            LocalHistory.saveEditor(EditorWrapper.getActiveEditor());
         }
     })
     ;
