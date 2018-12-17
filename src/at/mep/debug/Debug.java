@@ -49,7 +49,7 @@ public class Debug {
 
     public static void assignObjectToMatlab(String variableName, Object o) {
         try {
-            Matlab.getInstance().proxyHolder.get().feval("assignin", "base", variableName, o);
+            Matlab.assignObjectToMatlab(variableName, o);
         } catch (MatlabInvocationException ignored) {
         }
     }
