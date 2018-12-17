@@ -169,6 +169,19 @@ public enum EMEPAction {
             if (!Settings.getPropertyBoolean("feature.enableReplacements")) return;
             MEPRViewer.getInstance().quickSearch();
         }
+    }),
+
+    MEP_SAVE(new AbstractAction("MEP_SAVE") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                EditorWrapper.getActiveEditor().save();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            if (!Settings.getPropertyBoolean("feature.enableFileHistory")) return;
+            System.out.println("SAVE EVENT");
+        }
     })
     ;
 
@@ -274,24 +287,27 @@ public enum EMEPAction {
         }
         action.actionPerformed(new ActionEvent(editorSyntaxTextPane, 0, null));
 
-        // select next line afterwards that is not a comment
+        // select next line afterwards that is not a comment nor an empty line
         // if outside of block comment jump to next line that is outside
         // if inside of block comment, jump to next line that is inside
         int line = lcEnd[0]+1;
         boolean inBlock = false;
-        String strL = EditorWrapper.getTextByLine(line).trim();
-        while ((inBlock
-                || strL.equals("") // skip empty lines
-                || strL.startsWith("%")) // skip comments
-                && !EditorWrapper.isLastLine(editor, line) // until last line
-        ) {
+        while (true)  {
+            String strL = EditorWrapper.getTextByLine(line).trim();
             if (strL.startsWith("%{")) {
                 inBlock = true;
-            } else if (strL.trim().startsWith("%}")) {
+            } else if (strL.startsWith("%}")) {
                 inBlock = false;
             }
+            boolean again = inBlock;
+            again |= strL.equals(""); // skip empty lines
+            again |= strL.startsWith("%"); // skip comment
+            again &= line < EditorWrapper.numberOfLines(editor); // until last line
+
+            if (!again) {
+                break;
+            }
             line++;
-            strL = EditorWrapper.getTextByLine(line).trim();
         }
         EditorWrapper.goToLine(editor, line, false);
     }
