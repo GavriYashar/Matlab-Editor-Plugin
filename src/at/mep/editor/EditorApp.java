@@ -164,9 +164,6 @@ public class EditorApp {
                     switch (e.getButton()) {
                         case 1: {
                             // left
-                            if (Debug.isDebugEnabled()) {
-                                System.out.println("mouse released left " + e.getButton());
-                            }
                             if (Settings.getPropertyBoolean("feature.enableClickHistory")) {
                                 ClickHistory.getINSTANCE().add(editor);
                             }
@@ -174,25 +171,15 @@ public class EditorApp {
                         }
                         case 2: {
                             // middle
-                            if (Debug.isDebugEnabled()) {
-                                System.out.println("mouse released middle " + e.getButton());
-                            }
                             break;
                         }
                         case 3: {
                             // right
-                            if (Debug.isDebugEnabled()) {
-                                System.out.println("mouse released right " + e.getButton());
-                            }
-
                             ContextMenu.contribute(editor);
                             break;
                         }
                         case 4: {
                             // backward
-                            if (Debug.isDebugEnabled()) {
-                                System.out.println("mouse released backward " + e.getButton());
-                            }
                             if (Settings.getPropertyBoolean("feature.enableClickHistory")) {
                                 ClickHistory.getINSTANCE().locationPrevious();
                             }
@@ -200,9 +187,6 @@ public class EditorApp {
                         }
                         case 5: {
                             // forward
-                            if (Debug.isDebugEnabled()) {
-                                System.out.println("mouse released forward " + e.getButton());
-                            }
                             if (Settings.getPropertyBoolean("feature.enableClickHistory")) {
                                 ClickHistory.getINSTANCE().locationNext();
                             }
@@ -219,6 +203,10 @@ public class EditorApp {
                     if (Settings.getPropertyBoolean("feature.enableDockableWindows")) {
                         FileStructure.getInstance().populateTree();
                     }
+
+                    remKeyStrokes(EditorWrapper.getEditorSyntaxTextPane());
+                    CustomShortCutKey.reload();
+                    addKeyStrokes(EditorWrapper.getEditorSyntaxTextPane());
 
                     if (Settings.getPropertyBoolean("feature.enableAutoDetailViewer")
                             || Settings.getPropertyBoolean("feature.enableAutoCurrentFolder")) {
@@ -312,6 +300,26 @@ public class EditorApp {
         }
     }
 
+    private void remKeyStrokes(EditorSyntaxTextPane editorSyntaxTextPane) {
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getDEBUG());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getExecuteCurrentLines());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getDeleteLines());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getDuplicateLine());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getMoveLineUp());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getMoveLineDown());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getFileStructure());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getRecentlyClosed());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getClipboardStack());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getCopySelectedText());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getCutSelectedText());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getLiveTemplateViewer());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getQuickSearchMepr());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getBookmarkViewer());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getToggleBookmark());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getBreakpointViewer());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getSave());
+    }
+
     private void addKeyStrokes(EditorSyntaxTextPane editorSyntaxTextPane) {
         // NOTE: enable/disable feature cannot be checked here. the problem in the current design is, that matlab would
         //       need a restart after enabling features afterwards. that's why the features are checked in the
@@ -372,6 +380,10 @@ public class EditorApp {
         // BREAKPOINTS
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getBreakpointViewer(), "MEP_SHOW_BREAKPOINTS");
         editorSyntaxTextPane.getActionMap().put("MEP_SHOW_BREAKPOINTS", EMEPAction.MEP_SHOW_BREAKPOINTS.getAction());
+
+        // File History
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getSave(), "MEP_SAVE");
+        editorSyntaxTextPane.getActionMap().put("MEP_SAVE", EMEPAction.MEP_SAVE.getAction());
     }
 
     public void removeCallbacks() {
