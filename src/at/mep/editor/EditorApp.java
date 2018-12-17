@@ -204,7 +204,7 @@ public class EditorApp {
                         FileStructure.getInstance().populateTree();
                     }
 
-                    remKeyStrokes(EditorWrapper.getEditorSyntaxTextPane());
+                    remKeyStrokes(EditorWrapper.getOpenEditors());
                     CustomShortCutKey.reload();
                     addKeyStrokes(EditorWrapper.getEditorSyntaxTextPane());
 
@@ -300,6 +300,11 @@ public class EditorApp {
         }
     }
 
+    private void remKeyStrokes(List<Editor> editors) {
+        for (Editor e : editors) {
+            remKeyStrokes(EditorWrapper.getEditorSyntaxTextPane(e));
+        }
+    }
     private void remKeyStrokes(EditorSyntaxTextPane editorSyntaxTextPane) {
         editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getDEBUG());
         editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getExecuteCurrentLines());
