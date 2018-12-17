@@ -80,6 +80,14 @@ public class Matlab {
         }
     }
 
+    public static <T> void assignObjectToMatlab(String variableName, T object) throws MatlabInvocationException {
+        Matlab.getInstance().proxyHolder.get().feval("assignin", "base", variableName, object);
+    }
+
+    public static void eval(String cmd) throws MatlabInvocationException {
+        Matlab.getInstance().proxyHolder.get().eval(cmd);
+    }
+
     @SuppressWarnings("WeakerAccess")
     public DTRootPane getRootPane() {
         return (DTRootPane) getMlDesktop().getMainFrame().getComponent(0);
@@ -167,9 +175,9 @@ public class Matlab {
 
     public static List<String> whichString_EVAL(String item) throws MatlabInvocationException {
         String cmd = "MEP_WHICH = which('" + item + "','-all');";
-        Matlab.getInstance().proxyHolder.get().eval(cmd);
+        eval(cmd);
         String[] which = (String[]) Matlab.getInstance().proxyHolder.get().getVariable("MEP_WHICH");
-        Matlab.getInstance().proxyHolder.get().eval("clear MEP_WHICH");
+        eval("clear MEP_WHICH");
         return Arrays.asList(which);
     }
 
