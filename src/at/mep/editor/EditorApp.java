@@ -323,6 +323,7 @@ public class EditorApp {
         editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getToggleBookmark());
         editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getBreakpointViewer());
         editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getSave());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getLocalHistory());
     }
 
     private void addKeyStrokes(EditorSyntaxTextPane editorSyntaxTextPane) {
@@ -389,6 +390,9 @@ public class EditorApp {
         // File History
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getSave(), "MEP_SAVE");
         editorSyntaxTextPane.getActionMap().put("MEP_SAVE", EMEPAction.MEP_SAVE.getAction());
+
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getLocalHistory(), "MEP_LOCAL_HISTORY");
+        editorSyntaxTextPane.getActionMap().put("MEP_LOCAL_HISTORY", EMEPAction.MEP_LOCAL_HISTORY.getAction());
     }
 
     public void removeCallbacks() {
