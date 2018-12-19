@@ -8,7 +8,6 @@ import at.mep.util.FileUtils;
 import at.mep.util.RunnableUtil;
 import com.mathworks.matlab.api.editor.Editor;
 import matlabcontrol.MatlabInvocationException;
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 
@@ -39,7 +38,7 @@ public class LocalHistory {
         String suffix = DateUtil.getCurrentDate("YYYY_MM_dd_HH_mm_ss_SSS");
         try {
             File file = new File(FOLDER.getAbsolutePath(),
-                    EditorWrapper.getFullQualifiedClass(editor).replace(".","_")
+                    getHistoryFileNameForEditor(editor)
                             + "." + suffix + "."
                             + FileUtils.getExtension(EditorWrapper.getFile()));
             FileUtils.writeFileText(file, editor.getText());
@@ -51,6 +50,8 @@ public class LocalHistory {
     private static void cleanup() {
         Runnable runnable = () -> {
             File[] files = FOLDER.listFiles();
+            if (files == null) return;
+            
             for (int i = files.length - 1; i >= 0 ; i--) {
                 long dateDiff = System.currentTimeMillis() - files[i].lastModified();
                 if (dateDiff > 1000*60*60*24*Settings.getPropertyInt("localHistory.daysToKeep")) {
@@ -68,7 +69,7 @@ public class LocalHistory {
     public static void compare(File local, File remote) throws MatlabInvocationException {
         String command = Settings.getProperty("localHistory.command");
         try {
-            if (command.contains("$LOCALJAVA") || command.contains("$REMOTEJAVA")) {
+            if (command.contains("$LOCALJAVA") && command.contains("$REMOTEJAVA")) {
                 Matlab.assignObjectToMatlab("MEP_localhistory_local_java", local);
                 command = command.replace("$LOCALJAVA", "MEP_localhistory_local_java");
 
@@ -89,5 +90,13 @@ public class LocalHistory {
             System.out.println("LocalHistory Command: \n\t" + command);
             throw e;
         }
+    }
+
+    public static String getHistoryFileNameForEditor(Editor editor) {
+        return EditorWrapper.getFullQualifiedClass(editor).replace(".","_");
+    }
+
+    public static File getFolder() {
+        return FOLDER;
     }
 }
