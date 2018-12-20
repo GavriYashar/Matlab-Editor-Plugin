@@ -24,7 +24,8 @@ public class LocalHistory {
      */
     public static void saveEditor(Editor editor) {
         try {
-            editor.save();
+            // negotiateSave() does not throw an error if being debugged
+            editor.negotiateSave();
         } catch (Exception e1) {
             e1.printStackTrace();
         }
