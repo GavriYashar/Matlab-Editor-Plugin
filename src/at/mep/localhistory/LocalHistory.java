@@ -83,7 +83,7 @@ public class LocalHistory {
                 command = command.replace("$LOCAL", local.getAbsolutePath());
                 command = command.replace("$REMOTE", remote.getAbsolutePath());
                 command = command.replace("\"", "\"\"");
-                command = "system(\"" + command + " &\")";
+                command = "system(\"" + command + " &\");";
                 Matlab.eval(command);
             }
         } catch (MatlabInvocationException e) {
