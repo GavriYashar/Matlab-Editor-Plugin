@@ -28,20 +28,27 @@ public class LocalHistory {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-        if (!Settings.getPropertyBoolean("feature.enableLocalHistory")) return;
 
-        if ((System.currentTimeMillis() - lastSweep) > 1000*60*60*24) {
-            // one sweep a day/per session is enough
-            cleanup();
-        }
+        if (!Settings.getPropertyBoolean("feature.enableLocalHistory"))
+            return;
+
 
         String suffix = DateUtil.getCurrentDate("YYYY_MM_dd_HH_mm_ss_SSS");
         try {
+            if (!FOLDER.mkdir() && !FOLDER.exists()) {
+                System.out.println("could not create local history folder");
+                return;
+            }
             File file = new File(FOLDER.getAbsolutePath(),
                     getHistoryFileNameForEditor(editor)
                             + "." + suffix + "."
                             + FileUtils.getExtension(EditorWrapper.getFile()));
             FileUtils.writeFileText(file, editor.getText());
+
+            if ((System.currentTimeMillis() - lastSweep) > 1000 * 60 * 60 * 24) {
+                // one sweep a day/per session is enough
+                cleanup();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
