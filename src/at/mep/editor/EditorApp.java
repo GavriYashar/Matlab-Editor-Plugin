@@ -9,6 +9,7 @@ import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.gui.ContextMenu;
 import at.mep.gui.fileStructure.FileStructure;
 import at.mep.gui.recentlyClosed.RecentlyClosed;
+import at.mep.localhistory.LocalHistory;
 import at.mep.mepr.MEPR;
 import at.mep.prefs.Settings;
 import com.mathworks.matlab.api.editor.Editor;
@@ -199,26 +200,33 @@ public class EditorApp {
             // Editor event (AutoSwitcher)
             editor.addEventListener(editorEvent -> {
                 // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
-                if (editorEvent == EditorEvent.ACTIVATED){
-                    if (Settings.getPropertyBoolean("feature.enableDockableWindows")) {
-                        FileStructure.getInstance().populateTree();
-                    }
-
-                    remKeyStrokes(EditorWrapper.getOpenEditors());
-                    CustomShortCutKey.reload();
-                    addKeyStrokes(EditorWrapper.getEditorSyntaxTextPane());
-
-                    if (Settings.getPropertyBoolean("feature.enableAutoDetailViewer")
-                            || Settings.getPropertyBoolean("feature.enableAutoCurrentFolder")) {
-
-                        AutoSwitcher.doYourThing();
-
-                        EditorWrapper.setDirtyIfLastEditorChanged(editor);
-                        EditorWrapper.setIsActiveEditorDirty(true);
-
-                        if (Debug.isDebugEnabled()) {
-                            System.out.println("event occurred");
+                switch (editorEvent){
+                    case ACTIVATED: {
+                        if (Settings.getPropertyBoolean("feature.enableDockableWindows")) {
+                            FileStructure.getInstance().populateTree();
                         }
+
+                        remKeyStrokes(EditorWrapper.getOpenEditors());
+                        CustomShortCutKey.reload();
+                        addKeyStrokes(EditorWrapper.getEditorSyntaxTextPane());
+
+                        if (Settings.getPropertyBoolean("feature.enableAutoDetailViewer")
+                                || Settings.getPropertyBoolean("feature.enableAutoCurrentFolder")) {
+
+                            AutoSwitcher.doYourThing();
+
+                            EditorWrapper.setDirtyIfLastEditorChanged(editor);
+                            EditorWrapper.setIsActiveEditorDirty(true);
+
+                            if (Debug.isDebugEnabled()) {
+                                System.out.println("event occurred");
+                            }
+                        }
+                        break;
+                    }
+                    case CLOSED: {
+                        LocalHistory.addHistoryEntry(editor);
+                        break;
                     }
                 }
             });
