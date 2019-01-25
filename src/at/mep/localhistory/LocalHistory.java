@@ -29,10 +29,12 @@ public class LocalHistory {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
+        addHistoryEntry(editor);
+    }
 
+    public static void addHistoryEntry(Editor editor) {
         if (!Settings.getPropertyBoolean("feature.enableLocalHistory"))
             return;
-
 
         String suffix = DateUtil.getCurrentDate("YYYY_MM_dd_HH_mm_ss_SSS");
         try {
