@@ -5,7 +5,7 @@ classdef CleanUpCode
 %             Author: Andreas Justin
 %      Creation date: 2019-01-30
 %             Matlab: 9.6, (R2019a)
-%  Required Products: -
+%  Required Products: https://github.com/GavriYashar/Matlab-Utilities
 %
 %% REVISONS
 % V0.1 | 2019-01-30 | Andreas Justin      | first implementation
@@ -21,8 +21,8 @@ classdef CleanUpCode
 %}
 %% --------------------------------------------------------------------------------------------
     
-%% >|•| Methods
-%% --|••| Public Static Methods
+%% >|â€¢| Methods
+%% --|â€¢â€¢| Public Static Methods
 methods (Static = true)
     function removeTrailingSpace(mfile, ignoreLineOnlySpace)
         % removes trailing whitespace from given $mfile
