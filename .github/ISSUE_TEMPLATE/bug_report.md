@@ -35,5 +35,7 @@ Exception in thread "AWT-EventQueue-0": java.lang.NullPointerException
 	at at.mep.editor.EditorApp.remKeyStrokes(EditorApp.java:313)
 ```
 
+</details>
+
 **Additional context**
 Add any other context about the problem here.
