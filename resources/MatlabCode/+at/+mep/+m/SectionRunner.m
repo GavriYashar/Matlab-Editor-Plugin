@@ -55,6 +55,21 @@ sr.runSectionByTag("tag1")
 sr.runSectionByTag("tag1")
 sr.runSectionByTitle("%% asdfa")
 
+% static method
+at.mep.m.SectionRunner.jumpToSectionyByTagActiveEditor("Tag1")
+
+% >•< >•< >•< >•< >•< >•< >•< >•< >•< >•< >•< >•<
+% Private Example
+fil = file.Filename.valueOfStr(SDS.projectsPathDatenAnalyse("MyScript.m"));
+e = at.mep.editor.EditorWrapper.openEditor(fil.getJavaFile());
+sr = at.mep.m.SectionRunner(e);
+sr.jumpToSectionyByTag("BeschleunigungVorzeichenXYZ");
+
+% public example
+fil = javaIoFile = java.io.File("D:\...\MyScript.m");
+e = at.mep.editor.EditorWrapper.openEditor(fil);
+sr = at.mep.m.SectionRunner(e);
+sr.jumpToSectionyByTag("BeschleunigungVorzeichenXYZ");
 %}
 %% --------------------------------------------------------------------------------------------
 properties (SetAccess = immutable)
