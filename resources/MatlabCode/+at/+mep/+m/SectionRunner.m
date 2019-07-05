@@ -23,6 +23,7 @@ classdef SectionRunner < handle
 %
 %% REVISONS
 % V0.1 | 2018-10-30 | Andreas Justin      | first implementation
+% V0.2 | 2018-10-31 | Andreas Justin      | added various jump methods
 %
 % See also 
 %
@@ -125,10 +126,26 @@ methods (Access = public)
         evalin("base", cmd);
     end
     function jumpToSectionByLine(obj, line)
+        % unique: somehow EditorWrapper returns the same line twice (sometimes)
+        line = unique(line);
         if numel(line) ~= 1
             error("mep:InvalidArgument", "line must be a scalar")
         end
         at.mep.editor.EditorWrapper.goToLine(obj.editor, line, false);
+    end
+end
+
+methods (Static = true, Access = public)
+    function jumpToSectionyByTagActiveEditor(tag)
+        ae = at.mep.editor.EditorWrapper.getActiveEditor();
+        sr = at.mep.m.SectionRunner(ae);
+        sr.jumpToSectionyByTag(tag)
+    end
+    
+    function runSectionyByTagActiveEditor(tag)
+        ae = at.mep.editor.EditorWrapper.getActiveEditor();
+        sr = at.mep.m.SectionRunner(ae);
+        sr.runSectionByTag(tag)
     end
 end
 end
