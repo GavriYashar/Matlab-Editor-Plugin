@@ -24,7 +24,7 @@ In short, it will mess around with Matlab's Editor.
 * **[VarDiff](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#vardiff)**: Compares two Variables in Workspace
 * Shortcuts can be changed in `*.properties` file
 * Windows are dockable
-* **[SectionRunner](https://github.com/GavriYashar/Matlab-Editor-Plugin/blob/master/resources/MatlabCode/%2Bat/%2Bmep/%2Bm/SectionRunner.m) to run or jump to specific section in a given script.
+* **[SectionRunner](https://github.com/GavriYashar/Matlab-Editor-Plugin/blob/master/resources/MatlabCode/%2Bat/%2Bmep/%2Bm/SectionRunner.m)** to run or jump to specific section in a given script.
 
 ## Setup
 [Follow this link](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Setup)
