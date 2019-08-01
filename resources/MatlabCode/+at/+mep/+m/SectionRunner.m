@@ -144,23 +144,28 @@ methods (Access = public)
         % unique: somehow EditorWrapper returns the same line twice (sometimes)
         line = unique(line);
         if numel(line) ~= 1
-            error("mep:InvalidArgument", "line must be a scalar")
+            msg = "line[" + util.String.toSizeString(size(line)) + "] must be a scalar";
+            error("mep:InvalidArgument", msg)
         end
         at.mep.editor.EditorWrapper.goToLine(obj.editor, line, false);
     end
 end
 
 methods (Static = true, Access = public)
-    function jumpToSectionyByTagActiveEditor(tag)
+    function line = getLineSectionByTagActiveEditor(tag)
         ae = at.mep.editor.EditorWrapper.getActiveEditor();
         sr = at.mep.m.SectionRunner(ae);
-        sr.jumpToSectionyByTag(tag)
+        line = sr.getLineSectionByTag(tag);
     end
-    
     function runSectionyByTagActiveEditor(tag)
         ae = at.mep.editor.EditorWrapper.getActiveEditor();
         sr = at.mep.m.SectionRunner(ae);
         sr.runSectionByTag(tag)
+    end
+    function jumpToSectionyByTagActiveEditor(tag)
+        ae = at.mep.editor.EditorWrapper.getActiveEditor();
+        sr = at.mep.m.SectionRunner(ae);
+        sr.jumpToSectionyByTag(tag)
     end
 end
 end
