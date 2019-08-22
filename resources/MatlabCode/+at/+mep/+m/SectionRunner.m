@@ -144,7 +144,7 @@ methods (Access = public)
         % unique: somehow EditorWrapper returns the same line twice (sometimes)
         line = unique(line);
         if numel(line) ~= 1
-            msg = "line[" + util.String.toSizeString(size(line)) + "] must be a scalar";
+            msg = "line[" + util.String.sizeString(line) + "] must be a scalar";
             error("mep:InvalidArgument", msg)
         end
         at.mep.editor.EditorWrapper.goToLine(obj.editor, line, false);
