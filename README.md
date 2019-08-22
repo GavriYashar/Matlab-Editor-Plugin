@@ -19,7 +19,7 @@ In short, it will mess around with Matlab's Editor.
 * **[Recently Closed Editor](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#recently-closed-editor)**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>T</kbd>
 
 ### Other
-* **[KeyPressListener](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Setup#creating-custom-key-press-callbacks-in-editor)**: executes custom Matlab functions on keypress passed in by the user beforehand
+* **[KeyPressListener](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Setup#creating-custom-key-press-callbacks-in-editor-optional)**: executes custom Matlab functions on keypress passed in by the user beforehand
 * **[Execute Current Line](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#execute-current-lines)**: <kbd>SHIFT</kbd> + <kbd>F9</kbd>
 * **[VarDiff](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#vardiff)**: Compares two Variables in Workspace
 * Shortcuts can be changed in `*.properties` file
