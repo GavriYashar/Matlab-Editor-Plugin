@@ -307,6 +307,9 @@ public class NodeFS extends DefaultMutableTreeNode {
                 if (suffix.endsWith(".m")){
                     suffix = suffix.substring(0, suffix.length()-2);
                 }
+                if (mFileCD.getClassDefs().size() < 1) {
+                    continue;
+                }
                 populateProperties(root, mFileCD.getClassDefs().get(0).getProperties(), mFileCD.getFile(), suffix);
                 populateMethods(root, mFileCD.getClassDefs().get(0).getMethod(), mFileCD.getFile(), suffix);
             }
