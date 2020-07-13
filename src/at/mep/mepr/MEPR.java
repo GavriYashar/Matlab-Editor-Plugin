@@ -138,7 +138,7 @@ public class MEPR {
         }
         String txt = "";
         try {
-            txt = FileUtils.readFileToString(actionFile);
+            txt = FileUtils.readFileToString(actionFile, Settings.getPropertyCharset("charset.mepr"));
         } catch (IOException e1) {
             e1.printStackTrace();
             return;
