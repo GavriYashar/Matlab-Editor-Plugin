@@ -23,6 +23,7 @@ classdef SectionRunner < handle
 %
 %% REVISONS
 % V0.1 | 2018-10-30 | Andreas Justin      | first implementation
+% V0.2 | 2018-10-31 | Andreas Justin      | added various jump methods
 %
 % See also 
 %
@@ -54,6 +55,21 @@ sr.runSectionByTag("tag1")
 sr.runSectionByTag("tag1")
 sr.runSectionByTitle("%% asdfa")
 
+% static method
+at.mep.m.SectionRunner.jumpToSectionyByTagActiveEditor("Tag1")
+
+% >•< >•< >•< >•< >•< >•< >•< >•< >•< >•< >•< >•<
+% Private Example
+fil = file.Filename.valueOfStr(SDS.projectsPathDatenAnalyse("MyScript.m"));
+e = at.mep.editor.EditorWrapper.openEditor(fil.getJavaFile());
+sr = at.mep.m.SectionRunner(e);
+sr.jumpToSectionyByTag("BeschleunigungVorzeichenXYZ");
+
+% public example
+fil = javaIoFile = java.io.File("D:\...\MyScript.m");
+e = at.mep.editor.EditorWrapper.openEditor(fil);
+sr = at.mep.m.SectionRunner(e);
+sr.jumpToSectionyByTag("BeschleunigungVorzeichenXYZ");
 %}
 %% --------------------------------------------------------------------------------------------
 properties (SetAccess = immutable)
@@ -125,10 +141,31 @@ methods (Access = public)
         evalin("base", cmd);
     end
     function jumpToSectionByLine(obj, line)
+        % unique: somehow EditorWrapper returns the same line twice (sometimes)
+        line = unique(line);
         if numel(line) ~= 1
-            error("mep:InvalidArgument", "line must be a scalar")
+            msg = "line[" + util.String.sizeString(line) + "] must be a scalar";
+            error("mep:InvalidArgument", msg)
         end
         at.mep.editor.EditorWrapper.goToLine(obj.editor, line, false);
+    end
+end
+
+methods (Static = true, Access = public)
+    function line = getLineSectionByTagActiveEditor(tag)
+        ae = at.mep.editor.EditorWrapper.getActiveEditor();
+        sr = at.mep.m.SectionRunner(ae);
+        line = sr.getLineSectionByTag(tag);
+    end
+    function runSectionyByTagActiveEditor(tag)
+        ae = at.mep.editor.EditorWrapper.getActiveEditor();
+        sr = at.mep.m.SectionRunner(ae);
+        sr.runSectionByTag(tag)
+    end
+    function jumpToSectionyByTagActiveEditor(tag)
+        ae = at.mep.editor.EditorWrapper.getActiveEditor();
+        sr = at.mep.m.SectionRunner(ae);
+        sr.jumpToSectionyByTag(tag)
     end
 end
 end

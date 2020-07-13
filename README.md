@@ -8,6 +8,7 @@ In short, it will mess around with Matlab's Editor.
 * **[Moving current lines up](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#moving-current-lines-up-or-down)**: <kbd>ALT</kbd> + <kbd>SHIFT</kbd> + <kbd>ARROW UP</kbd>
 * **[Moving current lines down](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#moving-current-lines-up-or-down)**: <kbd>ALT</kbd> + <kbd>SHIFT</kbd> + <kbd>ARROW DOWN</kbd>
 * **[LiveTemplatesViewer](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Live-Templates)**: <kbd>ALT</kbd> + <kbd>INSERT</kbd> view all created livetemplates
+* **[Local History V1.35](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#local-history)**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>H</kbd> view local history of file
 
 ### Navigation
 * **[Navigation History](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#navigation-history)**: using the Mouse Forward and Backward button to navigate through location history
@@ -18,11 +19,12 @@ In short, it will mess around with Matlab's Editor.
 * **[Recently Closed Editor](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#recently-closed-editor)**: <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>T</kbd>
 
 ### Other
-* **[KeyPressListener](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Setup#creating-custom-key-press-callbacks-in-editor)**: executes custom Matlab functions on keypress passed in by the user beforehand
+* **[KeyPressListener](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Setup#creating-custom-key-press-callbacks-in-editor-optional)**: executes custom Matlab functions on keypress passed in by the user beforehand
 * **[Execute Current Line](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#execute-current-lines)**: <kbd>SHIFT</kbd> + <kbd>F9</kbd>
 * **[VarDiff](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Features#vardiff)**: Compares two Variables in Workspace
 * Shortcuts can be changed in `*.properties` file
 * Windows are dockable
+* **[SectionRunner](https://github.com/GavriYashar/Matlab-Editor-Plugin/blob/master/resources/MatlabCode/%2Bat/%2Bmep/%2Bm/SectionRunner.m)** to run or jump to specific section in a given script.
 
 ## Setup
 [Follow this link](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki/Setup)

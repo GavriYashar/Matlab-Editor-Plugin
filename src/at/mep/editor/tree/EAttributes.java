@@ -37,7 +37,7 @@ public enum EAttributes {
     CONSTRUCTONLOAD("ConstructOnLoad", EAccess.FALSE),
     HANDLECOMPATIBLE("HandleCompatible", EAccess.FALSE),
     INFERIORCLASSES("InferiorClasses", EAccess.META),
-    LEARNABLE("Learnable", EAccess.FALSE); // nnet.layer.Layer
+    LEARNABLE("Learnable", EAccess.FALSE); // nnet.layer.Layer, https://github.com/GavriYashar/Matlab-Editor-Plugin/issues/142
 
     private final String stringMatlab;
     private final EAccess defaultAccess;

@@ -58,4 +58,19 @@ public class StringUtils {
         }
         return sb.toString();
     }
+    
+    /**
+     * Support for Java 7
+     * String.join(delimiter, elements)
+     */
+    public static String join(String delimiter, List<String> elements) {
+        Objects.requireNonNull(delimiter);
+        Objects.requireNonNull(elements);
+        
+        StringBuilder joiner = new StringBuilder(delimiter);
+        for (CharSequence cs: elements) {
+            joiner.append(cs);
+        }
+        return joiner.toString();
+    }
 }
