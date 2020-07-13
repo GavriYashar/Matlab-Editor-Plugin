@@ -13,6 +13,8 @@ import at.mep.util.KeyStrokeUtil;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -104,6 +106,16 @@ public class Settings {
         if (customProps.containsKey(key)) return customProps.getProperty(key);
         if (defaultProps.containsKey(key)) return defaultProps.getProperty(key);
         return "";
+    }
+
+    public static Charset getPropertyCharset(String key) {
+        String val = getProperty(key);
+        if (val.length() == 0) return StandardCharsets.UTF_8;
+        try {
+            return Charset.forName(val);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Property " + key + " is not a valid Charset, instead " + val);
+        }
     }
 
     public static String[] getPropertyStringArray(String key) {
