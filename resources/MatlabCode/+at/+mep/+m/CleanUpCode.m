@@ -20,9 +20,8 @@ classdef CleanUpCode
 
 %}
 %% --------------------------------------------------------------------------------------------
-    
-%% >|•| Methods
-%% --|••| Public Static Methods
+%% >|â€¢| Methods
+%% --|â€¢â€¢| Public Static Methods
 methods (Static = true)
     function removeTrailingSpace(mfile, ignoreLineOnlySpace)
         % removes trailing whitespace from given $mfile

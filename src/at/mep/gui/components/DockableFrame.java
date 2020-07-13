@@ -5,6 +5,7 @@ import at.mep.gui.bookmarks.BookmarksViewerUndecoratedFrame;
 import at.mep.gui.fileStructure.FileStructureUndecoratedFrame;
 import at.mep.gui.mepr.MEPRViewerUndecoratedFrame;
 import at.mep.gui.recentlyClosed.RecentlyClosedUndecoratedFrame;
+import at.mep.localhistory.LocalHistoryUndecoratedFrame;
 import at.mep.prefs.Settings;
 import at.mep.util.KeyStrokeUtil;
 import com.mathworks.mde.desk.MLDesktop;
@@ -36,7 +37,8 @@ public class DockableFrame extends JPanel {
         BOOKMARKS("Bookmarks"),
         LIVE_TEMPLATES("LiveTemplates"),
         RECENTLY_CLOSED("RecentlyClosed"),
-        BREAKPOINTS("Breakpoints")
+        BREAKPOINTS("Breakpoints"),
+        LOCAL_HISTORY("Local History")
         ;
 
         private final String text;
@@ -134,6 +136,9 @@ public class DockableFrame extends JPanel {
                         break;
                     case RECENTLY_CLOSED:
                         RecentlyClosedUndecoratedFrame.getInstance().setVisible(visible);
+                        break;
+                    case LOCAL_HISTORY:
+                        LocalHistoryUndecoratedFrame.getInstance().setVisible(visible);
                         break;
                 }
                 break;

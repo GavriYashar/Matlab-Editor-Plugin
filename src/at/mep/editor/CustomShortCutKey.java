@@ -22,6 +22,8 @@ public class CustomShortCutKey {
     private static KeyStroke BREAKPOINT_VIEWER;
     private static KeyStroke QUICK_SEARCH_MEPR;
     private static KeyStroke RECENTLY_CLOSED;
+    private static KeyStroke SAVE;
+    private static KeyStroke LOCAL_HISTORY;
 
     public static void reload() {
         DEBUG = Settings.getPropertyKeyStroke("kb.DEBUG");
@@ -41,6 +43,8 @@ public class CustomShortCutKey {
         BREAKPOINT_VIEWER = Settings.getPropertyKeyStroke("kb.breakpointViewer");
         QUICK_SEARCH_MEPR = Settings.getPropertyKeyStroke("kb.quickSearch");
         RECENTLY_CLOSED = Settings.getPropertyKeyStroke("kb.recentlyClosed");
+        SAVE = Settings.getPropertyKeyStroke("kb.save");
+        LOCAL_HISTORY = Settings.getPropertyKeyStroke("kb.localHistory");
     }
 
     public static KeyStroke getFileStructure() {
@@ -105,5 +109,13 @@ public class CustomShortCutKey {
 
     public static KeyStroke getRecentlyClosed() {
         return RECENTLY_CLOSED;
+    }
+
+    public static KeyStroke getSave() {
+        return SAVE;
+    }
+
+    public static KeyStroke getLocalHistory() {
+        return LOCAL_HISTORY;
     }
 }

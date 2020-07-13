@@ -9,6 +9,7 @@ import at.mep.gui.bookmarks.Bookmarks;
 import at.mep.gui.ContextMenu;
 import at.mep.gui.fileStructure.FileStructure;
 import at.mep.gui.recentlyClosed.RecentlyClosed;
+import at.mep.localhistory.LocalHistory;
 import at.mep.mepr.MEPR;
 import at.mep.prefs.Settings;
 import com.mathworks.matlab.api.editor.Editor;
@@ -199,22 +200,33 @@ public class EditorApp {
             // Editor event (AutoSwitcher)
             editor.addEventListener(editorEvent -> {
                 // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
-                if (editorEvent == EditorEvent.ACTIVATED){
-                    if (Settings.getPropertyBoolean("feature.enableDockableWindows")) {
-                        FileStructure.getInstance().populateTree();
-                    }
-
-                    if (Settings.getPropertyBoolean("feature.enableAutoDetailViewer")
-                            || Settings.getPropertyBoolean("feature.enableAutoCurrentFolder")) {
-
-                        AutoSwitcher.doYourThing();
-
-                        EditorWrapper.setDirtyIfLastEditorChanged(editor);
-                        EditorWrapper.setIsActiveEditorDirty(true);
-
-                        if (Debug.isDebugEnabled()) {
-                            System.out.println("event occurred");
+                switch (editorEvent){
+                    case ACTIVATED: {
+                        if (Settings.getPropertyBoolean("feature.enableDockableWindows")) {
+                            FileStructure.getInstance().populateTree();
                         }
+
+                        remKeyStrokes(EditorWrapper.getOpenEditors());
+                        CustomShortCutKey.reload();
+                        addKeyStrokes(EditorWrapper.getEditorSyntaxTextPane());
+
+                        if (Settings.getPropertyBoolean("feature.enableAutoDetailViewer")
+                                || Settings.getPropertyBoolean("feature.enableAutoCurrentFolder")) {
+
+                            AutoSwitcher.doYourThing();
+
+                            EditorWrapper.setDirtyIfLastEditorChanged(editor);
+                            EditorWrapper.setIsActiveEditorDirty(true);
+
+                            if (Debug.isDebugEnabled()) {
+                                System.out.println("event occurred");
+                            }
+                        }
+                        break;
+                    }
+                    case CLOSED: {
+                        LocalHistory.addHistoryEntry(editor);
+                        break;
                     }
                 }
             });
@@ -296,6 +308,32 @@ public class EditorApp {
         }
     }
 
+    private void remKeyStrokes(List<Editor> editors) {
+        for (Editor e : editors) {
+            remKeyStrokes(EditorWrapper.getEditorSyntaxTextPane(e));
+        }
+    }
+    private void remKeyStrokes(EditorSyntaxTextPane editorSyntaxTextPane) {
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getDEBUG());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getExecuteCurrentLines());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getDeleteLines());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getDuplicateLine());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getMoveLineUp());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getMoveLineDown());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getFileStructure());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getRecentlyClosed());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getClipboardStack());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getCopySelectedText());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getCutSelectedText());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getLiveTemplateViewer());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getQuickSearchMepr());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getBookmarkViewer());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getToggleBookmark());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getBreakpointViewer());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getSave());
+        editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getLocalHistory());
+    }
+
     private void addKeyStrokes(EditorSyntaxTextPane editorSyntaxTextPane) {
         // NOTE: enable/disable feature cannot be checked here. the problem in the current design is, that matlab would
         //       need a restart after enabling features afterwards. that's why the features are checked in the
@@ -356,6 +394,13 @@ public class EditorApp {
         // BREAKPOINTS
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getBreakpointViewer(), "MEP_SHOW_BREAKPOINTS");
         editorSyntaxTextPane.getActionMap().put("MEP_SHOW_BREAKPOINTS", EMEPAction.MEP_SHOW_BREAKPOINTS.getAction());
+
+        // File History
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getSave(), "MEP_SAVE");
+        editorSyntaxTextPane.getActionMap().put("MEP_SAVE", EMEPAction.MEP_SAVE.getAction());
+
+        editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getLocalHistory(), "MEP_LOCAL_HISTORY");
+        editorSyntaxTextPane.getActionMap().put("MEP_LOCAL_HISTORY", EMEPAction.MEP_LOCAL_HISTORY.getAction());
     }
 
     public void removeCallbacks() {

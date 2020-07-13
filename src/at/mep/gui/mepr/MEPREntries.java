@@ -31,7 +31,7 @@ public class MEPREntries {
 
             List<String> lines;
             try {
-                lines = FileUtils.readFileToStringList(file, MEPR.commentPatternEnd);
+                lines = FileUtils.readFileToStringList(file, MEPR.commentPatternEnd, Settings.getPropertyCharset("charset.mepr"));
             } catch (IOException e) {
                 comment = e.getMessage();
                 retVal.add(new MEPREntry(action, tags, comment));

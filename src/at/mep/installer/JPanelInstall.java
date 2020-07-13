@@ -1,12 +1,7 @@
 package at.mep.installer;
 
-import at.mep.prefs.Settings;
-import at.mep.util.FileUtils;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -15,18 +10,14 @@ public class JPanelInstall extends JPanel {
     private final static Color INVALID = new Color(224, 125, 112);
     private final static Color VALID = new Color(139, 255, 109);
     final JFileChooser fc = new JFileChooser();
-    private File jarMEP = null;
-    private File jarMCTL = null;
-    private File txtJCP = null;
-    private File id = null;
-    private File jarMEPID = null;
-    private File jarMCTLID = null;
+    private Install install;
 
     private JTextField jtJAR = null;
     private JTextField jtJCP = null;
     private JTextField jtID = null;
 
     public JPanelInstall() {
+        install = Install.getInstance();
         setLayout();
     }
 
@@ -72,16 +63,13 @@ public class JPanelInstall extends JPanel {
             cJARPathBrowse.weightx = 0.1;
             cJARPathBrowse.insets = new Insets(0, 0, 0, 10);
             final JButton jb = new JButton("...");
-            jb.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                    int returnVal = fc.showOpenDialog(jb);
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        File file = fc.getSelectedFile();
-                        jtJAR.setText(file.toString());
-                        searchJars(file);
-                    }
+            jb.addActionListener(e -> {
+                fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int returnVal = fc.showOpenDialog(jb);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file13 = fc.getSelectedFile();
+                    jtJAR.setText(file13.toString());
+                    searchJars(file13);
                 }
             });
             add(jb, cJARPathBrowse);
@@ -101,7 +89,7 @@ public class JPanelInstall extends JPanel {
             try {
                 file2 = Install.getJavaClassPathTxt();
                 jtJCP = new JTextField(file2.toString());
-                txtJCP = file2;
+                install.setJavaClassPathText(file2);
             } catch (IOException ignored) {
                 jtJCP = new JTextField();
             }
@@ -121,28 +109,21 @@ public class JPanelInstall extends JPanel {
             cJCPPathBrowse.weightx = 0.1;
             cJCPPathBrowse.insets = new Insets(0, 0, 0, 10);
             final JButton jb = new JButton("...");
-            jb.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                    int returnVal = fc.showOpenDialog(jb);
+            jb.addActionListener(e -> {
+                fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                int returnVal = fc.showOpenDialog(jb);
 
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        File file = fc.getSelectedFile();
-                        if (file.getName().startsWith("javaclasspath")) {
-                            txtJCP = file;
-                        } else {
-                            txtJCP = null;
-                        }
-                        jtJCP.setText(file.toString());
-                        checkJCPPath();
-                    }
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file12 = fc.getSelectedFile();
+                    install.setJavaClassPathText(file12);
+                    jtJCP.setText(file12.toString());
+                    checkJCPPath();
                 }
             });
             add(jb, cJCPPathBrowse);
         }
         {
-            // label for installdir
+            // label for install dir
             GridBagConstraints cLabel = new GridBagConstraints();
             cLabel.gridy = 4;
             cLabel.gridx = 0;
@@ -161,24 +142,21 @@ public class JPanelInstall extends JPanel {
             jtID.setEditable(false);
             add(jtID, cID);
 
-            // jcp browser button
+            // install dir browser button
             GridBagConstraints cIDPathBrowse = new GridBagConstraints();
             cIDPathBrowse.gridy = 5;
             cIDPathBrowse.gridx = 1;
             cIDPathBrowse.weightx = 0.1;
             cIDPathBrowse.insets = new Insets(0, 0, 0, 10);
             final JButton jb = new JButton("...");
-            jb.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                    int returnVal = fc.showOpenDialog(jb);
+            jb.addActionListener(e -> {
+                fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int returnVal = fc.showOpenDialog(jb);
 
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        File file = fc.getSelectedFile();
-                        id = new File(file.toString() + File.separator + "MEP");
-                        jtID.setText(id.toString());
-                    }
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file1 = fc.getSelectedFile();
+                    install.setInstallDir(file1.toString() + File.separator + "MEP");
+                    jtID.setText(install.getInstallDir().toString());
                 }
             });
             add(jb, cIDPathBrowse);
@@ -189,32 +167,7 @@ public class JPanelInstall extends JPanel {
     }
 
     private void searchJars(File folder) {
-        File[] files = folder.listFiles();
-        String version = null;
-        try {
-            version = Install.getVersion();
-        } catch (IOException e) {
-            version = "";
-        }
-        for (File f : files) {
-            String s = f.getName();
-            if (s.startsWith("matconsolectl")) {
-                if (jarMCTL != null) {
-                    // if there are more than one files matching this, only one allowed
-                    jarMCTL = null;
-                    break;
-                }
-                jarMCTL = f;
-            }
-            if (s.startsWith("MEP_" + version)) {
-                if (jarMEP != null) {
-                    // if there are more than one files matching this, only one allowed
-                    jarMEP = null;
-                    break;
-                }
-                jarMEP = f;
-            }
-        }
+        install.setJarDirectory(folder);
         checkJARPath();
     }
 
@@ -232,12 +185,7 @@ public class JPanelInstall extends JPanel {
         JButton jbi = new JButton("Install");
         jp.add(jbi, cBI);
 
-        jbi.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                doInstall();
-            }
-        });
+        jbi.addActionListener(e -> doInstall());
 
         // // uninstall Button
         // GridBagConstraints cBU = new GridBagConstraints();
@@ -259,7 +207,7 @@ public class JPanelInstall extends JPanel {
     }
 
     private void checkJCPPath() {
-        if (txtJCP == null) {
+        if (install.isValidJCP()) {
             jtJCP.setBackground(INVALID);
         } else {
             jtJCP.setBackground(VALID);
@@ -267,7 +215,7 @@ public class JPanelInstall extends JPanel {
     }
 
     private void checkJARPath() {
-        if (jarMCTL == null || jarMEP == null) {
+        if (install.isValidJarDirectory()) {
             jtJAR.setBackground(INVALID);
         } else {
             jtJAR.setBackground(VALID);
@@ -275,122 +223,6 @@ public class JPanelInstall extends JPanel {
     }
 
     private void doInstall() {
-        if (jarMCTL == null || jarMEP == null || txtJCP == null) {
-            JOptionPane.showMessageDialog(
-                    new JFrame(""),
-                    "Please make sure that there is only one .jar file of both MEP_xxxxa and matconsolectl-v.v.v.jar in path.\nAlso make sure that the path to javaclasspath.txt is correct",
-                    "Invalid paths",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        if (id == null) {
-            JOptionPane.showMessageDialog(
-                    new JFrame(""),
-                    "No installation path selected",
-                    "Invalid installation path",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        id.mkdir();
-        copyFiles();
-        modifyJCPT();
+        install.install(true);
     }
-
-    private void modifyJCPT() {
-        boolean addMEP = true;
-        boolean addMCTL = true;
-        java.util.List<String> lines;
-        try {
-            lines = FileUtils.readFileToStringList(txtJCP);
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(
-                    new JFrame(""),
-                    e.getMessage()
-                            + "\n\n"
-                            + "please modify javaclasspath.txt by hand and add both jars from installdirectory"
-                            + "\nstart Matlab and type 'edit javaclasspath.txt' and add both jars (full qualified name)"
-                            + "\nthen restart matlab",
-                    "unable to read javaclasspath.txt",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        for (String s : lines) {
-            if (!s.startsWith("#") && s.contains("MEP_")) addMEP = false;
-            if (!s.startsWith("#") && s.contains("matconsolectl")) addMCTL = false;
-            if (!addMCTL && !addMEP) break;
-        }
-        if (addMEP) appendJCPT(jarMEPID);
-        if (addMCTL) appendJCPT(jarMCTLID);
-        if (!addMCTL && !addMEP) {
-            JOptionPane.showMessageDialog(
-                    new JFrame(""),
-                    "already changed",
-                    "unable to read javaclasspath.txt",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void appendJCPT(File file) {
-        try {
-            Install.appendJCPT(txtJCP, file.toString());
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(
-                    new JFrame(""),
-                    e.getMessage(),
-                    "Uh Oh " + file.getName(),
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void copyFiles() {
-        {
-            // copy MEP
-            File f = new File(id + File.separator + jarMEP.getName());
-            FileUtils.copyFile(jarMEP, f);
-            jarMEPID = f;
-        }
-        {
-            // copy matconsolectl
-            File f = new File(id + File.separator + jarMCTL.getName());
-            FileUtils.copyFile(jarMCTL, f);
-            jarMCTLID = f;
-        }
-        {
-            // copy props
-            File ft1 = new File(id.getPath() + File.separator + "DefaultProps.properties");
-            File ft2 = new File(id.getPath() + File.separator + "CustomProps.properties");
-
-            try {
-                FileUtils.exportResource("/properties/DefaultProps.properties", ft1);
-                FileUtils.exportResource("/properties/DefaultProps.properties", ft2);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(
-                        new JFrame(""),
-                        e.getMessage(),
-                        "something went wrong, very very wrong",
-                        JOptionPane.ERROR_MESSAGE);
-                e.printStackTrace();
-            }
-        }
-        // copy MEP[RV]
-        try {
-            FileUtils.exportRegex(id.getPath(), "^Replacements");
-            Settings.setProperty("path.mepr.rep", id.getPath() + "/Replacements");
-            Settings.setProperty("path.mepr.var", id.getPath() + "/Replacements/Variables");
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(
-                    new JFrame(""),
-                    e.getMessage(),
-                    "something went wrong, very very wrong",
-                    JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
-        try {
-            Settings.store();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
 }

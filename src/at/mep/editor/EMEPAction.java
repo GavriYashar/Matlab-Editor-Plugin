@@ -10,6 +10,8 @@ import at.mep.gui.clipboardStack.EClipboardParent;
 import at.mep.gui.fileStructure.FileStructure;
 import at.mep.gui.mepr.MEPRViewer;
 import at.mep.gui.recentlyClosed.RecentlyClosed;
+import at.mep.localhistory.LocalHistory;
+import at.mep.localhistory.LocalHistoryViewer;
 import at.mep.prefs.Settings;
 import at.mep.util.ClipboardUtil;
 import com.mathworks.matlab.api.editor.Editor;
@@ -168,6 +170,24 @@ public enum EMEPAction {
         public void actionPerformed(ActionEvent e) {
             if (!Settings.getPropertyBoolean("feature.enableReplacements")) return;
             MEPRViewer.getInstance().quickSearch();
+        }
+    }),
+
+    MEP_SAVE(new AbstractAction("MEP_SAVE") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (Debug.isDebugEnabled()) {
+                System.out.println("SAVE EVENT");
+            }
+            LocalHistory.saveEditor(EditorWrapper.getActiveEditor());
+        }
+    }),
+
+    MEP_LOCAL_HISTORY(new AbstractAction("MEP_LOCAL_HISTORY") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!Settings.getPropertyBoolean("feature.enableLocalHistory")) return;
+            LocalHistoryViewer.getInstance().showDialog();
         }
     })
     ;

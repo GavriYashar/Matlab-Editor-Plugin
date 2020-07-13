@@ -14,6 +14,10 @@ import static com.mathworks.widgets.text.mcode.MTree.NodeType.*;
 /**
  * this is a helper class, for debugging purposes, so MTree is easier to understand.
  * it will create an actual representation of matlabs MTree with an hierarchy that is easy to browse through
+ *
+ * at.mep.debug.Debug.assignObjectsToMatlab()
+ * mt = at.mep.editor.tree.MTreeNode.construct(mTree);
+ * mt.printTree()
  */
 public class MTreeNode {
     // mTree = at.mep.editor.EditorWrapper.getMTree();
@@ -79,8 +83,14 @@ public class MTreeNode {
         stringBuilder.append("\n");
         String b = StringUtils.blanks(lvl * 2);
 
-        stringBuilder.append(lvl + " " + b + " + " + node.getType().toString());
+        stringBuilder.append(lvl + " " + b + " + " + node.getType().toString() + ": "
+                + "[" + node.getMtNode().getStartLine() + ", " + node.getMtNode().getStartColumn() + "] to "
+                + "[" + node.getMtNode().getEndLine() + ", " + node.getMtNode().getEndColumn() + "] : "
+                + node.getMtNode().getText());
 
+        for (MTreeNode n : node.attributes) {
+            buildStringNewLevel(stringBuilder, n, lvl + 1);
+        }
         for (MTreeNode n : node.children) {
             buildStringNewLevel(stringBuilder, n, lvl + 1);
         }
