@@ -1,9 +1,11 @@
 package at.mep.util;
 
 import at.mep.installer.Install;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -68,8 +70,15 @@ public class FileUtils {
         return readFileToStringList(file, null);
     }
 
-    public static List<String> readFileToStringList(File file, Pattern regexBreakCondition) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(file));
+    public static List<String> readFileToStringList(File file, Pattern regexBreakCondition, Charset charset) throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(file);
+        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, charset);
+        BufferedReader br = new BufferedReader(inputStreamReader);
+        return readFileToStringListBufferedReader(regexBreakCondition, br);
+    }
+
+    @NotNull
+    private static List<String> readFileToStringListBufferedReader(Pattern regexBreakCondition, BufferedReader br) throws IOException {
         List<String> lines = new ArrayList<>();
         String line;
         while ((line = br.readLine()) != null) {
@@ -86,8 +95,22 @@ public class FileUtils {
         return lines;
     }
 
+    public static List<String> readFileToStringList(File file, Pattern regexBreakCondition) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        return readFileToStringListBufferedReader(regexBreakCondition, br);
+    }
+
     public static String readFileToString(File file) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
+        String s = readBufferedReaderToString(br, ETrim.TRAILING);
+        br.close();
+        return s;
+    }
+    public static String readFileToString(File file, Charset charset) throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(file);
+        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, charset);
+        BufferedReader br = new BufferedReader(inputStreamReader);
+        
         String s = readBufferedReaderToString(br, ETrim.TRAILING);
         br.close();
         return s;
