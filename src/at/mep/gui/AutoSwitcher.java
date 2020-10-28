@@ -24,6 +24,8 @@ public class AutoSwitcher {
 
     private static final String NAME_DETAIL_VIEWER = "detailviewer";
     private static final String NAME_SWITCH_FOLDER= "switchfolder";
+    private static final String TOOLTIP_DETAIL_VIEWER = "If on, details pane follows file currently opened in editor";
+    private static final String TOOLTIP_SWITCH_FOLDER= "If on, working directory follows file currently opened in editor";
 
     private static JCheckBox jCBDetailViewer = new JCheckBox("");
     private static JCheckBox jCBSwitchFolder = new JCheckBox("");
@@ -128,6 +130,8 @@ public class AutoSwitcher {
         }
         jCBDetailViewer.setName(NAME_DETAIL_VIEWER);
         jCBSwitchFolder.setName(NAME_SWITCH_FOLDER);
+        jCBDetailViewer.setToolTipText(TOOLTIP_DETAIL_VIEWER);
+        jCBSwitchFolder.setToolTipText(TOOLTIP_SWITCH_FOLDER);
         detailViewer.getButton().getParent().add(jCBDetailViewer);
         detailViewer.getButton().getParent().add(jCBSwitchFolder);
     }
