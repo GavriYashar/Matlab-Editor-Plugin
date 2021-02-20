@@ -2,6 +2,7 @@ package at.mep.util;
 
 import at.mep.EMatlabKeyStrokesCommands;
 import at.mep.editor.EditorWrapper;
+import java.awt.Toolkit;
 
 import javax.swing.*;
 import java.awt.event.InputEvent;
@@ -16,7 +17,8 @@ import java.util.regex.Pattern;
 public class KeyStrokeUtil {
 
     private static final String ALT = "alt";
-    private static final String CONTROL = "control";
+    private static final String CONTROL = "control"; // WINDOWS
+    private static final String META = "meta"; // MAC OS; #150
     private static final String SHIFT = "shift";
     private static final String RELEASED = "released";
     private static final String PRESSED = "pressed";
@@ -39,7 +41,7 @@ public class KeyStrokeUtil {
         if (key == null) return "";
         StringBuilder s = new StringBuilder(30);
         int m = key.getModifiers();
-        if ((m & (InputEvent.CTRL_DOWN_MASK | InputEvent.CTRL_MASK)) != 0) {
+        if( (m & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0 ){ //| InputEvent.CTRL_MASK)) != 0)
             s.append("Ctrl + ");
         }
         if ((m & (InputEvent.META_DOWN_MASK | InputEvent.META_MASK)) != 0) {
@@ -95,13 +97,14 @@ public class KeyStrokeUtil {
         return KeyStroke.getKeyStroke(getKeyText(keyCode));
     }
 
-    public static KeyStroke getKeyStroke(int keyCode, boolean control, boolean shift, boolean alt, boolean released) {
-        return KeyStroke.getKeyStroke(getKeyText(keyCode, control, shift, alt, released));
+    public static KeyStroke getKeyStroke(int keyCode, boolean control, boolean meta, boolean shift, boolean alt, boolean released) {
+        return KeyStroke.getKeyStroke(getKeyText(keyCode, control, meta, shift, alt, released));
     }
 
     public static KeyStroke getKeyStroke(String kbStringSetting) {
         String[] keys = kbStringSetting.split("\\s*\\++\\s*");
         boolean control = false;
+        boolean meta = false;
         boolean shift = false;
         boolean alt = false;
         boolean released = false;
@@ -112,6 +115,9 @@ public class KeyStrokeUtil {
             switch (key.toUpperCase()) {
                 case "CONTROL":
                     control = true;
+                    break;
+                case "META":
+                    meta = true;
                     break;
                 case "SHIFT":
                     shift = true;
@@ -129,15 +135,16 @@ public class KeyStrokeUtil {
         if (keyCode == Integer.MIN_VALUE) {
             throw new IllegalArgumentException("String '" + kbStringSetting + "' cannot be parsed make sure it is a valid VK_* string");
         }
-        return KeyStroke.getKeyStroke(getKeyText(keyCode, control, shift, alt, released));
+        return KeyStroke.getKeyStroke(getKeyText(keyCode, control, meta, shift, alt, released));
     }
 
-    public static String getKeyText(int keyCode, boolean control, boolean shift, boolean alt, boolean released) {
+    public static String getKeyText(int keyCode, boolean control, boolean meta, boolean shift, boolean alt, boolean released) {
         String keyText = getKeyText(keyCode);
 
         String retText = "";
         if (shift) retText = retText + " " + SHIFT;
         if (control) retText = retText + " " + CONTROL;
+        if (meta) retText = retText + " " + META;
         if (alt) retText = retText + " " + ALT;
         if (released) retText = retText + " " + RELEASED;
         if (!released) retText = retText + " " + PRESSED;
@@ -150,7 +157,7 @@ public class KeyStrokeUtil {
 
     public static int keyEventModifiersToKeyStrokeModifiers(int modifiers) {
         int shift = InputEvent.SHIFT_DOWN_MASK | InputEvent.SHIFT_MASK;
-        int ctrl = InputEvent.CTRL_DOWN_MASK | InputEvent.CTRL_MASK;
+        int ctrl = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(); // | InputEvent.CTRL_MASK;
         int alt = InputEvent.ALT_DOWN_MASK | InputEvent.ALT_MASK;
         switch (modifiers) {
             case 1:

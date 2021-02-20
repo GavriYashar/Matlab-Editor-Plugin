@@ -87,7 +87,7 @@ public abstract class UndecoratedFrame extends JFrame {
         setUndecorated(true);
 
         // escape hiding window
-        KeyStroke ks = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ESCAPE, false, false, false, true);
+        KeyStroke ks = KeyStrokeUtil.getKeyStroke(KeyEvent.VK_ESCAPE, false, false, false, false, true);
         getRootPane().getInputMap(IFW).put(ks, CLOSE_ACTION);
         getRootPane().getActionMap().put(CLOSE_ACTION, closeAction);
 
