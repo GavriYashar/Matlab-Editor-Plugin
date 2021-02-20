@@ -341,6 +341,9 @@ public class FileStructure extends DockableFrame {
     }
 
     public void populateTree() {
+        if (!Settings.getPropertyBoolean("feature.enableFileStructure")) {
+            return;
+        }
         if (EditorWrapper.getActiveEditor() == null || instance == null) return;
         if (activeEditor != EditorWrapper.getActiveEditor()) {
             jTFS.setText(""); // resetting search if activeEditor has been changed
