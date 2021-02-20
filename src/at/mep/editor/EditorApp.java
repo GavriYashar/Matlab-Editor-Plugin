@@ -310,10 +310,13 @@ public class EditorApp {
 
     private void remKeyStrokes(List<Editor> editors) {
         for (Editor e : editors) {
-            remKeyStrokes(EditorWrapper.getEditorSyntaxTextPane(e));
+            EditorSyntaxTextPane estp = EditorWrapper.getEditorSyntaxTextPane(e);
         }
     }
     private void remKeyStrokes(EditorSyntaxTextPane editorSyntaxTextPane) {
+        if (editorSyntaxTextPane == null) {
+            return;
+        }
         editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getDEBUG());
         editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getExecuteCurrentLines());
         editorSyntaxTextPane.getInputMap(WF).remove(CustomShortCutKey.getDeleteLines());
@@ -338,6 +341,9 @@ public class EditorApp {
         // NOTE: enable/disable feature cannot be checked here. the problem in the current design is, that matlab would
         //       need a restart after enabling features afterwards. that's why the features are checked in the
         //       "EMEPAction" Class
+        if (editorSyntaxTextPane == null) {
+            return;
+        }
 
         // DEBUG
         editorSyntaxTextPane.getInputMap(WF).put(CustomShortCutKey.getDEBUG(), "MEP_DEBUG");
