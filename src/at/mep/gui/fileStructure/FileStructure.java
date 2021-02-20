@@ -1,6 +1,7 @@
 package at.mep.gui.fileStructure;
 
 
+import at.mep.debug.Debug;
 import at.mep.editor.EditorWrapper;
 import at.mep.gui.components.DockableFrame;
 import at.mep.gui.components.JTextFieldSearch;
@@ -349,6 +350,9 @@ public class FileStructure extends DockableFrame {
             jTFS.setText(""); // resetting search if activeEditor has been changed
             activeEditor = EditorWrapper.getActiveEditor();
             setDefaultSettings();
+        }
+        if (Debug.isDebugEnabled()) {
+            System.out.println("Populating File Structure for file " + activeEditor.getLongName());
         }
         populate();
     }
