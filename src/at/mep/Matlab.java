@@ -191,8 +191,8 @@ public class Matlab {
         long millisClearMepWhich = System.nanoTime() - nano;
 
         if (Debug.isDebugEnabled()) {
-            System.out.println("Timing of '" + item + "'");
             System.out.println("------------------------------------------------------------------");
+            System.out.println("Timing of '" + item + "'");
             System.out.println("Milliseconds to create MEP_WHICH = " + TimeUnit.NANOSECONDS.toMillis(millisCreateMepWhich));
             System.out.println("Milliseconds to transfer MEP_WHICH = " + TimeUnit.NANOSECONDS.toMillis(millisGetMepWhich));
             System.out.println("Milliseconds to clear MEP_WHICH = " + TimeUnit.NANOSECONDS.toMillis(millisClearMepWhich));
