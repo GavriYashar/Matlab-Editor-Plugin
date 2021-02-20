@@ -19,6 +19,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -30,6 +31,8 @@ public class FileStructure extends DockableFrame {
     /** should prevent on changing the state of inherited when opening file structure */
     private static boolean wasHidden = true;
     private static Editor activeEditor;
+    private static long activeEditorLastModified;
+
     private static JTextFieldSearch jTFS;
     private static JRadioButton functions = new JRadioButton("Functions", true);
     private static JRadioButton sections = new JRadioButton("Sections", false);
@@ -349,12 +352,29 @@ public class FileStructure extends DockableFrame {
         if (activeEditor != EditorWrapper.getActiveEditor()) {
             jTFS.setText(""); // resetting search if activeEditor has been changed
             activeEditor = EditorWrapper.getActiveEditor();
+            activeEditorLastModified = 0L;
             setDefaultSettings();
         }
         if (Debug.isDebugEnabled()) {
             System.out.println("Populating File Structure for file " + activeEditor.getLongName());
         }
-        populate();
+
+        long lastModified = EditorWrapper.getFile(activeEditor).lastModified();
+        if (activeEditorLastModified < lastModified) {
+            activeEditorLastModified = lastModified;
+            long nano = System.nanoTime();
+
+            populate();
+
+            long nanoPopulate = System.nanoTime() - nano;
+            if (Debug.isDebugEnabled()) {
+                System.out.println("Populate took " + TimeUnit.NANOSECONDS.toMillis(nanoPopulate));
+            }
+        } else {
+            if (Debug.isDebugEnabled()) {
+                System.out.println("Skipped poulation since nothing has been changed in the file yet");
+            }
+        }
     }
 
     @SuppressWarnings("WeakerAccess")
