@@ -23,6 +23,9 @@ public class MEPREntries {
 
         List<MEPREntry> retVal = new ArrayList<>(files.length);
         for (File file : files) {
+            if (!file.getName().startsWith("MEPR_")){
+                continue;
+            }
             String action = getAction(file);
             String tags = "SOMETHING WENT WRONG";
             String comment = "";
@@ -58,7 +61,7 @@ public class MEPREntries {
     }
 
     private static String getComment(List<String> lines) {
-        if (lines.size() < 1) return "";
+        if (lines.size() < 2) return "";
         int index = lines.get(1).indexOf('%');
         if (index < 0) return "";
         String retVal = lines.get(1).substring(index + 1);

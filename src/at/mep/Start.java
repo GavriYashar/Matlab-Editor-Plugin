@@ -123,9 +123,16 @@ public class Start {
     }
 
     private static void setReplacementPath() {
-        if (Settings.getPropertyBoolean("feature.enableReplacements")
-                && Settings.getProperty("path.mepr.rep").length() > 1)
+        boolean enabledRep = Settings.getPropertyBoolean("feature.enableReplacements");
+        if (!enabledRep) {
             return;
+        }
+
+        if (Settings.getPropertyBoolean("feature.enableReplacements")
+                && Settings.getProperty("path.mepr.rep").length() > 1) {
+            return;
+        }
+
         try {
             File fileRep = new File(Install.getJarFile().getParentFile().getPath(), "Replacements");
             File fileVar = new File(fileRep, "Variables");

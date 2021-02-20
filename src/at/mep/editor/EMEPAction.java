@@ -180,6 +180,7 @@ public enum EMEPAction {
                 System.out.println("SAVE EVENT");
             }
             LocalHistory.saveEditor(EditorWrapper.getActiveEditor());
+            FileStructure.getInstance().populateTree();
         }
     }),
 
