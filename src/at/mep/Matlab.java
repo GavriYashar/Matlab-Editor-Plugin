@@ -1,5 +1,6 @@
 package at.mep;
 
+import at.mep.debug.Debug;
 import at.mep.installer.Install;
 import at.mep.path.MPath;
 import at.mep.util.ComponentUtil;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -175,9 +177,26 @@ public class Matlab {
 
     public static List<String> whichString_EVAL(String item) throws MatlabInvocationException {
         String cmd = "MEP_WHICH = which('" + item + "','-all');";
+
+        long nano = System.nanoTime();
         eval(cmd);
+        long millisCreateMepWhich = System.nanoTime() - nano;
+
+        nano = System.nanoTime();
         String[] which = (String[]) Matlab.getInstance().proxyHolder.get().getVariable("MEP_WHICH");
+        long millisGetMepWhich = System.nanoTime() - nano;
+
+        nano = System.nanoTime();
         eval("clear MEP_WHICH");
+        long millisClearMepWhich = System.nanoTime() - nano;
+
+        if (Debug.isDebugEnabled()) {
+            System.out.println("Timing of '" + item + "'");
+            System.out.println("------------------------------------------------------------------");
+            System.out.println("Milliseconds to create MEP_WHICH = " + TimeUnit.NANOSECONDS.toMillis(millisCreateMepWhich));
+            System.out.println("Milliseconds to transfer MEP_WHICH = " + TimeUnit.NANOSECONDS.toMillis(millisGetMepWhich));
+            System.out.println("Milliseconds to clear MEP_WHICH = " + TimeUnit.NANOSECONDS.toMillis(millisClearMepWhich));
+        }
         return Arrays.asList(which);
     }
 

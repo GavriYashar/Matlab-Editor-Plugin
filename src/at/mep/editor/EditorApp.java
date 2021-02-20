@@ -202,6 +202,10 @@ public class EditorApp {
                 // Matlab.getInstance().proxyHolder.get().feval("assignin", "base", "editorEvent", editorEvent);
                 switch (editorEvent){
                     case ACTIVATED: {
+                        if (Debug.isDebugEnabled()) {
+                            System.out.println("event ACTIVATED occurred");
+                        }
+
                         if (Settings.getPropertyBoolean("feature.enableDockableWindows")) {
                             FileStructure.getInstance().populateTree();
                         }
@@ -217,14 +221,13 @@ public class EditorApp {
 
                             EditorWrapper.setDirtyIfLastEditorChanged(editor);
                             EditorWrapper.setIsActiveEditorDirty(true);
-
-                            if (Debug.isDebugEnabled()) {
-                                System.out.println("event occurred");
-                            }
                         }
                         break;
                     }
                     case CLOSED: {
+                        if (Debug.isDebugEnabled()) {
+                            System.out.println("event CLOSED occurred");
+                        }
                         LocalHistory.addHistoryEntry(editor);
                         break;
                     }
