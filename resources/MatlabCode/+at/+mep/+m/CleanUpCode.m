@@ -18,8 +18,24 @@ classdef CleanUpCode
     mfile = "C:\sds\tools\DA\MatlabM\Tools\Matlab-Editor-Plugin\MEP\+at\+mep\+m\CleanUpCode.m"
     at.mep.m.CleanUpCode.removeTrailingSpace(mfile, true)
 
+    % Cleanup for an entire Package Example
+    % --------------------------------------------------------------------
+    m = meta.package.fromName("formula");
+    c = convertCharsToStrings({m.ClassList.Name}');
+    p = m.PackageList;
+    for ii = 1:numel(p)
+        c_ = {p(ii).ClassList.Name}';
+        c = vertcat(c, c_);
+    end
+
+    for ii = 1:numel(c)
+        mf = which(c(ii));
+        at.mep.m.CleanUpCode.removeTrailingSpace(mf);
+    end
+
 %}
 %% --------------------------------------------------------------------------------------------
+    
 %% >|•| Methods
 %% --|••| Public Static Methods
 methods (Static = true)
@@ -51,7 +67,7 @@ methods (Static = true)
     end
     function spaceEqSign(mfile, numBefore, numAfter)
         arguments
-            mfile(1,1) string   = string(getLongName(at.mep.editor.EditorWrapper.getActiveEditor()))
+            mfile(1,1) string = string(getLongName(at.mep.editor.EditorWrapper.getActiveEditor()))
             numBefore(1,1) double = 1
             numAfter(1,1) double = 1
         end
@@ -81,8 +97,8 @@ methods (Static = true)
             startPos = startNode.getPosition()-1;
             endPos = endNode.getPosition() + 1;
             txtPre = string(at.mep.editor.EditorWrapper.getText(editor, startPos, endPos));
-            % once ... ignores any equals sign afterwards
-            txtPost = regexprep(txtPre, "\s*=\s*", " = ", "once");
+            % once ... ignores any equals sign afterwards,  e.g.: "a(b == 3) = 2;"
+            txtPost = regexprep(txtPre, "\s*(==?)\s*", " $1 ", "once");
             if txtPre == txtPost
                 continue
             end
