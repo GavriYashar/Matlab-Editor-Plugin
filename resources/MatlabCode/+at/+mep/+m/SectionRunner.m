@@ -152,6 +152,14 @@ methods (Access = public)
 end
 
 methods (Static = true, Access = public)
+    function jumpToSectionyByTagForGivenFile(fil, tag)
+        if ~isa(fil, "file.Filename")
+            fil = file.Filename.valueOf(fil);
+        end
+        e = at.mep.editor.EditorWrapper.openEditor(fil.getJavaFile());
+        sr = at.mep.m.SectionRunner(e);
+        sr.jumpToSectionyByTag(tag);
+    end
     function line = getLineSectionByTagActiveEditor(tag)
         ae = at.mep.editor.EditorWrapper.getActiveEditor();
         sr = at.mep.m.SectionRunner(ae);
