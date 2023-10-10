@@ -1,3 +1,7 @@
+I've stopped developing this plugin due to Matlabs plan to implement a new UI. 
+FYI: Currently the code will not be updated, any Issues, known or unknown are *features*. If you however find this plugin still usefull be informed, that I do not visit GitHub often.
+
+
 ## Welcome to the Matlab-Editor-Plugin [wiki](https://github.com/GavriYashar/Matlab-Editor-Plugin/wiki)!
 
 In short, it will mess around with Matlab's Editor.
